@@ -1,4 +1,4 @@
-package mvp;
+package io.fundrequest.harvesth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +11,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @SpringBootApplication
-public class FundRequestMVPApplication {
+public class HarvesthApp {
 
-    private static final Logger logger = LoggerFactory.getLogger(FundRequestMVPApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(HarvesthApp.class);
 
 
     public static void main(final String[] args) throws UnknownHostException {
@@ -32,7 +32,7 @@ public class FundRequestMVPApplication {
     }
 
     private static SpringApplicationBuilder configureApplication(final SpringApplicationBuilder builder) {
-        return builder.sources(FundRequestMVPApplication.class);
+        return builder.sources(HarvesthApp.class);
     }
 
 }
