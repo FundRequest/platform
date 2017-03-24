@@ -1,5 +1,6 @@
 package io.fundrequest.harvesth;
 
+import org.ethereum.config.DefaultConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,7 +9,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 @SpringBootApplication
 public class HarvesthApp {
@@ -16,7 +16,7 @@ public class HarvesthApp {
     private static final Logger logger = LoggerFactory.getLogger(HarvesthApp.class);
 
 
-    public static void main(final String[] args) throws UnknownHostException {
+    public static void main(final String[] args) throws Exception {
         final ApplicationContext app = configureApplication(new SpringApplicationBuilder()).run(args);
         final Environment env = app.getEnvironment();
         logger.info("\n----------------------------------------------------------\n\t" +
@@ -32,7 +32,7 @@ public class HarvesthApp {
     }
 
     private static SpringApplicationBuilder configureApplication(final SpringApplicationBuilder builder) {
-        return builder.sources(HarvesthApp.class);
+        return builder.sources(HarvesthApp.class, DefaultConfig.class);
     }
 
 }
