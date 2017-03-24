@@ -6,7 +6,7 @@
     <groupId>io.fundrequest</groupId>
     <artifactId>mvp-back-end</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>mvp-back-end</name>
     <description>FundRequest MVP-Backend</description>
@@ -17,6 +17,10 @@
         <version>1.5.2.RELEASE</version>
         <relativePath/>
     </parent>
+
+    <modules>
+        <module>harvesth</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,16 +38,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>external.atlassian.jgitflow</groupId>
                 <artifactId>jgitflow-maven-plugin</artifactId>
