@@ -1,4 +1,4 @@
-package io.fundrequest.core.usermanagement;
+package io.fundrequest.core.usermanagement.domain;
 
 public enum RoleEnum {
 

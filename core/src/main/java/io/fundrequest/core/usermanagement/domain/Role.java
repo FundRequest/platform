@@ -1,4 +1,4 @@
-package io.fundrequest.core.usermanagement;
+package io.fundrequest.core.usermanagement.domain;
 
 
 import org.springframework.security.core.GrantedAuthority;

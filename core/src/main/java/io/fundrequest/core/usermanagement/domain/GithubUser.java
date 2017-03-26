@@ -1,4 +1,4 @@
-package io.fundrequest.core.usermanagement;
+package io.fundrequest.core.usermanagement.domain;
 
 import javax.persistence.*;
 import java.util.HashSet;

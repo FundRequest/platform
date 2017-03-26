@@ -31,6 +31,7 @@
         <flyway.version>4.0.3</flyway.version>
         <hikaricp.version>2.4.6</hikaricp.version>
         <jhipster.server.version>1.0.0</jhipster.server.version>
+        <spring-social.version>1.1.4.RELEASE</spring-social.version>
     </properties>
 
 
