@@ -29,6 +29,8 @@
         <java.version>1.8</java.version>
         <ethereumj-core.version>1.4.2-RELEASE</ethereumj-core.version>
         <flyway.version>4.0.3</flyway.version>
+        <hikaricp.version>2.4.6</hikaricp.version>
+        <jhipster.server.version>1.0.0</jhipster.server.version>
     </properties>
 
 
@@ -43,6 +45,22 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
                 <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikaricp.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>tools</artifactId>
+                        <groupId>com.sun</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>io.github.jhipster</groupId>
+                <artifactId>jhipster</artifactId>
+                <version>${jhipster.server.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
