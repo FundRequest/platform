@@ -12,19 +12,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
+//@Component
 public class SocialAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-
-    @Autowired
-    private GithubUserService githubUserService;
-    @Autowired
-    private GithubUserMapper githubUserMapper;
-
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        githubUserMapper.mapToGithubUser(authentication)
-            .ifPresent(githubUserService::upsert);
-        super.onAuthenticationSuccess(request, response, authentication);
-    }
+//
+//    @Autowired
+//    private GithubUserService githubUserService;
+//    @Autowired
+//    private GithubUserMapper githubUserMapper;
+//
+//    @Override
+//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+//        githubUserMapper.mapToGithubUser(authentication)
+//            .ifPresent(githubUserService::upsert);
+//        super.onAuthenticationSuccess(request, response, authentication);
+//    }
 }
