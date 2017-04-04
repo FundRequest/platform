@@ -37,4 +37,5 @@ public class SocialConfig extends SocialConfigurerAdapter {
         return new ProviderSignInUtils(connectionFactoryLocator, usersConnectionRepository);
     }
 
+
 }

@@ -1,6 +1,5 @@
 package io.fundrequest.core.usermanagement.service;
 
-import com.google.common.collect.Sets;
 import io.fundrequest.core.usermanagement.domain.GithubUser;
 import io.fundrequest.core.usermanagement.domain.Role;
 import io.fundrequest.core.usermanagement.domain.RoleEnum;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
@@ -39,6 +39,6 @@ public class GithubUserService {
     }
 
     private Set<Role> defaultRoles() {
-        return Sets.newHashSet(RoleEnum.USER_ROLE.toRole());
+        return Collections.singleton(RoleEnum.USER_ROLE.toRole());
     }
 }
