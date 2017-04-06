@@ -28,9 +28,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <ethereumj-core.version>1.4.2-RELEASE</ethereumj-core.version>
-        <flyway.version>4.0.3</flyway.version>
         <hikaricp.version>2.4.6</hikaricp.version>
-        <jhipster.server.version>1.0.0</jhipster.server.version>
         <spring-social.version>1.1.4.RELEASE</spring-social.version>
     </properties>
 
@@ -41,11 +39,6 @@
                 <groupId>org.ethereum</groupId>
                 <artifactId>ethereumj-core</artifactId>
                 <version>${ethereumj-core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-core</artifactId>
-                <version>${flyway.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zaxxer</groupId>

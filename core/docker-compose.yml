@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  awi_postgres:
+    image: postgres:9.6
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker_data/postgres/data:/var/lib/postgresql/data
+    container_name: fr_postgres
+    environment:
+      - POSTGRES_DB=fr
+      - POSTGRES_USER=fr
+      - POSTGRES_PASSWORD=fr
