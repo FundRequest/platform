@@ -1,12 +1,12 @@
 package io.fundrequest.core.infrastructure.repository;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.convert.Jsr310Converters;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
@@ -25,12 +25,12 @@ public abstract class AbstractEntity {
     private LocalDateTime lastModifiedDate;
 
     @Column(name = "created_by")
-//    @CreatedBy
-    private Integer createdBy;
+    @CreatedBy
+    private String createdBy;
 
     @Column(name = "last_modified_by")
-//    @LastModifiedBy
-    private Integer lastModifiedBy;
+    @LastModifiedBy
+    private String lastModifiedBy;
 
     public LocalDateTime getCreationDate() {
         return creationDate;
@@ -40,11 +40,11 @@ public abstract class AbstractEntity {
         return lastModifiedDate;
     }
 
-    public Integer getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public Integer getLastModifiedBy() {
+    public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 }

@@ -5,7 +5,7 @@ import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
 
 public class RequestOverviewDto {
-    private Integer id;
+    private Long id;
 
     private String issueLink;
 
@@ -17,11 +17,11 @@ public class RequestOverviewDto {
 
     private RequestSource source;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

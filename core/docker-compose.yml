@@ -1,14 +1,15 @@
 version: '2'
 
 services:
-  awi_postgres:
-    image: postgres:9.6
+  awi_mariadb:
+    image: mariadb:10.1
     ports:
-      - "5432:5432"
+      - "3309:3306"
     volumes:
-      - ./docker_data/postgres/data:/var/lib/postgresql/data
-    container_name: fr_postgres
+      - ./docker_data/mariadb/data:/var/lib/mysql
+    container_name: fr_mariadb
     environment:
-      - POSTGRES_DB=fr
-      - POSTGRES_USER=fr
-      - POSTGRES_PASSWORD=fr
+      - MYSQL_ROOT_PASSWORD=fr
+      - MYSQL_DATABASE=fr
+      - MYSQL_USER=fr
+      - MYSQL_PASSWORD=fr

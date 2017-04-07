@@ -17,7 +17,7 @@ public class Request extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "issue_link")
     private String issueLink;
@@ -48,7 +48,7 @@ public class Request extends AbstractEntity {
         this.label = label;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
