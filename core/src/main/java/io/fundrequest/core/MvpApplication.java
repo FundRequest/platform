@@ -1,18 +1,16 @@
 package io.fundrequest.core;
 
+import com.auth0.spring.security.api.Auth0SecurityConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.net.InetAddress;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackageClasses = {MvpApplication.class, Auth0SecurityConfig.class})
 public class MvpApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(MvpApplication.class);
