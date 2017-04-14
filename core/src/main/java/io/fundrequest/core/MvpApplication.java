@@ -1,16 +1,31 @@
 package io.fundrequest.core;
 
 import com.auth0.spring.security.api.Auth0SecurityConfig;
+import io.fundrequest.core.infrastructure.IgnoreDuringComponentScan;
+import io.fundrequest.core.request.infrastructure.github.GithubFeignConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
 
-@SpringBootApplication(scanBasePackageClasses = {MvpApplication.class, Auth0SecurityConfig.class})
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan(
+        basePackageClasses = {MvpApplication.class, Auth0SecurityConfig.class},
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
+                @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class),
+                @ComponentScan.Filter(IgnoreDuringComponentScan.class)})
 public class MvpApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(MvpApplication.class);

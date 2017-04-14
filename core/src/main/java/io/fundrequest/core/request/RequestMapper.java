@@ -6,6 +6,7 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.view.RequestOverviewDto;
 import org.mapstruct.Mapper;
 
-@Mapper(config = DefaultMappingConfig.class)
+@Mapper(config = DefaultMappingConfig.class,
+        uses = {IssueInformationDtoMapper.class})
 public interface RequestMapper extends BaseMapper<Request, RequestOverviewDto> {
 }

@@ -1,27 +1,23 @@
 package io.fundrequest.core.request;
 
+import io.fundrequest.core.request.validation.GithubLink;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 public class CreateRequestCommand {
-
-    @NotBlank
-    private String issueLink;
-    @NotBlank
-    private String label;
 
     public String getIssueLink() {
         return issueLink;
     }
 
+
+    @NotBlank
+    @Length(min = 20, max = 2000)
+    @GithubLink
+    private String issueLink;
+
     public void setIssueLink(String issueLink) {
         this.issueLink = issueLink;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
 }
