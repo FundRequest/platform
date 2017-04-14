@@ -3,6 +3,7 @@ package io.fundrequest.core.request.domain;
 import io.fundrequest.core.infrastructure.repository.AbstractEntity;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -19,11 +20,8 @@ public class Request extends AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "issue_link")
-    private String issueLink;
-
-    @Column(name = "label")
-    private String label;
+    @Embedded
+    private IssueInformation issueInformation;
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
@@ -33,32 +31,14 @@ public class Request extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     private RequestType type = RequestType.ISSUE;
 
-    @Column(name = "source")
-    @Enumerated(value = EnumType.STRING)
-    private RequestSource source = RequestSource.GITHUB;
-
     Request() {
     }
 
-    public void setIssueLink(String issueLink) {
-        this.issueLink = issueLink;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
     public Long getId() {
         return id;
     }
 
-    public String getIssueLink() {
-        return issueLink;
-    }
-
-    public String getLabel() {
-        return label;
-    }
 
     public RequestStatus getStatus() {
         return status;
@@ -68,7 +48,11 @@ public class Request extends AbstractEntity {
         return type;
     }
 
-    public RequestSource getSource() {
-        return source;
+    public IssueInformation getIssueInformation() {
+        return issueInformation;
+    }
+
+    public void setIssueInformation(IssueInformation issueInformation) {
+        this.issueInformation = issueInformation;
     }
 }

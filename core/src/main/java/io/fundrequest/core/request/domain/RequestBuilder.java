@@ -1,8 +1,7 @@
 package io.fundrequest.core.request.domain;
 
 public final class RequestBuilder {
-    private String issueLink;
-    private String label;
+    private IssueInformation issueInformation;
 
     private RequestBuilder() {
     }
@@ -11,24 +10,18 @@ public final class RequestBuilder {
         return new RequestBuilder();
     }
 
-    public RequestBuilder withIssueLink(String issueLink) {
-        this.issueLink = issueLink;
-        return this;
-    }
-
-    public RequestBuilder withLabel(String label) {
-        this.label = label;
+    public RequestBuilder withIssueInformation(IssueInformation issueInformation) {
+        this.issueInformation = issueInformation;
         return this;
     }
 
     public RequestBuilder but() {
-        return aRequest().withIssueLink(issueLink).withLabel(label);
+        return aRequest().withIssueInformation(issueInformation);
     }
 
     public Request build() {
         Request request = new Request();
-        request.setIssueLink(issueLink);
-        request.setLabel(label);
+        request.setIssueInformation(issueInformation);
         return request;
     }
 }
