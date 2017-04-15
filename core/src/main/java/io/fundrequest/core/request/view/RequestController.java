@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -27,8 +28,14 @@ public class RequestController extends AbstractController {
     }
 
     @PostMapping("/requests")
-    public ResponseEntity<?> createRequest(@RequestBody @Valid CreateRequestCommand createRequestCommand) {
-        RequestOverviewDto result = requestService.createRequest(createRequestCommand);
+    public ResponseEntity<?> createRequest(
+            Principal principal,
+            @RequestBody @Valid CreateRequestCommand createRequestCommand) {
+
+        RequestOverviewDto result = requestService.createRequest(
+                principal.getName(),
+                createRequestCommand
+        );
         return ResponseEntity
                 .created(getLocationFromCurrentPath("/{id}", result.getId()))
                 .build();

@@ -7,5 +7,5 @@ import java.util.List;
 public interface RequestService {
     List<RequestOverviewDto> findAll();
 
-    RequestOverviewDto createRequest(CreateRequestCommand command);
+    RequestOverviewDto createRequest(String user, CreateRequestCommand command);
 }

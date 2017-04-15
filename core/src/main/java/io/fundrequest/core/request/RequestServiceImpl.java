@@ -9,7 +9,9 @@ import io.fundrequest.core.request.view.RequestOverviewDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 class RequestServiceImpl implements RequestService {
@@ -32,10 +34,27 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public RequestOverviewDto createRequest(CreateRequestCommand command) {
+    public RequestOverviewDto createRequest(String user, CreateRequestCommand command) {
+        Optional<Request> request = requestRepository.findByIssueLink(command.getIssueLink());
+        request.ifPresent(r ->
+                addWatcherToRequest(user, r)
+        );
+
+        return mappers.map(Request.class, RequestOverviewDto.class,
+                request.orElseGet(() -> createNewRequest(user, command))
+        );
+    }
+
+    private void addWatcherToRequest(String user, Request r) {
+        r.addWatcher(user);
+        requestRepository.save(r);
+    }
+
+    private Request createNewRequest(String user, CreateRequestCommand command) {
         Request request = RequestBuilder.aRequest()
                 .withIssueInformation(githubLinkParser.parseIssue(command.getIssueLink()))
+                .withWatchers(Collections.singletonList(user))
                 .build();
-        return mappers.map(Request.class, RequestOverviewDto.class, requestRepository.save(request));
+        return requestRepository.save(request);
     }
 }
