@@ -2,15 +2,25 @@ package io.fundrequest.core.request.domain;
 
 import io.fundrequest.core.infrastructure.repository.AbstractEntity;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Table(name = "request")
 @Entity
@@ -31,7 +41,15 @@ public class Request extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     private RequestType type = RequestType.ISSUE;
 
-    Request() {
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "request_watcher",
+            joinColumns = @JoinColumn(name = "request_id")
+    )
+    @Column(name = "email")
+    private Set<String> watchers = new HashSet<>();
+
+    protected Request() {
     }
 
 
@@ -54,5 +72,17 @@ public class Request extends AbstractEntity {
 
     public void setIssueInformation(IssueInformation issueInformation) {
         this.issueInformation = issueInformation;
+    }
+
+    public void addWatcher(String email) {
+        this.watchers.add(email);
+    }
+
+    public void removeWatcher(String email) {
+        this.watchers.remove(email);
+    }
+
+    public Set<String> getWatchers() {
+        return Collections.unmodifiableSet(watchers);
     }
 }

@@ -1,5 +1,7 @@
 package io.fundrequest.core.request.domain;
 
+import java.util.Collections;
+
 public final class RequestMother {
 
     public static RequestBuilder freeCodeCampNoUserStories() {
@@ -7,6 +9,6 @@ public final class RequestMother {
                 .aRequest()
                 .withIssueInformation(
                         IssueInformationMother.kazuki43zooApiStub().build()
-                );
+                ).withWatchers(Collections.singletonList("somebody@mailinator.com"));
     }
 }
