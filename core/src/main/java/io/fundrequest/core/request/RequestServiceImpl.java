@@ -1,10 +1,12 @@
 package io.fundrequest.core.request;
 
+import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubParser;
+import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestOverviewDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,13 @@ class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<RequestOverviewDto> findAll() {
         return mappers.mapList(Request.class, RequestOverviewDto.class, requestRepository.findAll());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public RequestDto findRequest(Long id) {
+        Request request = requestRepository.findOne(id).orElseThrow(ResourceNotFoundException::new);
+        return mappers.map(Request.class, RequestDto.class, request);
     }
 
     @Override

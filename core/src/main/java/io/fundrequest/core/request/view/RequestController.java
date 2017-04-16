@@ -5,6 +5,7 @@ import io.fundrequest.core.request.CreateRequestCommand;
 import io.fundrequest.core.request.RequestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,11 @@ public class RequestController extends AbstractController {
     @GetMapping("/requests")
     public List<RequestOverviewDto> findAll() {
         return requestService.findAll();
+    }
+
+    @GetMapping("/requests/{id}")
+    public RequestDto findOne(@PathVariable("id") Long id) {
+        return requestService.findRequest(id);
     }
 
     @PostMapping("/requests")
