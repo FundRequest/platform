@@ -1,11 +1,14 @@
 package io.fundrequest.core.request.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public final class RequestBuilder {
     private IssueInformation issueInformation;
     private List<String> watchers = new ArrayList<>();
+    private Set<String> technologies = new HashSet<>();
 
     private RequestBuilder() {
     }
@@ -24,8 +27,14 @@ public final class RequestBuilder {
         return this;
     }
 
+    public RequestBuilder withTechnologies(Set<String> technologies) {
+        this.technologies = technologies;
+        return this;
+    }
+
     public RequestBuilder but() {
         return aRequest().withWatchers(watchers)
+                .withTechnologies(technologies)
                 .withIssueInformation(issueInformation);
     }
 
@@ -33,6 +42,7 @@ public final class RequestBuilder {
         Request request = new Request();
         request.setIssueInformation(issueInformation);
         watchers.forEach(request::addWatcher);
+        technologies.forEach(request::addTechnology);
         return request;
     }
 }

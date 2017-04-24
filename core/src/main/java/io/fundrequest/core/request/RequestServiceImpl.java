@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 class RequestServiceImpl implements RequestService {
@@ -45,13 +46,16 @@ class RequestServiceImpl implements RequestService {
     @Transactional
     public RequestOverviewDto createRequest(String user, CreateRequestCommand command) {
         Optional<Request> request = requestRepository.findByIssueLink(command.getIssueLink());
-        request.ifPresent(r ->
-                addWatcherToRequest(user, r)
-        );
+        request.ifPresent(r -> updateRequestInformation(user, command, r));
 
         return mappers.map(Request.class, RequestOverviewDto.class,
                 request.orElseGet(() -> createNewRequest(user, command))
         );
+    }
+
+    private void updateRequestInformation(String user, CreateRequestCommand command, Request r) {
+        addWatcherToRequest(user, r);
+        addTechnologiesToRequest(command.getTechnologies(), r);
     }
 
     private void addWatcherToRequest(String user, Request r) {
@@ -59,10 +63,18 @@ class RequestServiceImpl implements RequestService {
         requestRepository.save(r);
     }
 
+    private void addTechnologiesToRequest(Set<String> technologies, Request r) {
+        technologies.forEach(t ->
+                r.addTechnology(t.toLowerCase())
+        );
+        requestRepository.save(r);
+    }
+
     private Request createNewRequest(String user, CreateRequestCommand command) {
         Request request = RequestBuilder.aRequest()
                 .withIssueInformation(githubLinkParser.parseIssue(command.getIssueLink()))
                 .withWatchers(Collections.singletonList(user))
+                .withTechnologies(command.getTechnologies())
                 .build();
         return requestRepository.save(request);
     }
