@@ -9,6 +9,8 @@ public final class RequestMother {
                 .aRequest()
                 .withIssueInformation(
                         IssueInformationMother.kazuki43zooApiStub().build()
-                ).withWatchers(Collections.singletonList("somebody@mailinator.com"));
+                )
+                .withTechnologies(Collections.singleton("java"))
+                .withWatchers(Collections.singletonList("somebody@mailinator.com"));
     }
 }

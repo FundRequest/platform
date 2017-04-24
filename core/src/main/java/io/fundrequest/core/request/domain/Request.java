@@ -49,6 +49,14 @@ public class Request extends AbstractEntity {
     @Column(name = "email")
     private Set<String> watchers = new HashSet<>();
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "request_technology",
+            joinColumns = @JoinColumn(name = "request_id")
+    )
+    @Column(name = "technology")
+    private Set<String> technologies = new HashSet<>();
+
     protected Request() {
     }
 
@@ -84,5 +92,17 @@ public class Request extends AbstractEntity {
 
     public Set<String> getWatchers() {
         return Collections.unmodifiableSet(watchers);
+    }
+
+    public void addTechnology(String technology) {
+        this.technologies.add(technology);
+    }
+
+    public void removeTechnology(String technology) {
+        this.technologies.remove(technology);
+    }
+
+    public Set<String> getTechnologies() {
+        return Collections.unmodifiableSet(technologies);
     }
 }
