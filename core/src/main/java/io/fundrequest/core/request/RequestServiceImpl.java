@@ -11,6 +11,7 @@ import io.fundrequest.core.request.view.RequestOverviewDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,12 @@ class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<RequestOverviewDto> findAll() {
         return mappers.mapList(Request.class, RequestOverviewDto.class, requestRepository.findAll());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RequestOverviewDto> findRequestsForUser(Principal principal) {
+        return mappers.mapList(Request.class, RequestOverviewDto.class, requestRepository.findRequestsForUser(principal.getName()));
     }
 
     @Override
