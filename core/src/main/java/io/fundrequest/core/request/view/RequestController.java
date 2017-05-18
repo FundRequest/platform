@@ -28,6 +28,11 @@ public class RequestController extends AbstractController {
         return requestService.findAll();
     }
 
+    @GetMapping("/user/requests")
+    public List<RequestOverviewDto> findRequestsForUser(Principal principal) {
+        return requestService.findRequestsForUser(principal);
+    }
+
     @GetMapping("/requests/{id}")
     public RequestDto findOne(@PathVariable("id") Long id) {
         return requestService.findRequest(id);

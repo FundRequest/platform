@@ -9,12 +9,18 @@ public final class RequestBuilder {
     private IssueInformation issueInformation;
     private List<String> watchers = new ArrayList<>();
     private Set<String> technologies = new HashSet<>();
+    private Long id;
 
     private RequestBuilder() {
     }
 
     public static RequestBuilder aRequest() {
         return new RequestBuilder();
+    }
+
+    public RequestBuilder withId(Long id) {
+        this.id = id;
+        return this;
     }
 
     public RequestBuilder withIssueInformation(IssueInformation issueInformation) {
@@ -40,6 +46,7 @@ public final class RequestBuilder {
 
     public Request build() {
         Request request = new Request();
+        request.setId(id);
         request.setIssueInformation(issueInformation);
         watchers.forEach(request::addWatcher);
         technologies.forEach(request::addTechnology);

@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class CreateRequestCommand {
@@ -30,5 +31,19 @@ public class CreateRequestCommand {
 
     public void setTechnologies(Set<String> technologies) {
         this.technologies = technologies;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CreateRequestCommand that = (CreateRequestCommand) o;
+        return Objects.equals(issueLink, that.issueLink) &&
+                Objects.equals(technologies, that.technologies);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(issueLink, technologies);
     }
 }

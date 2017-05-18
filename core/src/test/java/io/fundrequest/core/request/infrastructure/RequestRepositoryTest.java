@@ -38,4 +38,18 @@ public class RequestRepositoryTest extends AbstractRepositoryTest {
                 requestRepository.findByIssueLink(request.getIssueInformation().getLink())
         ).isPresent().contains(request);
     }
+
+    @Test
+    public void findRequestsForUser() throws Exception {
+        Request request = RequestMother
+                .freeCodeCampNoUserStories()
+                .build();
+        requestRepository.saveAndFlush(request);
+
+        String watcher = request.getWatchers().iterator().next();
+
+        assertThat(
+                requestRepository.findRequestsForUser(watcher)
+        ).contains(request);
+    }
 }
