@@ -202,3 +202,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/intellij+iml,windows,linux,eclipse,maven,java,macos
+
+# Docker
+core/docker_data
