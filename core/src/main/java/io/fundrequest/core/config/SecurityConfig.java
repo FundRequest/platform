@@ -38,6 +38,7 @@ public class SecurityConfig extends Auth0SecurityConfig {
                 .antMatchers("/css/**", "/fonts/**", "/js/**", "/login").permitAll()
                 .antMatchers("/requests").hasAnyAuthority("ROLE_USER")
                 .antMatchers("/docs/**").permitAll()
+                .antMatchers("/login/**").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated();
     }

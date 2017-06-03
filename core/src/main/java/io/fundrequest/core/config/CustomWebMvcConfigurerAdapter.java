@@ -11,6 +11,8 @@ public class CustomWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/docs").setViewName("redirect:/docs/");
         registry.addViewController("/docs/").setViewName("forward:/docs/index.html");
+        registry.addViewController("/login").setViewName("redirect:/login/");
+        registry.addViewController("/login/").setViewName("forward:/login/index.html");
         super.addViewControllers(registry);
     }
 }
