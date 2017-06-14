@@ -11,6 +11,8 @@ public class RequestDto {
 
     private RequestStatus status;
 
+    private IssueInformationDto issueInformation;
+
     private RequestType type;
 
     private Set<String> watchers = new HashSet<>();
@@ -31,6 +33,14 @@ public class RequestDto {
 
     public void setStatus(RequestStatus status) {
         this.status = status;
+    }
+
+    public IssueInformationDto getIssueInformation() {
+        return issueInformation;
+    }
+
+    public void setIssueInformation(IssueInformationDto issueInformation) {
+        this.issueInformation = issueInformation;
     }
 
     public RequestType getType() {
