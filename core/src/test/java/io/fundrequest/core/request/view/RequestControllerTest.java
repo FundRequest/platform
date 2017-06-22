@@ -2,7 +2,7 @@ package io.fundrequest.core.request.view;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import io.fundrequest.core.request.CreateRequestCommand;
+import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.RequestService;
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -86,7 +87,7 @@ public class RequestControllerTest {
         command.setIssueLink("https://github.com/freeCodeCamp/freeCodeCamp/issues/14258");
         command.setTechnologies(Collections.singleton("java"));
 
-        when(requestService.createRequest(principal.getName(), command))
+        when(requestService.createRequest(principal, command))
                 .thenReturn(RequestOverviewDtoMother.freeCodeCampNoUserStories());
 
         this.mockMvc.perform(
@@ -100,6 +101,28 @@ public class RequestControllerTest {
                                 fieldWithPath("issueLink").description("The Github link to the issue"),
                                 fieldWithPath("technologies").description("An array of technologies")
                         )));
+    }
+
+    @Test
+    public void addWatcher() throws Exception {
+
+        this.mockMvc.perform(
+                post("/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
+                        .principal(principal))
+                .andExpect(
+                        status().isCreated())
+                .andDo(document("requests-add-watcher-example"));
+    }
+
+    @Test
+    public void removeWatcher() throws Exception {
+
+        this.mockMvc.perform(
+                delete("/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
+                        .principal(principal))
+                .andExpect(
+                        status().isOk())
+                .andDo(document("requests-remove-watcher-example"));
     }
 
     @Test

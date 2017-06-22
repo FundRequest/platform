@@ -1,4 +1,4 @@
-package io.fundrequest.core.request;
+package io.fundrequest.core.request.command;
 
 import io.fundrequest.core.request.validation.GithubLink;
 import org.hibernate.validator.constraints.Length;

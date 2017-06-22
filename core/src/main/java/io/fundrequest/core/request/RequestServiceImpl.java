@@ -2,6 +2,7 @@ package io.fundrequest.core.request;
 
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
@@ -45,19 +46,38 @@ class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public RequestDto findRequest(Long id) {
-        Request request = requestRepository.findOne(id).orElseThrow(ResourceNotFoundException::new);
+        Request request = findOne(id);
         return mappers.map(Request.class, RequestDto.class, request);
     }
 
     @Override
     @Transactional
-    public RequestOverviewDto createRequest(String user, CreateRequestCommand command) {
+    public RequestOverviewDto createRequest(Principal principal, CreateRequestCommand command) {
         Optional<Request> request = requestRepository.findByIssueLink(command.getIssueLink());
-        request.ifPresent(r -> updateRequestInformation(user, command, r));
+        String user = principal.getName();
+        request.ifPresent(r -> {
+            updateRequestInformation(user, command, r);
+        });
 
         return mappers.map(Request.class, RequestOverviewDto.class,
                 request.orElseGet(() -> createNewRequest(user, command))
         );
+    }
+
+    @Override
+    @Transactional
+    public void addWatcherToRequest(Principal principal, Long requestId) {
+        addWatcherToRequest(principal.getName(), findOne(requestId));
+    }
+
+    @Override
+    @Transactional
+    public void removeWatcherFromRequest(Principal principal, Long requestId) {
+        removeWatcherFromRequest(principal.getName(), findOne(requestId));
+    }
+
+    private Request findOne(Long requestId) {
+        return requestRepository.findOne(requestId).orElseThrow(ResourceNotFoundException::new);
     }
 
     private void updateRequestInformation(String user, CreateRequestCommand command, Request r) {
@@ -67,6 +87,11 @@ class RequestServiceImpl implements RequestService {
 
     private void addWatcherToRequest(String user, Request r) {
         r.addWatcher(user);
+        requestRepository.save(r);
+    }
+
+    private void removeWatcherFromRequest(String user, Request r) {
+        r.removeWatcher(user);
         requestRepository.save(r);
     }
 
