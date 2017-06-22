@@ -111,3 +111,15 @@ operation::request-get-example[snippets='curl-request,http-response']
 A `POST` request is used to create a request.
 
 operation::requests-create-example[snippets='request-fields,curl-request,http-response']
+
+=== Adding a watcher to a request
+
+A `POST` request is used to the endpoint to add a watcher to a request, the user from the auth token will be added as a watcher
+
+operation::requests-add-watcher-example[snippets='request-fields,curl-request,http-response']
+
+=== Removing a watcher from a request
+
+A `POST` request is used to the endpoint to add a watcher to a request, the user from the auth token will be added as a watcher
+
+operation::requests-remove-watcher-example[snippets='request-fields,curl-request,http-response']

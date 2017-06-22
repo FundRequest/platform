@@ -1,9 +1,10 @@
 package io.fundrequest.core.request.view;
 
 import io.fundrequest.core.infrastructure.repository.AbstractController;
-import io.fundrequest.core.request.CreateRequestCommand;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.command.CreateRequestCommand;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,13 +39,26 @@ public class RequestController extends AbstractController {
         return requestService.findRequest(id);
     }
 
+    @PostMapping("/requests/{id}/watchers")
+    public ResponseEntity<?> addWatcher(@PathVariable("id") Long requestId, Principal principal) {
+        requestService.addWatcherToRequest(principal, requestId);
+        return ResponseEntity
+                .created(getLocationFromCurrentPath(""))
+                .build();
+    }
+
+    @DeleteMapping("/requests/{id}/watchers")
+    public void removeWatcher(@PathVariable("id") Long requestId, Principal principal) {
+        requestService.removeWatcherFromRequest(principal, requestId);
+    }
+
     @PostMapping("/requests")
     public ResponseEntity<?> createRequest(
             Principal principal,
             @RequestBody @Valid CreateRequestCommand createRequestCommand) {
 
         RequestOverviewDto result = requestService.createRequest(
-                principal.getName(),
+                principal,
                 createRequestCommand
         );
         return ResponseEntity
