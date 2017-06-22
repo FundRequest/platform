@@ -21,6 +21,9 @@ public class ActivitySimulator {
     @Scheduled(fixedRate = 1000)
     @Transactional
     public void testActivity() {
+        if(COUNTER.equals(Long.MAX_VALUE)) {
+            COUNTER = 0L;
+        }
         eventPublisher.publishEvent(new RequestCreatedEvent("davy", "http://github.com", "Github issue " + COUNTER++, RequestSource.GITHUB));
     }
 }
