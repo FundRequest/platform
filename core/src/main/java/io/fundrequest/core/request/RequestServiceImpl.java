@@ -5,10 +5,12 @@ import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestBuilder;
+import io.fundrequest.core.request.event.RequestCreatedEvent;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubParser;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestOverviewDto;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ class RequestServiceImpl implements RequestService {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private GithubParser githubLinkParser;
+    private ApplicationEventPublisher eventPublisher;
 
     public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser) {
         this.requestRepository = requestRepository;
@@ -55,13 +58,11 @@ class RequestServiceImpl implements RequestService {
     public RequestOverviewDto createRequest(Principal principal, CreateRequestCommand command) {
         Optional<Request> request = requestRepository.findByIssueLink(command.getIssueLink());
         String user = principal.getName();
-        request.ifPresent(r -> {
-            updateRequestInformation(user, command, r);
-        });
+        request.ifPresent(r -> updateRequestInformation(user, command, r));
 
-        return mappers.map(Request.class, RequestOverviewDto.class,
-                request.orElseGet(() -> createNewRequest(user, command))
-        );
+        Request r = request.orElseGet(() -> createNewRequest(user, command));
+        eventPublisher.publishEvent(new RequestCreatedEvent(principal.getName(), r.getIssueInformation().getLink(), r.getIssueInformation().getTitle(), r.getIssueInformation().getSource()));
+        return mappers.map(Request.class, RequestOverviewDto.class, r);
     }
 
     @Override
