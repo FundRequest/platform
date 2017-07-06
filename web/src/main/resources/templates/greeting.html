@@ -1,0 +1,11 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: default-header ('Hello all in template', 'main')"></head>
+<body>
+<p th:text="'Hello, ' + ${name} + '!'" />
+
+
+<div th:replace="footer :: copy"></div>
+
+</body>
+</html>

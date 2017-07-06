@@ -20,7 +20,8 @@
 
     <modules>
         <module>core</module>
-        <module>harvesth</module>
+        <module>rest-api</module>
+        <module>web</module>
     </modules>
 
     <properties>
@@ -30,11 +31,21 @@
         <ethereumj-core.version>1.4.2-RELEASE</ethereumj-core.version>
         <hikaricp.version>2.4.6</hikaricp.version>
         <spring-social.version>1.1.4.RELEASE</spring-social.version>
+        <assertj.version>3.6.2</assertj.version>
+        <mapstruct.version>1.1.0.Final</mapstruct.version>
+        <auth0-spring-security-api.version>0.3.3</auth0-spring-security-api.version>
     </properties>
 
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Camden.SR6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.ethereum</groupId>
                 <artifactId>ethereumj-core</artifactId>
