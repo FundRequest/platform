@@ -1,4 +1,4 @@
-package io.fundrequest.core.config;
+package io.fundrequest.restapi.config;
 
 import com.auth0.spring.security.api.Auth0SecurityConfig;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-public class SecurityConfig extends Auth0SecurityConfig {
+public class RestSecurityConfig extends Auth0SecurityConfig {
 
     /**
      * Provides Auth0 API access

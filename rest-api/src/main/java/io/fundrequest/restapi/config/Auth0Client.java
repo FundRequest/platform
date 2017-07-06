@@ -1,4 +1,4 @@
-package io.fundrequest.core.config;
+package io.fundrequest.restapi.config;
 
 import com.auth0.Auth0;
 import com.auth0.authentication.AuthenticationAPIClient;

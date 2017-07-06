@@ -1,8 +1,10 @@
-package io.fundrequest.core.request.view;
+package io.fundrequest.restapi.view;
 
 import io.fundrequest.core.infrastructure.repository.AbstractController;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.request.view.RequestOverviewDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

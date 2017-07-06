@@ -1,14 +1,13 @@
-package io.fundrequest.core;
+package io.fundrequest.restapi;
 
 import com.auth0.spring.security.api.Auth0SecurityConfig;
+import io.fundrequest.core.FundRequestCore;
 import io.fundrequest.core.infrastructure.IgnoreDuringComponentScan;
-import io.fundrequest.core.request.infrastructure.github.GithubFeignConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.context.ApplicationContext;
@@ -21,14 +20,14 @@ import java.net.InetAddress;
 @SpringBootConfiguration
 @EnableAutoConfiguration
 @ComponentScan(
-        basePackageClasses = {MvpApplication.class, Auth0SecurityConfig.class},
+        basePackageClasses = {RestApplication.class, FundRequestCore.class, Auth0SecurityConfig.class},
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class),
                 @ComponentScan.Filter(IgnoreDuringComponentScan.class)})
-public class MvpApplication {
+public class RestApplication {
 
-    private static final Logger logger = LoggerFactory.getLogger(MvpApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestApplication.class);
 
 
     public static void main(final String[] args) throws Exception {
@@ -47,7 +46,7 @@ public class MvpApplication {
     }
 
     private static SpringApplicationBuilder configureApplication(final SpringApplicationBuilder builder) {
-        return builder.sources(MvpApplication.class);
+        return builder.sources(RestApplication.class);
     }
 
 
