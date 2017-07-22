@@ -95,12 +95,5 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>ethereum</id>
-            <url>https://dl.bintray.com/ethereum/maven/</url>
-        </repository>
-    </repositories>
-
 
 </project>
