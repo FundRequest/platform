@@ -20,4 +20,9 @@ public class HomeController {
     public String showRequests(Model model) {
         return "home";
     }
+
+    @RequestMapping("/home2")
+    public String showBlah(Model model) {
+        return "home2";
+    }
 }
