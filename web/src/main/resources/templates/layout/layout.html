@@ -208,27 +208,19 @@
                     </li>
                     <!-- Iterates over all sidebar items-->
                     <li class="nav-heading ">
-                        <span data-localize="sidebar.heading.HEADER">Menu Navigation</span>
+                        <span>Menu</span>
                     </li>
-                    <li class=" active">
-                        <a href="/" title="Single View">
-                            <em class="fa fa-file-o"></em>
-                            <span data-localize="sidebar.nav.SINGLEVIEW">Single View</span>
+                    <li th:class="${activeMenu == 'home' ? 'active' : ''}">
+                        <a href="/" title="Home">
+                            <em class="fa fa-home"></em>
+                            <span>Home</span>
                         </a>
                     </li>
-                    <li class=" " sec:authorize="hasRole('ROLE_USER')">
-                        <a href="#menuid" title="Menu" data-toggle="collapse">
-                            <em class="icon-folder"></em>
-                            <span data-localize="sidebar.nav.menu.MENU">Menu</span>
+                    <li sec:authorize="hasRole('ROLE_USER')" th:class="${activeMenu == 'requests' ? 'active' : ''}">
+                        <a href="/requests" title="Requests">
+                            <em class="fa fa-list-alt"></em>
+                            <span>Requests</span>
                         </a>
-                        <ul id="menuid" class="nav sidebar-subnav collapse">
-                            <li class="sidebar-subnav-header">Menu</li>
-                            <li class=" ">
-                                <a href="submenu.html" title="Sub Menu">
-                                    <span data-localize="sidebar.nav.menu.SUBMENU">Sub Menu</span>
-                                </a>
-                            </li>
-                        </ul>
                     </li>
                 </ul>
                 <!-- END sidebar nav-->
