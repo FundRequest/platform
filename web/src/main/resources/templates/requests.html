@@ -19,19 +19,33 @@
                 <div class="panel-heading">
                     <!-- START table-responsive-->
                     <div class="table-responsive">
-                        <table id="requests-table" class="table table-striped table-bordered table-hover">
+                        <table id="requests-table"
+                               class="auto-datatable table table-striped table-bordered table-hover">
                             <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Title</th>
                                 <th>Status</th>
+                                <th>Source</th>
                                 <th>Type</th>
+                                <th>Technologies</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="r : ${requests}">
                                 <td th:text="${r.id}">1</td>
+                                <td th:text="${r.issueInformation.title}">Title</td>
                                 <td th:text="${r.status}">2.41</td>
-                                <td th:text="${r.type}">yes</td>
+                                <td><a target="_blank"
+                                       th:href="${r.issueInformation.link}" href="github.com"
+                                       th:text="${r.issueInformation.source}">Github</a></td>
+                                <td th:text="${r.type}">Issue</td>
+                                <td>
+                                    <div th:each="t : ${r.technologies}" th:remove="tag">
+                                        <span th:text="${t}" class="label label-primary">100</span>
+                                    </div>
+
+                                </td>
                             </tr>
                             </tbody>
                         </table>

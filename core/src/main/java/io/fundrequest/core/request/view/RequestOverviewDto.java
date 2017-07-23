@@ -3,6 +3,8 @@ package io.fundrequest.core.request.view;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
 
+import java.util.Set;
+
 public class RequestOverviewDto {
     private Long id;
 
@@ -10,6 +12,17 @@ public class RequestOverviewDto {
 
     private RequestType type;
 
+    private IssueInformationDto issueInformation;
+
+    private Set<String> technologies;
+
+    public IssueInformationDto getIssueInformation() {
+        return issueInformation;
+    }
+
+    public void setIssueInformation(IssueInformationDto issueInformation) {
+        this.issueInformation = issueInformation;
+    }
 
     public Long getId() {
         return id;
@@ -35,4 +48,11 @@ public class RequestOverviewDto {
         this.type = type;
     }
 
+    public Set<String> getTechnologies() {
+        return technologies;
+    }
+
+    public void setTechnologies(Set<String> technologies) {
+        this.technologies = technologies;
+    }
 }
