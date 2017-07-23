@@ -1,7 +1,8 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
     <meta charset="utf-8">
@@ -21,6 +22,8 @@
     <!-- =============== PAGE VENDOR STYLES ===============-->
     <!-- =============== BOOTSTRAP STYLES ===============-->
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/dataTables.bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{/css/datatables-fontawesome.css}"/>
     <!-- =============== APP STYLES ===============-->
     <link rel="stylesheet" th:href="@{/css/angle.css}">
 </head>
@@ -190,13 +193,15 @@
                                 <!-- User picture-->
                                 <div class="user-block-picture">
                                     <div class="user-block-status">
-                                        <img th:src="${user.picture}" src="img/user/02.jpg" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">
+                                        <img th:src="${user.picture}" src="img/user/02.jpg" alt="Avatar" width="60"
+                                             height="60" class="img-thumbnail img-circle">
                                         <div class="circle circle-success circle-lg"></div>
                                     </div>
                                 </div>
                                 <!-- Name and Job-->
                                 <div class="user-block-info">
-                                    <span class="user-block-name" th:text="'Hello, ' + ${user.givenName}">Hello, Mike</span>
+                                    <span class="user-block-name"
+                                          th:text="'Hello, ' + ${user.givenName}">Hello, Mike</span>
                                 </div>
                             </div>
                         </div>
@@ -308,8 +313,11 @@
         //of 'js/app/main1'
 
         requirejs(['angle']);
-//        requirejs(['app/all-pages']);
-//        requirejs(['app/' + [[${jsModule}]]]);
+        requirejs(['app/common/auto-datatables']);
+        var pageModule = [[${jsModule}]];
+        if (pageModule) {
+            requirejs(['app/' + pageModule]);
+        }
     });
 </script>
 

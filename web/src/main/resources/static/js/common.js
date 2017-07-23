@@ -28,6 +28,6 @@ requirejs.config({
         'jQuery-slimScroll': {'deps': ['jquery']},
         'screenfull': {'deps': ['jquery']},
         'animo': {'deps': ['jquery']},
-        'angle': {'deps': ['jquery', 'modernizr', 'bootstrap', 'jquery-storage-api', 'jquery-easing', 'animo', 'jQuery-slimScroll', 'screenfull']}
+        'angle': {'deps': ['jquery', 'modernizr', 'bootstrap', 'jquery-storage-api', 'jquery-easing', 'animo', 'jQuery-slimScroll', 'screenfull', 'datatables.net-bs', 'datatables.net']}
     }
 });
