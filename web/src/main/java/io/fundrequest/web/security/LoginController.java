@@ -22,7 +22,7 @@ public class LoginController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     protected String login(final HttpServletRequest req) {
         logger.debug("Performing login");
-        String redirectUri = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + "/callback";
+        String redirectUri = "https://" + req.getServerName() + "/callback";
         AuthorizeUrl authorizeUrl = controller.buildAuthorizeUrl(req, redirectUri).withScope("profile openid roles user_id name email");
         return "redirect:" + authorizeUrl.build();
     }
