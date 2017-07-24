@@ -4,6 +4,9 @@ import com.auth0.AuthenticationController;
 import com.auth0.IdentityVerificationException;
 import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
+import io.fundrequest.core.activity.ActivityListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -27,6 +30,7 @@ public class CallbackController {
     private AuthenticationController controller;
     private final String redirectOnFail;
     private final String redirectOnSuccess;
+    private static final Logger logger = LoggerFactory.getLogger(CallbackController.class);
 
     public CallbackController() {
         this.redirectOnFail = "/login";
@@ -48,8 +52,10 @@ public class CallbackController {
             Tokens tokens = controller.handle(req);
             WebUser webUser = new WebUser(JWT.decode(tokens.getIdToken()));
             SecurityContextHolder.getContext().setAuthentication(webUser);
-            SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(req, res);
 
+            logger.info("User '{}' has logged in.", webUser.getEmail());
+
+            SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(req, res);
             String redirectUrl = (savedRequest == null || savedRequest.getRedirectUrl() == null) ? "/" : savedRequest.getRedirectUrl();
             res.sendRedirect(redirectUrl);
         } catch (AuthenticationException | IdentityVerificationException e) {
