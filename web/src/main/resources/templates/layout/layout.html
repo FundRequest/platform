@@ -165,6 +165,11 @@
                             <em class="icon-notebook"></em>
                         </a>
                     </li>
+                    <li>
+                        <a href="/logout">
+                            <em class="fa fa-sign-out"></em>
+                        </a>
+                    </li>
                     <!-- END Offsidebar menu-->
                 </ul>
                 <!-- END Right Navbar-->
@@ -203,7 +208,7 @@
                                 <!-- Name and Job-->
                                 <div class="user-block-info">
                                     <span class="user-block-name"
-                                          th:text="'Hello, ' + ${user.givenName}">Hello, Mike</span>
+                                          th:text="'Hello, ' + ${user.name}">Hello, Mike</span>
                                 </div>
                             </div>
                         </div>

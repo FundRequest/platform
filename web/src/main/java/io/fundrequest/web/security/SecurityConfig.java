@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/callback", "/login").permitAll()
-		.antMatchers("favicon.ico").permitAll()
+                .antMatchers("favicon.ico").permitAll()
                 .antMatchers("/css/**", "/images/**", "/js/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/**").authenticated()
