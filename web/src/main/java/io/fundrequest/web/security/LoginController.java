@@ -19,7 +19,7 @@ public class LoginController {
     @Autowired
     private AuthenticationController controller;
 
-    @Value(value = "${com.auth0.domain}")
+    @Value(value = "${com.auth0.callback-url}")
     private String callbackUrl;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
