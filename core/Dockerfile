@@ -1,7 +1,7 @@
 FROM frolvlad/alpine-oraclejdk8:slim
 
 VOLUME /tmp
-ADD core/target/core-0.0.1-SNAPSHOT.jar mvp-backend-core.jar
+ADD target/core-0.0.1-SNAPSHOT.jar mvp-backend-core.jar
 RUN sh -c 'touch /mvp-backend-core.jar' && \
     mkdir config
 
