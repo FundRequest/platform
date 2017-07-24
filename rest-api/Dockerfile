@@ -1,7 +1,7 @@
 FROM frolvlad/alpine-oraclejdk8:slim
 
 VOLUME /tmp
-ADD target/api-0.0.1-SNAPSHOT.jar mvp-backend-api.jar
+ADD target/rest-api-0.0.1-SNAPSHOT.jar mvp-backend-api.jar
 RUN sh -c 'touch /mvp-backend-api.jar' && \
     mkdir config
 
