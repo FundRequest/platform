@@ -1033,11 +1033,11 @@ _:-ms-lang(x),
 }
 .topnavbar .navbar-header {
   background-color: transparent;
-  background-image: -webkit-linear-gradient(left, #23b7e5 0%, #51c6ea 100%);
-  background-image: -o-linear-gradient(left, #23b7e5 0%, #51c6ea 100%);
-  background-image: linear-gradient(to right, #23b7e5 0%, #51c6ea 100%);
+  background-image: -webkit-linear-gradient(left, #f3f5f6 100%, #51c6ea 100%);
+  background-image: -o-linear-gradient(left, #f3f5f6 100%, #51c6ea 100%);
+  background-image: linear-gradient(to right, #f3f5f6 100%, #51c6ea 100%);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff23b7e5', endColorstr='#ff51c6ea', GradientType=1);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff3f5f6', endColorstr='#fff3f5f6', GradientType=1);
 }
 @media only screen and (min-width: 768px) {
   .topnavbar .navbar-header {
@@ -1188,12 +1188,12 @@ _:-ms-lang(x),
 @media only screen and (min-width: 768px) {
   .topnavbar {
     border: 0;
-    background-color: #23b7e5;
-    background-image: -webkit-linear-gradient(left, #23b7e5 0%, #51c6ea 100%);
-    background-image: -o-linear-gradient(left, #23b7e5 0%, #51c6ea 100%);
-    background-image: linear-gradient(to right, #23b7e5 0%, #51c6ea 100%);
+    background-color: #f3f5f6;
+    background-image: -webkit-linear-gradient(left, #f3f5f6 100%, #51c6ea 100%);
+    background-image: -o-linear-gradient(left, #f3f5f6 100%, #51c6ea 100%);
+    background-image: linear-gradient(to right, #f3f5f6 100%, #51c6ea 100%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff23b7e5', endColorstr='#ff51c6ea', GradientType=1);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff3f5f6', endColorstr='#fff3f5f6', GradientType=1);
   }
   .topnavbar .navbar-header {
     background-image: none;
@@ -1219,7 +1219,7 @@ _:-ms-lang(x),
   }
   .topnavbar .navbar-nav > li > a,
   .topnavbar .navbar-nav > .open > a {
-    color: #fff;
+    color: #1eaaf1;
   }
   .topnavbar .navbar-nav > li > a:hover,
   .topnavbar .navbar-nav > .open > a:hover,
