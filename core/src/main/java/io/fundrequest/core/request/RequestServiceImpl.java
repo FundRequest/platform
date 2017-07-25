@@ -28,10 +28,11 @@ class RequestServiceImpl implements RequestService {
     private GithubParser githubLinkParser;
     private ApplicationEventPublisher eventPublisher;
 
-    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser) {
+    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser, ApplicationEventPublisher eventPublisher) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override

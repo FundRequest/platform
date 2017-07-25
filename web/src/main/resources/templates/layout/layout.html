@@ -26,11 +26,17 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/dataTables.bootstrap.css}"/>
     <link rel="stylesheet" th:href="@{/css/datatables-fontawesome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-tagsinput.css}"/>
     <!-- =============== APP STYLES ===============-->
     <link rel="stylesheet" th:href="@{/css/angle.css}">
 </head>
 
 <body>
+
+<div layout:fragment="modals">
+
+</div>
+
 <div class="wrapper">
     <!-- top navbar-->
     <header class="topnavbar-wrapper">
@@ -273,14 +279,8 @@
             <div class="content-heading" layout:fragment="content-heading">
                 <!-- START Language list-->
                 <div class="pull-right">
-                    <div class="btn-group">
-                        <button type="button" data-toggle="dropdown" class="btn btn-default">English</button>
-                        <ul role="menu" class="dropdown-menu dropdown-menu-right animated fadeInUpShort">
-                            <li><a href="#" data-set-lang="en">English</a>
-                            </li>
-                            <li><a href="#" data-set-lang="es">Spanish</a>
-                            </li>
-                        </ul>
+                    <div class="btn-group" layout:fragment="action-buttons">
+
                     </div>
                 </div>
                 <!-- END Language list    -->
