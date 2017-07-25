@@ -13,7 +13,7 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
     if (authentication == null || !authentication.isAuthenticated()) {
       return null;
     }
-    Auth0UserDetails userDetails = (Auth0UserDetails) authentication.getPrincipal();
-    return userDetails.getUsername();
+
+    return authentication.getName();
   }
 }

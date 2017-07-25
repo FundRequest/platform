@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = GithubLinkValidator.class)
 public @interface GithubLink {
-    String message() default "Not a valid Github link";
+    String message() default "{io.fundrequest.validator.constraints.GithubLink.message}";
 
     Class<?>[] groups() default {};
 
