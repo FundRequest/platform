@@ -1,11 +1,9 @@
 package io.fundrequest.core.request.view;
 
 import io.fundrequest.core.request.IssueInformationDtoMapperImpl;
-import io.fundrequest.core.request.RequestDtoMapperImpl;
 import io.fundrequest.core.request.RequestOverviewDtoMapper;
-import io.fundrequest.core.request.RequestOverviewDtoMapperImpl;
+import io.fundrequest.core.request.RequestOverviewDtoMapperImpl_;
 import io.fundrequest.core.request.domain.RequestMother;
-import org.mapstruct.factory.Mappers;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -15,8 +13,8 @@ public final class RequestOverviewDtoMother {
     private static RequestOverviewDtoMapper mapper;
 
     static {
-        mapper = new RequestOverviewDtoMapperImpl();
-        Field issueInformationDtoMapper = ReflectionUtils.findField(RequestOverviewDtoMapperImpl.class, "issueInformationDtoMapper");
+        mapper = new RequestOverviewDtoMapperImpl_();
+        Field issueInformationDtoMapper = ReflectionUtils.findField(RequestOverviewDtoMapperImpl_.class, "issueInformationDtoMapper");
         ReflectionUtils.makeAccessible(issueInformationDtoMapper);
         ReflectionUtils.setField(issueInformationDtoMapper, mapper, new IssueInformationDtoMapperImpl());
     }

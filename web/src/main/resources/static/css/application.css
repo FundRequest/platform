@@ -1,0 +1,13 @@
+/*TODO : use SASS*/
+#requests .watch-true {
+    color: #ff902b;
+}
+
+#requests .watch-true:before {
+    content: "\f005"
+}
+
+#requests .watch-false:before {
+    content: "\f006"
+}
+
