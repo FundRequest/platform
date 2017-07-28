@@ -16,6 +16,8 @@ public class RequestOverviewDto {
 
     private Set<String> technologies;
 
+    private boolean loggedInUserIsWatcher;
+
     public IssueInformationDto getIssueInformation() {
         return issueInformation;
     }
@@ -54,5 +56,13 @@ public class RequestOverviewDto {
 
     public void setTechnologies(Set<String> technologies) {
         this.technologies = technologies;
+    }
+
+    public boolean isLoggedInUserIsWatcher() {
+        return loggedInUserIsWatcher;
+    }
+
+    public void setLoggedInUserIsWatcher(boolean loggedInUserIsWatcher) {
+        this.loggedInUserIsWatcher = loggedInUserIsWatcher;
     }
 }

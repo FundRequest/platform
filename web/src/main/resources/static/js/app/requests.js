@@ -1,7 +1,8 @@
 define(function (require) {
   var $ = require('jquery'),
     $addRequestModal = $('#addRequestModal'),
-    $showAddRequestModal = $('#showAddRequestModal');
+    $showAddRequestModal = $('#showAddRequestModal'),
+    $requestsTable = $('#requests-table');
 
   $(function () {
 
@@ -28,5 +29,20 @@ define(function (require) {
           }
         })
     });
+
+    $requestsTable.on('click', '.watch-link', function (e) {
+      e.preventDefault();
+    });
+
+    $requestsTable.on('click', '.watch', function (e) {
+      var el = $(this);
+      var watching = el.hasClass('watch-true');
+      $.post('/requests/' + el.data('request_id') + '/watchers', {watch: !watching})
+        .done(function () {
+          el.removeClass('watch-' + watching);
+          el.addClass('watch-' + !watching);
+        });
+    });
+
   });
 });

@@ -29,9 +29,10 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap-tagsinput.css}"/>
     <!-- =============== APP STYLES ===============-->
     <link rel="stylesheet" th:href="@{/css/angle.css}">
+    <link rel="stylesheet" th:href="@{/css/application.css}">
 </head>
 
-<body>
+<body th:id="${pageId}">
 
 <div layout:fragment="modals">
 
@@ -313,7 +314,7 @@
 
         requirejs(['angle']);
         requirejs(['app/common/auto-datatables']);
-        var pageModule = [[${jsModule}]];
+        var pageModule = [[${pageId}]];
         if (pageModule) {
             requirejs(['app/' + pageModule]);
         }

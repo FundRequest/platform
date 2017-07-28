@@ -2,8 +2,8 @@ package io.fundrequest.restapi.view;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.core.request.view.RequestOverviewDtoMother;
@@ -23,14 +23,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.Principal;
 import java.util.Collections;
-
-import static org.mockito.Mockito.mock;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 
 public class RequestControllerTest {
 
@@ -52,9 +44,9 @@ public class RequestControllerTest {
         principal = Mockito.mock(Principal.class);
         Mockito.when(principal.getName()).thenReturn("davyvanroy@fundrequest.io");
         mockMvc = MockMvcBuilders.standaloneSetup(new RequestController(requestService))
-                .setMessageConverters(converter)
-                .apply(MockMvcRestDocumentation.documentationConfiguration(this.restDocumentation))
-                .build();
+                                 .setMessageConverters(converter)
+                                 .apply(MockMvcRestDocumentation.documentationConfiguration(this.restDocumentation))
+                                 .build();
     }
 
     @Test
@@ -63,8 +55,8 @@ public class RequestControllerTest {
         Mockito.when(requestService.findAll()).thenReturn(Collections.singletonList(RequestOverviewDtoMother.freeCodeCampNoUserStories()));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/requests").accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcRestDocumentation.document("requests-list-example"));
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andDo(MockMvcRestDocumentation.document("requests-list-example"));
     }
 
     @Test
@@ -73,8 +65,8 @@ public class RequestControllerTest {
         Mockito.when(requestService.findRequest(request.getId())).thenReturn(request);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/requests/{id}", request.getId()).accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcRestDocumentation.document("request-get-example"));
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andDo(MockMvcRestDocumentation.document("request-get-example"));
     }
 
     @Test
@@ -82,8 +74,8 @@ public class RequestControllerTest {
         Mockito.when(requestService.findRequestsForUser(principal)).thenReturn(Collections.singletonList(RequestOverviewDtoMother.freeCodeCampNoUserStories()));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/user/requests").accept(MediaType.APPLICATION_JSON).principal(principal))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcRestDocumentation.document("requests-user-list-example"));
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andDo(MockMvcRestDocumentation.document("requests-user-list-example"));
     }
 
     @Test
@@ -93,19 +85,19 @@ public class RequestControllerTest {
         command.setTechnologies(Collections.singleton("java"));
 
         Mockito.when(requestService.createRequest(principal, command))
-                .thenReturn(RequestOverviewDtoMother.freeCodeCampNoUserStories());
+               .thenReturn(RequestOverviewDtoMother.freeCodeCampNoUserStories());
 
         this.mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/requests").contentType(MediaType.APPLICATION_JSON).content(
                         this.objectMapper.writeValueAsString(command))
-                        .principal(principal))
-                .andExpect(
-                        MockMvcResultMatchers.status().isCreated())
-                .andDo(MockMvcRestDocumentation.document("requests-create-example",
-                        PayloadDocumentation.requestFields(
-                                PayloadDocumentation.fieldWithPath("issueLink").description("The Github link to the issue"),
-                                PayloadDocumentation.fieldWithPath("technologies").description("An array of technologies")
-                        )));
+                                                .principal(principal))
+                    .andExpect(
+                            MockMvcResultMatchers.status().isCreated())
+                    .andDo(MockMvcRestDocumentation.document("requests-create-example",
+                                                             PayloadDocumentation.requestFields(
+                                                                     PayloadDocumentation.fieldWithPath("issueLink").description("The Github link to the issue"),
+                                                                     PayloadDocumentation.fieldWithPath("technologies").description("An array of technologies")
+                                                                                               )));
     }
 
     @Test
@@ -113,10 +105,10 @@ public class RequestControllerTest {
 
         this.mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
-                        .principal(principal))
-                .andExpect(
-                        MockMvcResultMatchers.status().isCreated())
-                .andDo(MockMvcRestDocumentation.document("requests-add-watcher-example"));
+                                                .principal(principal))
+                    .andExpect(
+                            MockMvcResultMatchers.status().isCreated())
+                    .andDo(MockMvcRestDocumentation.document("requests-add-watcher-example"));
     }
 
     @Test
@@ -124,10 +116,10 @@ public class RequestControllerTest {
 
         this.mockMvc.perform(
                 RestDocumentationRequestBuilders.delete("/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
-                        .principal(principal))
-                .andExpect(
-                        MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcRestDocumentation.document("requests-remove-watcher-example"));
+                                                .principal(principal))
+                    .andExpect(
+                            MockMvcResultMatchers.status().isOk())
+                    .andDo(MockMvcRestDocumentation.document("requests-remove-watcher-example"));
     }
 
     @Test
@@ -136,9 +128,9 @@ public class RequestControllerTest {
         this.mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/requests").contentType(MediaType.APPLICATION_JSON).content(
                         this.objectMapper.writeValueAsString(Collections.emptyMap()))
-                        .principal(principal))
-                .andExpect(
-                        MockMvcResultMatchers.status().isBadRequest())
-                .andDo(MockMvcRestDocumentation.document("requests-create-error-example"));
+                                                .principal(principal))
+                    .andExpect(
+                            MockMvcResultMatchers.status().isBadRequest())
+                    .andDo(MockMvcRestDocumentation.document("requests-create-error-example"));
     }
 }
