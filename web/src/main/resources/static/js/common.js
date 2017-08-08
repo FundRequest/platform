@@ -1,7 +1,7 @@
 requirejs.config({
-  "baseUrl": "js/lib",
+  "baseUrl": "/js/lib",
   "paths": {
-    "app": "../app",
+    "app": "/js/app",
     'jquery': '//code.jquery.com/jquery-3.2.1.min',
     'jquery-storage-api': '//cdnjs.cloudflare.com/ajax/libs/jquery-storage-api/1.9.4/jquery.storageapi.min',
     'jquery-easing': '//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min',
