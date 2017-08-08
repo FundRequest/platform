@@ -4,7 +4,6 @@ import io.fundrequest.core.infrastructure.repository.AbstractController;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.core.request.view.RequestOverviewDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,12 +26,12 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests")
-    public List<RequestOverviewDto> findAll() {
+    public List<RequestDto> findAll() {
         return requestService.findAll();
     }
 
     @GetMapping("/user/requests")
-    public List<RequestOverviewDto> findRequestsForUser(Principal principal) {
+    public List<RequestDto> findRequestsForUser(Principal principal) {
         return requestService.findRequestsForUser(principal);
     }
 
@@ -59,7 +58,7 @@ public class RequestController extends AbstractController {
             Principal principal,
             @RequestBody @Valid CreateRequestCommand createRequestCommand) {
 
-        RequestOverviewDto result = requestService.createRequest(
+        RequestDto result = requestService.createRequest(
                 principal,
                 createRequestCommand
         );

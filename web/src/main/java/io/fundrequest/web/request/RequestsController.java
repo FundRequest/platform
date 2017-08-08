@@ -40,6 +40,12 @@ public class RequestsController {
         return "fragments/addRequestFragment";
     }
 
+    @GetMapping("/requests/{id}")
+    public String getOne(Model model, @PathVariable("id") Long id) {
+        model.addAttribute("request", requestService.findRequest(id));
+        return "request";
+    }
+
     @PostMapping("/requests")
     public ModelAndView addRequest(@Valid CreateRequestCommand createRequestCommand, BindingResult bindingResult, @AuthenticationPrincipal WebUser webUser) {
         if (bindingResult.hasErrors()) {
