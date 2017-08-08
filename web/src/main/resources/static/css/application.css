@@ -1,13 +1,22 @@
 /*TODO : use SASS*/
-#requests .watch-true {
+
+.watch-link .fa-star {
     color: #ff902b;
 }
 
-#requests .watch-true:before {
-    content: "\f005"
+/* TODO, extend existing label classes */
+.label-OPEN,
+.label-RESOLVED {
+    background-color: #27c24c;
 }
 
-#requests .watch-false:before {
-    content: "\f006"
+
+.label-UNRESOLVED,
+.label-IN_PROGRESS {
+    background-color: #ff902b;
 }
 
+.label-CLOSED,
+.label-CANCELLED {
+    background-color: #f05050;
+}
