@@ -3,86 +3,86 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorator="layout/layout" th:with="title='Requests', activeMenu='requests', pageId='requests'">
 <head>
-  <title th:text="${title}">Requests</title>
+    <title th:text="${title}">Requests</title>
 </head>
 <body>
 
 <div layout:fragment="modals">
-  <div class="modal fade" id="addRequestModal" role="dialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal fade" id="addRequestModal" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
 
-      <!-- Modal content-->
-      <div class="modal-content" id="addRequestModalContent">
-        <div class="modal-header">
+            <!-- Modal content-->
+            <div class="modal-content" id="addRequestModalContent">
+                <div class="modal-header">
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-        </div>
-        <div class="modal-footer">
-        </div>
-      </div>
     </div>
-  </div>
-
-</div>
-</div>
 </div>
 
 <div layout:fragment="action-buttons">
-  <button type="button" class="btn btn-info" data-toggle="modal" id="showAddRequestModal">Add request</button>
+    <button type="button" class="btn btn-info" data-toggle="modal" id="showAddRequestModal">Add request</button>
 </div>
 
 <section layout:fragment="content">
-  <div class="row">
-    <div class="col-lg-12">
-      <!-- START panel-->
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <!-- START table-responsive-->
-          <div class="table-responsive">
-            <table id="requests-table"
-                   class="auto-datatable table table-striped table-bordered table-hover">
-              <thead>
-              <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Source</th>
-                <th>Type</th>
-                <th>Technologies</th>
-                <th></th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr th:each="r : ${requests}">
-                <td th:text="${r.id}">1</td>
-                <td th:text="${r.issueInformation.title}">Title</td>
-                <td th:text="${r.status}">2.41</td>
-                <td><a target="_blank"
-                       th:href="${r.issueInformation.link}" href="github.com"
-                       th:text="${r.issueInformation.source}">Github</a></td>
-                <td th:text="${r.type}">Issue</td>
-                <td>
-                  <div th:each="t : ${r.technologies}" th:remove="tag">
-                    <span th:text="${t}" class="label label-primary">100</span>
-                  </div>
-
-                </td>
-                <td>
-                  <a href="#" class="icon watch-link">
-                    <em th:attr="data-request_id=${r.id}" class="watch fa fa-lg text-muted" th:classappend="${('watch-'+r.loggedInUserIsWatcher)}"></em>
-                  </a>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <!-- END table-responsive-->
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- START panel-->
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <!-- START table-responsive-->
+                    <div class="table-responsive">
+                        <table id="requests-table"
+                               class="auto-datatable table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Source</th>
+                                <th>Type</th>
+                                <th>Technologies</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="r : ${requests}">
+                                <td><a th:href="@{/requests/{id}(id=${r.id})}" href="/requests/1"
+                                       th:text="${r.id}">1</a></td>
+                                <td th:text="${r.issueInformation.title}">Title</td>
+                                <td th:text="${r.status}">2.41</td>
+                                <td>
+                                    <a target="_blank" th:href="${r.issueInformation.link}" href="github.com">
+                                        <span th:text="${r.issueInformation.source}">Github</span>
+                                        <i class="fa fa-external-link"></i>
+                                    </a>
+                                </td>
+                                <td th:text="${r.type}">Issue</td>
+                                <td>
+                                    <div th:each="t : ${r.technologies}" th:remove="tag">
+                                        <span th:text="${t}" class="label label-primary">100</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="#" class="watch-link" th:attr="data-request_id=${r.id}">
+                                        <i class="fa fa-lg" th:classappend="${('fa-star'+(r.loggedInUserIsWatcher ? '':'-o'))}"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- END table-responsive-->
+                </div>
+            </div>
+            <!-- END panel-->
         </div>
-      </div>
-      <!-- END panel-->
     </div>
-  </div>
-  <!-- Modal -->
+    <!-- Modal -->
 </section>
 
 </body>

@@ -11,13 +11,15 @@ public class RequestDto {
 
     private RequestStatus status;
 
-    private IssueInformationDto issueInformation;
-
     private RequestType type;
 
-    private Set<String> watchers = new HashSet<>();
+    private IssueInformationDto issueInformation;
 
     private Set<String> technologies = new HashSet<>();
+
+    private boolean loggedInUserIsWatcher;
+
+    private Set<String> watchers = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -51,19 +53,27 @@ public class RequestDto {
         this.type = type;
     }
 
-    public Set<String> getWatchers() {
-        return watchers;
-    }
-
-    public void setWatchers(Set<String> watchers) {
-        this.watchers = watchers;
-    }
-
     public Set<String> getTechnologies() {
         return technologies;
     }
 
     public void setTechnologies(Set<String> technologies) {
         this.technologies = technologies;
+    }
+
+    public boolean isLoggedInUserIsWatcher() {
+        return loggedInUserIsWatcher;
+    }
+
+    public void setLoggedInUserIsWatcher(boolean loggedInUserIsWatcher) {
+        this.loggedInUserIsWatcher = loggedInUserIsWatcher;
+    }
+
+    public Set<String> getWatchers() {
+        return watchers;
+    }
+
+    public void setWatchers(Set<String> watchers) {
+        this.watchers = watchers;
     }
 }
