@@ -7,8 +7,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="Bootstrap Admin App + jQuery">
-    <meta name="keywords" content="app, responsive, jquery, bootstrap, dashboard, admin">
+    <meta name="description" content="FundRequest">
+    <meta name="keywords" content="FundRequest">
     <title th:text="${title}">Layout template</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico" th:href="@{/images/favicon.ico}" />
 
@@ -307,15 +307,18 @@
     //logic for this page. Do the requirejs calls here instead of
     //a separate file so after a build there are only 2 HTTP
     //requests instead of three.
-    requirejs(['./js/common'], function (common) {
+    requirejs(['/js/common.js'], function (common) {
         //js/common sets the baseUrl to be js/ so
         //can just ask for 'app/main1' here instead
         //of 'js/app/main1'
 
         requirejs(['angle']);
+        requirejs(['app/common/all-pages']);
         requirejs(['app/common/auto-datatables']);
+
         var pageModule = [[${pageId}]];
         if (pageModule) {
+            // TODO: Handling error if no js available for page
             requirejs(['app/' + pageModule]);
         }
     });
