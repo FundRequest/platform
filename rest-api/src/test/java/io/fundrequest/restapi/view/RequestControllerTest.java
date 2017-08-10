@@ -6,7 +6,6 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
-import io.fundrequest.core.request.view.RequestOverviewDtoMother;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -52,7 +51,7 @@ public class RequestControllerTest {
     @Test
     public void findAll() throws Exception {
 
-        Mockito.when(requestService.findAll()).thenReturn(Collections.singletonList(RequestOverviewDtoMother.freeCodeCampNoUserStories()));
+        Mockito.when(requestService.findAll()).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/requests").accept(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk())
@@ -71,7 +70,7 @@ public class RequestControllerTest {
 
     @Test
     public void findRequestsForUser() throws Exception {
-        Mockito.when(requestService.findRequestsForUser(principal)).thenReturn(Collections.singletonList(RequestOverviewDtoMother.freeCodeCampNoUserStories()));
+        Mockito.when(requestService.findRequestsForUser(principal)).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/user/requests").accept(MediaType.APPLICATION_JSON).principal(principal))
                     .andExpect(MockMvcResultMatchers.status().isOk())
@@ -85,7 +84,7 @@ public class RequestControllerTest {
         command.setTechnologies(Collections.singleton("java"));
 
         Mockito.when(requestService.createRequest(principal, command))
-               .thenReturn(RequestOverviewDtoMother.freeCodeCampNoUserStories());
+               .thenReturn(RequestDtoMother.freeCodeCampNoUserStories());
 
         this.mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/requests").contentType(MediaType.APPLICATION_JSON).content(
