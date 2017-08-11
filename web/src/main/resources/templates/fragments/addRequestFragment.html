@@ -5,7 +5,7 @@
   <button type="button" class="close" data-dismiss="modal">&times;</button>
   <h4 class="modal-title">Add request</h4>
 </div>
-<form role="form" action="#" th:action="@{/requests}" th:object="${createRequestCommand}" method="post" id="addRequestForm">
+<form role="form" action="#" th:action="@{/requests}" th:object="${createRequestCommand}" method="post">
   <div class="modal-body">
     <div class="form-group">
       <label for="url" class="control-label">URL *</label>
@@ -22,7 +22,7 @@
   <div class="modal-footer">
     <div class="btn-group" role="group" aria-label="...">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      <button id="btnAddRequest" type="submit" class="btn btn-primary">Add</button>
+      <button type="submit" class="btn btn-primary">Add</button>
     </div>
   </div>
 </form>
