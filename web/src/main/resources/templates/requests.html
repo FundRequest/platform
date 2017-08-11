@@ -8,11 +8,10 @@
 <body>
 
 <div layout:fragment="modals">
-    <div class="modal fade" id="addRequestModal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal fade" data-role="modal-template" role="dialog" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
-
             <!-- Modal content-->
-            <div class="modal-content" id="addRequestModalContent">
+            <div class="modal-content">
                 <div class="modal-header">
                 </div>
                 <div class="modal-body">
@@ -25,7 +24,7 @@
 </div>
 
 <div layout:fragment="action-buttons">
-    <button type="button" class="btn btn-info" data-toggle="modal" id="showAddRequestModal">Add request</button>
+    <button type="button" class="btn btn-info" data-toggle="modal" data-modal-path="/requests/add">Add request</button>
 </div>
 
 <section layout:fragment="content">
