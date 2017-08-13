@@ -23,6 +23,10 @@ public class Activity {
         return description;
     }
 
+    public String getDateTimeAsString() {
+        return dateTime.toString();
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
