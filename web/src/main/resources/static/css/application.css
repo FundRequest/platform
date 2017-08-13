@@ -1,5 +1,13 @@
 /*TODO : use SASS*/
 
+[v-cloak] {
+    display: none !important;
+}
+
+.slimScrollDiv .list-group {
+    margin-bottom: 0;
+}
+
 .watch-link .fa-star {
     color: #ff902b;
 }

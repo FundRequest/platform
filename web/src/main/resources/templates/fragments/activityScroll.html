@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<div th:fragment="panel">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="pull-right label label-danger">5</div>
+            <div class="pull-right label label-success">12</div>
+            <div class="panel-title">Team messages</div>
+        </div>
+
+        <div data-scrollable="180px">
+            <div data-stream="activities" class="list-group">
+                <a href="#" class="list-group-item" v-cloak v-for="message in reverseMessages">
+                    <div class="media-box">
+                        <div class="pull-left">
+                            <img v-bind:src="message.user" v-bind:alt="message.user"
+                                 class="media-box-object img-circle thumb32">
+                        </div>
+                        <div class="media-box-body clearfix">
+                            <small class="pull-right">
+                                <timeago :since="message.dateTimeAsString" :auto-update="60"></timeago>
+                            </small>
+
+                            <strong class="media-box-heading text-primary">
+                                <span class="circle circle-success circle-lg text-left"></span>
+                                <span>{{message.user}}</span>
+                            </strong>
+                            <p class="mb-sm">
+                                <small v-html="message.title">Message</small>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--div class="panel-footer clearfix">
+            <div class="input-group">
+                <input type="text" placeholder="Search message .." class="form-control input-sm">
+                <span class="input-group-btn">
+                <button type="submit" class="btn btn-default btn-sm">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+            </div>
+        </div-->
+    </div>
+</div>

@@ -1,28 +1,34 @@
 define(function(require) {
     'use strict';
 
-    var $ = require('jquery'),
-        $document = $(document),
-        datatables = require('datatables.net-bs');
+    // initilize components
+    requirejs([
+        'components/streams',
+        'components/scrollables',
+        'components/auto-datatables'
+    ]);
 
-    console.log('should log on all pages');
+    var $ = require('jquery');
+
+    var $document = $(document);
 
     $document.on('click', '.watch-link', function(e) {
         e.preventDefault();
 
         var $el = $(this);
         var $icon = $('.fa', this);
-        var watching = $icon.hasClass('fa-star');
-        $.post('/requests/' + $el.data('request_id') + '/watchers', {watch: !watching})
+        var isWatching = $icon.hasClass('fa-star');
+        $.post('/requests/' + $el.data('request_id') + '/watchers', {watch: !isWatching})
             .done(function() {
                 $icon
                     .removeClass('fa-star')
                     .removeClass('fa-star-o')
-                    .addClass('fa-star' + (watching ? '-o' : ''));
+                    .addClass('fa-star' + (isWatching ? '-o' : ''));
             });
     });
 
     // submit form and reload page after success
+    // TODO make specific for forms, so there is no need to pass the form as data
     $document.on('fnd.form.submit', function(event, data) {
         event.preventDefault();
 
@@ -81,5 +87,4 @@ define(function(require) {
             console.log(error);
         });
     });
-})
-;
+});
