@@ -2,9 +2,9 @@ package io.fundrequest.web.request;
 
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
-import io.fundrequest.web.security.WebUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +29,7 @@ public class RequestsController {
     }
 
     @GetMapping("/requests")
-    public String showRequests(String name, @AuthenticationPrincipal WebUser webUser, Model model) {
+    public String showRequests(String name, @AuthenticationPrincipal Authentication authentication, Model model) {
         model.addAttribute("requests", requestService.findAll());
         return "requests";
     }
@@ -47,7 +47,7 @@ public class RequestsController {
     }
 
     @PostMapping("/requests")
-    public ModelAndView addRequest(@Valid CreateRequestCommand createRequestCommand, BindingResult bindingResult, @AuthenticationPrincipal WebUser webUser) {
+    public ModelAndView addRequest(@Valid CreateRequestCommand createRequestCommand, BindingResult bindingResult, @AuthenticationPrincipal Authentication webUser) {
         if (bindingResult.hasErrors()) {
             ModelAndView mav = new ModelAndView("fragments/addRequestFragment");
             mav.addObject("createRequestCommand", createRequestCommand);
@@ -63,7 +63,7 @@ public class RequestsController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void updateWatchingStatus(@PathVariable("id") Long id,
                                      @RequestParam(value = "watch") Boolean watch,
-                                     @AuthenticationPrincipal WebUser webUser) {
+                                     @AuthenticationPrincipal Authentication webUser) {
         if (watch) {
             requestService.addWatcherToRequest(webUser, id);
         } else {
