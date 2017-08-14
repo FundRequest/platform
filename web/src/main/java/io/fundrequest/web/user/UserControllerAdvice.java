@@ -1,6 +1,7 @@
 package io.fundrequest.web.user;
 
-import io.fundrequest.web.security.WebUser;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.keycloak.representations.AccessToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -9,9 +10,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class UserControllerAdvice {
 
     @ModelAttribute("user")
-    public WebUser getUser() {
-        if (SecurityContextHolder.getContext().getAuthentication() instanceof WebUser) {
-            return (WebUser) SecurityContextHolder.getContext().getAuthentication();
+    public AccessToken getUser() {
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof KeycloakAuthenticationToken) {
+            return ((KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getAccount().getKeycloakSecurityContext().getToken();
         }
         return null;
     }

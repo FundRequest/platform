@@ -42,6 +42,7 @@
             <version>${thymeleaf-extras-springsecurity4.version}</version>
         </dependency>
 
+
     </dependencies>
 
     <properties>
