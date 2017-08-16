@@ -42,9 +42,9 @@ public class ActivityListener {
 
     @EventListener
     public void onLogin(AuthenticationSuccessEvent event) {
-//        ((KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getAccount().getKeycloakSecurityContext().getToken();
-//        onActivity(new ActivityDto(userService.getUser(event.getAuthentication().getName()),
-//                "has logged in","has logged in", LocalDateTime.now()));
+        ((KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getAccount().getKeycloakSecurityContext().getToken();
+        onActivity(new ActivityDto(userService.getUser(event.getAuthentication().getName()),
+                "has logged in","has logged in", LocalDateTime.now()));
     }
 
 }
