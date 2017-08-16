@@ -5,9 +5,7 @@
 <div th:fragment="panel">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <div class="pull-right label label-danger">5</div>
-            <div class="pull-right label label-success">12</div>
-            <div class="panel-title">Team messages</div>
+            <div class="panel-title">Activity</div>
         </div>
 
         <div data-scrollable="180px">
@@ -15,7 +13,7 @@
                 <a href="#" class="list-group-item" v-cloak v-for="message in reverseMessages">
                     <div class="media-box">
                         <div class="pull-left">
-                            <img v-bind:src="message.user" v-bind:alt="message.user"
+                            <img v-bind:src="message.user.picture" v-bind:alt="message.user.picture"
                                  class="media-box-object img-circle thumb32">
                         </div>
                         <div class="media-box-body clearfix">
@@ -25,7 +23,7 @@
 
                             <strong class="media-box-heading text-primary">
                                 <span class="circle circle-success circle-lg text-left"></span>
-                                <span>{{message.user}}</span>
+                                <span>{{message.user.name}}</span>
                             </strong>
                             <p class="mb-sm">
                                 <small v-html="message.title">Message</small>

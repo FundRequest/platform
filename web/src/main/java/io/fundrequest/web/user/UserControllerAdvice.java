@@ -12,7 +12,9 @@ public class UserControllerAdvice {
     @ModelAttribute("user")
     public AccessToken getUser() {
         if (SecurityContextHolder.getContext().getAuthentication() instanceof KeycloakAuthenticationToken) {
-            return ((KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getAccount().getKeycloakSecurityContext().getToken();
+            AccessToken token = ((KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getAccount().getKeycloakSecurityContext().getToken();
+            token.getOtherClaims().get("microsoft_id");
+            return token;
         }
         return null;
     }
