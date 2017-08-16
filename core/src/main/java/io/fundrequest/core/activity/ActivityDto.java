@@ -1,14 +1,19 @@
 package io.fundrequest.core.activity;
 
+import io.fundrequest.core.user.UserDto;
+
 import java.time.LocalDateTime;
 
-public class Activity {
-    private String user;
+public class ActivityDto {
+    private UserDto user;
     private String title;
     private String description;
     private LocalDateTime dateTime;
 
-    public Activity(String user, String title, String description, LocalDateTime dateTime) {
+    ActivityDto() {
+    }
+
+    public ActivityDto(UserDto user, String title, String description, LocalDateTime dateTime) {
         this.user = user;
         this.title = title;
         this.description = description;
@@ -31,7 +36,7 @@ public class Activity {
         return dateTime;
     }
 
-    public String getUser() {
+    public UserDto getUser() {
         return user;
     }
 }
