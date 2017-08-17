@@ -8,16 +8,19 @@
     <title th:text="${title}">Home</title>
 </head>
 <body>
+
+<div layout:fragment="action-buttons">
+    <a class="btn btn-info" role="button" href="/login" sec:authorize="isAnonymous()">Add request</a>
+    <button type="button" class="btn btn-info" data-toggle="modal" data-modal-path="/requests/add"
+            sec:authorize="!isAnonymous()">Add request
+    </button>
+</div>
+
 <section layout:fragment="content">
     <div class="row">
         <div class="col-xs-12 text-center">
             <h2 class="text-thin">Welcome</h2>
             <p>Welcome to fundrequest</p>
-        </div>
-    </div>
-    <div class="row" sec:authorize="!isAnonymous()">
-        <div class="col-xs-push-3 col-xs-6">
-            <div th:include="fragments/activityScroll::panel"></div>
         </div>
     </div>
     <div class="row" sec:authorize="isAnonymous()">
@@ -26,6 +29,11 @@
             <p>In order to use this platform you need to login. Registration is not necessary, simply login using your
                 google or github credentials</p>
             <a href="/login" class="btn btn-block btn-primary mt-lg" role="button">Login</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-push-3 col-xs-6">
+            <div th:include="fragments/activityScroll::panel"></div>
         </div>
     </div>
 </section>
