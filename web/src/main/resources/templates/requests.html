@@ -7,22 +7,6 @@
 </head>
 <body>
 
-<div layout:fragment="modals">
-    <div class="modal fade" data-role="modal-template" role="dialog" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                </div>
-                <div class="modal-body">
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div layout:fragment="action-buttons">
     <button type="button" class="btn btn-info" data-toggle="modal" data-modal-path="/requests/add">Add request</button>
 </div>
@@ -40,7 +24,6 @@
                                class="table table-striped table-bordered table-hover">
                             <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Title</th>
                                 <th>Status</th>
                                 <th>Source</th>
@@ -51,9 +34,11 @@
                             </thead>
                             <tbody>
                             <tr th:each="r : ${requests}">
-                                <td><a th:href="@{/requests/{id}(id=${r.id})}" href="/requests/1"
-                                       th:text="${r.id}">1</a></td>
-                                <td th:text="${r.issueInformation.title}">Title</td>
+                                <td>
+                                    <a th:href="@{/requests/{id}(id=${r.id})}" href="/requests/1">
+                                        <span th:text="${r.issueInformation.title}">Title</span>
+                                    </a>
+                                </td>
                                 <td th:text="${r.status}">2.41</td>
                                 <td>
                                     <a target="_blank" th:href="${r.issueInformation.link}" href="github.com">
@@ -69,7 +54,8 @@
                                 </td>
                                 <td>
                                     <a href="#" class="watch-link" th:attr="data-request_id=${r.id}">
-                                        <i class="fa fa-lg" th:classappend="${('fa-star'+(r.loggedInUserIsWatcher ? '':'-o'))}"></i>
+                                        <i class="fa fa-lg"
+                                           th:classappend="${('fa-star'+(r.loggedInUserIsWatcher ? '':'-o'))}"></i>
                                     </a>
                                 </td>
                             </tr>
