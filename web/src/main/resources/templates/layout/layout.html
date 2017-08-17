@@ -35,7 +35,19 @@
 <body th:id="${pageId}">
 
 <div layout:fragment="modals">
-
+    <div class="modal fade" data-role="modal-template" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="wrapper">
@@ -57,36 +69,29 @@
             <!-- END navbar header-->
             <!-- START Nav wrapper-->
             <div class="nav-wrapper">
-                <!-- START Left navbar-->
+                <!-- START Left navbar
                 <ul class="nav navbar-nav">
                     <li>
-                        <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
                         <a href="#" data-trigger-resize="" data-toggle-state="aside-collapsed" class="hidden-xs">
                             <em class="fa fa-navicon"></em>
                         </a>
-                        <!-- Button to show/hide the sidebar on mobile. Visible on mobile only.-->
                         <a href="#" data-toggle-state="aside-toggled" data-no-persist="true"
                            class="visible-xs sidebar-toggle">
                             <em class="fa fa-navicon"></em>
                         </a>
                     </li>
-                    <!-- START User avatar toggle-->
                     <li sec:authorize="isAuthenticated()">
-                        <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
                         <a id="user-block-toggle" href="#user-block" data-toggle="collapse">
                             <em class="icon-user"></em>
                         </a>
                     </li>
-                    <!-- END User avatar toggle-->
-                    <!-- START lock screen-->
                     <li sec:authorize="isAuthenticated()">
                         <a href="lock.html" title="Lock screen">
                             <em class="icon-lock"></em>
                         </a>
                     </li>
-                    <!-- END lock screen-->
                 </ul>
-                <!-- END Left navbar-->
+                END Left navbar-->
                 <!-- START Right Navbar-->
                 <ul class="nav navbar-nav navbar-right" sec:authorize="isAuthenticated()">
                     <!-- Search icon-->
@@ -95,12 +100,11 @@
                             <em class="icon-magnifier"></em>
                         </a>
                     </li>
-                    <!-- Fullscreen (only desktops)-->
-                    <li class="visible-lg">
+                    <!--li class="visible-lg">
                         <a href="#" data-toggle-fullscreen="">
                             <em class="fa fa-expand"></em>
                         </a>
-                    </li>
+                    </li-->
                     <!-- START Alert menu-->
                     <li class="dropdown dropdown-list">
                         <a href="#" data-toggle="dropdown">
