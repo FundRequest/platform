@@ -107,6 +107,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("favicon.ico").permitAll()
+                .antMatchers("/fr-ws/**").permitAll()
                 .antMatchers("/css/**", "/images/**", "/js/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/**").authenticated()
