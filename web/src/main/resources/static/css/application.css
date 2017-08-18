@@ -8,6 +8,12 @@
     margin-bottom: 0;
 }
 
+@media only screen and (min-width: 1025px) {
+    .sidebar:not(.show-scrollbar) {
+        margin-right: 0;
+    }
+}
+
 .watch-link .fa-star {
     color: #ff902b;
 }
