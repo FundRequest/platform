@@ -40,6 +40,11 @@ public class RequestController extends AbstractController {
         return requestService.findRequest(id);
     }
 
+    @GetMapping({ "/requests/{id}/watchers","/requests/{id}/watchlink" })
+    public RequestDto findWatchers(@PathVariable("id") Long id) {
+        return requestService.findRequest(id);
+    }
+
     @PostMapping("/requests/{id}/watchers")
     public ResponseEntity<?> addWatcher(@PathVariable("id") Long requestId, Principal principal) {
         requestService.addWatcherToRequest(principal, requestId);

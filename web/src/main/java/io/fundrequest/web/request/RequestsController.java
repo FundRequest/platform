@@ -46,6 +46,18 @@ public class RequestsController {
         return "request";
     }
 
+    @GetMapping("/requests/{id}/watchlink")
+    public String getWatchLink(Model model, @PathVariable("id") Long id) {
+        getOne(model, id);
+        return "fragments/watchLink :: watchLink";
+    }
+
+    @GetMapping("/requests/{id}/watchers")
+    public String getWatchers(Model model, @PathVariable("id") Long id) {
+        getOne(model, id);
+        return "request :: requestWatchers";
+    }
+
     @PostMapping("/requests")
     public ModelAndView addRequest(@Valid CreateRequestCommand createRequestCommand, BindingResult bindingResult, @AuthenticationPrincipal Authentication webUser) {
         if (bindingResult.hasErrors()) {

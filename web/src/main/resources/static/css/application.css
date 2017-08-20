@@ -18,6 +18,10 @@
     color: #ff902b;
 }
 
+.watch-link:hover {
+    text-decoration: none;
+}
+
 /* TODO, extend existing label classes */
 .label-OPEN,
 .label-RESOLVED {
