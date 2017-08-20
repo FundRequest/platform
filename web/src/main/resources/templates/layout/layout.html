@@ -32,7 +32,7 @@
     <link rel="stylesheet" th:href="@{/css/application.css}">
 </head>
 
-<body th:id="${pageId}">
+<body th:id="${pageId}" class="layout-fixed">
 
 <div layout:fragment="modals">
     <div class="modal fade" data-role="modal-template" role="dialog" data-backdrop="static" data-keyboard="false">
@@ -321,7 +321,7 @@
         </div>
     </section>
     <!-- Page footer-->
-    <footer>
+    <footer class="footer">
         <span>&copy; 2017 FundRequest. All rights reserved.</span>
     </footer>
 </div>
