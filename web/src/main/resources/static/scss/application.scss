@@ -1,4 +1,7 @@
-/*TODO : use SASS*/
+$grid-gutter-width: 15px;
+$zindex-navbar-fixed: 100;
+
+@import "spacing";
 
 [v-cloak] {
     display: none !important;
@@ -14,12 +17,14 @@
     }
 }
 
-.watch-link .fa-star {
-    color: #ff902b;
-}
+.watch-link {
+    .fa-star {
+        color: #ff902b;
+    }
 
-.watch-link:hover {
-    text-decoration: none;
+    &:hover {
+        text-decoration: none;
+    }
 }
 
 /* TODO, extend existing label classes */
@@ -27,7 +32,6 @@
 .label-RESOLVED {
     background-color: #27c24c;
 }
-
 
 .label-UNRESOLVED,
 .label-IN_PROGRESS {

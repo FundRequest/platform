@@ -67,6 +67,34 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>nl.geodienstencentrum.maven</groupId>
+                <artifactId>sass-maven-plugin</artifactId>
+                <version>2.25</version>
+                <configuration>
+                    <resources>
+                        <resource>
+                            <source>
+                                <directory>${basedir}/src/main/resources/static/scss</directory>
+                                <includes>
+                                    <include>**/*.scss</include>
+                                </includes>
+                            </source>
+                            <relativeOutputDirectory>..</relativeOutputDirectory>
+                            <destination>${project.build.directory}/classes/static/css</destination>
+                        </resource>
+                    </resources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>package</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>update-stylesheets</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
