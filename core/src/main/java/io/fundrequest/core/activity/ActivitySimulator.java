@@ -18,7 +18,7 @@ public class ActivitySimulator {
         this.eventPublisher = eventPublisher;
     }
 
-    @Scheduled(initialDelay = 0, fixedRate = 5500)
+    @Scheduled(initialDelay = 0, fixedRate = 500)
     @Transactional
     public void testActivity() {
         if(COUNTER.equals(Long.MAX_VALUE)) {

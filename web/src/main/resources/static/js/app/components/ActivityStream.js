@@ -12,7 +12,7 @@
  */
 
 define(
-    ['require', 'jquery', './CircularBuffer', 'sockjs', 'vuejs'],
+    ['require', 'jquery', './CircularBuffer', 'sockjs'],
     function(require, $, CircularBuffer, SockJS) {
         'use strict';
 

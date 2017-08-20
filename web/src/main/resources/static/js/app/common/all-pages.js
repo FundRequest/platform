@@ -4,6 +4,7 @@ define(function(require) {
     // initilize components
     requirejs([
         'components/streams',
+        'components/watchers',
         'components/scrollables',
         'components/auto-datatables'
     ]);
@@ -11,21 +12,6 @@ define(function(require) {
     var $ = require('jquery');
 
     var $document = $(document);
-
-    $document.on('click', '.watch-link', function(e) {
-        e.preventDefault();
-
-        var $el = $(this);
-        var $icon = $('.fa', this);
-        var isWatching = $icon.hasClass('fa-star');
-        $.post('/requests/' + $el.data('request_id') + '/watchers', {watch: !isWatching})
-            .done(function() {
-                $icon
-                    .removeClass('fa-star')
-                    .removeClass('fa-star-o')
-                    .addClass('fa-star' + (isWatching ? '-o' : ''));
-            });
-    });
 
     // submit form and reload page after success
     // TODO make specific for forms, so there is no need to pass the form as data
@@ -60,7 +46,8 @@ define(function(require) {
             $tagsinput.tagsinput('refresh');
         }
 
-        $('form', $content).on('submit', function() {
+        $('form', $content).on('submit', function(e) {
+            e.preventDefault();
             $document.trigger('fnd.form.submit', {
                 content: $content,
                 form: this

@@ -53,10 +53,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="#" class="watch-link" th:attr="data-request_id=${r.id}">
-                                        <i class="fa fa-lg"
-                                           th:classappend="${('fa-star'+(r.loggedInUserIsWatcher ? '':'-o'))}"></i>
-                                    </a>
+                                    <span th:replace="fragments/watchLink :: watchLink (${r})"></span>
                                 </td>
                             </tr>
                             </tbody>
