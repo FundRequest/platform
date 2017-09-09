@@ -35,5 +35,6 @@ public class GithubParserTest {
         assertThat(result.getLink()).isEqualTo(link);
         assertThat(result.getTitle()).isEqualTo(githubResult.getTitle());
         assertThat(result.getSource()).isEqualTo(RequestSource.GITHUB);
+        assertThat(result.getSource().getKey()).isEqualTo(RequestSource.GITHUB.getKey());
     }
 }
