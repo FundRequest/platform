@@ -47,6 +47,10 @@ public class IssueInformation {
         return title;
     }
 
+    public RequestSource getSource() {
+        return source;
+    }
+
     public void setLink(String link) {
         this.link = link;
     }
@@ -65,10 +69,6 @@ public class IssueInformation {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public RequestSource getSource() {
-        return source;
     }
 
     public void setSource(RequestSource source) {
