@@ -24,26 +24,30 @@
                                class="table table-striped table-bordered table-hover">
                             <thead>
                             <tr>
-                                <th>Title</th>
+                                <th></th>
+                                <th>Summary</th>
                                 <th>Status</th>
                                 <th>Source</th>
                                 <th>Type</th>
                                 <th>Technologies</th>
-                                <th></th>
+                                <th>Funded</th>
+                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="r : ${requests}">
                                 <td>
+                                    <span th:replace="fragments/watchLink :: watchLink (${r})"></span>
+                                </td>
+                                <td>
                                     <a th:href="@{/requests/{id}(id=${r.id})}" href="/requests/1">
-                                        <span th:text="${r.issueInformation.title}">Title</span>
+                                        <span th:text="${r.issueInformation.title}">Summary</span>
                                     </a>
                                 </td>
                                 <td th:text="${r.status}">2.41</td>
                                 <td>
                                     <a target="_blank" th:href="${r.issueInformation.link}" href="github.com">
-                                        <span th:text="${r.issueInformation.source}">Github</span>
-                                        <i class="fa fa-external-link"></i>
+                                        <i th:class="${'fa fa-2x fa-' + r.issueInformation.source.key}"></i>
                                     </a>
                                 </td>
                                 <td th:text="${r.type}">Issue</td>
@@ -53,7 +57,10 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span th:replace="fragments/watchLink :: watchLink (${r})"></span>
+                                    <span th:text="${'100 FND'}">100 FND</span>
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" th:text="Fund">Fund</a>
                                 </td>
                             </tr>
                             </tbody>
