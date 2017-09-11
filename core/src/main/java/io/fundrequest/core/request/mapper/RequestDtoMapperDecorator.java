@@ -4,6 +4,7 @@ import io.fundrequest.core.infrastructure.SecurityContextService;
 import io.fundrequest.core.request.RequestDtoMapper;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,9 @@ public abstract class RequestDtoMapperDecorator implements RequestDtoMapper {
     private RequestDtoMapper delegate;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private SecurityContextService securityContextService;
 
     public RequestDto map(Request request) {
@@ -23,6 +27,8 @@ public abstract class RequestDtoMapperDecorator implements RequestDtoMapper {
         if (result != null && currentAuth != null) {
             result.setLoggedInUserIsWatcher(request.getWatchers().contains(currentAuth.getName()));
         }
+        result.setUserService(userService);
+
         return result;
     }
 }

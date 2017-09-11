@@ -8,10 +8,10 @@
    data:request-id="${request.id}"
    data:request-watchers="${request.id}"
    data:fragment="${'/requests/'+request.id+'/watchlink'}"
-   th:attr="title=${#strings.listJoin(request.watchers, '<br/>')}">
+   th:attr="title=${#strings.listJoin(request.watchersNames, '<br/>')}">
     <i class="fa fa-lg"
        th:classappend="${'fa-star'+(request.loggedInUserIsWatcher ? '':'-o')}"></i>
     <small>
-        <strong th:text="${#lists.size(request.watchers)}">56</strong>
+        <strong th:text="${#lists.size(request.watchersNames)}">56</strong>
     </small>
 </a>

@@ -27,9 +27,10 @@ define(function() {
 
                 $.get(url, function(data) {
                     var $html = $(data);
-                    if ($this.data('toggle') === "tooltip") {
+                    var isTooltip = $this.data('toggle') === "tooltip";
+                    if (isTooltip) {
                         $this.tooltip('destroy');
-                        $html.tooltip();
+                        $html.tooltip({container: 'body'});
                     }
                     $this.replaceWith($html);
                 });
