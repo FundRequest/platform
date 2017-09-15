@@ -6,7 +6,8 @@ define(function(require) {
         'components/streams',
         'components/watchers',
         'components/scrollables',
-        'components/auto-datatables'
+        'components/auto-datatables',
+        'components/balance'
     ]);
 
     var $ = require('jquery');

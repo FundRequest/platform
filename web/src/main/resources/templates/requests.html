@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
-      layout:decorator="layout/layout" th:with="title='Requests', activeMenu='requests', pageId='requests'">
+      layout:decorator="layout/layout"
+      th:with="title='Requests', activeMenu='requests', jsModule='components/requests', pageId='requests'">
 <head>
     <title th:text="${title}">Requests</title>
 </head>
@@ -57,10 +58,10 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span th:text="${'100 FND'}">100 FND</span>
+                                    <span th:attr="data-issue-id=${r.id}" class="fnd-balance" th:text="${'- FND'}">100 FND</span>
                                 </td>
                                 <td>
-                                    <a class="btn btn-primary" th:text="Fund">Fund</a>
+                                    <a class="btn btn-primary fund-btn" th:attr="data-issue-id=${r.id}" th:text="Fund">Fund</a>
                                 </td>
                             </tr>
                             </tbody>
