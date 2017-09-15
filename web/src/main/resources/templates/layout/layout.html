@@ -220,6 +220,7 @@
                                 <div class="user-block-info">
                                     <span class="user-block-name"
                                           th:text="'Hello, ' + ${user.name}">Hello, Mike</span>
+                                    <span class="user-block-role" id="ether-balance"></span>
                                 </div>
                             </div>
                         </div>
@@ -341,10 +342,9 @@
         requirejs(['angle']);
         requirejs(['app/common/all-pages']);
 
-        var pageModule = [[${pageId}]];
-        if (pageModule) {
-            // TODO: Handling error if no js available for page
-            requirejs(['app/' + pageModule]);
+        var jsModule = [[${jsModule}]];
+        if (jsModule) {
+            requirejs(['app/' + jsModule]);
         }
     });
 </script>
