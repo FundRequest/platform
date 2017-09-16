@@ -1,4 +1,4 @@
-define(function(require) {
+define(['require', 'jquery', 'components/contract'], function(require, $, contract) {
     'use strict';
 
     // initilize components
@@ -9,8 +9,6 @@ define(function(require) {
         'components/auto-datatables',
         'components/balance'
     ]);
-
-    var $ = require('jquery');
 
     var $document = $(document);
 
@@ -73,6 +71,22 @@ define(function(require) {
 
         }).fail(function(xhr, textStatus, error) {
             console.log(error);
+        });
+    });
+
+    $document.on('click', '.btn[data-fund-request]', function(){
+        var requestId = $(this).data('fund-request');
+        var value = $('[data-fund-request-value="'+requestId+'"]').val();
+
+        contract.fundRequest(requestId, value, function(err, result) {
+            if (err) {
+                console.error(err);
+            } else {
+                $('[data-request-balance-message="' + requestId + '"]').html(' (transaction pending)');
+                $('[data-role="modal-template"]').modal('hide');
+                $document.trigger('fnd.balance.update');
+                console.log(result);
+            }
         });
     });
 });
