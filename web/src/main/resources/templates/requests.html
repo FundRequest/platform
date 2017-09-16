@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
+      xmlns:th="http://www.thymeleaf.org" xmlns:data="http://www.w3.org/1999/xhtml"
       layout:decorator="layout/layout"
       th:with="title='Requests', activeMenu='requests', jsModule='components/requests', pageId='requests'">
 <head>
@@ -58,10 +58,10 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span th:attr="data-issue-id=${r.id}" class="fnd-balance" th:text="${'- FND'}">100 FND</span>
+                                    <span data:request-balance="${r.id}" th:text="${'-'}">100</span> <span>FND</span> <span data:request-balance-message="${r.id}"></span>
                                 </td>
                                 <td>
-                                    <a class="btn btn-primary fund-btn" th:attr="data-issue-id=${r.id}" th:text="Fund">Fund</a>
+                                    <a class="btn btn-primary" data-toggle="modal" data:modal-path="${'/requests/fund/' + r.id}" th:text="Fund">Fund</a>
                                 </td>
                             </tr>
                             </tbody>

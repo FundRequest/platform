@@ -40,6 +40,12 @@ public class RequestsController {
         return "fragments/addRequestFragment";
     }
 
+    @GetMapping("/requests/fund/{id}")
+    public String showFundRequestFragment(Model model, @PathVariable("id") Long id) {
+        model.addAttribute("request", requestService.findRequest(id));
+        return "fragments/fundRequestFragment";
+    }
+
     @GetMapping("/requests/{id}")
     public String getOne(Model model, @PathVariable("id") Long id) {
         model.addAttribute("request", requestService.findRequest(id));

@@ -220,7 +220,9 @@
                                 <div class="user-block-info">
                                     <span class="user-block-name"
                                           th:text="'Hello, ' + ${user.name}">Hello, Mike</span>
-                                    <span class="user-block-role" id="ether-balance"></span>
+                                    <span class="user-block-role">
+                                        <span>Balance: </span><span data-user-balance>-</span><span> FND</span>
+                                    </span>
                                 </div>
                             </div>
                         </div>

@@ -1,11 +1,10 @@
 define(['require', 'jquery', 'components/contract'], function (require, $, contract) {
   $(function () {
     if (contract.userIsUsingDappBrowser()) {
-      var $issueBalance = $('#issue-balance');
-      contract.getIssueBalance($issueBalance.data('request-id'), function (err, result) {
-        $issueBalance.html(result + " FND");
+      var $requestBalance = $('#request-balance');
+      contract.getRequestBalance($requestBalance.data('request-id'), function (err, result) {
+          $requestBalance.html(result);
       });
     }
   });
-
 });
