@@ -36,32 +36,32 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="r : ${requests}">
+                            <tr th:each="request : ${requests}">
                                 <td>
-                                    <span th:replace="fragments/watchLink :: watchLink (${r})"></span>
+                                    <span th:replace="fragments/watchLink :: watchLink (${request})"></span>
                                 </td>
                                 <td>
-                                    <a th:href="@{/requests/{id}(id=${r.id})}" href="/requests/1">
-                                        <span th:text="${r.issueInformation.title}">Summary</span>
+                                    <a th:href="@{/requests/{id}(id=${request.id})}" href="/requests/1">
+                                        <span th:text="${request.issueInformation.title}">Summary</span>
                                     </a>
                                 </td>
-                                <td th:text="${r.status}">2.41</td>
+                                <td th:text="${request.status}">2.41</td>
                                 <td>
-                                    <a target="_blank" th:href="${r.issueInformation.link}" href="github.com">
-                                        <i th:class="${'fa fa-2x fa-' + r.issueInformation.source.key}"></i>
+                                    <a target="_blank" th:href="${request.issueInformation.link}" href="github.com">
+                                        <i th:class="${'fa fa-2x fa-' + request.issueInformation.source.key}"></i>
                                     </a>
                                 </td>
-                                <td th:text="${r.type}">Issue</td>
+                                <td th:text="${request.type}">Issue</td>
                                 <td>
-                                    <div th:each="t : ${r.technologies}" th:remove="tag">
+                                    <div th:each="t : ${request.technologies}" th:remove="tag">
                                         <span th:text="${t}" class="label label-primary">100</span>
                                     </div>
                                 </td>
                                 <td>
-                                    <span data:request-balance="${r.id}" th:text="${'-'}">100</span> <span>FND</span> <span data:request-balance-message="${r.id}"></span>
+                                    <span data:request-balance="${request.id}"><i class="whirl whirl--sm whirl--fnd"></i></span> <span>FND</span> <span data:request-balance-message="${request.id}"></span>
                                 </td>
                                 <td>
-                                    <a class="btn btn-primary" data-toggle="modal" data:modal-path="${'/requests/fund/' + r.id}" th:text="Fund">Fund</a>
+                                    <a class="btn btn-primary" data-toggle="modal" data:modal-path="${'/requests/fund/' + request.id}" th:text="Fund">Fund</a>
                                 </td>
                             </tr>
                             </tbody>

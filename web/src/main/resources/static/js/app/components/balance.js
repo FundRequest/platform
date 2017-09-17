@@ -1,7 +1,7 @@
 define(['require', 'jquery', 'components/contract'], function(require, $, contract) {
     var $document = $(document);
 
-    $document.on('fnd.balance.update', function() {
+    $document.on('fnd.user.balance.update', function() {
         if (contract.userIsUsingDappBrowser()) {
             contract.getUserBalance(function(err, result) {
                 if (err) {
@@ -15,7 +15,7 @@ define(['require', 'jquery', 'components/contract'], function(require, $, contra
     });
 
     $(function() {
-        $document.trigger('fnd.balance.update');
+        $document.trigger('fnd.user.balance.update');
     });
 
 });

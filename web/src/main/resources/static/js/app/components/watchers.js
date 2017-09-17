@@ -12,11 +12,11 @@ define(function() {
         var requestId = $el.data('request-id');
         $.post('/requests/' + requestId + '/watchers', {watch: !isWatching})
             .done(function() {
-                $document.trigger('fnd.request.updated', {requestId: requestId});
+                $document.trigger('fnd.requests.updated', {requestId: requestId});
             });
     });
 
-    $document.on('fnd.request.updated', function(event, data) {
+    $document.on('fnd.requests.updated', function(event, data) {
         var requestId = data.requestId;
         var $requestWatchers = $('[data-request-watchers="' + requestId + '"]');
 

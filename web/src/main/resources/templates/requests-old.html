@@ -20,10 +20,10 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="r : ${requests}">
-            <td th:text="${r.id}">1</td>
-            <td th:text="${r.status}">2.41</td>
-            <td th:text="${r.type}">yes</td>
+        <tr th:each="request : ${requests}">
+            <td th:text="${request.id}">1</td>
+            <td th:text="${request.status}">2.41</td>
+            <td th:text="${request.type}">yes</td>
         </tr>
         </tbody>
     </table>
