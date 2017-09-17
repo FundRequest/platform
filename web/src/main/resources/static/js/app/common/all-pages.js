@@ -39,6 +39,8 @@ define(['require', 'jquery', 'components/contract'], function(require, $, contra
         var $content = $(data.content);
         $content.html(data.html);
 
+        $document.trigger('fnd.requests.balance.update', data);
+
         var $tagsinput = $('[data-role="tagsinput"]', $content);
 
         if ($tagsinput.length > 0) {
@@ -84,7 +86,7 @@ define(['require', 'jquery', 'components/contract'], function(require, $, contra
             } else {
                 $('[data-request-balance-message="' + requestId + '"]').html(' (transaction pending)');
                 $('[data-role="modal-template"]').modal('hide');
-                $document.trigger('fnd.balance.update');
+                $document.trigger('fnd.user.balance.update');
                 console.log(result);
             }
         });

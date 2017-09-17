@@ -62,3 +62,33 @@ $zindex-navbar-fixed: 100;
 .label-CANCELLED {
     background-color: #f05050;
 }
+
+
+/* whirl */
+
+body .whirl {
+    &--sm {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+
+        &::after {
+            width: 12px;
+            height: 12px;
+            margin: -6px 0 0 -6px;
+        }
+    }
+
+    &--fnd {
+        &::before {
+            background-color: transparent;
+        }
+
+        &::after {
+            border-right: 2px solid #ffd64b;
+            border-bottom: 2px solid #22b962;
+            border-left: 2px solid #5cea99;
+            border-top: 2px solid #ff8c39;
+        }
+    }
+}
