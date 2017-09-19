@@ -19,7 +19,7 @@ define(
         function ActivityStream(bufferSize, client, stream) {
             var _self = this;
             this.buffer = new CircularBuffer(bufferSize);
-            this.socket.client = new SockJS(client);
+            this.socket.client = new SockJS(window.location.origin + "/" + client);
 
             this.socket.client.onopen = function() {
                 console.log('socket.client open');
