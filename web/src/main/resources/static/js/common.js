@@ -8,7 +8,7 @@ requirejs.config({
         'jquery-easing': '//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min',
         'jQuery-slimScroll': '//cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min',
         'screenfull': '//cdnjs.cloudflare.com/ajax/libs/screenfull.js/3.3.1/screenfull.min',
-        'sockjs': '//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.0/sockjs.min',
+        'sockjs': '//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min',
         'stompjs': '//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min',
         'animo': '//cdnjs.cloudflare.com/ajax/libs/animo.js/1.0.3/animo.min',
         'modernizr': 'modernizr.custom',
