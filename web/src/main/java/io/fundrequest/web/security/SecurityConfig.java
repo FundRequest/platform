@@ -121,6 +121,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/")
                 .permitAll();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
+        http.headers().frameOptions().sameOrigin();
     }
 
 
