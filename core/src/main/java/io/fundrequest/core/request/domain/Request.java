@@ -57,6 +57,9 @@ public class Request extends AbstractEntity {
     protected Request() {
     }
 
+    public void setStatus(RequestStatus status) {
+        this.status = status;
+    }
 
     public Long getId() {
         return id;

@@ -24,6 +24,6 @@ public class ActivitySimulator {
         if(COUNTER.equals(Long.MAX_VALUE)) {
             COUNTER = 0L;
         }
-        eventPublisher.publishEvent(new RequestCreatedEvent("4846f10b-f6fc-4f4f-bc99-8a3a724ec6f4", "http://github.com", "Github issue " + COUNTER++, RequestSource.GITHUB));
+//        eventPublisher.publishEvent(new RequestCreatedEvent("4846f10b-f6fc-4f4f-bc99-8a3a724ec6f4", "http://github.com", "Github issue " + COUNTER++, RequestSource.GITHUB));
     }
 }

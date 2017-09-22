@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.mapper;
 
 import io.fundrequest.core.infrastructure.SecurityContextService;
-import io.fundrequest.core.request.RequestDtoMapper;
+import io.fundrequest.core.request.view.RequestDtoMapper;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.user.UserService;

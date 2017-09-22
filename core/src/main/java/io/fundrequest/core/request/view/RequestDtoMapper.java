@@ -1,11 +1,9 @@
-package io.fundrequest.core.request;
+package io.fundrequest.core.request.view;
 
 import io.fundrequest.core.infrastructure.mapping.BaseMapper;
 import io.fundrequest.core.infrastructure.mapping.DefaultMappingConfig;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.mapper.RequestDtoMapperDecorator;
-import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.core.user.UserDto;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

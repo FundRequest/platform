@@ -2,6 +2,7 @@ package io.fundrequest.web.request;
 
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.web.request.dto.ChartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -13,10 +14,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Controller
 public class RequestsController {
@@ -87,5 +92,15 @@ public class RequestsController {
         } else {
             requestService.removeWatcherFromRequest(webUser, id);
         }
+    }
+
+    @GetMapping("/requests/charts/barchart-status")
+    @ResponseBody
+    public Map<String, String> getChartData() {
+        return requestService.findAll()
+                .stream()
+                .collect(Collectors.groupingBy(r -> r.getStatus().toString(), Collectors.counting()))
+                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, r -> r.getValue().toString()));
+
     }
 }
