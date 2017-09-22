@@ -1,4 +1,4 @@
-package io.fundrequest.core.request;
+package io.fundrequest.core.request.view;
 
 import io.fundrequest.core.infrastructure.mapping.BaseMapper;
 import io.fundrequest.core.infrastructure.mapping.DefaultMappingConfig;
