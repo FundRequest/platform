@@ -18,7 +18,7 @@ public class KeycloakAdminConfig {
         Keycloak keycloak = Keycloak.getInstance(
                 keycloakSpringBootProperties.getAuthServerUrl(),
                 keycloakSpringBootProperties.getRealm(),
-                "admin",
+                "fundrequest-query-users",
                 "Underthecloakofnight",
                 keycloakSpringBootProperties.getResource(),
                 keycloakSpringBootProperties.getCredentials().get("secret").toString());
