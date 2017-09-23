@@ -7,8 +7,15 @@ define(['require', 'jquery'], function (require, $) {
 
   if (typeof web3 !== 'undefined') {
     window.web3 = new Web3(web3.currentProvider);
-    initTokenContract();
-    initContract();
+    if (web3.version.network !== '4') {
+      alert('Please connect to the Rinkeby network');
+      //TODO redirect to a page with some extra explanation
+    } else {
+      initTokenContract();
+      initContract();
+    }
+  } else {
+    alert('Please use a dapp browser like mist or MetaMask plugin for chrome');
   }
 
   function initTokenContract() {
