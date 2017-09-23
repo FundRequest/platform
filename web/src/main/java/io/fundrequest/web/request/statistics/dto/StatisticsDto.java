@@ -4,20 +4,20 @@ import java.time.LocalDate;
 import java.util.Map;
 
 public class StatisticsDto {
-    private Long numberOfIssues;
+    private Long numberOfRequests;
     private Double percentageFunded;
     private Long numberOfFunders;
     private Long totalAmountFunded;
-    private Double averageFundingPerIssue;
+    private Double averageFundingPerRequest;
     private Map<LocalDate, Long> fundsPerDay;
-    private Map<LocalDate, Long> issuesAddedPerDay;
+    private Map<LocalDate, Long> requestsAddedPerDay;
 
-    public Long getNumberOfIssues() {
-        return numberOfIssues;
+    public Long getNumberOfRequests() {
+        return numberOfRequests;
     }
 
-    public void setNumberOfIssues(Long numberOfIssues) {
-        this.numberOfIssues = numberOfIssues;
+    public void setNumberOfRequests(Long numberOfRequests) {
+        this.numberOfRequests = numberOfRequests;
     }
 
     public Double getPercentageFunded() {
@@ -44,12 +44,12 @@ public class StatisticsDto {
         this.totalAmountFunded = totalAmountFunded;
     }
 
-    public Double getAverageFundingPerIssue() {
-        return averageFundingPerIssue;
+    public Double getAverageFundingPerRequest() {
+        return averageFundingPerRequest;
     }
 
-    public void setAverageFundingPerIssue(Double averageFundingPerIssue) {
-        this.averageFundingPerIssue = averageFundingPerIssue;
+    public void setAverageFundingPerRequest(Double averageFundingPerRequest) {
+        this.averageFundingPerRequest = averageFundingPerRequest;
     }
 
     public Map<LocalDate, Long> getFundsPerDay() {
@@ -60,11 +60,11 @@ public class StatisticsDto {
         this.fundsPerDay = fundsPerDay;
     }
 
-    public void setIssuesAddedPerDay(Map<LocalDate, Long> issuesAddedPerDay) {
-        this.issuesAddedPerDay = issuesAddedPerDay;
+    public void setRequestsAddedPerDay(Map<LocalDate, Long> requestsAddedPerDay) {
+        this.requestsAddedPerDay = requestsAddedPerDay;
     }
 
-    public Map<LocalDate, Long> getIssuesAddedPerDay() {
-        return issuesAddedPerDay;
+    public Map<LocalDate, Long> getRequestsAddedPerDay() {
+        return requestsAddedPerDay;
     }
 }

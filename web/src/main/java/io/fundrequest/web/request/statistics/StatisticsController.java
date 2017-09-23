@@ -31,7 +31,7 @@ public class StatisticsController {
         StatisticsDto result = new StatisticsDto();
         List<RequestDto> allRequests = requestService.findAll();
         List<FundDto> funds = fundService.findAll();
-        result.setNumberOfIssues((long) allRequests.size());
+        result.setNumberOfRequests((long) allRequests.size());
         result.setNumberOfFunders(
                 funds.stream().map(FundDto::getFunder).distinct().count()
         );
@@ -40,16 +40,16 @@ public class StatisticsController {
         );
         long numberOfRequestsFunded = funds.stream().map(FundDto::getRequestId).distinct().count();
         if (numberOfRequestsFunded > 0) {
-            result.setPercentageFunded((double) numberOfRequestsFunded / (double) result.getNumberOfIssues() * 100);
-            result.setAverageFundingPerIssue((double) result.getTotalAmountFunded() / (numberOfRequestsFunded));
+            result.setPercentageFunded((double) numberOfRequestsFunded / (double) result.getNumberOfRequests() * 100);
+            result.setAverageFundingPerRequest((double) result.getTotalAmountFunded() / (numberOfRequestsFunded));
         } else {
             result.setPercentageFunded(0d);
-            result.setAverageFundingPerIssue(0d);
+            result.setAverageFundingPerRequest(0d);
         }
         Map<LocalDate, Long> fundsPerDay = funds.stream().collect(Collectors.groupingBy(f -> f.getCreationDate().toLocalDate(), Collectors.summingLong(FundDto::getAmountInWei)));
         result.setFundsPerDay(fundsPerDay);
-        Map<LocalDate, Long> issuesAddedPerDay = funds.stream().collect(Collectors.groupingBy(f -> f.getCreationDate().toLocalDate(), Collectors.counting()));
-        result.setIssuesAddedPerDay(issuesAddedPerDay);
+        Map<LocalDate, Long> requestsAddedPerDay = funds.stream().collect(Collectors.groupingBy(f -> f.getCreationDate().toLocalDate(), Collectors.counting()));
+        result.setRequestsAddedPerDay(requestsAddedPerDay);
         return result;
     }
 }
