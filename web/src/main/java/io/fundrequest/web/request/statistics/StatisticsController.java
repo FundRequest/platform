@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class StatisticsController {
@@ -43,7 +46,8 @@ public class StatisticsController {
             result.setPercentageFunded(0d);
             result.setAverageFundingPerIssue(0d);
         }
-
+        Map<LocalDate, Long> fundsPerDay = funds.stream().collect(Collectors.groupingBy(f -> f.getCreationDate().toLocalDate(), Collectors.summingLong(FundDto::getAmountInWei)));
+        result.setFundsPerDay(fundsPerDay);
         return result;
     }
 }

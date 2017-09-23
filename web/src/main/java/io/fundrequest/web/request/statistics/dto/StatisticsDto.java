@@ -1,11 +1,15 @@
 package io.fundrequest.web.request.statistics.dto;
 
+import java.time.LocalDate;
+import java.util.Map;
+
 public class StatisticsDto {
     private Long numberOfIssues;
     private Double percentageFunded;
     private Long numberOfFunders;
     private Long totalAmountFunded;
     private Double averageFundingPerIssue;
+    private Map<LocalDate, Long> fundsPerDay;
 
     public Long getNumberOfIssues() {
         return numberOfIssues;
@@ -45,5 +49,13 @@ public class StatisticsDto {
 
     public void setAverageFundingPerIssue(Double averageFundingPerIssue) {
         this.averageFundingPerIssue = averageFundingPerIssue;
+    }
+
+    public Map<LocalDate, Long> getFundsPerDay() {
+        return fundsPerDay;
+    }
+
+    public void setFundsPerDay(Map<LocalDate, Long> fundsPerDay) {
+        this.fundsPerDay = fundsPerDay;
     }
 }
