@@ -374,13 +374,18 @@ define(['require', 'jquery'], function (require, $) {
       tokenContract.balanceOf.call(web3.eth.accounts[0], function (err, result) {
         var balance;
         if (result) {
-          balance = web3.fromWei(result.toString(10));
+          balance = fromWeiRounded(result);
         }
         callback(err, balance);
       });
     } else {
       callback("No accounts available");
     }
+  }
+
+  function fromWeiRounded(amountInWei) {
+    var number = (amountInWei.toNumber() / 1000000000000000000);
+    return (Math.round(number * 100) / 100).toFixed(2);
   }
 
   function fundRequest(requestId, value, callback) {
@@ -401,7 +406,7 @@ define(['require', 'jquery'], function (require, $) {
     fundRequestContract.balance.call('' + requestId, function (err, result) {
       var balance;
       if (result) {
-        balance = web3.fromWei(result.toString(10));
+        balance = fromWeiRounded(result);
       }
       callback(err, balance);
     });
