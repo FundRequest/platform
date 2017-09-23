@@ -48,6 +48,8 @@ public class StatisticsController {
         }
         Map<LocalDate, Long> fundsPerDay = funds.stream().collect(Collectors.groupingBy(f -> f.getCreationDate().toLocalDate(), Collectors.summingLong(FundDto::getAmountInWei)));
         result.setFundsPerDay(fundsPerDay);
+        Map<LocalDate, Long> issuesAddedPerDay = funds.stream().collect(Collectors.groupingBy(f -> f.getCreationDate().toLocalDate(), Collectors.counting()));
+        result.setIssuesPerDay(issuesAddedPerDay);
         return result;
     }
 }
