@@ -385,7 +385,7 @@ define(['require', 'jquery'], function (require, $) {
 
   function fromWeiRounded(amountInWei) {
     var number = (amountInWei.toNumber() / 1000000000000000000);
-    return (Math.round(number * 100) / 100).toFixed(2);
+    return ((Math.round(number * 100) / 100).toFixed(2)).toLocaleString();
   }
 
   function fundRequest(requestId, value, callback) {
