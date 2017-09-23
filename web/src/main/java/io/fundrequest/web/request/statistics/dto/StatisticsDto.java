@@ -10,7 +10,7 @@ public class StatisticsDto {
     private Long totalAmountFunded;
     private Double averageFundingPerIssue;
     private Map<LocalDate, Long> fundsPerDay;
-    private Map<LocalDate, Long> issuesPerDay;
+    private Map<LocalDate, Long> issuesAddedPerDay;
 
     public Long getNumberOfIssues() {
         return numberOfIssues;
@@ -60,11 +60,11 @@ public class StatisticsDto {
         this.fundsPerDay = fundsPerDay;
     }
 
-    public void setIssuesPerDay(Map<LocalDate, Long> issuesPerDay) {
-        this.issuesPerDay = issuesPerDay;
+    public void setIssuesAddedPerDay(Map<LocalDate, Long> issuesAddedPerDay) {
+        this.issuesAddedPerDay = issuesAddedPerDay;
     }
 
-    public Map<LocalDate, Long> getIssuesPerDay() {
-        return issuesPerDay;
+    public Map<LocalDate, Long> getIssuesAddedPerDay() {
+        return issuesAddedPerDay;
     }
 }
