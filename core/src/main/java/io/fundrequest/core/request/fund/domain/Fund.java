@@ -1,5 +1,7 @@
 package io.fundrequest.core.request.fund.domain;
 
+import io.fundrequest.core.infrastructure.repository.AbstractEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +11,7 @@ import javax.persistence.Table;
 
 @Table(name = "fund")
 @Entity
-public class Fund {
+public class Fund extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
