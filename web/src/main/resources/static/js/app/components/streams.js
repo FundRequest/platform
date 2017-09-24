@@ -23,7 +23,7 @@ define(function(require) {
         var $streams = $('[data-stream]');
 
         if ($streams.length > 0) {
-            requirejs(['components/ActivityStream', 'vuejs', 'vue-timeago/vue-timeago'], function(ActivityStream, Vue, VueTimeago) {
+            requirejs(['components/ActivityStream', 'vue-timeago/vue-timeago'], function(ActivityStream, VueTimeago) {
                 Vue.use(VueTimeago, {
                     name: 'timeago', // component name, `timeago` by default
                     locale: 'en-US',

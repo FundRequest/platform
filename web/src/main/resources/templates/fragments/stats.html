@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="component-stat">
+    <script type="text/x-template" id="component-stat">
+        <div class="panel widget bg-primary">
+            <div class="row row-table">
+                <div class="col-xs-4 text-center pv-lg bg-primary-dark">
+                    <em class="fa-3x" :class="icon"></em>
+                </div>
+                <div class="col-xs-8 pv-lg">
+                    <div class="h2 mt0">{{ val }}</div>
+                    <div class="text-uppercase">{{ text }}</div>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
+
+<div th:fragment="component-funded">
+    <script type="text/x-template" id="component-funded">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="text-info">{{ text }}</div>
+                <div class="text-center pv-xl">
+                    <div data-easypiechart :data-percent="val" data-animate="{duration: 800, enabled: true}" data-bar-color="#23b7e5" data-track-Color="rgba(200,200,200,0.4)" data-scale-Color="false" data-line-width="10"
+                         data-line-cap="round" data-size="145" class="easypie-chart easypie-chart-lg">
+                        <span>{{ val }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
