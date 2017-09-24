@@ -38,6 +38,8 @@ $zindex-navbar-fixed: 100;
 }
 
 .watch-link {
+    white-space: nowrap;
+
     .fa-star {
         color: #ff902b;
     }
@@ -62,12 +64,6 @@ $zindex-navbar-fixed: 100;
 .label-CANCELLED {
     background-color: #f05050;
 }
-
-/* Tables */
-.table th {
-    min-width: 10px;
-}
-
 
 /* whirl */
 
