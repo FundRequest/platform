@@ -21,7 +21,7 @@ define(['jquery', 'pubsub'], function($, pubsub) {
             'component-funded': ComponentFunded
         },
         data: {
-            numberOfIssues: {
+            numberOfRequests: {
                 icon: 'fa fa-file-code-o',
                 text: '# Requests',
                 val: 0
@@ -36,7 +36,7 @@ define(['jquery', 'pubsub'], function($, pubsub) {
                 text: 'Total funded',
                 val: 0
             },
-            averageFundingPerIssue: {
+            averageFundingPerRequest: {
                 icon: 'icon-chart',
                 text: 'Average funding',
                 val: 0
@@ -50,10 +50,10 @@ define(['jquery', 'pubsub'], function($, pubsub) {
 
     pubsub.subscribe('fnd/stats/update', function() {
         $.get('/requests/statistics', function(data) {
-            v_dashboard.numberOfIssues.val = data.numberOfIssues;
+            v_dashboard.numberOfRequests.val = data.numberOfRequests;
             v_dashboard.numberOfFunders.val = data.numberOfFunders;
             v_dashboard.totalAmountFunded.val = data.totalAmountFunded;
-            v_dashboard.averageFundingPerIssue.val = data.averageFundingPerIssue;
+            v_dashboard.averageFundingPerRequest.val = data.averageFundingPerRequest;
             v_dashboard.percentageFunded.val = data.percentageFunded;
         });
     });
