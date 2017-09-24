@@ -23,10 +23,10 @@
         <div th:include="fragments/stats :: component-funded"></div>
         <div class="row">
             <div class="col-sm-6 col-lg-3">
-                <component-stat :icon="numberOfIssues.icon" :val="numberOfIssues.val" :text="numberOfIssues.text"></component-stat>
+                <component-stat :icon="numberOfRequests.icon" :val="numberOfRequests.val" :text="numberOfRequests.text"></component-stat>
             </div>
             <div class="col-sm-6 col-lg-3">
-                <component-stat :icon="averageFundingPerIssue.icon" :val="averageFundingPerIssue.val" :text="averageFundingPerIssue.text"></component-stat>
+                <component-stat :icon="averageFundingPerRequest.icon" :val="averageFundingPerRequest.val" :text="averageFundingPerRequest.text"></component-stat>
             </div>
             <div class="col-sm-6 col-lg-3">
                 <component-stat :icon="numberOfFunders.icon" :val="numberOfFunders.val" :text="numberOfFunders.text"></component-stat>
