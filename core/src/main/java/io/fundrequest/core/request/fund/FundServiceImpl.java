@@ -4,12 +4,14 @@ import io.fundrequest.core.request.fund.command.AddFundsCommand;
 import io.fundrequest.core.request.fund.domain.Fund;
 import io.fundrequest.core.request.fund.domain.FundBuilder;
 import io.fundrequest.core.request.fund.dto.FundDto;
+import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +24,14 @@ class FundServiceImpl implements FundService {
     private FundRepository fundRepository;
     private RequestRepository requestRepository;
     private Mappers mappers;
+    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public FundServiceImpl(FundRepository fundRepository, RequestRepository requestRepository, Mappers mappers) {
+    public FundServiceImpl(FundRepository fundRepository, RequestRepository requestRepository, Mappers mappers, ApplicationEventPublisher eventPublisher) {
         this.fundRepository = fundRepository;
         this.requestRepository = requestRepository;
         this.mappers = mappers;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional(readOnly = true)
@@ -51,6 +55,15 @@ class FundServiceImpl implements FundService {
             request.setStatus(RequestStatus.FUNDED);
             requestRepository.save(request);
         }
+        eventPublisher.publishEvent(
+                new RequestFundedEvent(
+                        request.getId(),
+                        request.getIssueInformation().getOwner(),
+                        request.getIssueInformation().getRepo(),
+                        request.getIssueInformation().getNumber(),
+                        fund.getFunder(),
+                        fund.getAmountInWei())
+        );
 
     }
 }
