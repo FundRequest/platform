@@ -11,7 +11,7 @@
             <a href="#" class="list-group-item" v-cloak v-for="message in reverseMessages">
                 <div class="media-box">
                     <div class="pull-left">
-                        <img v-bind:src="message.user.picture" v-bind:alt="message.user.picture"
+                        <img v-if="message.user !== null" v-bind:src="message.user.picture" v-bind:alt="message.user.picture"
                              class="media-box-object img-circle thumb32">
                     </div>
                     <div class="media-box-body clearfix">
@@ -19,7 +19,7 @@
                             <timeago :since="message.dateTimeAsString" :auto-update="60"></timeago>
                         </small>
 
-                        <strong class="media-box-heading text-primary">
+                        <strong v-if="message.user !== null" class="media-box-heading text-primary">
                             <span class="circle circle-success circle-lg text-left"></span>
                             <span>{{message.user.name}}</span>
                         </strong>

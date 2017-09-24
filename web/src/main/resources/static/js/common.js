@@ -13,10 +13,12 @@ requirejs.config({
         'animo': '//cdnjs.cloudflare.com/ajax/libs/animo.js/1.0.3/animo.min',
         'modernizr': 'modernizr.custom',
         'angle': 'angle',
+        'easypiechart': 'jquery.easypiechart.min',
         'bootstrap-tagsinput': 'bootstrap-tagsinput.min',
         'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min',
         'vuejs': '//cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.min',
         'vue-timeago': 'vue-timeago',
+        'pubsub': 'pubsub',
 
         //require-plugins
         'text': 'require-plugins/text',
@@ -26,7 +28,7 @@ requirejs.config({
         'image': 'require-plugins/image',
         'json': 'require-plugins/json',
         'noext': 'require-plugins/noext',
-        'propertyParser' : 'require-plugins/propertyParser',
+        'propertyParser': 'require-plugins/propertyParser',
 
         //DataTables core
         'datatables.net': 'https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min',
@@ -44,6 +46,6 @@ requirejs.config({
         'screenfull': {'deps': ['jquery']},
         'sockjs': {'deps': ['stompjs']},
         'animo': {'deps': ['jquery']},
-        'angle': {'deps': ['jquery', 'modernizr', 'bootstrap', 'bootstrap-tagsinput', 'jquery-storage-api', 'jquery-easing', 'animo', 'jQuery-slimScroll', 'screenfull', 'datatables.net-bs', 'datatables.net']},
+        'angle': {'deps': ['jquery', 'modernizr', 'bootstrap', 'bootstrap-tagsinput', 'jquery-storage-api', 'jquery-easing', 'animo', 'jQuery-slimScroll', 'easypiechart', 'screenfull', 'datatables.net-bs', 'datatables.net']},
     }
 });

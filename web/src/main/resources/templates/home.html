@@ -2,7 +2,8 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
-      layout:decorator="layout/layout" th:with="title='Home', activeMenu='home', pageId='home'">
+      layout:decorator="layout/layout"
+      th:with="title='Welcome to fundrequest', jsModule='home', activeMenu='home', pageId='home'">
 
 <head>
     <title th:text="${title}">Home</title>
@@ -17,23 +18,48 @@
 </div>
 
 <section layout:fragment="content">
-    <div class="row">
-        <div class="col-xs-12 text-center">
-            <h2 class="text-thin">Welcome</h2>
-            <p>Welcome to fundrequest</p>
+    <div id="dashboard">
+        <div th:include="fragments/stats :: component-stat"></div>
+        <div th:include="fragments/stats :: component-funded"></div>
+        <div class="row">
+            <div class="col-sm-6 col-lg-3">
+                <component-stat :icon="numberOfIssues.icon" :val="numberOfIssues.val" :text="numberOfIssues.text"></component-stat>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <component-stat :icon="averageFundingPerIssue.icon" :val="averageFundingPerIssue.val" :text="averageFundingPerIssue.text"></component-stat>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <component-stat :icon="numberOfFunders.icon" :val="numberOfFunders.val" :text="numberOfFunders.text"></component-stat>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <component-stat :icon="totalAmountFunded.icon" :val="totalAmountFunded.val" :text="totalAmountFunded.text"></component-stat>
+            </div>
         </div>
-    </div>
-    <div class="row mb-2" sec:authorize="isAnonymous()">
-        <div class="col-xs-4 text-center"></div>
-        <div class="col-xs-4 text-center">
-            <p>In order to use this platform you need to login. Registration is not necessary, simply login using your
-                google or github credentials</p>
-            <a href="/login" class="btn btn-block btn-primary mt-lg" role="button">Login</a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-push-3 col-xs-6">
-            <div th:include="fragments/activityScroll::panel"></div>
+        <div class="row mb-2">
+            <div class="col-xs-8 text-center">
+                <div class="panel panel-default" sec:authorize="isAnonymous()">
+                    <div class="panel-body">
+                        <div class="text-info">{{ text }}</div>
+                        <div class="text-center pv-xl">
+                            <p>
+                                In order to use this platform you need to login.
+                                Registration is not necessary, simply login using your google or github credentials
+                            </p>
+                            <div class="row">
+                                <div class="col-xs-offset-4 col-xs-4">
+                                    <a href="/login" class="btn btn-block btn-primary mt-lg" role="button">Login</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:include="fragments/activityScroll :: panel"></div>
+            </div>
+
+            <div class="col-xs-4">
+                <component-funded :val="percentageFunded.val" :text="percentageFunded.text"></component-funded>
+            </div>
         </div>
     </div>
 </section>
