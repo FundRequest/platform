@@ -42,7 +42,7 @@ define(['jquery', 'pubsub'], function($, pubsub) {
                 val: 0
             },
             percentageFunded: {
-                text: 'Funded',
+                text: 'Funded requests',
                 val: 0
             },
         }
