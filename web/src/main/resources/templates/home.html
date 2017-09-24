@@ -12,9 +12,6 @@
 
 <div layout:fragment="action-buttons">
     <a class="btn btn-info" role="button" href="/login" sec:authorize="isAnonymous()">Add request</a>
-    <button type="button" class="btn btn-info" data-toggle="modal" data-modal-path="/requests/add"
-            sec:authorize="!isAnonymous()">Add request
-    </button>
 </div>
 
 <section layout:fragment="content">
