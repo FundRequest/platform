@@ -45,13 +45,13 @@
                                         <span th:text="${request.issueInformation.title}">Summary</span>
                                     </a>
                                 </td>
-                                <td th:text="${request.status}">2.41</td>
+                                <td th:text="${#messages.msgOrNull('enum.RequestStatus.' + request.status)}">2.41</td>
                                 <td>
                                     <a target="_blank" th:href="${request.issueInformation.link}" href="github.com">
                                         <i th:class="${'fa fa-2x fa-' + request.issueInformation.source.key}"></i>
                                     </a>
                                 </td>
-                                <td th:text="${request.type}">Issue</td>
+                                <td th:text="${#messages.msgOrNull('enum.RequestType.' + request.type)}">Issue</td>
                                 <td>
                                     <div th:each="t : ${request.technologies}" th:remove="tag">
                                         <span th:text="${t}" class="label label-primary">100</span>
