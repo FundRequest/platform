@@ -1,14 +1,16 @@
 package io.fundrequest.core.request.fund.event;
 
+import java.math.BigInteger;
+
 public class RequestFundedEvent {
     private Long requestId;
     private String owner;
     private String repo;
     private String number;
     private String funder;
-    private Long amountInWei;
+    private BigInteger amountInWei;
 
-    public RequestFundedEvent(Long requestId, String owner, String repo, String number, String funder, Long amountInWei) {
+    public RequestFundedEvent(Long requestId, String owner, String repo, String number, String funder, BigInteger amountInWei) {
         this.requestId = requestId;
         this.owner = owner;
         this.repo = repo;
@@ -37,7 +39,7 @@ public class RequestFundedEvent {
         return funder;
     }
 
-    public Long getAmountInWei() {
+    public BigInteger getAmountInWei() {
         return amountInWei;
     }
 }
