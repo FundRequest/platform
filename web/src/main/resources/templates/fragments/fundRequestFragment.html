@@ -8,48 +8,48 @@
 <div class="modal-body">
     <div class="form-horizontal">
         <div class="form-group">
-            <label class="col-lg-4 control-label">Source</label>
-            <div class="col-lg-8 form-control-static">
+            <label class="col-md-4 control-label">Source</label>
+            <div class="col-md-8 form-control-static">
                 <a target="_blank" th:href="${request.issueInformation.link}" href="github.com">
                     <i th:class="${'fa fa-2x fa-' + request.issueInformation.source.key}"></i>
                 </a>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">Owner</label>
-            <div class="col-lg-8 form-control-static">
+            <label class="col-md-4 control-label">Owner</label>
+            <div class="col-md-8 form-control-static">
                 <label>
                     <span th:text="${request.issueInformation.owner}">FundRequest</span>
                 </label>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">Repo</label>
-            <div class="col-lg-8 form-control-static">
+            <label class="col-md-4 control-label">Repo</label>
+            <div class="col-md-8 form-control-static">
                 <label>
                     <span th:text="${request.issueInformation.repo}">Area51</span>
                 </label>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">Issue</label>
-            <div class="col-lg-8 form-control-static">
+            <label class="col-md-4 control-label">Issue</label>
+            <div class="col-md-8 form-control-static">
                 <label>
                     <span th:text="${request.issueInformation.number}">6</span>
                 </label>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">Type</label>
-            <div class="col-lg-8 form-control-static">
+            <label class="col-md-4 control-label">Type</label>
+            <div class="col-md-8 form-control-static">
                 <label>
                     <span th:text="${request.type}">ISSUE</span>
                 </label>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">Funded</label>
-            <div class="col-lg-8 form-control-static">
+            <label class="col-md-4 control-label">Funded</label>
+            <div class="col-md-8 form-control-static">
                 <label>
                     <span data:request-balance="${request.id}"><i class="whirl whirl--sm whirl--fnd"></i></span> <span>FND</span> <span
                         data:request-balance-message="${request.id}"></span>
@@ -58,10 +58,10 @@
         </div>
 
         <div class="form-group">
-            <label for="fund-amount" class="col-lg-4 control-label">Fund Amount</label>
-            <div class="col-lg-8">
+            <label for="fund-amount" class="col-md-4 control-label">Fund Amount</label>
+            <div class="col-md-8">
                 <div class="input-group">
-                    <input type="number" class="form-control" data:fund-request-value="${request.id}" id="fund-amount">
+                    <input type="number" min="0.01" placeholder="1" class="form-control" data:fund-request-value="${request.id}" id="fund-amount">
                     <span class="input-group-addon">FND</span>
                 </div>
             </div>
