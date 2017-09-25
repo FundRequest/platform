@@ -1,11 +1,12 @@
 package io.fundrequest.core.request.fund.dto;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 public class FundDto {
 
     private String funder;
-    private Long amountInWei;
+    private BigInteger amountInWei;
     private Long requestId;
     private LocalDateTime creationDate;
 
@@ -17,11 +18,11 @@ public class FundDto {
         this.funder = funder;
     }
 
-    public Long getAmountInWei() {
+    public BigInteger getAmountInWei() {
         return amountInWei;
     }
 
-    public void setAmountInWei(Long amountInWei) {
+    public void setAmountInWei(BigInteger amountInWei) {
         this.amountInWei = amountInWei;
     }
 

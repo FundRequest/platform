@@ -1,15 +1,17 @@
 package io.fundrequest.web.request.statistics.dto;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Map;
 
 public class StatisticsDto {
     private Long numberOfRequests;
-    private Double percentageFunded;
+    private Long requestsFunded;
     private Long numberOfFunders;
-    private Long totalAmountFunded;
-    private Double averageFundingPerRequest;
-    private Map<LocalDate, Long> fundsPerDay;
+    private BigInteger totalAmountFunded;
+    private BigDecimal averageFundingPerRequest;
+    private Map<LocalDate, BigInteger> fundsPerDay;
     private Map<LocalDate, Long> requestsAddedPerDay;
 
     public Long getNumberOfRequests() {
@@ -20,12 +22,12 @@ public class StatisticsDto {
         this.numberOfRequests = numberOfRequests;
     }
 
-    public Double getPercentageFunded() {
-        return percentageFunded;
+    public Long getRequestsFunded() {
+        return requestsFunded;
     }
 
-    public void setPercentageFunded(Double percentageFunded) {
-        this.percentageFunded = percentageFunded;
+    public void setRequestsFunded(Long requestsFunded) {
+        this.requestsFunded = requestsFunded;
     }
 
     public Long getNumberOfFunders() {
@@ -36,27 +38,27 @@ public class StatisticsDto {
         this.numberOfFunders = numberOfFunders;
     }
 
-    public Long getTotalAmountFunded() {
+    public BigInteger getTotalAmountFunded() {
         return totalAmountFunded;
     }
 
-    public void setTotalAmountFunded(Long totalAmountFunded) {
+    public void setTotalAmountFunded(BigInteger totalAmountFunded) {
         this.totalAmountFunded = totalAmountFunded;
     }
 
-    public Double getAverageFundingPerRequest() {
+    public BigDecimal getAverageFundingPerRequest() {
         return averageFundingPerRequest;
     }
 
-    public void setAverageFundingPerRequest(Double averageFundingPerRequest) {
+    public void setAverageFundingPerRequest(BigDecimal averageFundingPerRequest) {
         this.averageFundingPerRequest = averageFundingPerRequest;
     }
 
-    public Map<LocalDate, Long> getFundsPerDay() {
+    public Map<LocalDate, BigInteger> getFundsPerDay() {
         return fundsPerDay;
     }
 
-    public void setFundsPerDay(Map<LocalDate, Long> fundsPerDay) {
+    public void setFundsPerDay(Map<LocalDate, BigInteger> fundsPerDay) {
         this.fundsPerDay = fundsPerDay;
     }
 

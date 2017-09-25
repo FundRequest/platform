@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
@@ -19,7 +20,7 @@ public class FundController {
     }
 
     @PostMapping("/requests/{requestId}/funds")
-    public void addFunds(Principal principal, AddFundsCommand command) {
+    public void addFunds(Principal principal, @Valid AddFundsCommand command) {
         fundService.addFunds(principal, command);
     }
 }

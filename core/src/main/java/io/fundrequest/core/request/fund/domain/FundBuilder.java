@@ -1,8 +1,10 @@
 package io.fundrequest.core.request.fund.domain;
 
+import java.math.BigInteger;
+
 public final class FundBuilder {
     private String funder;
-    private Long amountInWei;
+    private BigInteger amountInWei;
     private Long requestId;
 
     private FundBuilder() {
@@ -17,7 +19,7 @@ public final class FundBuilder {
         return this;
     }
 
-    public FundBuilder withAmountInWei(Long amountInWei) {
+    public FundBuilder withAmountInWei(BigInteger amountInWei) {
         this.amountInWei = amountInWei;
         return this;
     }

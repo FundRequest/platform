@@ -12,7 +12,7 @@ public class GithubLinkValidator implements ConstraintValidator<GithubLink, Stri
     private final String regex;
 
     public GithubLinkValidator() {
-        regex = "^https:\\/\\/github\\.com\\/.+\\/.+\\/issues\\/\\d+$";
+        regex = "^https:\\/\\/github\\.com\\/FundRequest\\/.+\\/issues\\/\\d+$";
     }
 
     public void initialize(GithubLink constraint) {

@@ -1,27 +1,30 @@
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
 
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  });
   var lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN, {
-      auth: {
-          params: {
-              scope: 'openid roles user_id name email' // Learn about scopes: https://auth0.com/docs/scopes
-          }
+    auth: {
+      params: {
+        scope: 'openid roles user_id name email' // Learn about scopes: https://auth0.com/docs/scopes
       }
+    }
   });
 
   // buttons
   var btn_login = document.getElementById('btn-login');
   var btn_logout = document.getElementById('btn-logout');
 
-  btn_login.addEventListener('click', function() {
+  btn_login.addEventListener('click', function () {
     lock.show();
   });
 
-  btn_logout.addEventListener('click', function() {
+  btn_logout.addEventListener('click', function () {
     logout();
   });
 
-  lock.on("authenticated", function(authResult) {
-    lock.getProfile(authResult.idToken, function(error, profile) {
+  lock.on("authenticated", function (authResult) {
+    lock.getProfile(authResult.idToken, function (error, profile) {
       console.log(authResult);
       if (error) {
         // Handle error
@@ -34,7 +37,7 @@ window.addEventListener('load', function() {
   });
 
   //retrieve the profile:
-  var retrieve_profile = function() {
+  var retrieve_profile = function () {
     var id_token = localStorage.getItem('id_token');
     if (id_token) {
       lock.getProfile(id_token, function (err, profile) {
@@ -47,7 +50,7 @@ window.addEventListener('load', function() {
     }
   };
 
-  var show_profile_info = function(profile) {
+  var show_profile_info = function (profile) {
     var avatar = document.getElementById('avatar');
     document.getElementById('nickname').textContent = profile.nickname;
     btn_login.style.display = "none";
@@ -56,7 +59,7 @@ window.addEventListener('load', function() {
     btn_logout.style.display = "block";
   };
 
-  var logout = function() {
+  var logout = function () {
     localStorage.removeItem('id_token');
     window.location.href = "/";
   };
