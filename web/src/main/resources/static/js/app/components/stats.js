@@ -1,20 +1,22 @@
 /* global Vue */
-
-define(['jquery', 'pubsub'], function($, pubsub) {
+require(['jquery-easypiechart','jquery','pubsub'], function() {
     'use strict';
 
-    var ComponentStat = {
+    let $ = requirejs('jquery');
+    let pubsub = requirejs('pubsub');
+
+    let ComponentStat = {
         props: ['icon', 'val', 'text'],
         template: '#component-stat'
     };
 
-    var ComponentFunded = {
+    let ComponentFunded = {
         props: ['val', 'text'],
         template: '#component-funded'
     };
 
     // create a root instance
-    var v_dashboard = new Vue({
+    let v_dashboard = new Vue({
         el: '#dashboard',
         components: {
             'component-stat': ComponentStat,
@@ -52,7 +54,7 @@ define(['jquery', 'pubsub'], function($, pubsub) {
                 return ((Math.round(number * 100) / 100).toFixed(2)).toLocaleString();
             },
             round(amount, digitsAfterDecimal) {
-                if(typeof digitsAfterDecimal === 'undefined') {
+                if (typeof digitsAfterDecimal === 'undefined') {
                     digitsAfterDecimal = 2;
                 }
                 var number = Number(amount);
@@ -68,12 +70,13 @@ define(['jquery', 'pubsub'], function($, pubsub) {
             v_dashboard.totalAmountFunded.val = data.totalAmountFunded;
             v_dashboard.averageFundingPerRequest.val = data.averageFundingPerRequest;
             v_dashboard.percentageFunded.val = data.percentageFunded;
+
+            $('#dashboard').find('[data-easypiechart]').each(function() {
+                let $this = $(this);
+                $this.easyPieChart();
+            });
         });
     });
 
     pubsub.publish('fnd/stats/update');
-
-    $(function() {
-        $('#dashboard').find('[data-easypiechart]').easyPieChart();
-    })
 });
