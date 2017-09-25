@@ -42,10 +42,10 @@ public class StatisticsController {
         );
         long numberOfRequestsFunded = funds.stream().map(FundDto::getRequestId).distinct().count();
         if (numberOfRequestsFunded > 0) {
-            result.setPercentageFunded(new BigDecimal("" + numberOfRequestsFunded).divide(new BigDecimal("" + result.getNumberOfRequests()), BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")));
+            result.setRequestsFunded(funds.stream().map(FundDto::getRequestId).distinct().count());
             result.setAverageFundingPerRequest(new BigDecimal(result.getTotalAmountFunded()).divide(new BigDecimal(numberOfRequestsFunded), BigDecimal.ROUND_HALF_UP));
         } else {
-            result.setPercentageFunded(BigDecimal.ZERO);
+            result.setRequestsFunded(0L);
             result.setAverageFundingPerRequest(BigDecimal.ZERO);
         }
         Map<LocalDate, BigInteger> fundsPerDay = funds.stream().collect(
