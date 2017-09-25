@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.fund.command;
 
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
@@ -10,6 +11,7 @@ public class AddFundsCommand {
     private Long requestId;
 
     @NotNull
+    @DecimalMin(value = "0")
     private BigInteger amountInWei;
 
     public Long getRequestId() {

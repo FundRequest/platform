@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class StatisticsDto {
     private Long numberOfRequests;
-    private BigDecimal percentageFunded;
+    private Long requestsFunded;
     private Long numberOfFunders;
     private BigInteger totalAmountFunded;
     private BigDecimal averageFundingPerRequest;
@@ -22,12 +22,12 @@ public class StatisticsDto {
         this.numberOfRequests = numberOfRequests;
     }
 
-    public BigDecimal getPercentageFunded() {
-        return percentageFunded;
+    public Long getRequestsFunded() {
+        return requestsFunded;
     }
 
-    public void setPercentageFunded(BigDecimal percentageFunded) {
-        this.percentageFunded = percentageFunded;
+    public void setRequestsFunded(Long requestsFunded) {
+        this.requestsFunded = requestsFunded;
     }
 
     public Long getNumberOfFunders() {
