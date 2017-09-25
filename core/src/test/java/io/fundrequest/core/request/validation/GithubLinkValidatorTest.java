@@ -32,7 +32,7 @@ public class GithubLinkValidatorTest {
     @Test
     public void validGithubLink() throws Exception {
         assertThat(
-                validator.isValid("https://github.com/freeCodeCamp/freeCodeCamp/issues/14258", null)
+                validator.isValid("https://github.com/FundRequest/area51/issues/4", null)
         ).isTrue();
     }
 }

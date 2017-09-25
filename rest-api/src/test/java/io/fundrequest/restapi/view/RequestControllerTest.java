@@ -80,7 +80,7 @@ public class RequestControllerTest {
     @Test
     public void createRequest() throws Exception {
         CreateRequestCommand command = new CreateRequestCommand();
-        command.setIssueLink("https://github.com/freeCodeCamp/freeCodeCamp/issues/14258");
+        command.setIssueLink("https://github.com/FundRequest/area51/issues/4");
         command.setTechnologies(Collections.singleton("java"));
 
         Mockito.when(requestService.createRequest(principal, command))
