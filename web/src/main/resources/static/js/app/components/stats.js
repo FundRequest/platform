@@ -77,10 +77,9 @@ require(['jquery-easypiechart','jquery','pubsub'], function() {
             v_dashboard.requestsFunded.val = data.requestsFunded;
             v_dashboard.percentageFunded.val = data.requestsFunded / data.numberOfRequests * 100;
 
-            $('#dashboard').find('[data-easypiechart]').each(function() {
-                let $this = $(this);
-                $this.easyPieChart();
-            });
+            $('#dashboard [data-easypiechart]')
+                .easyPieChart().data('easyPieChart')
+                .update(v_dashboard.round(v_dashboard.percentageFunded.val, 0));
         });
     });
 

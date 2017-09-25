@@ -18,13 +18,13 @@
         <div th:include="fragments/stats :: component-stat"></div>
         <div th:include="fragments/stats :: component-funded"></div>
         <div class="row">
-            <div class="col-sm-6 col-lg-4">
+            <div class="col-sm-6 col-md-4">
                 <component-stat :icon="numberOfRequests.icon" :val="numberOfRequests.val" :text="numberOfRequests.text"></component-stat>
             </div>
-            <div class="col-sm-6 col-lg-4">
+            <div class="col-sm-6 col-md-4">
                 <component-stat :icon="requestsFunded.icon" :val="requestsFunded.val" :text="requestsFunded.text"></component-stat>
             </div>
-            <div class="col-sm-6 col-lg-4">
+            <div class="col-sm-6 col-md-4">
                 <component-stat :icon="averageFundingPerRequest.icon" :val="fromWei(averageFundingPerRequest.val)" :text="averageFundingPerRequest.text"></component-stat>
             </div>
             <div class="col-sm-6 col-lg-8">
