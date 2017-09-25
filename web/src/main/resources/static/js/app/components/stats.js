@@ -28,6 +28,11 @@ require(['jquery-easypiechart','jquery','pubsub'], function() {
                 text: '# Requests',
                 val: 0
             },
+            requestsFunded: {
+                icon: 'fa fa-magic',
+                text: '# Requests funded',
+                val: 0
+            },
             numberOfFunders: {
                 icon: 'icon-people',
                 text: '# Funders',
@@ -69,7 +74,8 @@ require(['jquery-easypiechart','jquery','pubsub'], function() {
             v_dashboard.numberOfFunders.val = data.numberOfFunders;
             v_dashboard.totalAmountFunded.val = data.totalAmountFunded;
             v_dashboard.averageFundingPerRequest.val = data.averageFundingPerRequest;
-            v_dashboard.percentageFunded.val = data.percentageFunded;
+            v_dashboard.requestsFunded.val = data.requestsFunded;
+            v_dashboard.percentageFunded.val = data.requestsFunded / data.numberOfRequests * 100;
 
             $('#dashboard').find('[data-easypiechart]').each(function() {
                 let $this = $(this);
