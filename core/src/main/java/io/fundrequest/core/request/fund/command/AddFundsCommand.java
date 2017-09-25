@@ -2,6 +2,7 @@ package io.fundrequest.core.request.fund.command;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 
 public class AddFundsCommand {
 
@@ -9,8 +10,7 @@ public class AddFundsCommand {
     private Long requestId;
 
     @NotNull
-    @Min(1)
-    private Long amountInWei;
+    private BigInteger amountInWei;
 
     public Long getRequestId() {
         return requestId;
@@ -20,11 +20,11 @@ public class AddFundsCommand {
         this.requestId = requestId;
     }
 
-    public Long getAmountInWei() {
+    public BigInteger getAmountInWei() {
         return amountInWei;
     }
 
-    public void setAmountInWei(Long amountInWei) {
+    public void setAmountInWei(BigInteger amountInWei) {
         this.amountInWei = amountInWei;
     }
 }

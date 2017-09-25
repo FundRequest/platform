@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.math.BigInteger;
+
 @Component
 public class CreateGithubCommentOnFundHandler {
 
@@ -24,8 +26,8 @@ public class CreateGithubCommentOnFundHandler {
     public void createGithubCommentOnRequestFunded(RequestFundedEvent event) {
         UserDto user = userService.getUser(event.getFunder());
         CreateGithubComment comment = new CreateGithubComment();
-        double amount = event.getAmountInWei() / Math.pow(10, 18);
-        comment.setBody("Great! " + user.getName() + " funded " + amount + " FND to this issue. For more information, go to https://fundrequest.io.");
+        BigInteger amount = event.getAmountInWei().divide(new BigInteger("10").pow(18));
+        comment.setBody("Great! " + user.getName() + " funded " + amount.toString() + " FND to this issue. For more information, go to https://fundrequest.io.");
         githubClient.createCommandOnIssue(event.getOwner(), event.getRepo(), event.getNumber(), comment);
     }
 }
