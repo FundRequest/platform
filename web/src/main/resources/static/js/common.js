@@ -13,7 +13,7 @@ requirejs.config({
         'animo': '//cdnjs.cloudflare.com/ajax/libs/animo.js/1.0.3/animo.min',
         'modernizr': 'modernizr.custom',
         'angle': 'angle',
-        'easypiechart': 'jquery.easypiechart.min',
+        'jquery-easypiechart': 'jquery.easypiechart.min',
         'bootstrap-tagsinput': 'bootstrap-tagsinput.min',
         'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min',
         'vuejs': '//cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.min',
@@ -46,6 +46,6 @@ requirejs.config({
         'screenfull': {'deps': ['jquery']},
         'sockjs': {'deps': ['stompjs']},
         'animo': {'deps': ['jquery']},
-        'angle': {'deps': ['jquery', 'modernizr', 'bootstrap', 'bootstrap-tagsinput', 'jquery-storage-api', 'jquery-easing', 'animo', 'jQuery-slimScroll', 'easypiechart', 'screenfull', 'datatables.net-bs', 'datatables.net']},
+        'angle': {'deps': ['jquery', 'modernizr', 'bootstrap', 'bootstrap-tagsinput', 'jquery-storage-api', 'jquery-easing', 'animo', 'jQuery-slimScroll', 'screenfull', 'datatables.net-bs', 'datatables.net']},
     }
 });
