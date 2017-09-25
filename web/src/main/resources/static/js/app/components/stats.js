@@ -45,6 +45,19 @@ define(['jquery', 'pubsub'], function($, pubsub) {
                 text: 'Funded requests',
                 val: 0
             },
+        },
+        methods: {
+            fromWei(amountInWei) {
+                var number = Number(amountInWei) / 1000000000000000000;
+                return ((Math.round(number * 100) / 100).toFixed(2)).toLocaleString();
+            },
+            round(amount, digitsAfterDecimal) {
+                if(typeof digitsAfterDecimal === 'undefined') {
+                    digitsAfterDecimal = 2;
+                }
+                var number = Number(amount);
+                return ((Math.round(number * 100) / 100).toFixed(digitsAfterDecimal)).toLocaleString()
+            }
         }
     });
 
@@ -60,7 +73,7 @@ define(['jquery', 'pubsub'], function($, pubsub) {
 
     pubsub.publish('fnd/stats/update');
 
-    $(function(){
+    $(function() {
         $('#dashboard').find('[data-easypiechart]').easyPieChart();
     })
 });

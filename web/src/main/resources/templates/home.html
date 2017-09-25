@@ -26,13 +26,13 @@
                 <component-stat :icon="numberOfRequests.icon" :val="numberOfRequests.val" :text="numberOfRequests.text"></component-stat>
             </div>
             <div class="col-sm-6 col-lg-3">
-                <component-stat :icon="averageFundingPerRequest.icon" :val="averageFundingPerRequest.val" :text="averageFundingPerRequest.text"></component-stat>
+                <component-stat :icon="averageFundingPerRequest.icon" :val="fromWei(averageFundingPerRequest.val)" :text="averageFundingPerRequest.text"></component-stat>
             </div>
             <div class="col-sm-6 col-lg-3">
                 <component-stat :icon="numberOfFunders.icon" :val="numberOfFunders.val" :text="numberOfFunders.text"></component-stat>
             </div>
             <div class="col-sm-6 col-lg-3">
-                <component-stat :icon="totalAmountFunded.icon" :val="totalAmountFunded.val" :text="totalAmountFunded.text"></component-stat>
+                <component-stat :icon="totalAmountFunded.icon" :val="fromWei(totalAmountFunded.val)" :text="totalAmountFunded.text"></component-stat>
             </div>
         </div>
         <div class="row mb-2">
@@ -57,7 +57,7 @@
             </div>
 
             <div class="col-xs-4">
-                <component-funded :val="percentageFunded.val" :text="percentageFunded.text"></component-funded>
+                <component-funded :val="round(percentageFunded.val, 0)" :text="percentageFunded.text"></component-funded>
             </div>
         </div>
     </div>
