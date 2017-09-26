@@ -62,13 +62,6 @@ define(['require', 'jquery'], function (require, $) {
       "payable": false,
       "type": "function"
     }, {
-      "constant": true,
-      "inputs": [],
-      "name": "fundRequestContractAddress",
-      "outputs": [{"name": "", "type": "address"}],
-      "payable": false,
-      "type": "function"
-    }, {
       "constant": false,
       "inputs": [{"name": "_from", "type": "address"}, {"name": "_to", "type": "address"}, {
         "name": "_value",
@@ -209,6 +202,13 @@ define(['require', 'jquery'], function (require, $) {
       "inputs": [],
       "name": "canUpgrade",
       "outputs": [{"name": "", "type": "bool"}],
+      "payable": false,
+      "type": "function"
+    }, {
+      "constant": true,
+      "inputs": [],
+      "name": "fundRequestContract",
+      "outputs": [{"name": "", "type": "address"}],
       "payable": false,
       "type": "function"
     }, {
@@ -360,12 +360,12 @@ define(['require', 'jquery'], function (require, $) {
     }, {
       "constant": true,
       "inputs": [],
-      "name": "tokenAddress",
+      "name": "token",
       "outputs": [{"name": "", "type": "address"}],
       "payable": false,
       "type": "function"
     }, {"inputs": [{"name": "_tokenAddress", "type": "address"}], "payable": false, "type": "constructor"}];
-    var contractAddress = "0x78b75506895392daca4273aee6393048714da5c3";
+    var contractAddress = "0xb6a0d43b4dd2024861578ae165ced97ec2d70a16";
     fundRequestContract = web3.eth.contract(contractAbi).at(contractAddress);
   }
 
