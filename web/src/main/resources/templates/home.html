@@ -31,10 +31,10 @@
                 <component-stat :icon="numberOfFunders.icon" :val="numberOfFunders.val" :text="numberOfFunders.text"></component-stat>
             </div>
             <div class="col-sm-6 col-lg-4">
-                <component-stat :icon="averageFundingPerRequest.icon" :val="fromWei(averageFundingPerRequest.val)" :text="averageFundingPerRequest.text"></component-stat>
+                <component-stat :icon="averageFundingPerRequest.icon" :val="addFND(fromWei(averageFundingPerRequest.val))" :text="averageFundingPerRequest.text"></component-stat>
             </div>
             <div class="col-sm-6 col-lg-4">
-                <component-stat :icon="totalAmountFunded.icon" :val="fromWei(totalAmountFunded.val)" :text="totalAmountFunded.text"></component-stat>
+                <component-stat :icon="totalAmountFunded.icon" :val="addFND(fromWei(totalAmountFunded.val))" :text="totalAmountFunded.text"></component-stat>
             </div>
         </div>
         <div class="row mb-2">

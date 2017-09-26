@@ -54,6 +54,9 @@ require(['jquery-easypiechart','jquery','pubsub'], function() {
             },
         },
         methods: {
+            addFND(amount) {
+                return amount + ' FND';
+            },
             fromWei(amountInWei) {
                 var number = Number(amountInWei) / 1000000000000000000;
                 return ((Math.round(number * 100) / 100).toFixed(2)).toLocaleString();
