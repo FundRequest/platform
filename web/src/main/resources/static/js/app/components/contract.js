@@ -335,7 +335,7 @@ define(['require', 'jquery'], function (require, $) {
       "name": "Transfer",
       "type": "event"
     }];
-    var tokenContractAddress = "0xb6a0d43b4dd2024861578ae165ced97ec2d70a16";
+    var tokenContractAddress = "0x0fcffc21d5ed3a4dd3bb99bc4b4055002e348eb0";
     tokenContract = web3.eth.contract(tokenAbi).at(tokenContractAddress);
   }
 
@@ -365,7 +365,7 @@ define(['require', 'jquery'], function (require, $) {
       "payable": false,
       "type": "function"
     }, {"inputs": [{"name": "_tokenAddress", "type": "address"}], "payable": false, "type": "constructor"}];
-    var contractAddress = "0x71acb72cae766b300d92f01458d46a1c84255bc1";
+    var contractAddress = "0xb6a0d43b4dd2024861578ae165ced97ec2d70a16";
     fundRequestContract = web3.eth.contract(contractAbi).at(contractAddress);
   }
 
