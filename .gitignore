@@ -2,6 +2,8 @@
 application-*.properties
 
 
+# node
+**/node_modules/
 
 # Created by https://www.gitignore.io/api/intellij+iml,windows,linux,eclipse,maven,java,macos
 ### EthereumJ ###

@@ -1,0 +1,191 @@
+<div class="content-heading">Form Extended
+    <small>Native ng2 elements to extend the form functions</small>
+</div>
+<!-- START panel-->
+<div class="panel panel-default">
+    <div class="panel-heading">Form elements</div>
+    <div class="panel-body">
+        <form class="form-horizontal" method="get">
+            <legend>New Components</legend>
+            <fieldset>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Switch Small</label>
+                    <div class="col-sm-10">
+                        <label class="switch switch-sm">
+                            <input type="checkbox" checked="checked" />
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Switch</label>
+                    <div class="col-sm-10">
+                        <label class="switch">
+                            <input type="checkbox" checked="checked" />
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Switch Large</label>
+                    <div class="col-sm-10">
+                        <label class="switch switch-lg">
+                            <input type="checkbox" checked="checked" />
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Switch Radio</label>
+                    <div class="col-sm-10">
+                        <label class="switch switch-lg">
+                            <input type="radio" checked="checked" name="radioSwitch" />
+                            <span></span>
+                        </label>
+                        <label class="switch switch-lg">
+                            <input type="radio" name="radioSwitch" />
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div class="form-group mb">
+                    <label class="col-sm-2 control-label">Color pickers</label>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Input</div>
+                                    <div class="panel-body">
+                                        <label for="" [style.color]="colorDemo1">Show me color</label>
+                                        <input class="form-control" [(colorPicker)]="colorDemo1" [value]="colorDemo1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Html element:</div>
+                                    <div class="panel-body">
+                                        <div class="h1 clickable mt-lg" [(colorPicker)]="colorDemo2" [cpPosition]="'bottom'" [style.color]="colorDemo2" [cpPositionOffset]="'50%'" [cpPositionRelativeToArrow]="true">Change me!</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Cancel button</div>
+                                    <div class="panel-body">
+                                        <input class="form-control" [(colorPicker)]="colorDemo3" [value]="colorDemo3" [cpCancelButton]="true" [cpHeight]="'310px'" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Output format</div>
+                                    <div class="panel-body">
+                                        <input class="form-control" [(colorPicker)]="colorDemo4" [value]="colorDemo4" [cpOutputFormat]="'rgba'" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div class="form-group mb">
+                    <label class="col-sm-2 control-label">ngSelect2</label>
+                    <div class="col-sm-6">
+                        <label class="mt">Single Select</label>
+                        <ng-select [allowClear]="true" [items]="items" [disabled]="disabled" (data)="refreshValue($event)" (selected)="selected($event)" (removed)="removed($event)" (typed)="typed($event)" placeholder="No city selected">
+                        </ng-select>
+                        <label class="mt">Multiple</label>
+                        <ng-select (data)="value" [multiple]="true" [items]="items" [disabled]="disabled" (data)="refreshValue($event)" (selected)="selected($event)" (removed)="removed($event)" placeholder="No city selected"></ng-select>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Masked input</label>
+                    <div class="col-sm-6">
+                        <label class="mt">
+                            Using <code>NgModel</code>
+                        </label>
+                        <input id="1" name="phone" [(ngModel)]="myModel" [textMask]="{mask: mask}" type="text" class="form-control" />
+                        <div>Model value: {{myModel || "[empty]"}}</div>
+                        <label class="mt">
+                            Using <code>NgModel</code> with initial value
+                        </label>
+                        <input id="2" name="phoneWithValue" [(ngModel)]="modelWithValue" [textMask]="{mask: mask}" type="text" class="form-control" />
+                        <div>Model value: {{modelWithValue || "[empty]"}}</div>
+                        <label class="mt">
+                            Using <code>FormControl</code> with initial value
+                        </label>
+                        <input id="3" name="phoneFormControl" [formControl]='formControlInput' [textMask]="{mask: mask}" type="text" class="form-control" />
+                        <div>Model value: {{formControlInput.value || "[empty]"}}</div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Tags input
+                        <div class="text-sm text-muted">Type and press Enter</div>
+                    </label>
+                    <div class="col-sm-10">
+                        <div>
+                            <label class="mt">Simple Input with two items</label>
+                            <tag-input theme='minimal' name="tagName1" [ngModel]="['Typescript', 'Angular 2']"></tag-input>
+                        </div>
+                        <div>
+                            <label class="mt-lg">Input tag that allows max 3 tags</label>
+                            <tag-input theme='minimal' name="tagName2" [ngModel]="['Javascript', 'Typescript']" [maxItems]="3" placeholder="Insert a new item"></tag-input>
+                        </div>
+                        <div>
+                            <label class="mt-lg">A read-only tag input</label>
+                            <tag-input theme='minimal' name="tagName3" [ngModel]="['Javascript', 'Typescript']" [readonly]="true"></tag-input>
+                        </div>
+                        <div>
+                            <label class="mt-lg">An input which requires all tags to start with '@' and end with '$'</label>
+                            <tag-input theme='minimal' name="tagName4" [ngModel]="['@item$']" [errorMessages]="errorMessages" [validators]="validators"></tag-input>
+                        </div>
+                        <div>
+                            <label class="mt-lg">An input which will transform the value of all added tags prepending '@' to the tag</label>
+                            <tag-input theme='minimal' name="tagName5" [ngModel]="['@item']" [transform]="transform"></tag-input>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Block Note Editor
+                        <div class="text-sm text-muted">Based on textarea</div>
+                    </label>
+                    <div class="col-sm-10">
+                        <div class="panel">
+                            <div class="panel-body mh0">
+                                <textarea class="form-control note-editor" rows="10"></textarea>
+                            </div>
+                        </div>
+                        <p>With margin</p>
+                        <div class="panel">
+                            <div class="panel-body mh0">
+                                <textarea class="form-control note-editor note-editor-margin" rows="10"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Buttons -->
+            <fieldset>
+                <div class="form-group">
+                    <div class="col-sm-4 col-sm-offset-2">
+                        <button class="btn btn-default" type="submit">Cancel</button>
+                        <button class="btn btn-primary" type="submit">Save changes</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+<!-- END panel-->

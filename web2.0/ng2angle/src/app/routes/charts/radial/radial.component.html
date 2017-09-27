@@ -1,0 +1,197 @@
+<div class="content-heading">Radial charts
+   <small>Canvas based &amp; No canvas Pure CSS radial progress bars solutions</small>
+</div>
+<div class="container-fluid">
+    <h4 class="page-header clearfix">
+      <div class="pull-left">Easypie Charts</div>
+      <div class="pull-right">
+         <button class="btn btn-sm btn-info" type="button" (click)="randomize()">
+            <em class="fa fa-refresh"></em>
+         </button>
+      </div>
+   </h4>
+    <div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="panel">
+                <div class="panel-heading">Default</div>
+                <div class="panel-body text-center">
+                    <div class="easypie-chart" easypiechart [options]="pieOptions1" [percent]="easyPiePercent1">
+                        <span>{{easyPiePercent1}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="panel">
+                <div class="panel-heading">Slim</div>
+                <div class="panel-body text-center">
+                    <div class="easypie-chart" easypiechart [options]="pieOptions2" [percent]="easyPiePercent2">
+                        <span>{{easyPiePercent2}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="panel">
+                <div class="panel-heading">Track color</div>
+                <div class="panel-body text-center">
+                    <div class="easypie-chart" easypiechart [options]="pieOptions3" [percent]="easyPiePercent3">
+                        <span>{{easyPiePercent3}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="panel">
+                <div class="panel-heading">Scale color</div>
+                <div class="panel-body text-center">
+                    <div class="easypie-chart" easypiechart [options]="pieOptions4" [percent]="easyPiePercent4">
+                        <span>{{easyPiePercent4}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<h4 class="page-header">Pure CSS
+   <small>radial progress bars solutions</small>
+</h4>
+<!-- START row-->
+<div class="row">
+    <div class="col-lg-6">
+        <!-- START panel-->
+        <div class="panel panel-default">
+            <div class="panel-heading">Radial Size</div>
+            <div class="panel-body text-center">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-85 radial-bar-lg" data-label="85%"></div>
+                        <p><code>.radial-bar.radial-bar-85.radial-bar-lg</code>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-45" data-label="45%"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-60 radial-bar-sm" data-label="60%"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-20 radial-bar-xs" data-label="20%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END panel-->
+        <!-- START panel-->
+        <div class="panel panel-default">
+            <div class="panel-heading">Radial with Images</div>
+            <div class="panel-body text-center">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-20 radial-bar radial-bar-danger">
+                            <img src="assets/img/user/03.jpg" alt="Image" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-35 radial-bar-warning" data-label="35%">
+                            <img src="assets/img/user/01.jpg" alt="Image" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-50 radial-bar-info" data-label="50%">
+                            <img src="assets/img/user/04.jpg" alt="Image" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-100 radial-bar-success" data-label="100%">
+                            <img src="assets/img/user/05.jpg" alt="Image" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END panel-->
+        <!-- START panel-->
+        <div class="panel panel-default">
+            <div class="panel-heading">Radial with Tooltips</div>
+            <div class="panel-body text-center">
+                <div class="row">
+                    <div class="col-md-3">
+                        <br/>
+                        <div class="radial-bar radial-bar-85" data-label="85%" tooltip="85%"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <br/>
+                        <div class="radial-bar radial-bar-45" data-label="45%" tooltip="45%"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <br/>
+                        <div class="radial-bar radial-bar-60" data-label="60%" tooltip="60%"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <br/>
+                        <div class="radial-bar radial-bar-20" data-label="20%" tooltip="20%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END panel-->
+    </div>
+    <div class="col-lg-6">
+        <!-- START panel-->
+        <div class="panel panel-default">
+            <div class="panel-heading">Radial Variants</div>
+            <div class="panel-body text-center">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-20 radial-bar-lg radial-bar-danger" data-label="20%"></div>
+                        <p><code>.radial-bar.radial-bar-20.radial-bar-lg.radial-bar-danger</code>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-35 radial-bar-lg radial-bar-warning" data-label="35%"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-50 radial-bar-lg radial-bar-info" data-label="50%"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radial-bar radial-bar-100 radial-bar-lg radial-bar-success" data-label="100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END panel-->
+        <!-- START panel-->
+        <div class="panel panel-default">
+            <div class="panel-heading">Radial applications</div>
+            <div class="panel-body text-center">
+                <div class="radial-bar radial-bar-85 radial-bar-lg" data-label="85%"></div>
+                <p>Visitors</p>
+            </div>
+            <div class="panel-footer text-center">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="radial-bar radial-bar-warning radial-bar-35 radial-bar-sm" data-label="35%"></div>
+                        <p>
+                            <small>Conversions</small>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="radial-bar radial-bar-info radial-bar-45 radial-bar-sm" data-label="45%"></div>
+                        <p>
+                            <small>Recurrent</small>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="radial-bar radial-bar-success radial-bar-20 radial-bar-sm" data-label="20%"></div>
+                        <p>
+                            <small>Uniques</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END panel-->
+    </div>
+</div>
+<!-- END row-->

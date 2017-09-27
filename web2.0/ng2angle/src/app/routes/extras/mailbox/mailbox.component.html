@@ -1,0 +1,48 @@
+<div class="content-heading">MailBox</div>
+<div class="table-grid table-grid-desktop">
+    <div class="col col-md">
+        <div class="pr">
+            <div class="clearfix mb" *ngIf="!routeIsActive('/extras/mailbox/compose')">
+                <button class="btn btn-sm btn-default mb-toggle-button pull-right" type="button" (click)="mailboxMenuCollapsed = !mailboxMenuCollapsed">
+                    <em class="fa fa-bars fa-fw fa-lg"></em>
+                </button>
+                <a class="btn btn-purple btn-sm mb-compose-button" [routerLink]="'/extras/mailbox/compose'">
+                    <em class="fa fa-pencil"></em>
+                    <span>Compose</span>
+                </a>
+            </div>
+            <!-- START mailbox list-->
+            <div class="mb-boxes" [hidden]="mailboxMenuCollapsed">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li class="p">
+                                <small class="text-muted">MAILBOXES</small>
+                            </li>
+                            <li routerLinkActive="active" *ngFor="let fold of folders">
+                                <a [routerLink]="['/extras/mailbox/folder', fold.folder]">
+                                    <span class="label label-green pull-right" *ngIf="fold.alert">{{fold.alert}}</span>
+                                    <em class="fa fa-fw fa-lg" [ngClass]="fold.icon"></em>
+                                    <span>{{fold.name}}</span>
+                                </a>
+                            </li>
+                            <li class="p">
+                                <small class="text-muted">Labels</small>
+                            </li>
+                            <li class="p-h" *ngFor="let labl of labels">
+                                <a class="pv-sm" href="#">
+                                    <span class="circle" [ngClass]="'circle-' + labl.color"></span>
+                                    <span>{{labl.name}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- END mailbox list-->
+        </div>
+    </div>
+    <div class="col">
+        <router-outlet></router-outlet>
+    </div>
+</div>

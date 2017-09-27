@@ -1,0 +1,36 @@
+<!-- START Mails-->
+<div class="panel panel-default">
+   <div class="panel-body">
+      <form role="form-horizontal" method="post">
+         <div class="input-group form-group">
+            <span class="input-group-addon text-sm">To:</span>
+            <input class="form-control" type="text" />
+         </div>
+         <div class="input-group form-group" *ngIf="showCC">
+            <span class="input-group-addon text-sm">CC:</span>
+            <input class="form-control" type="text" />
+         </div>
+         <div class="input-group form-group" *ngIf="showBCC">
+            <span class="input-group-addon text-sm">BCC:</span>
+            <input class="form-control" type="text" />
+         </div>
+         <div class="input-group form-group">
+            <span class="input-group-addon text-sm">Subject:</span>
+            <input class="form-control" type="text" />
+         </div>
+         <div class="mb-editor">
+            <!-- START action buttons-->
+            <div class="btn-group btn-group-sm mb pull-right">
+               <button class="btn btn-default btn-sm" type="button" [ngClass]="{'active':showCC}" (click)="showCC = !showCC" href="#">CC</button>
+               <button class="btn btn-default btn-sm" type="button" [ngClass]="{'active':showBCC}" (click)="showBCC = !showBCC" href="#">BCC</button>
+            </div>
+            <!-- END action buttons  -->
+            <div id="summernote" class="summernote">
+                <span>Rich text mail here..</span>
+            </div>
+            <br/>
+            <button class="btn btn-primary btn-sm mb" type="button">Send</button>
+         </div>
+      </form>
+   </div>
+</div>

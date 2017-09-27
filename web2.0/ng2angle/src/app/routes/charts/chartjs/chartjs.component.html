@@ -1,0 +1,45 @@
+<div class="content-heading">Chart JS</div>
+<div class="container-fluid">
+   <div class="row mb-lg">
+      <div class="col-lg-6">
+         <h4>Line Chart</h4>
+         <div>
+            <canvas baseChart [chartType]="'line'" [options]="lineOptions" [datasets]="lineData.datasets" [colors]="lineColors" [labels]="lineData.labels" [legend]="false" height="120"></canvas>
+         </div>
+      </div>
+      <div class="col-lg-6">
+         <h4>Bar Chart</h4>
+         <div>
+            <canvas baseChart [chartType]="'bar'" [options]="barOptions" [datasets]="barData.datasets" [colors]="barColors" [labels]="barData.labels" [legend]="false" height="120"></canvas>
+         </div>
+      </div>
+   </div>
+   <div class="row mb-lg">
+      <div class="col-lg-6">
+         <h4>Polar Area Chart</h4>
+         <div>
+            <canvas baseChart [chartType]="'polarArea'" [options]="polarOptions" [datasets]="polarData.datasets" [labels]="polarData.labels" [colors]="polarColors" [legend]="false" height="180"></canvas>
+         </div>
+      </div>
+      <div class="col-lg-6">
+         <h4>Radar Chart</h4>
+         <div>
+            <canvas baseChart [chartType]="'radar'" [options]="radarOptions" [datasets]="radarData.datasets" [colors]="radarColors" [labels]="radarData.labels" [legend]="false" height="180"></canvas>
+         </div>
+      </div>
+   </div>
+   <div class="row mb-lg">
+      <div class="col-lg-6">
+         <h4>Pie Chart</h4>
+         <div>
+            <canvas baseChart [chartType]="'pie'" [options]="pieOptions" [datasets]="pieData.datasets" [colors]="pieColors" [labels]="pieData.labels" [legend]="false" height="80"></canvas>
+         </div>
+      </div>
+      <div class="col-lg-6">
+         <h4>Doughnut Chart</h4>
+         <div>
+            <canvas baseChart [chartType]="'doughnut'" [options]="doughnutOptions" [datasets]="doughnutData.datasets" [colors]="doughnutColors" [labels]="doughnutData.labels" [legend]="false" height="80"></canvas>
+         </div>
+      </div>
+   </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="content-heading">Google Maps
+    <small>This directive allows you to add Google Maps Javascript API elements.</small>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Classic Map</div>
+                <div class="panel-body">
+                    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [scrollwheel]="scrollwheel" class="gmap">
+                        <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+                    </agm-map>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Custom zoom</div>
+                <div class="panel-body">
+                    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="19" [scrollwheel]="scrollwheel" class="gmap">
+                        <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+                    </agm-map>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Different Map Type (not supported yet)</div>
+                <div class="panel-body">
+                    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [scrollwheel]="scrollwheel" class="gmap">
+                        <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+                    </agm-map>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Multiple Markers</div>
+                <div class="panel-body">
+                    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [scrollwheel]="scrollwheel" class="gmap">
+                        <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+                        <agm-marker [latitude]="33.787453" [longitude]="lng"></agm-marker>
+                    </agm-map>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Styled Maps</div>
+                <div class="panel-body">
+                    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [scrollwheel]="scrollwheel" [styles]="mapStyles" class="gmap">
+                        <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+                    </agm-map>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

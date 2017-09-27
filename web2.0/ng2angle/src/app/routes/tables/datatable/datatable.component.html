@@ -1,0 +1,71 @@
+<div class="content-heading">
+    Data-Tables components
+    <small>Native and not wrapped angular2 based data-tables</small>
+</div>
+<!-- <alert [type]="'info'">None of this examples are based on the official jQuery-Datatables</alert> -->
+<h4 class="page-header">ng2 Table
+    <small>Simple table extension with sorting, filtering, paging... for Angular2 apps by ValorSoftware</small>
+</h4>
+<div class="mb-lg clearfix">
+    <div class="pull-let wd-md">
+        <input *ngIf="config.filtering" placeholder="Filter all columns" [ngTableFiltering]="config.filtering" class="form-control" (tableChanged)="onChangeTable(config)" />
+    </div>
+</div>
+<div class="panel panel-default">
+    <ng-table [config]="config" (tableChanged)="onChangeTable(config)" (cellClicked)="onCellClick($event)" [rows]="rows" [columns]="columns">
+    </ng-table>
+</div>
+<div class="text-right">
+    <pagination *ngIf="config.paging" class="pagination-sm" [(ngModel)]="page" [totalItems]="length" [itemsPerPage]="itemsPerPage" [maxSize]="maxSize" [boundaryLinks]="true" [rotate]="false" (pageChanged)="onChangeTable(config, $event)" (numPages)="numPages = $event">
+    </pagination>
+</div>
+<!-- <pre *ngIf="config.paging" class="card card-block card-header">Page: {{page}} / {{numPages}}</pre> -->
+<br>
+<h4 class="page-header">Angular2 Datatable
+    <small>Simple table component with sorting and pagination for Angular2</small>
+</h4>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="pull-right text-muted"><em class="fa fa-user mr-sm"></em><strong>{{singleData?.length}}</strong> users</div>
+        User information
+    </div>
+    <table class="table table-striped" [mfData]="singleData" #mf="mfDataTable" [mfRowsOnPage]="10">
+        <thead>
+            <tr>
+                <th style="width: 20%">
+                    <mfDefaultSorter by="name">Name</mfDefaultSorter>
+                </th>
+                <th style="width: 40%">
+                    <mfDefaultSorter by="email">Email</mfDefaultSorter>
+                </th>
+                <th style="width: 10%">
+                    <mfDefaultSorter by="age">Age</mfDefaultSorter>
+                </th>
+                <th style="width: 20%">
+                    <mfDefaultSorter by="city">City</mfDefaultSorter>
+                </th>
+                <th style="width: 10%"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of mf.data">
+                <td>{{item.name}}</td>
+                <td>{{item.email}}</td>
+                <td class="text-right">{{item.age}}</td>
+                <td>{{item.city | uppercase}}</td>
+                <td>
+                    <button class="btn btn-danger btn-xs" title="remove" (click)="removeItem(item)">
+                        <span class="fa fa-times"></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5">
+                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

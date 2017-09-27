@@ -1,0 +1,243 @@
+<div class="container-md">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel b">
+                <div class="panel-heading bg-gray-lighter text-bold">Personal Settings</div>
+                <div class="list-group">
+                    <a class="list-group-item" (click)="settingActive=1" [ngClass]="{'active': (settingActive == 1)}">Profile</a>
+                    <a class="list-group-item" (click)="settingActive=2" [ngClass]="{'active': (settingActive == 2)}">Account</a>
+                    <a class="list-group-item" (click)="settingActive=3" [ngClass]="{'active': (settingActive == 3)}">Emails</a>
+                    <a class="list-group-item" (click)="settingActive=4" [ngClass]="{'active': (settingActive == 4)}">Notifications</a>
+                    <a class="list-group-item" (click)="settingActive=5" [ngClass]="{'active': (settingActive == 5)}">Applications</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div *ngIf="settingActive == 1">
+                <div class="panel b">
+                    <div class="panel-heading bg-gray-lighter text-bold">Profile</div>
+                    <div class="panel-body">
+                        <form action="">
+                            <div class="form-group">
+                                <label>Picture</label>
+                                <label for="image-input" class="file-upload">
+                                    <button class="btn btn-default"><em class="fa fa-upload mr"></em> Upload new picture</button>
+                                    <input id="image-input" type="file">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input class="form-control" type="text" />
+                            </div>
+                            <div class="form-group">
+                                <label>Bio</label>
+                                <textarea class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>URL</label>
+                                <input class="form-control" type="text" />
+                            </div>
+                            <div class="form-group">
+                                <label>Company</label>
+                                <input class="form-control" type="text" />
+                            </div>
+                            <div class="form-group">
+                                <label>Location</label>
+                                <input class="form-control" type="text" />
+                            </div>
+                            <button class="btn btn-info" type="button">Update settings</button>
+                            <p>
+                                <small class="text-muted">* Integer fermentum accumsan metus, id sagittis ipsum molestie vitae</small>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="settingActive == 2">
+                <div class="panel b">
+                    <div class="panel-heading bg-gray-lighter text-bold">Account</div>
+                    <div class="panel-body">
+                        <form action="">
+                            <div class="form-group">
+                                <label>Current password</label>
+                                <input class="form-control" type="password" />
+                            </div>
+                            <div class="form-group">
+                                <label>New password</label>
+                                <input class="form-control" type="password" />
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm new password</label>
+                                <input class="form-control" type="password" />
+                            </div>
+                            <button class="btn btn-info" type="button">Update password</button>
+                            <p>
+                                <small class="text-muted">* Integer fermentum accumsan metus, id sagittis ipsum molestie vitae</small>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel b">
+                    <div class="panel-heading bg-danger text-bold">Delete account</div>
+                    <div class="panel-body bt">
+                        <p>You will be asked for confirmation before delete account.</p>
+                        <button class="btn btn-default" type="button">
+                            <span class="text-danger">Delete account</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="settingActive == 3">
+                <div class="panel b">
+                    <div class="panel-heading bg-gray-lighter text-bold">Emails</div>
+                    <div class="panel-body">
+                        <p>Etiam eros nibh, condimentum in auctor et, aliquam quis elit. Donec id libero eros. Ut fringilla, justo id fringilla pretium, nibh nunc suscipit mauris, et suscipit nulla nisl ac dolor. Nam egestas, leo eu gravida tincidunt, sem ipsum pellentesque quam, vel iaculis est quam et eros.</p>
+                        <p>
+                            <strong>Your email addresses</strong>
+                        </p>
+                        <p>
+                            <span class="mr">email@someaddress.com</span>
+                            <span class="label label-success">primary</span>
+                        </p>
+                        <p>
+                            <span class="mr">another.email@someaddress.com</span>
+                            <span class="label bg-gray">private</span>
+                        </p>
+                    </div>
+                    <div class="panel-body bt">
+                        <p>
+                            <strong>Add email address</strong>
+                        </p>
+                        <form action="">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input class="form-control" type="email" placeholder="email@server.com" />
+                                            <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">Add</button>
+                                 </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" value="" />Keep my email address private</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-info" type="button">Update email</button>
+                            <p>
+                                <small class="text-muted">* Integer fermentum accumsan metus, id sagittis ipsum molestie vitae</small>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="settingActive == 4">
+                <form action="">
+                    <div class="panel b">
+                        <div class="panel-heading bg-gray-lighter text-bold">Notifications</div>
+                        <div class="panel-body bb">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="" />
+                                        <strong>Disable email notifications</strong>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <p>
+                                <strong>Interaction</strong>
+                            </p>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="" />Alert me when someone start to follow me</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="" />Alert me when someone star my work</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="" />Alert me when post a new comment</label>
+                                </div>
+                            </div>
+                            <p>
+                                <strong>Marketing</strong>
+                            </p>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="" />Send me news and interesting updates</label>
+                                </div>
+                            </div>
+                            <button class="btn btn-info" type="button">Update notifications</button>
+                            <p>
+                                <small class="text-muted">Mauris sodales accumsan erat, ut dapibus erat faucibus vitae.</small>
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="settingActive == 5">
+                <div class="panel b">
+                    <div class="panel-heading bg-gray-lighter text-bold">Applications</div>
+                    <div class="panel-body">
+                        <p>
+                            <span>You have granted access for</span>
+                            <strong>3 applications</strong>
+                            <span>to your account.</span>
+                        </p>
+                        <ul class="list-group">
+                            <li class="list-group-item clearfix">
+                                <div class="pull-left mr">
+                                    <img class="img-responsive thumb48" src="assets/img/dummy.png" alt="App" />
+                                </div>
+                                <div class="pull-right">
+                                    <button class="btn btn-default" type="button">
+                                        <strong>Revoke</strong>
+                                    </button>
+                                </div>
+                                <p class="text-bold mb0">Application #1</p>
+                                <small>Ut turpis urna, tristique sed adipiscing nec, luctus quis leo.</small>
+                            </li>
+                            <li class="list-group-item clearfix">
+                                <div class="pull-left mr">
+                                    <img class="img-responsive thumb48" src="assets/img/dummy.png" alt="App" />
+                                </div>
+                                <div class="pull-right">
+                                    <button class="btn btn-default" type="button">
+                                        <strong>Revoke</strong>
+                                    </button>
+                                </div>
+                                <p class="text-bold mb0">Application #2</p>
+                                <small>Ut turpis urna, tristique sed adipiscing nec, luctus quis leo.</small>
+                            </li>
+                            <li class="list-group-item clearfix">
+                                <div class="pull-left mr">
+                                    <img class="img-responsive thumb48" src="assets/img/dummy.png" alt="App" />
+                                </div>
+                                <div class="pull-right">
+                                    <button class="btn btn-default" type="button">
+                                        <strong>Revoke</strong>
+                                    </button>
+                                </div>
+                                <p class="text-bold mb0">Application #3</p>
+                                <small>Ut turpis urna, tristique sed adipiscing nec, luctus quis leo.</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
