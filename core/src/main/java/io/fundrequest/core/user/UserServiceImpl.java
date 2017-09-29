@@ -4,15 +4,17 @@ import org.apache.commons.lang.StringUtils;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private RealmResource adminRealmResource;
+
+    public UserServiceImpl(RealmResource adminRealmResource) {
+        this.adminRealmResource = adminRealmResource;
+    }
 
     @Override
     @Cacheable("users")
@@ -29,10 +31,9 @@ public class UserServiceImpl implements UserService {
     private UserDto map(UserRepresentation userRepresentation) {
         if(userRepresentation != null) {
             UserDto u = new UserDto();
-
             u.setEmail(userRepresentation.getEmail());
             u.setName(userRepresentation.getFirstName() + " " + userRepresentation.getLastName());
-            if (userRepresentation.getAccess().containsKey("picture") &&
+            if (userRepresentation.getAttributes().containsKey("picture") &&
                     userRepresentation.getAttributes().get("picture").size() > 0
                     && StringUtils.isNotBlank(userRepresentation.getAttributes().get("picture").get(0))) {
                 u.setPicture(userRepresentation.getAttributes().get("picture").get(0));

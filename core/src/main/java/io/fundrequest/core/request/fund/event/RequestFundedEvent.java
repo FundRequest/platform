@@ -42,4 +42,5 @@ public class RequestFundedEvent {
     public BigInteger getAmountInWei() {
         return amountInWei;
     }
+
 }
