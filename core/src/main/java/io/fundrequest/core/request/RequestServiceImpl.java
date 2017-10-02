@@ -42,7 +42,7 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RequestDto> findRequestsForUser(Principal principal) {
+    public List<RequestDto>     findRequestsForUser(Principal principal) {
         return mappers.mapList(Request.class, RequestDto.class, requestRepository.findRequestsForUser(principal.getName()));
     }
 
