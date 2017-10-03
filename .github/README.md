@@ -1,7 +1,7 @@
 ## FundRequest Platform <img align="right" src="https://fundrequest.io/images/app/header-logo.png" height="30px" />
 
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/FundRequest/platform/releases/tag/0.1.0)
 
 
 To report a bug or request a feature or change in the [Alpha](https://alpha.fundrequest.io) release please open a [new issue](https://github.com/FundRequest/platform/issues/new)
