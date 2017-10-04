@@ -17,7 +17,7 @@ public class AzraelMessageReceiver {
 
     @Bean
     Queue queue(@Value("${io.fundrequest.azrael.queueName}") final String queueName) {
-        return new Queue(queueName, false);
+        return new Queue(queueName, true);
     }
 
     @Bean
