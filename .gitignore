@@ -206,4 +206,4 @@ $RECYCLE.BIN/
 # Docker
 core/docker_data
 
-web/src/main/resources/application-dev.properties
+web/src/main/resources/config
