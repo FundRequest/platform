@@ -6,9 +6,42 @@
     <script src="https://dev-key.fundrequest.io//auth/js/keycloak.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+            crossorigin="anonymous"></script>
 </head>
 <body>
-Hello!
+
+
+<table>
+    <tbody>
+    <tr>
+        <td>Username</td>
+        <td id="username"></td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td id="name"></td>
+    </tr>
+    <tr>
+        <td>First Name</td>
+        <td id="firstName"></td>
+    </tr>
+    <tr>
+        <td>Last Name</td>
+        <td id="lastName"></td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td id="email"></td>
+    </tr>
+    <tr>
+        <td>Avatar</td>
+        <td id="avatar"></td>
+    </tr>
+    </tbody>
+</table>
 
 <script>
   var keycloak = Keycloak({
@@ -16,9 +49,17 @@ Hello!
     realm: 'fundrequest',
     clientId: 'fundrequest_dev'
   });
-  keycloak.init({onLoad: 'login-required'}).success(function (authenticated) {
+  keycloak.init({checkLoginIframe: false, onLoad: 'login-required'}).success(function (authenticated) {
     if (!authenticated) {
-        keycloak.login();
+      keycloak.login();
+    } else {
+      console.log(keycloak.tokenParsed);
+      $("#username").html(keycloak.tokenParsed.preferred_username);
+      $("#name").html(keycloak.tokenParsed.name);
+      $("#firstName").html(keycloak.tokenParsed.given_name);
+      $("#lastName").html(keycloak.tokenParsed.family_name);
+      $("#email").html(keycloak.tokenParsed.email);
+      $("#avatar").html("<img src='" + keycloak.tokenParsed.picture + "'>");
     }
   }).error(function (e) {
     console.error(e);
