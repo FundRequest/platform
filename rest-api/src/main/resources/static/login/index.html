@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login with keycloak</title>
+    <meta charset="utf-8">
+    <script src="https://dev-key.fundrequest.io//auth/js/keycloak.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+Hello!
+
+<script>
+  var keycloak = Keycloak({
+    url: 'https://dev-key.fundrequest.io/auth',
+    realm: 'fundrequest',
+    clientId: 'fundrequest_dev'
+  });
+  keycloak.init({onLoad: 'login-required'}).success(function (authenticated) {
+    if (!authenticated) {
+        keycloak.login();
+    }
+  }).error(function (e) {
+    console.error(e);
+    alert('failed to initialize');
+  });
+</script>
+
+</body>
+</html>

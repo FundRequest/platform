@@ -1,5 +1,7 @@
 package io.fundrequest.restapi.config;
 
+import org.keycloak.adapters.KeycloakConfigResolver;
+import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
 import org.keycloak.adapters.springsecurity.filter.KeycloakPreAuthActionsFilter;
@@ -34,6 +36,11 @@ public class RestSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public KeycloakConfigResolver KeycloakConfigResolver() {
+        return new KeycloakSpringBootConfigResolver();
+    }
+
+    @Bean
     public FilterRegistrationBean keycloakAuthenticationProcessingFilterRegistrationBean(
             KeycloakAuthenticationProcessingFilter filter) {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean(filter);
@@ -61,12 +68,12 @@ public class RestSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                .antMatchers("/css/**", "/fonts/**", "/js/**", "/login").permitAll()
+                .antMatchers("/css/**", "/fonts/**", "/js/**").permitAll()
                 .antMatchers("/requests").authenticated()
                 .antMatchers("/docs/**").permitAll()
-                .antMatchers("/login/**").permitAll()
                 .antMatchers("/fr-ws/**").permitAll()
                 .antMatchers("/activity/**").permitAll()
+                .antMatchers("/login", "/login/**").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated();
     }
