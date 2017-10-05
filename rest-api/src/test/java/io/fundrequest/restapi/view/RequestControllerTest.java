@@ -6,6 +6,7 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
+import io.fundrequest.restapi.request.RequestController;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

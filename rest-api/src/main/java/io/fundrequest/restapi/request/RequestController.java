@@ -1,4 +1,4 @@
-package io.fundrequest.restapi.view;
+package io.fundrequest.restapi.request;
 
 import io.fundrequest.core.infrastructure.repository.AbstractController;
 import io.fundrequest.core.request.RequestService;

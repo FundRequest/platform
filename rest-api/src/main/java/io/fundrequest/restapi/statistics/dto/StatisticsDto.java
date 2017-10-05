@@ -1,4 +1,4 @@
-package io.fundrequest.web.request.statistics.dto;
+package io.fundrequest.restapi.statistics.dto;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

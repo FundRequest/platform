@@ -1,10 +1,10 @@
-package io.fundrequest.web.request.statistics;
+package io.fundrequest.restapi.statistics;
 
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.web.request.statistics.dto.StatisticsDto;
+import io.fundrequest.restapi.statistics.dto.StatisticsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
