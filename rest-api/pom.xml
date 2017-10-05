@@ -93,7 +93,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/static/docs</outputDirectory>
+                            <outputDirectory>${project.build.outputDirectory}/static/api/docs</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.build.directory}/generated-docs</directory>
