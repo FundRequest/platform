@@ -1,54 +1,73 @@
 package io.fundrequest.restapi.config;
 
-import com.auth0.spring.security.api.Auth0SecurityConfig;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
+import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
+import org.keycloak.adapters.springsecurity.filter.KeycloakPreAuthActionsFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-public class RestSecurityConfig extends Auth0SecurityConfig {
+public class RestSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
-    /**
-     * Provides Auth0 API access
-     */
-    @Bean
-    public Auth0Client auth0Client() {
-        return new Auth0Client(clientId, issuer);
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(keycloakAuthenticationProvider());
     }
 
-    /**
-     * Our API Configuration - for Profile CRUD operations
-     * <p>
-     * Here we choose not to bother using the `auth0.securedRoute` property configuration
-     * and instead ensure any unlisted endpoint in our config is secured by default
-     */
+    @Bean
     @Override
-    protected void authorizeRequests(final HttpSecurity http) throws Exception {
-        // include some Spring Boot Actuator endpoints to check metrics
-        // add others or remove as you choose, this is just a sample config to illustrate
-        // most specific rules must come - order is important (see Spring Security docs)
-        http.authorizeRequests()
+    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+        return new NullAuthenticatedSessionStrategy();
+    }
+
+    @Bean
+    public FilterRegistrationBean keycloakAuthenticationProcessingFilterRegistrationBean(
+            KeycloakAuthenticationProcessingFilter filter) {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean(filter);
+        registrationBean.setEnabled(false);
+        return registrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean keycloakPreAuthActionsFilterRegistrationBean(
+            KeycloakPreAuthActionsFilter filter) {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean(filter);
+        registrationBean.setEnabled(false);
+        return registrationBean;
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
+                .and()
+                .addFilterBefore(keycloakPreAuthActionsFilter(), LogoutFilter.class)
+                .addFilterBefore(keycloakAuthenticationProcessingFilter(), X509AuthenticationFilter.class)
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
+                .and()
+                .authorizeRequests()
                 .antMatchers("/css/**", "/fonts/**", "/js/**", "/login").permitAll()
-                .antMatchers("/requests").hasAnyAuthority("ROLE_USER")
+                .antMatchers("/requests").authenticated()
                 .antMatchers("/docs/**").permitAll()
                 .antMatchers("/login/**").permitAll()
                 .antMatchers("/fr-ws/**").permitAll()
                 .antMatchers("/activity/**").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated();
-    }
-
-    /*
-     * Only required for sample purposes..
-     */
-    String getAuthorityStrategy() {
-        return super.authorityStrategy;
     }
 }

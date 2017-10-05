@@ -1,3 +1,7 @@
+### make sure no application properties are pushed ###
+application-*.properties
+
+
 
 # Created by https://www.gitignore.io/api/intellij+iml,windows,linux,eclipse,maven,java,macos
 ### EthereumJ ###
