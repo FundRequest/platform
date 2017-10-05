@@ -21,7 +21,6 @@ import {TooltipModule} from "ngx-bootstrap/tooltip";
 import {TypeaheadModule} from "ngx-bootstrap/typeahead";
 import {DatepickerModule} from "ngx-bootstrap/datepicker";
 
-import {FlotDirective} from "./directives/flot/flot.directive";
 import {SparklineDirective} from "./directives/sparkline/sparkline.directive";
 import {EasypiechartDirective} from "./directives/easypiechart/easypiechart.directive";
 import {ColorsService} from "./colors/colors.service";
@@ -59,7 +58,6 @@ import {JqcloudDirective} from "./directives/jqcloud/jqcloud.directive";
         ColorsService
     ],
     declarations: [
-        FlotDirective,
         SparklineDirective,
         EasypiechartDirective,
         CheckallDirective,
@@ -90,7 +88,6 @@ import {JqcloudDirective} from "./directives/jqcloud/jqcloud.directive";
         TooltipModule,
         TypeaheadModule,
         ToasterModule,
-        FlotDirective,
         SparklineDirective,
         EasypiechartDirective,
         CheckallDirective,

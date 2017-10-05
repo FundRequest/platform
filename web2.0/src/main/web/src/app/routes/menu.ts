@@ -133,10 +133,6 @@ const Charts = {
     icon: 'icon-graph',
     submenu: [
         {
-            text: 'Flot',
-            link: '/charts/flot'
-        },
-        {
             text: 'Radial',
             link: '/charts/radial'
         },

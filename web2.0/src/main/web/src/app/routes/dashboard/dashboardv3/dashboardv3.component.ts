@@ -99,9 +99,6 @@ export class Dashboardv3Component implements OnInit {
         this.sparkOptions3 = this.buildSparkOptionsBlock('info');
         this.sparkOptions4 = this.buildSparkOptionsBlock('purple');
 
-        // Flot CHart
-        http.get('assets/server/chart/splinev3.json').map(data => data.json()).subscribe(data => this.splineData = data);
-
         // Vector Map
         this.mapName = 'world_mill_en';
 
