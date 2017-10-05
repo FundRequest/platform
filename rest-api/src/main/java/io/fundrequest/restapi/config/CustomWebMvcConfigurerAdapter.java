@@ -9,6 +9,7 @@ public class CustomWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("redirect:/index.html");
         registry.addViewController("/api").setViewName("redirect:/api/");
         registry.addViewController("/api/").setViewName("redirect:/api/index.html");
         registry.addViewController("/api/docs").setViewName("redirect:/api/docs/");

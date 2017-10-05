@@ -13,6 +13,12 @@
     <artifactId>web2.0</artifactId>
 
     <build>
+        <resources>
+            <resource>
+                <directory>target/web</directory>
+                <targetPath>static</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>com.github.eirslett</groupId>

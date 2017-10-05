@@ -73,7 +73,12 @@ public class RestSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .antMatchers("/docs/**").permitAll()
                 .antMatchers("/fr-ws/**").permitAll()
                 .antMatchers("/api", "/api/**").permitAll()
+                .antMatchers("/favicon.ico").permitAll()
                 .antMatchers("/").permitAll()
+                .antMatchers("/index.html").permitAll()
+                .antMatchers("/*.js").permitAll()
+                .antMatchers("/*.woff", "/*.woff2", "/*.ttf").permitAll()
+                .antMatchers("/assets/**").permitAll()
                 .anyRequest().authenticated();
     }
 }
