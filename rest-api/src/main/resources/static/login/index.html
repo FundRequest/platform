@@ -7,8 +7,8 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script
-            src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
             crossorigin="anonymous"></script>
 </head>
 <body>
@@ -54,17 +54,33 @@
       keycloak.login();
     } else {
       console.log(keycloak.tokenParsed);
+      addBearerTokenToRequests();
+      getRequests();
       $("#username").html(keycloak.tokenParsed.preferred_username);
       $("#name").html(keycloak.tokenParsed.name);
       $("#firstName").html(keycloak.tokenParsed.given_name);
       $("#lastName").html(keycloak.tokenParsed.family_name);
       $("#email").html(keycloak.tokenParsed.email);
       $("#avatar").html("<img src='" + keycloak.tokenParsed.picture + "'>");
+
     }
   }).error(function (e) {
     console.error(e);
     alert('failed to initialize');
   });
+  function addBearerTokenToRequests() {
+    $.ajaxSetup({
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('Authorization', 'Bearer ' + keycloak.token);
+      }
+    });
+  }
+
+  function getRequests() {
+    $.get('/requests', function (data) {
+      console.log(data);
+    });
+  }
 </script>
 
 </body>
