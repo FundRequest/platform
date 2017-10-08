@@ -1,11 +1,16 @@
 package io.fundrequest.restapi.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
 public class CustomWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
+
+    @Value("#{'${cors.allowed-origins}'.split(',')}")
+    private String[] allowedOrigins;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -20,4 +25,12 @@ public class CustomWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
         registry.addViewController("/api/activity/").setViewName("forward:/api/activity/index.html");
         super.addViewControllers(registry);
     }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins(allowedOrigins)
+                .maxAge(3600);
+    }
+
 }
