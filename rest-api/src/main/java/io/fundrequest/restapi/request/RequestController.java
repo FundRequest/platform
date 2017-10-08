@@ -5,6 +5,7 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.view.RequestDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
+@CrossOrigin(maxAge = 3600, value = "*")
 public class RequestController extends AbstractController {
 
     private RequestService requestService;

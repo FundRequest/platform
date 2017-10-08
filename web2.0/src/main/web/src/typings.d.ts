@@ -4,4 +4,4 @@ interface NodeModule {
   id: string;
 }
 declare var System: any;
-declare const require: any;
+// declare const require: any;

@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
-import {Http} from "@angular/http";
 
 import {ColorsService} from "../../../shared/colors/colors.service";
+import {RequestsService} from "../../../core/requests/requests.service";
 
 @Component({
     selector: 'app-home',
@@ -24,9 +24,9 @@ export class HomeComponent implements OnInit {
     };
 
 
-    constructor(public colors: ColorsService, public http: Http) {
+    constructor(public colors: ColorsService, public requestsService: RequestsService) {
       // get data from rest api
-        http.get('rest-entry-point/').map(data => data.json()).subscribe(data => this.options = data);
+      console.log(requestsService.requests);
     }
 
     ngOnInit() { }
