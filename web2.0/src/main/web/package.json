@@ -28,6 +28,7 @@
     "@angular/platform-browser": "4.0.2",
     "@angular/platform-browser-dynamic": "4.0.2",
     "@angular/router": "4.0.2",
+    "@ebondu/angular2-keycloak": "^0.9.4",
     "@ngx-translate/core": "6.0.1",
     "@ngx-translate/http-loader": "0.0.3",
     "ag-grid": "9.0.3",
