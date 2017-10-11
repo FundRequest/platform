@@ -4,7 +4,7 @@ import {inject, TestBed} from "@angular/core/testing";
 import {RequestsService} from "./requests.service";
 import {HttpModule, Response, ResponseOptions, XHRBackend} from "@angular/http";
 import {MockBackend} from "@angular/http/testing";
-import {Request} from "app/core/requests/request";
+import {Request} from "app/core/requests/Request";
 
 describe('Service: Requests', () => {
   beforeEach(() => {
