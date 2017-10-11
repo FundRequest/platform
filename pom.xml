@@ -9,12 +9,12 @@
     <packaging>pom</packaging>
 
     <name>mvp-back-end</name>
-    <description>FundRequest MVP-Backend</description>
+    <description>FundRequest Platform</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.2.RELEASE</version>
+        <version>1.5.7.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -22,9 +22,12 @@
         <module>core</module>
         <module>rest-api</module>
         <module>web</module>
+        <module>web2.0</module>
     </modules>
 
     <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>

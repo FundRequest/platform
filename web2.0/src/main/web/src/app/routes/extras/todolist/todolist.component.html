@@ -1,0 +1,45 @@
+<div class="content-heading">Todo List
+   <button class="pull-right btn btn-danger" (click)="clearAll()">Clear All Items</button>
+   <small>Keeping track of tasks</small>
+</div>
+<div class="table-grid todo">
+    <div class="col col-lg">
+        <div class="pr-lg">
+            <form class="mb-xl" (submit)="addTodo()">
+                <div class="form-group">
+                    <input class="form-control" ng-trim="true" type="text" name="todoTitle" [(ngModel)]="todo.title" placeholder="Task title.." required="required" />
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" ng-trim="true" name="todoDescription" [(ngModel)]="todo.description" placeholder="Type a description.." rows="8"></textarea>
+                </div>
+                <button class="btn btn-primary btn-block" type="submit">{{editingTodo ? 'Edit Todo' : 'Add Todo'}}</button>
+            </form>
+        </div>
+    </div>
+    <div class="col todo-item-list">
+        <div class="lead text-muted text-center" *ngIf="!items.length">No tasks...</div>
+        <accordion [closeOthers]="true">
+            <accordion-group panelClass="todo-item" *ngFor="let item of items; let i = index" [isDisabled]="item.complete">
+                <div accordion-heading [ngClass]="{'todo-complete': item.complete}">
+                    <span class="close" (click)="removeTodo($index, $event)">×</span>
+                    <div class="inline checkbox c-checkbox">
+                        <label (click)="$event.stopPropagation()">
+                            <input type="checkbox" [(ngModel)]="item.complete" id="{{'todo-item-'+$index}}" [disabled]="editingTodo" />
+                            <span class="fa fa-check"></span>
+                        </label>
+                    </div>
+                    <span class="todo-title" [innerHTML]="item.todo.title">Task title</span>
+                    <span class="todo-edit fa fa-pencil" (click)="editTodo(i, $event)"></span>
+                </div>
+                <p>
+                    <span [innerHTML]="item.todo.description"></span>
+                    <span class="text-muted" *ngIf="item.todo.description === ''">No item description</span>
+                </p>
+            </accordion-group>
+        </accordion>
+        <p class="text-right" *ngIf="items.length &gt; 0">
+            <span>{{ totalCompleted() }} Completed</span>-
+            <span>{{ totalPending() }} Pending</span>
+        </p>
+    </div>
+</div>

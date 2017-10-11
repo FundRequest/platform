@@ -1,0 +1,305 @@
+<div class="content-heading">Form Validation
+    <small>Native Angular2 input validation</small>
+</div>
+<!-- START row-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <form [formGroup]="valForm" class="form-validate form-horizontal" (submit)="submitForm($event, valForm.value)" novalidate="">
+                <!-- START panel-->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <fieldset class="b0">
+                            <legend>Built-in</legend>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Required Text</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="sometext" [formControl]="valForm.controls['sometext']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['sometext'].hasError('required') && (valForm.controls['sometext'].dirty || valForm.controls['sometext'].touched)">This field is required</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">required</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Checkbox &amp; Radio</label>
+                                <div class="col-sm-6">
+                                    <div class="checkbox c-checkbox">
+                                        <label>
+                                            <input type="checkbox" formControlName="checkbox" [formControl]="valForm.controls['checkbox']" />
+                                            <span class="fa fa-check"></span>Option one</label>
+                                    </div>
+                                    <span class="text-danger" *ngIf="valForm.controls['checkbox'].hasError('required') && (valForm.controls['checkbox'].dirty || valForm.controls['checkbox'].touched)">This field is required</span>
+                                    <div class="radio c-radio">
+                                        <label>
+                                            <input type="radio" formControlName="radio" value="option1" [formControl]="valForm.controls['radio']" />
+                                            <span class="fa fa-circle"></span>Option one</label>
+                                    </div>
+                                    <div class="radio c-radio">
+                                        <label>
+                                            <input type="radio" formControlName="radio" value="option2" [formControl]="valForm.controls['radio']" />
+                                            <span class="fa fa-circle"></span>Option two</label>
+                                    </div>
+                                    <span class="text-danger" *ngIf="valForm.controls['radio'].hasError('required') && (valForm.controls['radio'].dirty || valForm.controls['radio'].touched)">This field is required</span>
+                                </div>
+                                <div class="col-sm-4"></div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Select</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" formControlName="select" [formControl]="valForm.controls['select']">
+                                        <option value="">Nothing</option>
+                                        <option value="1">Option 1</option>
+                                        <option value="2">Option 2</option>
+                                        <option value="3">Option 3</option>
+                                        <option value="4">Option 4</option>
+                                    </select>
+                                    <span class="text-danger" *ngIf="valForm.controls['select'].hasError('required') && (valForm.controls['select'].dirty || valForm.controls['select'].touched)">This field is required</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted"></small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Digits</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="digits" [formControl]="valForm.controls['digits']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['digits'].hasError('pattern') && (valForm.controls['digits'].dirty || valForm.controls['digits'].touched)">This field must contain only digits</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">pattern="/^[0-9]+$/"</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Minlength</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="minlen" [formControl]="valForm.controls['minlen']"/>
+                                    <span class="text-danger" *ngIf="valForm.controls['minlen'].hasError('minlength') && (valForm.controls['minlen'].dirty || valForm.controls['minlen'].touched)">This field requires a min length</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">minlength 6</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Maxlength</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="maxlen" [formControl]="valForm.controls['maxlen']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['maxlen'].hasError('maxlength') && (valForm.controls['maxlen'].dirty || valForm.controls['maxlen'].touched)">This field requires a max length</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">maxlength 10</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset class="b0">
+                            <legend>Extended</legend>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Number</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="number" formControlName="number" [formControl]="valForm.controls['number']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['number'].hasError('required') && (valForm.controls['number'].dirty || valForm.controls['number'].touched)">This field is required</span>
+                                    <span class="text-danger" *ngIf="valForm.controls['number'].hasError('number') && (valForm.controls['number'].dirty || valForm.controls['number'].touched)">This field must be a valid number</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">type='number'</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Alphanum</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="alphanum" [formControl]="valForm.controls['alphanum']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['alphanum'].hasError('pattern') && (valForm.controls['alphanum'].dirty || valForm.controls['alphanum'].touched)">This field must contain only letters</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">pattern="/^[a-zA-Z]+$/"</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Email</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="email" placeholder="mail@example.com" formControlName="email" [formControl]="valForm.controls['email']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['email'].hasError('email') && (valForm.controls['email'].dirty || valForm.controls['email'].touched)">Enter a valid email</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">type='email'</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Url</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="url" placeholder="http://" formControlName="url" [formControl]="valForm.controls['url']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['url'].hasError('url') && (valForm.controls['url'].dirty || valForm.controls['url'].touched)">Enter a valid url</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">type='url'</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Date</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="date" formControlName="date" [formControl]="valForm.controls['date']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['date'].hasError('date') && (valForm.controls['date'].dirty || valForm.controls['date'].touched)">Enter a valid date</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">type='date'</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Min</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="minvalue" [formControl]="valForm.controls['minvalue']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['minvalue'].hasError('min') && (valForm.controls['minvalue'].dirty || valForm.controls['minvalue'].touched)">This field requires minimum value</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">min value 6</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Max</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="maxvalue" [formControl]="valForm.controls['maxvalue']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['maxvalue'].hasError('max') && (valForm.controls['maxvalue'].dirty || valForm.controls['maxvalue'].touched)">This field requires maximum value</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">max value 10"</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Length range</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="minmaxlen" [formControl]="valForm.controls['minmaxlen']"/>
+                                    <span class="text-danger" *ngIf="valForm.controls['minmaxlen'].hasError('rangeLength') && (valForm.controls['minmaxlen'].dirty || valForm.controls['minmaxlen'].touched)">This field requires a range</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">length range between 6 and 10</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Value range</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="range" [formControl]="valForm.controls['range']"/>
+                                    <span class="text-danger" *ngIf="valForm.controls['range'].hasError('range') && (valForm.controls['range'].dirty || valForm.controls['range'].touched)">This field requires a value range</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">value range between 10 and 20</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset class="b0">
+                            <legend>Custom</legend>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Min words</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="minwords" [formControl]="valForm.controls['minwords']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['minwords'].hasError('minWords') && (valForm.controls['minwords'].dirty || valForm.controls['minwords'].touched)">This field requires a minimum amount of words</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">words >= 6</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset class="bb0">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Max words</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="maxwords" [formControl]="valForm.controls['maxwords']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['maxwords'].hasError('maxWords') && (valForm.controls['maxwords'].dirty || valForm.controls['maxwords'].touched)">This field requires a maximum amount of words</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">words <= 6</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset class="bb0">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Range of words</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" formControlName="rangewords" [formControl]="valForm.controls['rangewords']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['rangewords'].hasError('minWords') && (valForm.controls['rangewords'].dirty || valForm.controls['rangewords'].touched)">This field requires a minimum amount of words</span>
+                                    <span class="text-danger" *ngIf="valForm.controls['rangewords'].hasError('maxWords') && (valForm.controls['rangewords'].dirty || valForm.controls['rangewords'].touched)">This field requires a maximum amount of words</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">words range between 6 and 10</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Email BlackList</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="email" placeholder="example: 'bad@email.com'" formControlName="email_bl" [formControl]="valForm.controls['email_bl']" />
+                                    <span class="text-danger" *ngIf="valForm.controls['email_bl'].hasError('blacklist') && (valForm.controls['email_bl'].dirty || valForm.controls['email_bl'].touched)">Email found in black list</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">BlackList: <br>{{ blackList }}</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset class="b0">
+                            <legend>Comparison</legend>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group" formGroupName="passwordGroup">
+                                <label class="col-sm-2 control-label">Equal to</label>
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <input class="form-control" type="password" formControlName="password" [formControl]="valForm.get('passwordGroup.password')" />
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <input class="form-control" type="password" formControlName="confirmPassword" [formControl]="valForm.get('passwordGroup.confirmPassword')" />
+                                        </div>
+                                    </div>
+                                    <span class="text-danger" *ngIf="valForm.get('passwordGroup.password').hasError('required') && (valForm.get('passwordGroup.password').dirty || valForm.get('passwordGroup.password').touched)">Input required</span>
+                                    <span class="text-danger" *ngIf="valForm.get('passwordGroup.confirmPassword').hasError('equalTo')">Input does Not match</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">Value match</small>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                    </div>
+                    <div class="panel-footer text-center">
+                        <button class="btn btn-info" type="submit">Run validation</button>
+                    </div>
+                </div>
+                <!-- END panel-->
+            </form>
+        </div>
+    </div>
+    <!-- END row-->
+
+</div>

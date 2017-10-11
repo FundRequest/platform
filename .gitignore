@@ -1,3 +1,11 @@
+### make sure no application properties are pushed ###
+application-*.properties
+
+
+# node
+**/node_modules/
+web2.0/src/main/web/node
+web2.0/src/main/web/package-lock.json
 
 # Created by https://www.gitignore.io/api/intellij+iml,windows,linux,eclipse,maven,java,macos
 ### EthereumJ ###
@@ -205,3 +213,5 @@ $RECYCLE.BIN/
 
 # Docker
 core/docker_data
+
+web/src/main/resources/config

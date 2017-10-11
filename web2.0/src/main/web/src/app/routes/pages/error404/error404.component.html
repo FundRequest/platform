@@ -1,0 +1,36 @@
+<div class="wrapper">
+    <div class="abs-center wd-xl">
+        <!-- START panel-->
+        <div class="text-center mb-xl">
+            <div class="text-lg mb-lg">404</div>
+            <p class="lead m0">We couldn't find this page.</p>
+            <p>The page you are looking for does not exists.</p>
+        </div>
+        <div class="input-group mb-xl">
+            <input class="form-control" type="text" placeholder="Try with a search" />
+            <span class="input-group-btn">
+             <button class="btn btn-default" type="button">
+                <em class="fa fa-search"></em>
+             </button>
+          </span>
+        </div>
+        <ul class="list-inline text-center text-sm mb-xl">
+            <li><a class="text-muted" [routerLink]="'/home'">Go to App</a>
+            </li>
+            <li class="text-muted">|</li>
+            <li><a class="text-muted" [routerLink]="'/login'">Login</a>
+            </li>
+            <li class="text-muted">|</li>
+            <li><a class="text-muted" [routerLink]="'/register'">Register</a>
+            </li>
+        </ul>
+        <div class="p-lg text-center">
+            <span>&copy;</span>
+            <span>{{ settings.app.year }}</span>
+            <span>-</span>
+            <span>{{ settings.app.name }}</span>
+            <br/>
+            <span>{{ settings.app.description }}</span>
+        </div>
+    </div>
+</div>

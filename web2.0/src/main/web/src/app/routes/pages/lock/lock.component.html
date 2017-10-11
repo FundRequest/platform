@@ -1,0 +1,40 @@
+<div class="wrapper">
+    <div class="abs-center wd-xl">
+        <!-- START panel-->
+        <div class="p">
+            <img class="img-thumbnail img-circle center-block" src="{{settings.user.picture}}" alt="Avatar" width="60" height="60" />
+        </div>
+        <div class="panel widget b0">
+            <div class="panel-body">
+                <p class="text-center">Please login to unlock your screen.</p>
+                <form [formGroup]="valForm" role="form" name="lockForm"  (submit)="submitForm($event, valForm.value)">
+                    <div class="form-group has-feedback">
+                        <input class="form-control" id="exampleInputPassword1" type="password" placeholder="Password" name="password" formControlName="password" />
+                        <span class="fa fa-lock form-control-feedback text-muted"></span>
+                        <span class="text-danger" *ngIf="valForm.controls['password'].hasError('required') && (valForm.controls['password'].dirty || valForm.controls['password'].touched)">This field is required</span>
+                    </div>
+                    <div class="clearfix">
+                        <div class="pull-left mt-sm">
+                            <a class="text-muted" [routerLink]="'/recover'">
+                                <small>Forgot your password?</small>
+                            </a>
+                        </div>
+                        <div class="pull-right">
+                            <!-- Change this button type to submit to send the form data-->
+                            <button class="btn btn-sm btn-primary" type="submit" >Unlock</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- END panel-->
+        <div class="p-lg text-center">
+            <span>&copy;</span>
+            <span>{{ settings.app.year }}</span>
+            <span>-</span>
+            <span>{{ settings.app.name }}</span>
+            <br/>
+            <span>{{ settings.app.description }}</span>
+        </div>
+    </div>
+</div>

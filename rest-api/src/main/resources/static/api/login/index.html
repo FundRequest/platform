@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login with keycloak</title>
+    <meta charset="utf-8">
+    <script src="https://dev-key.fundrequest.io//auth/js/keycloak.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+
+
+<table>
+    <tbody>
+    <tr>
+        <td>Username</td>
+        <td id="username"></td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td id="name"></td>
+    </tr>
+    <tr>
+        <td>First Name</td>
+        <td id="firstName"></td>
+    </tr>
+    <tr>
+        <td>Last Name</td>
+        <td id="lastName"></td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td id="email"></td>
+    </tr>
+    <tr>
+        <td>Avatar</td>
+        <td id="avatar"></td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+  var keycloak = Keycloak({
+    url: 'https://dev-key.fundrequest.io/auth',
+    realm: 'fundrequest',
+    clientId: 'fundrequest_dev'
+  });
+  keycloak.init({checkLoginIframe: false, onLoad: 'login-required'}).success(function (authenticated) {
+    if (!authenticated) {
+      keycloak.login();
+    } else {
+      console.log(keycloak.tokenParsed);
+      addBearerTokenToRequests();
+      getRequests();
+      $("#username").html(keycloak.tokenParsed.preferred_username);
+      $("#name").html(keycloak.tokenParsed.name);
+      $("#firstName").html(keycloak.tokenParsed.given_name);
+      $("#lastName").html(keycloak.tokenParsed.family_name);
+      $("#email").html(keycloak.tokenParsed.email);
+      $("#avatar").html("<img src='" + keycloak.tokenParsed.picture + "'>");
+
+    }
+  }).error(function (e) {
+    console.error(e);
+    alert('failed to initialize');
+  });
+  function addBearerTokenToRequests() {
+    $.ajaxSetup({
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('Authorization', 'Bearer ' + keycloak.token);
+      }
+    });
+  }
+
+  function getRequests() {
+    $.get('/requests', function (data) {
+      console.log(data);
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -47,7 +47,6 @@
   4.18 nestable
 
 5. Charts
-  5.1 chart-flot / .flot-chart
   5.2 chart-easypie / .easypie-chart
 
 6. Form elements
@@ -4928,53 +4927,6 @@ x:-o-prefocus,
 }
 .dd3-handle:hover {
   background: #f7f7f7;
-}
-/* ========================================================================
-   Component: chart-flot.less
- ========================================================================== */
-.flot-chart {
-  display: block;
-  width: 100%;
-  height: 260px;
-}
-.flot-chart .legend > table tr td {
-  padding: 3px;
-}
-.flot-chart .legend > table tr td:first-child {
-  padding-left: 3px;
-}
-.flot-chart .legend > table tr td:last-child {
-  padding-right: 3px;
-}
-.flot-chart .legend > table tr + tr td {
-  padding-top: 0;
-}
-.flot-chart .legend > div:first-child {
-  border-color: rgba(0, 0, 0, 0.1) !important;
-}
-.flot-chart .legend .legendColorBox > div,
-.flot-chart .legend .legendColorBox > div > div {
-  border-radius: 400px;
-}
-.flot-chart-content {
-  width: 100%;
-  height: 100%;
-}
-.flot-pie-label {
-  padding: 3px 5px;
-  font-size: 10px;
-  text-align: center;
-  color: #fff;
-}
-#flotTip {
-  position: relative;
-  padding: 5px;
-  font-size: 12px !important;
-  border-radius: 2px !important;
-  border-color: transparent !important;
-  background-color: rgba(0, 0, 0, 0.75) !important;
-  color: #f1f1f1;
-  z-index: 5;
 }
 /* ========================================================================
    Component: chart-easypie

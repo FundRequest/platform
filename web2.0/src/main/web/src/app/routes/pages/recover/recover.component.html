@@ -1,0 +1,35 @@
+<div class="wrapper">
+    <div class="block-center mt-xl wd-xl">
+        <!-- START panel-->
+        <div class="panel panel-dark panel-flat">
+            <div class="panel-heading text-center">
+                <a href="#">
+                    <img class="block-center img-rounded" src="assets/img/logo.png" alt="Image" />
+                </a>
+            </div>
+            <div class="panel-body">
+                <p class="text-center pv">PASSWORD RESET</p>
+                <form [formGroup]="valForm" class="form-validate" role="form" name="recoverForm" novalidate="" (submit)="submitForm($event, valForm.value)">
+                    <p class="text-center">Fill with your mail to receive instructions on how to reset your password.</p>
+                    <div class="form-group has-feedback">
+                        <label class="text-muted">Email address</label>
+                        <input class="form-control" type="email" name="email" placeholder="Enter email" autocomplete="off" formControlName="email"/>
+                        <span class="fa fa-envelope form-control-feedback text-muted"></span>
+                        <span class="text-danger" *ngIf="valForm.controls['email'].hasError('required') && (valForm.controls['email'].dirty || valForm.controls['email'].touched)">This field is required</span>
+                        <span class="text-danger" *ngIf="valForm.controls['email'].hasError('email') && (valForm.controls['email'].dirty || valForm.controls['email'].touched)">This field must be a valid email address</span>
+                    </div>
+                    <button class="btn btn-danger btn-block" type="submit">Reset</button>
+                </form>
+            </div>
+        </div>
+        <!-- END panel-->
+        <div class="p-lg text-center">
+            <span>&copy;</span>
+            <span>{{ settings.app.year }}</span>
+            <span>-</span>
+            <span>{{ settings.app.name }}</span>
+            <br/>
+            <span>{{ settings.app.description }}</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+
+@import '../../../shared/styles/app/variables.scss';
+@import '../../../shared/styles/app/media-queries.scss';
+
+.ng2-tag-input.minimal {
+    border: 1px solid $input-border !important;
+    border-radius: $input-border-radius;
+    &.ng2-tag-input--focused {
+        border: 1px solid $input-border-focus !important;
+    }
+}
