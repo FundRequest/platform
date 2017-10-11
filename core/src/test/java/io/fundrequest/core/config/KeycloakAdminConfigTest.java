@@ -13,9 +13,9 @@ public class KeycloakAdminConfigTest {
                 "https://dev-key.fundrequest.io/auth",
                 "fundrequest",
                 "fundrequest-query-users",
-                "zkFGYvkwAFyanrf3utAWDzfD5QyPsQ9tsmP7JTj88yhqmNSqPY",
+                "password",
                 "fundrequest_dev",
-                "cb4fa397-24ed-4198-9a25-28e097e74e9d");
+                "secret");
         RealmResource realm = keycloak.realm("fundrequest");
         realm.users().count();
     }
