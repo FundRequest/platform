@@ -1,9 +1,9 @@
 package io.fundrequest.restapi.request;
 
-import io.fundrequest.core.infrastructure.repository.AbstractController;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.restapi.infrastructure.AbstractRestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(maxAge = 3600, value = "*")
-public class RequestController extends AbstractController {
+public class RequestController extends AbstractRestController {
 
     private RequestService requestService;
 
@@ -42,7 +42,7 @@ public class RequestController extends AbstractController {
         return requestService.findRequest(id);
     }
 
-    @GetMapping({ "/requests/{id}/watchers","/requests/{id}/watchlink" })
+    @GetMapping({"/requests/{id}/watchers", "/requests/{id}/watchlink"})
     public RequestDto findWatchers(@PathVariable("id") Long id) {
         return requestService.findRequest(id);
     }

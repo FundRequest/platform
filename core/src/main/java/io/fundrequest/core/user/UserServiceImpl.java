@@ -1,50 +1,47 @@
 package io.fundrequest.core.user;
 
-import org.apache.commons.lang.StringUtils;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UserResource;
-import org.keycloak.representations.idm.UserRepresentation;
+import io.fundrequest.core.user.domain.User;
+import io.fundrequest.core.user.infrastructure.UserRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private RealmResource adminRealmResource;
+    private UserRepository userRepository;
 
-    public UserServiceImpl(RealmResource adminRealmResource) {
-        this.adminRealmResource = adminRealmResource;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     @Cacheable("users")
-    public UserDto getUser(String username) {
-        UserResource userResource = adminRealmResource.users().get(username);
-
-        try {
-            return map(userResource.toRepresentation());
-        } catch (javax.ws.rs.NotFoundException e){
-            return null;
-        }
+    @Transactional(readOnly = true)
+    public UserDto getUser(String userId) {
+        return null;
     }
 
-    private UserDto map(UserRepresentation userRepresentation) {
-        if(userRepresentation != null) {
-            UserDto u = new UserDto();
-            u.setEmail(userRepresentation.getEmail());
-            u.setName(userRepresentation.getFirstName() + " " + userRepresentation.getLastName());
-            if (userRepresentation.getAttributes().containsKey("picture") &&
-                    userRepresentation.getAttributes().get("picture").size() > 0
-                    && StringUtils.isNotBlank(userRepresentation.getAttributes().get("picture").get(0))) {
-                u.setPicture(userRepresentation.getAttributes().get("picture").get(0));
-            } else if (userRepresentation.getAttributes().containsKey("microsoft_id")) {
-                String mId = userRepresentation.getAttributes().get("microsoft_id").get(0);
-                u.setPicture("https://apis.live.net/v5.0/" + mId + "/picture?type=small");
-            }
+    @Override
+    @Cacheable("userlogins")
+    @Transactional
+    public UserAuthentication login(UserLoginCommand loginCommand) {
+        User user = userRepository.findOne(loginCommand.getUserId())
+                .map(u -> updateUser(loginCommand, u))
+                .orElseGet(() -> createNewUser(loginCommand));
 
-            return u;
-        } else {
-            return null;
-        }
+        userRepository.save(user);
+        return new UserAuthentication(user.getUserId());
     }
+
+    private User updateUser(UserLoginCommand loginCommand, User user) {
+        user.setEmail(loginCommand.getEmail());
+        user.setPhoneNumber(loginCommand.getPhoneNumber());
+        return user;
+    }
+
+    private User createNewUser(UserLoginCommand loginCommand) {
+        return new User(loginCommand.getUserId(), loginCommand.getPhoneNumber(), loginCommand.getEmail());
+    }
+
 }

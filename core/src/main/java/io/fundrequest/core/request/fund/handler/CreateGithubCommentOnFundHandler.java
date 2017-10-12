@@ -27,7 +27,7 @@ public class CreateGithubCommentOnFundHandler {
         UserDto user = userService.getUser(event.getFunder());
         CreateGithubComment comment = new CreateGithubComment();
         BigInteger amount = event.getAmountInWei().divide(new BigInteger("10").pow(18));
-        comment.setBody("Great! " + user.getName() + " funded " + amount.toString() + " FND to this issue. For more information, go to https://fundrequest.io.");
+        comment.setBody("Great! " + user.getEmail() + " funded " + amount.toString() + " FND to this issue. For more information, go to https://fundrequest.io.");
         githubClient.createCommandOnIssue(event.getOwner(), event.getRepo(), event.getNumber(), comment);
     }
 }
