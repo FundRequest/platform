@@ -706,7 +706,7 @@ define(['require', 'jquery'], function (require, $) {
 	}
 
 	function initContract() {
-		var contractAbi = [[
+		var contractAbi = [
 			{
 				"constant": true,
 				"inputs": [
