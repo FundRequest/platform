@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.fundrequest</groupId>
-    <artifactId>mvp-back-end</artifactId>
+    <artifactId>platform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>mvp-back-end</name>
+    <name>platform</name>
     <description>FundRequest Platform</description>
 
     <parent>
@@ -21,7 +21,7 @@
     <modules>
         <module>core</module>
         <module>rest-api</module>
-        <module>web2.0</module>
+        <module>web</module>
     </modules>
 
     <properties>
