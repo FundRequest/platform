@@ -1,7 +1,7 @@
-package io.fundrequest.core.messaging.dto;
+package io.fundrequest.core.request.fund.messaging.dto;
 
 public class FundedEthDto {
-
+    private String transactionHash;
     private String from;
     private String amount;
     private String data;
@@ -39,13 +39,11 @@ public class FundedEthDto {
         this.user = user;
     }
 
-    @Override
-    public String toString() {
-        return "FundedEthDto{" +
-                "from='" + from + '\'' +
-                ", amount='" + amount + '\'' +
-                ", data='" + data + '\'' +
-                ", user='" + user + '\'' +
-                '}';
+    public String getTransactionHash() {
+        return transactionHash;
+    }
+
+    public void setTransactionHash(String transactionHash) {
+        this.transactionHash = transactionHash;
     }
 }

@@ -1,9 +1,11 @@
-package io.fundrequest.core.messaging;
+package io.fundrequest.core.request.fund.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundrequest.core.messaging.dto.FundedEthDto;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.command.AddFundsCommand;
+import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
+import io.fundrequest.core.request.fund.infrastructure.ProcessedBlockchainEventRepository;
+import io.fundrequest.core.request.fund.messaging.dto.FundedEthDto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -23,22 +25,30 @@ public class AzraelMessageReceiver {
 
     private FundService fundService;
     private ObjectMapper objectMapper;
+    private ProcessedBlockchainEventRepository processedBlockchainEventRepository;
 
     @Autowired
-    public AzraelMessageReceiver(FundService fundService, ObjectMapper objectMapper) {
+    public AzraelMessageReceiver(FundService fundService, ObjectMapper objectMapper, ProcessedBlockchainEventRepository processedBlockchainEventRepository) {
         this.fundService = fundService;
         this.objectMapper = objectMapper;
+        this.processedBlockchainEventRepository = processedBlockchainEventRepository;
     }
 
     @Transactional
     public void receiveMessage(String message) throws IOException {
         FundedEthDto result = objectMapper.readValue(message, FundedEthDto.class);
-        if (StringUtils.isNumeric(result.getData())) {
+        if (isNewFunding(result)) {
             AddFundsCommand command = new AddFundsCommand();
             command.setAmountInWei(new BigInteger(result.getAmount()));
             command.setRequestId(new Long(result.getData()));
             fundService.addFunds(result::getUser, command);
+            processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
         }
+    }
+
+    private boolean isNewFunding(FundedEthDto result) {
+        return !processedBlockchainEventRepository.findOne(result.getTransactionHash()).isPresent()
+                && StringUtils.isNumeric(result.getData());
     }
 
     @Bean

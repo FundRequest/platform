@@ -7,12 +7,13 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
 
     public String getCurrentAuditor() {
 
-        org.springframework.security.core.Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
+        if (SecurityContextHolder.getContext() != null) {
+            org.springframework.security.core.Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return null;
+            }
+            return authentication.getPrincipal().toString();
         }
-
-        return authentication.getPrincipal().toString();
+        return null;
     }
 }

@@ -1,6 +1,6 @@
 package io.fundrequest.core.config;
 
-import io.fundrequest.core.messaging.AzraelMessageReceiver;
+import io.fundrequest.core.request.fund.messaging.AzraelMessageReceiver;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
