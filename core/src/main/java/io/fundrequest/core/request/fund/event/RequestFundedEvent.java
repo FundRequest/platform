@@ -1,6 +1,6 @@
 package io.fundrequest.core.request.fund.event;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 public class RequestFundedEvent {
     private Long requestId;
@@ -8,9 +8,9 @@ public class RequestFundedEvent {
     private String repo;
     private String number;
     private String funder;
-    private BigInteger amountInWei;
+    private BigDecimal amountInWei;
 
-    public RequestFundedEvent(Long requestId, String owner, String repo, String number, String funder, BigInteger amountInWei) {
+    public RequestFundedEvent(Long requestId, String owner, String repo, String number, String funder, BigDecimal amountInWei) {
         this.requestId = requestId;
         this.owner = owner;
         this.repo = repo;
@@ -39,7 +39,7 @@ public class RequestFundedEvent {
         return funder;
     }
 
-    public BigInteger getAmountInWei() {
+    public BigDecimal getAmountInWei() {
         return amountInWei;
     }
 

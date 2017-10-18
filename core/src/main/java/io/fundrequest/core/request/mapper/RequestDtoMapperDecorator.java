@@ -1,13 +1,17 @@
 package io.fundrequest.core.request.mapper;
 
 import io.fundrequest.core.infrastructure.SecurityContextService;
-import io.fundrequest.core.request.view.RequestDtoMapper;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.request.view.RequestDtoMapper;
+import io.fundrequest.core.user.UserDto;
 import io.fundrequest.core.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public abstract class RequestDtoMapperDecorator implements RequestDtoMapper {
 
@@ -26,9 +30,13 @@ public abstract class RequestDtoMapperDecorator implements RequestDtoMapper {
         Authentication currentAuth = securityContextService.getLoggedInUser();
         if (result != null && currentAuth != null) {
             result.setLoggedInUserIsWatcher(request.getWatchers().contains(currentAuth.getName()));
+            result.setWatchers(request.getWatchers().stream().map(this::getUser).filter(Objects::nonNull).collect(Collectors.toSet()));
         }
-        result.setUserService(userService);
-
         return result;
+    }
+
+    private String getUser(String x) {
+        UserDto user = userService.getUser(x);
+        return user == null ? null : user.getEmail();
     }
 }

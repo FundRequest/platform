@@ -1,0 +1,25 @@
+<div class="content-heading">
+  Requests
+  <small>Let's fund some</small>
+</div>
+<alert [type]="'info'">Alert Example</alert>
+<h4 class="page-header">Heading
+  <small>Of table</small>
+</h4>
+<div class="mb-lg clearfix">
+  <div class="pull-let wd-md">
+    <input *ngIf="config.filtering" placeholder="Filter all columns" [ngTableFiltering]="config.filtering"
+           class="form-control" (tableChanged)="onChangeTable(config)"/>
+  </div>
+</div>
+<div class="panel panel-default">
+  <ng-table [config]="config" (tableChanged)="onChangeTable(config)" (cellClicked)="onCellClick($event)" [rows]="rows"
+            [columns]="columns">
+  </ng-table>
+</div>
+<div class="text-right">
+  <pagination *ngIf="config.paging" class="pagination-sm" [(ngModel)]="page" [totalItems]="length"
+              [itemsPerPage]="itemsPerPage" [maxSize]="maxSize" [boundaryLinks]="true" [rotate]="false"
+              (pageChanged)="onChangeTable(config, $event)" (numPages)="numPages = $event">
+  </pagination>
+</div>

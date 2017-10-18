@@ -1,7 +1,6 @@
 package io.fundrequest.restapi.statistics.dto;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -9,9 +8,9 @@ public class StatisticsDto {
     private Long numberOfRequests;
     private Long requestsFunded;
     private Long numberOfFunders;
-    private BigInteger totalAmountFunded;
+    private BigDecimal totalAmountFunded;
     private BigDecimal averageFundingPerRequest;
-    private Map<LocalDate, BigInteger> fundsPerDay;
+    private Map<LocalDate, BigDecimal> fundsPerDay;
     private Map<LocalDate, Long> requestsAddedPerDay;
 
     public Long getNumberOfRequests() {
@@ -38,11 +37,11 @@ public class StatisticsDto {
         this.numberOfFunders = numberOfFunders;
     }
 
-    public BigInteger getTotalAmountFunded() {
+    public BigDecimal getTotalAmountFunded() {
         return totalAmountFunded;
     }
 
-    public void setTotalAmountFunded(BigInteger totalAmountFunded) {
+    public void setTotalAmountFunded(BigDecimal totalAmountFunded) {
         this.totalAmountFunded = totalAmountFunded;
     }
 
@@ -54,11 +53,11 @@ public class StatisticsDto {
         this.averageFundingPerRequest = averageFundingPerRequest;
     }
 
-    public Map<LocalDate, BigInteger> getFundsPerDay() {
+    public Map<LocalDate, BigDecimal> getFundsPerDay() {
         return fundsPerDay;
     }
 
-    public void setFundsPerDay(Map<LocalDate, BigInteger> fundsPerDay) {
+    public void setFundsPerDay(Map<LocalDate, BigDecimal> fundsPerDay) {
         this.fundsPerDay = fundsPerDay;
     }
 

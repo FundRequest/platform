@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 @Table(name = "fund")
 @Entity
@@ -23,7 +22,7 @@ public class Fund extends AbstractEntity {
     private String funder;
 
     @Column(name = "amount_in_wei")
-    private BigInteger amountInWei;
+    private BigDecimal amountInWei;
 
     @Column(name = "request_id")
     private Long requestId;
@@ -31,7 +30,7 @@ public class Fund extends AbstractEntity {
     protected Fund() {
     }
 
-    Fund(String funder, BigInteger amountInWei, Long requestId) {
+    Fund(String funder, BigDecimal amountInWei, Long requestId) {
         this.funder = funder;
         this.amountInWei = amountInWei;
         this.requestId = requestId;
@@ -41,7 +40,7 @@ public class Fund extends AbstractEntity {
         return funder;
     }
 
-    public BigInteger getAmountInWei() {
+    public BigDecimal getAmountInWei() {
         return amountInWei;
     }
 

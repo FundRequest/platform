@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.fundrequest</groupId>
-    <artifactId>mvp-back-end</artifactId>
+    <artifactId>platform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>mvp-back-end</name>
+    <name>platform</name>
     <description>FundRequest Platform</description>
 
     <parent>
@@ -22,7 +22,6 @@
         <module>core</module>
         <module>rest-api</module>
         <module>web</module>
-        <module>web2.0</module>
     </modules>
 
     <properties>
@@ -37,8 +36,6 @@
         <assertj.version>3.6.2</assertj.version>
         <mapstruct.version>1.1.0.Final</mapstruct.version>
         <auth0-spring-security-api.version>0.3.3</auth0-spring-security-api.version>
-        <keycloak.version>3.2.1.Final</keycloak.version>
-        <keycloak-client.version>3.1.4.Final</keycloak-client.version>
     </properties>
 
 
@@ -52,32 +49,11 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.keycloak.bom</groupId>
-                <artifactId>keycloak-adapter-bom</artifactId>
-                <version>${keycloak.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>org.web3j</groupId>
+                <artifactId>core</artifactId>
+                <version>2.3.1</version>
             </dependency>
-            <dependency>
-                <groupId>org.keycloak</groupId>
-                <artifactId>keycloak-admin-client</artifactId>
-                <version>${keycloak.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-client</artifactId>
-                <version>${keycloak-client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jackson2-provider</artifactId>
-                <version>${keycloak-client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ethereum</groupId>
-                <artifactId>ethereumj-core</artifactId>
-                <version>${ethereumj-core.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
@@ -88,6 +64,11 @@
                         <groupId>com.sun</groupId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.6</version>
             </dependency>
             <dependency>
                 <groupId>io.github.jhipster</groupId>
