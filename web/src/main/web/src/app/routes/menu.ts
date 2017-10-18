@@ -5,6 +5,12 @@ const Home = {
     icon: 'icon-home'
 };
 
+const Requests = {
+    text: 'Requests',
+    link: '/requests/overview',
+    icon: 'fa fa-list-alt'
+};
+
 const Dashboard = {
     text: 'Dashboard',
     link: '/dashboard',
@@ -373,12 +379,12 @@ const Extras = {
 
 
 const headingMain = {
-    text: 'Main Navigation',
+    text: 'Menu',
     heading: true
 };
 
-const headingComponents = {
-    text: 'Components',
+const headingRequests = {
+    text: 'Requests',
     heading: true
 };
 
@@ -390,17 +396,18 @@ const headingMore = {
 export const menu = [
     headingMain,
     Home,
-    Dashboard,
-    Widgets,
-    headingComponents,
-    Elements,
-    Forms,
-    Charts,
-    Tables,
-    Maps,
-    headingMore,
-    Pages,
-    Blog,
-    Ecommerce,
-    Extras
+    headingRequests,
+    Requests,
+  //Dashboard,
+  //Widgets,
+  //Elements,
+  //Forms,
+  //Charts,
+  //Tables,
+  //Maps,
+  //headingMore,
+  //Pages,
+  //Blog,
+  //Ecommerce,
+  //Extras
 ];
