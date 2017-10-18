@@ -6,8 +6,6 @@ import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.user.UserDto;
 import io.fundrequest.core.user.UserService;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.math.BigInteger;
 
@@ -22,7 +20,7 @@ public class CreateGithubCommentOnFundHandler {
         this.userService = userService;
     }
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void createGithubCommentOnRequestFunded(RequestFundedEvent event) {
         UserDto user = userService.getUser(event.getFunder());
         CreateGithubComment comment = new CreateGithubComment();
