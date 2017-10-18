@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
 
+const themeFundRequest = require('../../shared/styles/themes/theme-fund-request.scss');
 const themeA = require('../../shared/styles/themes/theme-a.scss');
 const themeB = require('../../shared/styles/themes/theme-b.scss');
 const themeC = require('../../shared/styles/themes/theme-c.scss');
@@ -13,7 +14,7 @@ const themeH = require('../../shared/styles/themes/theme-h.scss');
 export class ThemesService {
 
     styleTag: any;
-    defaultTheme: string = 'A';
+    defaultTheme: string = 'FundRequest';
 
     constructor() {
         this.createStyle();
@@ -30,6 +31,9 @@ export class ThemesService {
 
     setTheme(name) {
         switch (name) {
+            case 'FundRequest':
+                this.injectStylesheet(themeFundRequest);
+                break;
             case 'A':
                 this.injectStylesheet(themeA);
                 break;
