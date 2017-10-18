@@ -5,7 +5,6 @@ application-*.properties
 # node
 **/node_modules/
 web/src/main/web/node
-web/src/main/web/package-lock.json
 
 # Created by https://www.gitignore.io/api/intellij+iml,windows,linux,eclipse,maven,java,macos
 ### EthereumJ ###
