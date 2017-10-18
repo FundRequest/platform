@@ -2,7 +2,7 @@ package io.fundrequest.core.request.domain;
 
 import io.fundrequest.core.request.fund.domain.FundBuilder;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 public final class FundMother {
 
@@ -10,7 +10,7 @@ public final class FundMother {
         return FundBuilder
                 .aFund()
                 .withAmountInWei(
-                        new BigInteger("1000")
+                        new BigDecimal("1000")
                 )
                 .withFunder("davy")
                 .withRequestId(1L);

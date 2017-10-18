@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 @Component
 public class AzraelMessageReceiver {
@@ -39,7 +39,7 @@ public class AzraelMessageReceiver {
         FundedEthDto result = objectMapper.readValue(message, FundedEthDto.class);
         if (isNewFunding(result)) {
             AddFundsCommand command = new AddFundsCommand();
-            command.setAmountInWei(new BigInteger(result.getAmount()));
+            command.setAmountInWei(new BigDecimal(result.getAmount()));
             command.setRequestId(new Long(result.getData()));
             fundService.addFunds(result::getUser, command);
             processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));

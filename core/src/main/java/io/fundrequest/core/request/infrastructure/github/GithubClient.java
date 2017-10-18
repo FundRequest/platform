@@ -4,7 +4,6 @@ import io.fundrequest.core.request.infrastructure.github.parser.GithubResult;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -24,7 +23,7 @@ public interface GithubClient {
     );
 
     @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}/comments", method = POST)
-    GithubResult createCommandOnIssue(
+    GithubResult createCommentOnIssue(
             @PathVariable("owner") String owner,
             @PathVariable("repo") String repo,
             @PathVariable("number") String number,
