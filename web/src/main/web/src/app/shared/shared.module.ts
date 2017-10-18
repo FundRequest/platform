@@ -30,6 +30,8 @@ import {NowDirective} from "./directives/now/now.directive";
 import {ScrollableDirective} from "./directives/scrollable/scrollable.directive";
 import {JqcloudDirective} from "./directives/jqcloud/jqcloud.directive";
 
+import {LocalStorageModule} from "angular-2-local-storage";
+
 // https://angular.io/styleguide#!#04-10
 @NgModule({
     imports: [
@@ -52,7 +54,11 @@ import {JqcloudDirective} from "./directives/jqcloud/jqcloud.directive";
         TimepickerModule.forRoot(),
         TooltipModule.forRoot(),
         TypeaheadModule.forRoot(),
-        ToasterModule
+        ToasterModule,
+        LocalStorageModule.withConfig({
+          prefix: 'FND',
+          storageType: 'localStorage'
+        })
     ],
     providers: [
         ColorsService
