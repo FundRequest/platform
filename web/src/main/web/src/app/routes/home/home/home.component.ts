@@ -5,6 +5,7 @@ import {ColorsService} from "../../../shared/colors/colors.service";
 import {RequestsService} from "../../../core/requests/requests.service";
 
 import {LocalStorageService} from 'angular-2-local-storage';
+import {JwtHelper} from "angular2-jwt/angular2-jwt";
 
 declare var civic: any;
 
@@ -27,19 +28,28 @@ export class HomeComponent implements OnInit {
      size: 145*/
   };
 
+  jwtHelper: JwtHelper;
+
   constructor(private localStorageService: LocalStorageService,
               private route: ActivatedRoute,
               private router: Router,
               public colors: ColorsService,
               public requestsService: RequestsService) {
+    this.jwtHelper = new JwtHelper();
     // get data from rest api
     console.log(requestsService.requests);
   }
 
   ngOnInit() {
-    const localStorageService = this.localStorageService;
+    const localStorageService: LocalStorageService = this.localStorageService;
+    const token: any = this.localStorageService.get('id_token');
+    let isValidToken: boolean = false;
 
-    if (!this.localStorageService.get('jwt')) {
+    try {
+      isValidToken = !this.jwtHelper.isTokenExpired(token);
+    } catch (e) {}
+
+    if (!isValidToken) {
       const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
       const civicSip = new civic.sip({appId: 'S1wUxaf2b'});
@@ -48,9 +58,7 @@ export class HomeComponent implements OnInit {
       // Listen for data
       civicSip.on('auth-code-received', function (event) {
         const jwtToken = event.response;
-        localStorageService.set('jwt', jwtToken);
-
-        console.log(returnUrl);
+        localStorageService.set('id_token', jwtToken);
         router.navigate([returnUrl]);
       });
 
