@@ -1,5 +1,5 @@
 {
-  "name": "ng2angle",
+  "name": "fundrequest",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -32,6 +32,7 @@
     "@ngx-translate/http-loader": "0.0.3",
     "ag-grid": "9.0.3",
     "ag-grid-angular": "9.0.3",
+    "angular-2-local-storage": "^1.0.1",
     "angular-tree-component": "3.3.0",
     "angular2-datatable": "0.6.0",
     "angular2-text-mask": "8.0.0",

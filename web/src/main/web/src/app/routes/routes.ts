@@ -7,6 +7,7 @@ import {LockComponent} from "./pages/lock/lock.component";
 import {MaintenanceComponent} from "./pages/maintenance/maintenance.component";
 import {Error404Component} from "./pages/error404/error404.component";
 import {Error500Component} from "./pages/error500/error500.component";
+import {AuthGuard} from "../guards/auth.guard";
 
 export const routes = [
 
@@ -16,6 +17,7 @@ export const routes = [
         children: [
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', loadChildren: './home/home.module#HomeModule' },
+            { path: 'requests', loadChildren: './requests/requests.module#RequestsModule', canActivate: [AuthGuard] },
             { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
             { path: 'widgets', loadChildren: './widgets/widgets.module#WidgetsModule' },
             { path: 'elements', loadChildren: './elements/elements.module#ElementsModule' },

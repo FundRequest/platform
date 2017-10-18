@@ -10,6 +10,7 @@ import {CoreModule} from "./core/core.module";
 import {LayoutModule} from "./layout/layout.module";
 import {SharedModule} from "./shared/shared.module";
 import {RoutesModule} from "./routes/routes.module";
+import {AuthGuard} from "./guards/auth.guard";
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: Http) {
@@ -33,9 +34,11 @@ export function createTranslateLoader(http: Http) {
                 useFactory: (createTranslateLoader),
                 deps: [Http]
             }
-        })
+        }),
     ],
-    providers: [],
+    providers: [
+        AuthGuard
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
