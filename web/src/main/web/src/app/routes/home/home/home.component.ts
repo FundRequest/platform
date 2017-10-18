@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import { Router, ActivatedRoute } from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 
 import {ColorsService} from "../../../shared/colors/colors.service";
 import {RequestsService} from "../../../core/requests/requests.service";
@@ -27,39 +27,41 @@ export class HomeComponent implements OnInit {
      size: 145*/
   };
 
-  constructor(
-    private localStorageService: LocalStorageService,
-    private route: ActivatedRoute,
-    private router: Router,
-    public colors: ColorsService,
-    public requestsService: RequestsService) {
+  constructor(private localStorageService: LocalStorageService,
+              private route: ActivatedRoute,
+              private router: Router,
+              public colors: ColorsService,
+              public requestsService: RequestsService) {
     // get data from rest api
     console.log(requestsService.requests);
-    console.log(localStorageService);
   }
 
   ngOnInit() {
-    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    const localStorageService = this.localStorageService;
 
-    const civicSip = new civic.sip({appId: 'S1wUxaf2b'});
-    const router = this.router;
-    civicSip.signup({style: 'popup', scopeRequest: civicSip.ScopeRequests.BASIC_SIGNUP});
-    // Listen for data
-    civicSip.on('auth-code-received', function (event) {
-      const jwtToken = event.response;
-      console.log(jwtToken);
+    if (!this.localStorageService.get('jwt')) {
+      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
-      console.log(returnUrl);
-      router.navigate([returnUrl]);
-    });
+      const civicSip = new civic.sip({appId: 'S1wUxaf2b'});
+      const router = this.router;
+      civicSip.signup({style: 'popup', scopeRequest: civicSip.ScopeRequests.BASIC_SIGNUP});
+      // Listen for data
+      civicSip.on('auth-code-received', function (event) {
+        const jwtToken = event.response;
+        localStorageService.set('jwt', jwtToken);
 
-    civicSip.on('user-cancelled', function (event) {
-    });
+        console.log(returnUrl);
+        router.navigate([returnUrl]);
+      });
 
-    // Error events.
-    civicSip.on('civic-sip-error', function (error) {
-      console.log('   Error type = ' + error.type);
-      console.log('   Error message = ' + error.message);
-    });
+      civicSip.on('user-cancelled', function (event) {
+      });
+
+      // Error events.
+      civicSip.on('civic-sip-error', function (error) {
+        console.log('   Error type = ' + error.type);
+        console.log('   Error message = ' + error.message);
+      });
+    }
   }
 }
