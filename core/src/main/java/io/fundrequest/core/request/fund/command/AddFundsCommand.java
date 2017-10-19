@@ -1,9 +1,8 @@
 package io.fundrequest.core.request.fund.command;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 public class AddFundsCommand {
 
@@ -12,7 +11,7 @@ public class AddFundsCommand {
 
     @NotNull
     @DecimalMin(value = "0")
-    private BigInteger amountInWei;
+    private BigDecimal amountInWei;
 
     public Long getRequestId() {
         return requestId;
@@ -22,11 +21,11 @@ public class AddFundsCommand {
         this.requestId = requestId;
     }
 
-    public BigInteger getAmountInWei() {
+    public BigDecimal getAmountInWei() {
         return amountInWei;
     }
 
-    public void setAmountInWei(BigInteger amountInWei) {
+    public void setAmountInWei(BigDecimal amountInWei) {
         this.amountInWei = amountInWei;
     }
 }

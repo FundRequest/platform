@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -68,7 +68,7 @@ public class FundServiceTest {
 
         AddFundsCommand command = new AddFundsCommand();
         command.setRequestId(request.getId());
-        command.setAmountInWei(BigInteger.TEN);
+        command.setAmountInWei(BigDecimal.TEN);
 
         when(requestRepository.findOne(request.getId())).thenReturn(Optional.of(request));
 

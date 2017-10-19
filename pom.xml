@@ -49,6 +49,12 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.web3j</groupId>
+                <artifactId>core</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
                 <version>${hikaricp.version}</version>
@@ -58,6 +64,11 @@
                         <groupId>com.sun</groupId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.6</version>
             </dependency>
             <dependency>
                 <groupId>io.github.jhipster</groupId>

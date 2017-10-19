@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
-import org.springframework.security.core.Authentication;
 
 import java.time.LocalDateTime;
 
@@ -55,24 +53,6 @@ public class ActivityListenerTest {
         assertThat(argumentCaptor.getValue().getUser()).isEqualTo(user);
         assertThat(argumentCaptor.getValue().getTitle()).isEqualTo("Request <i>" + event.getTitle() + "</i> has been created");
         assertThat(argumentCaptor.getValue().getDescription()).isEqualTo(event.getLink());
-        assertThat(argumentCaptor.getValue().getDateTime()).isEqualToIgnoringMinutes(LocalDateTime.now());
-    }
-
-    @Test
-    public void onLogin() throws Exception {
-        Authentication authentication = mock(Authentication.class);
-        when(authentication.getName()).thenReturn("davy");
-        UserDto user = new UserDto();
-        when(userService.getUser("davy")).thenReturn(user);
-
-        listener.onLogin(new AuthenticationSuccessEvent(authentication));
-
-        ArgumentCaptor<ActivityDto> argumentCaptor = ArgumentCaptor.forClass(ActivityDto.class);
-        verify(template).convertAndSend(eq("/topic/activities"), argumentCaptor.capture());
-
-        assertThat(argumentCaptor.getValue().getUser()).isEqualTo(user);
-        assertThat(argumentCaptor.getValue().getTitle()).isEqualTo("has logged in");
-        assertThat(argumentCaptor.getValue().getDescription()).isEqualTo("has logged in");
         assertThat(argumentCaptor.getValue().getDateTime()).isEqualToIgnoringMinutes(LocalDateTime.now());
     }
 
