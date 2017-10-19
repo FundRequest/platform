@@ -7,16 +7,22 @@ import {MenuService} from "./menu/menu.service";
 
 import {throwIfAlreadyLoaded} from "./module-import-guard";
 import {RequestsService} from "./requests/requests.service";
+import {AuthService} from "./auth/auth.service";
+import {AuthGuard} from "./auth/auth.guard";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
     imports: [
+      HttpClientModule
     ],
     providers: [
         SettingsService,
         ThemesService,
         TranslatorService,
         MenuService,
-        RequestsService
+        RequestsService,
+        AuthService,
+        AuthGuard,
     ],
     declarations: [
     ],
