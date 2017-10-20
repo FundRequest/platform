@@ -6,6 +6,10 @@ import {RequestsService} from "../../../core/requests/requests.service";
 
 import {LocalStorageService} from 'angular-2-local-storage';
 import {JwtHelper} from "angular2-jwt/angular2-jwt";
+import {AuthService} from "../../../core/auth/auth.service";
+import {Observable} from "rxjs/Observable";
+import {RequestsStat} from "../../../core/requests/RequestsStat";
+import {RequestsStats} from "../../../core/requests/RequestsStats";
 
 declare var civic: any;
 
@@ -28,28 +32,54 @@ export class HomeComponent implements OnInit {
      size: 145*/
   };
 
-  jwtHelper: JwtHelper;
+  /*
+   methods: {
+   addFND(amount) {
+   return amount + ' FND';
+   },
+   fromWei(amountInWei) {
+   var number = Number(amountInWei) / 1000000000000000000;
+   return ((Math.round(number * 100) / 100).toFixed(2)).toLocaleString();
+   },
+   round(amount, digitsAfterDecimal) {
+   if (typeof digitsAfterDecimal === 'undefined') {
+   digitsAfterDecimal = 2;
+   }
+   var number = Number(amount);
+   return ((Math.round(number * 100) / 100).toFixed(digitsAfterDecimal)).toLocaleString()
+   }
+   */
+  private statistics: Observable<RequestsStats>;
+
+  private numberOfRequests: RequestsStat;
+  private requestsFunded: RequestsStat;
+  private numberOfFunders: RequestsStat;
+  private totalAmountFunded: RequestsStat;
+  private averageFundingPerRequest: RequestsStat;
+  private percentageFunded: RequestsStat;
 
   constructor(private localStorageService: LocalStorageService,
               private route: ActivatedRoute,
               private router: Router,
+              private authService: AuthService,
               public colors: ColorsService,
               public requestsService: RequestsService) {
-    this.jwtHelper = new JwtHelper();
-    // get data from rest api
-    console.log(requestsService.requests);
+    this.statistics = requestsService.getStatistics();
+    this.statistics.subscribe((stats) => (
+        this.numberOfRequests = stats.numberOfRequests,
+          this.requestsFunded = stats.requestsFunded,
+          this.numberOfFunders = stats.numberOfFunders,
+          this.totalAmountFunded = stats.totalAmountFunded,
+          this.averageFundingPerRequest = stats.averageFundingPerRequest,
+          this.percentageFunded = stats.percentageFunded
+      )
+    );
   }
 
   ngOnInit() {
-    const localStorageService: LocalStorageService = this.localStorageService;
-    const token: any = this.localStorageService.get('id_token');
-    let isValidToken: boolean = false;
 
-    try {
-      isValidToken = !this.jwtHelper.isTokenExpired(token);
-    } catch (e) {}
-
-    if (!isValidToken) {
+    if (!this.authService.isAuthenticated()) {
+      const localStorageService: LocalStorageService = this.localStorageService;
       const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
       const civicSip = new civic.sip({appId: 'S1wUxaf2b'});
