@@ -4,22 +4,25 @@ import {Ng2TableModule} from "ng2-table/ng2-table";
 
 import {SharedModule} from "../../shared/shared.module";
 import {OverviewComponent} from "./overview/overview.component";
+import {DetailComponent} from "./detail/detail.component";
 
 const routes: Routes = [
-    { path: 'overview', component: OverviewComponent }
+  {path: '', component: OverviewComponent},
+  {path: 'detail/id', component: DetailComponent}
 ];
 
 @NgModule({
-    imports: [
-        SharedModule,
-        RouterModule.forChild(routes),
-        Ng2TableModule,
-    ],
-    declarations: [
-        OverviewComponent
-    ],
-    exports: [
-        RouterModule
-    ]
+  imports: [
+    SharedModule,
+    RouterModule.forChild(routes),
+    Ng2TableModule,
+  ],
+  declarations: [
+    DetailComponent,
+    OverviewComponent
+  ],
+  exports: [
+    RouterModule
+  ]
 })
-export class RequestsModule { }
+export class RequestsModule {}

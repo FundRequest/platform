@@ -15,7 +15,7 @@ export class RequestsService {
   }
 
   getStatistics(): Observable<RequestsStats> {
-      return this.http.get('/api/requests/statistics');
+      return this.http.get('/api/public/requests/statistics');
   }
 
 }

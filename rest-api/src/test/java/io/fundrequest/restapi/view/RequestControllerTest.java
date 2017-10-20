@@ -73,7 +73,7 @@ public class RequestControllerTest {
     public void findRequestsForUser() throws Exception {
         Mockito.when(requestService.findRequestsForUser(principal)).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/user/requests").accept(MediaType.APPLICATION_JSON).principal(principal))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/private/user/requests").accept(MediaType.APPLICATION_JSON).principal(principal))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcRestDocumentation.document("requests-user-list-example"));
     }

@@ -5,10 +5,7 @@ import {ColorsService} from "../../../shared/colors/colors.service";
 import {RequestsService} from "../../../core/requests/requests.service";
 
 import {LocalStorageService} from 'angular-2-local-storage';
-import {JwtHelper} from "angular2-jwt/angular2-jwt";
 import {AuthService} from "../../../core/auth/auth.service";
-import {Observable} from "rxjs/Observable";
-import {RequestsStat} from "../../../core/requests/RequestsStat";
 import {RequestsStats} from "../../../core/requests/RequestsStats";
 
 declare var civic: any;
@@ -33,20 +30,6 @@ export class HomeComponent implements OnInit {
     size: 55
   };
 
-
-  options = {
-    /* animate: {
-     duration: 800,
-     enabled: true
-     },
-     barColor: this.colors.byName('info'),
-     trackColor: 'rgba(200,200,200,0.4)',
-     scaleColor: false,
-     lineWidth: 10,
-     lineCap: 'round',
-     size: 145*/
-  };
-
   /*
    methods: {
    addFND(amount) {
@@ -64,7 +47,8 @@ export class HomeComponent implements OnInit {
    return ((Math.round(number * 100) / 100).toFixed(digitsAfterDecimal)).toLocaleString()
    }
    */
-  private statistics: RequestsStats;
+  public statistics: RequestsStats = new RequestsStats();
+  public percentageFunded: number;
 
   constructor(private localStorageService: LocalStorageService,
               private route: ActivatedRoute,
@@ -74,6 +58,7 @@ export class HomeComponent implements OnInit {
               public requestsService: RequestsService) {
     requestsService.getStatistics().subscribe((stats) => {
         this.statistics = stats;
+        this.percentageFunded = stats.percentageFunded
       }
     );
   }

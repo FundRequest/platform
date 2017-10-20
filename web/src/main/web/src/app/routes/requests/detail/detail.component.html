@@ -1,0 +1,88 @@
+<div class="content-heading">
+  Request Details
+  <small></small>
+</div>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="label" [ngClass]="{['label-'+ status] : true}">{status}</span>
+        <span>{issueInformation.title}</span>
+        <span class="pull-right">
+          watchlink
+          <!--span th:replace="fragments/watchLink :: watchLink (${request})"></span-->
+                    </span>
+      </div>
+      <div class="panel-body">
+        <div class="form-horizontal">
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Source</label>
+            <div class="col-lg-10 form-control-static">
+              <a target="_blank" href="{issueInformation.link}">
+                <i [ngClass]="{['fa fa-2x fa-' + issueInformation.source.key]: true}"></i>
+              </a>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Owner</label>
+            <div class="col-lg-10 form-control-static">
+              <label>
+                <span>{issueInformation.owner}</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Repo</label>
+            <div class="col-lg-10 form-control-static">
+              <label>
+                <span>{issueInformation.repo}</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Issue</label>
+            <div class="col-lg-10 form-control-static">
+              <label>
+                <span>{issueInformation.number}</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Type</label>
+            <div class="col-lg-10 form-control-static">
+              <label>
+                <span>{type}</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Technologies</label>
+            <div class="col-lg-10 form-control-static">
+              <div th:each="t : ${request.technologies}" th:remove="tag">
+                <span th:text="${t}" class="label label-primary">100</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Funded</label>
+            <div class="col-lg-10 form-control-static">
+              <label>
+                <span data:request-balance="${request.id}"><i class="whirl whirl--sm whirl--fnd"></i></span>
+                <span>FND</span> <span data:request-balance-message="${request.id}"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span>Other Info</span>
+      </div>
+      <div class="panel-body">
+      </div>
+    </div>
+  </div>
+</div>

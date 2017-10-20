@@ -10,7 +10,7 @@
           <div class="row row-table">
             <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x fa fa-file-code-o"></em></div>
             <div class="col-xs-8 pv-lg">
-              <div class="h2 mt0">{{statistics.numberOfRequests.val}}</div>
+              <div class="h2 mt0">{{statistics.numberOfRequests}}</div>
               <div class="text-uppercase"># Requests</div>
             </div>
           </div>
@@ -21,7 +21,7 @@
           <div class="row row-table">
             <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x fa fa-magic"></em></div>
             <div class="col-xs-8 pv-lg">
-              <div class="h2 mt0">{{statistics.requestsFunded.val}}</div>
+              <div class="h2 mt0">{{statistics.requestsFunded}}</div>
               <div class="text-uppercase"># Requests funded</div>
             </div>
           </div>
@@ -31,8 +31,8 @@
         <div class="panel widget bg-primary">
           <div class="row row-table">
             <div class="col-xs-4 text-center pv-lg bg-primary-dark">
-              <div class="easypie-chart" easypiechart [options]="pieOptions" [percent]="statistics.percentageFunded.val">
-                <span>{{statistics.percentageFunded.val || 0}}%</span>
+              <div class="easypie-chart" easypiechart [options]="pieOptions" [percent]="percentageFunded">
+                <span>{{percentageFunded | number: '1.0'}}</span><span>%</span>
               </div>
             </div>
             <div class="col-xs-8 pv-lg">
@@ -47,7 +47,7 @@
           <div class="row row-table">
             <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-people"></em></div>
             <div class="col-xs-8 pv-lg">
-              <div class="h2 mt0">{{statistics.numberOfFunders.val}}</div>
+              <div class="h2 mt0">{{statistics.numberOfFunders}}</div>
               <div class="text-uppercase"># Funders</div>
             </div>
           </div>
@@ -58,7 +58,7 @@
           <div class="row row-table">
             <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-chart"></em></div>
             <div class="col-xs-8 pv-lg">
-              <div class="h2 mt0">{{statistics.averageFundingPerRequest.val | number:'1.2'}} FND</div>
+              <div class="h2 mt0">{{statistics.averageFundingPerRequest | number:'1.2'}} FND</div>
               <div class="text-uppercase">Average funding</div>
             </div>
           </div>
@@ -69,7 +69,7 @@
           <div class="row row-table">
             <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-fire"></em></div>
             <div class="col-xs-8 pv-lg">
-              <div class="h2 mt0">{{statistics.totalAmountFunded.val | number:'1.2'}} FND</div>
+              <div class="h2 mt0">{{statistics.totalAmountFunded | number:'1.2'}} FND</div>
               <div class="text-uppercase">Total funded</div>
             </div>
           </div>
