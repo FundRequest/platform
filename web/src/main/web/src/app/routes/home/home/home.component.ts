@@ -48,7 +48,6 @@ export class HomeComponent implements OnInit {
    }
    */
   public statistics: RequestsStats = new RequestsStats();
-  public percentageFunded: number;
 
   constructor(private localStorageService: LocalStorageService,
               private route: ActivatedRoute,
@@ -57,8 +56,7 @@ export class HomeComponent implements OnInit {
               public colors: ColorsService,
               public requestsService: RequestsService) {
     requestsService.getStatistics().subscribe((stats) => {
-        this.statistics = stats;
-        this.percentageFunded = stats.percentageFunded
+        this.statistics.fillFromJSON(stats);
       }
     );
   }
