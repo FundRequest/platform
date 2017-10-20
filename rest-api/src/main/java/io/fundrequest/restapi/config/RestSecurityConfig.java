@@ -61,8 +61,8 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anonymous().and()
                 .servletApi().and()
                 .authorizeRequests()
-                .antMatchers("/api").authenticated()
-                .antMatchers("/api/**").authenticated()
+                .antMatchers("/api/private").authenticated()
+                .antMatchers("/api/private/**").authenticated()
                 .antMatchers("/**").permitAll()
                 .and()
                 .addFilterBefore(new StatelessAuthenticationFilter(civicAuthClient, userJsonParser, userService),

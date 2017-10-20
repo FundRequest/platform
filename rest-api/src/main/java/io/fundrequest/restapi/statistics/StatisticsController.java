@@ -4,7 +4,7 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.restapi.infrastructure.AbstractRestController;
+import io.fundrequest.restapi.infrastructure.PublicRestController;
 import io.fundrequest.restapi.statistics.dto.StatisticsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-public class StatisticsController extends AbstractRestController {
+public class StatisticsController extends PublicRestController {
 
     private RequestService requestService;
     private FundService fundService;

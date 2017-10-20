@@ -3,9 +3,8 @@ package io.fundrequest.restapi.request;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.restapi.infrastructure.AbstractRestController;
+import io.fundrequest.restapi.infrastructure.PrivateRestController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +17,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@CrossOrigin(maxAge = 3600, value = "*")
-public class RequestController extends AbstractRestController {
+public class RequestController extends PrivateRestController {
 
     private RequestService requestService;
 

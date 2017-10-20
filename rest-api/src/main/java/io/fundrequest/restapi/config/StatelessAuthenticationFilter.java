@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static io.fundrequest.restapi.infrastructure.PrivateRestController.PRIVATE_API_LOCATION;
+
 public class StatelessAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(StatelessAuthenticationFilter.class);
 
@@ -33,7 +35,7 @@ public class StatelessAuthenticationFilter extends AbstractAuthenticationProcess
 
 
     public StatelessAuthenticationFilter(CivicAuthClient civicAuthClient, UserJsonParser userJsonParser, UserService userService) {
-        super(new AntPathRequestMatcher("/api/**"));
+        super(new AntPathRequestMatcher(PRIVATE_API_LOCATION + "/**"));
         this.civicAuthClient = civicAuthClient;
         this.userJsonParser = userJsonParser;
         this.userService = userService;
@@ -42,16 +44,13 @@ public class StatelessAuthenticationFilter extends AbstractAuthenticationProcess
 
     @Override
     protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        return StringUtils.contains(request.getHeader("Authorization"), "Bearer");
+        return StringUtils.contains(request.getHeader("Authorization"), "Bearer")
+                &&
+                !CorsUtils.isPreFlightRequest(request);
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        if (CorsUtils.isPreFlightRequest(request)) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return null;
-        }
-
         String authorizationHeader = request.getHeader(AUTH_HEADER_NAME);
         if (authorizationHeader == null || !authorizationHeader.contains(BEARER)) {
             return null;
