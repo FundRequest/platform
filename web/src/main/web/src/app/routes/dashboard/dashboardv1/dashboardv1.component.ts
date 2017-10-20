@@ -10,6 +10,7 @@ import {ColorsService} from "../../../shared/colors/colors.service";
 })
 export class Dashboardv1Component implements OnInit {
 
+
     easyPiePercent: number = 70;
     pieOptions = {
         animate: {

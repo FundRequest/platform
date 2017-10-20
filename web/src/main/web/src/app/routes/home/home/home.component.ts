@@ -19,6 +19,21 @@ declare var civic: any;
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+
+  pieOptions = {
+    animate: {
+      duration: 800,
+      enabled: true
+    },
+    barColor: '#fff',
+    trackColor: 'rgba(93,156,236,0.4)',
+    scaleColor: false,
+    lineWidth: 5,
+    lineCap: 'round',
+    size: 55
+  };
+
+
   options = {
     /* animate: {
      duration: 800,
@@ -49,14 +64,7 @@ export class HomeComponent implements OnInit {
    return ((Math.round(number * 100) / 100).toFixed(digitsAfterDecimal)).toLocaleString()
    }
    */
-  private statistics: Observable<RequestsStats>;
-
-  private numberOfRequests: RequestsStat;
-  private requestsFunded: RequestsStat;
-  private numberOfFunders: RequestsStat;
-  private totalAmountFunded: RequestsStat;
-  private averageFundingPerRequest: RequestsStat;
-  private percentageFunded: RequestsStat;
+  private statistics: RequestsStats;
 
   constructor(private localStorageService: LocalStorageService,
               private route: ActivatedRoute,
@@ -64,15 +72,9 @@ export class HomeComponent implements OnInit {
               private authService: AuthService,
               public colors: ColorsService,
               public requestsService: RequestsService) {
-    this.statistics = requestsService.getStatistics();
-    this.statistics.subscribe((stats) => (
-        this.numberOfRequests = stats.numberOfRequests,
-          this.requestsFunded = stats.requestsFunded,
-          this.numberOfFunders = stats.numberOfFunders,
-          this.totalAmountFunded = stats.totalAmountFunded,
-          this.averageFundingPerRequest = stats.averageFundingPerRequest,
-          this.percentageFunded = stats.percentageFunded
-      )
+    requestsService.getStatistics().subscribe((stats) => {
+        this.statistics = stats;
+      }
     );
   }
 
