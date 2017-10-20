@@ -1,5 +1,4 @@
 import {Injectable} from "@angular/core";
-import {Request} from "app/core/requests/Request";
 import {Observable} from "rxjs/Observable";
 import {RequestsStats} from "./RequestsStats";
 import {HttpClient} from "@angular/common/http";
@@ -16,7 +15,7 @@ export class RequestsService {
   }
 
   getStatistics(): Observable<RequestsStats> {
-      return this.http.get(`http://localhost:8080/api/requests/statistics`);
+      return this.http.get('/api/requests/statistics');
   }
 
 }
