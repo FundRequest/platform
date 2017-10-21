@@ -8,6 +8,8 @@ export class Serializable {
       jsonObj = json;
     }
 
+    console.log(jsonObj);
+    
     for (var propName in jsonObj) {
       this[propName] = jsonObj[propName]
     }

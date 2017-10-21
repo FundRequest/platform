@@ -12,6 +12,7 @@ import {SharedModule} from "./shared/shared.module";
 import {RoutesModule} from "./routes/routes.module";
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {AuthInterceptor} from "./core/auth/auth.interceptor";
+import {ComponentsModule} from "./components/components.module";
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: Http) {
@@ -20,10 +21,11 @@ export function createTranslateLoader(http: Http) {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     HttpModule,
+    ComponentsModule,
     BrowserAnimationsModule, // required for ng2-tag-input
     CoreModule,
     LayoutModule,

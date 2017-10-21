@@ -1,4 +1,7 @@
-export class Request {
+import {RequestIssueInformation} from "./RequestIssueInformation";
+import {Serializable} from "./Serializable";
+
+export class Request extends Serializable {
 
   public id: Number;
   public status: String;
@@ -7,8 +10,5 @@ export class Request {
   public watchers: String[];
   public loggedInUserIsWatcher: Boolean;
 
-  // private RequestStatus status;
-
-  // private IssueInformationDto issueInformation;
-
+  public issueInformation: RequestIssueInformation = new RequestIssueInformation();
 }

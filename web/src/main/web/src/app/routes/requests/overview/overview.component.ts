@@ -5,7 +5,7 @@ import * as _ from "lodash";
 import {TableData} from "./ng2-table-data";
 
 @Component({
-    selector: 'app-datatable',
+    selector: 'app-request-overview',
     templateUrl: './overview.component.html',
     styleUrls: ['./overview.component.scss']
 })

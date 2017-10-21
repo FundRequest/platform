@@ -7,7 +7,7 @@ const Home = {
 
 const Requests = {
     text: 'Requests',
-    link: '/requests/overview',
+    link: '/requests',
     icon: 'fa fa-list-alt'
 };
 

@@ -5,10 +5,11 @@ import {Ng2TableModule} from "ng2-table/ng2-table";
 import {SharedModule} from "../../shared/shared.module";
 import {OverviewComponent} from "./overview/overview.component";
 import {DetailComponent} from "./detail/detail.component";
+import {ComponentsModule} from "../../components/components.module";
 
 const routes: Routes = [
   {path: '', component: OverviewComponent},
-  {path: 'detail/id', component: DetailComponent}
+  {path: ':id', component: DetailComponent}
 ];
 
 @NgModule({
@@ -16,6 +17,7 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
     Ng2TableModule,
+    ComponentsModule
   ],
   declarations: [
     DetailComponent,

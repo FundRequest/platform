@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {RequestsStats} from "./RequestsStats";
+import {Request} from "./Request";
 import {HttpClient} from "@angular/common/http";
 
 @Injectable()
@@ -16,6 +17,10 @@ export class RequestsService {
 
   getStatistics(): Observable<RequestsStats> {
       return this.http.get('/api/public/requests/statistics');
+  }
+
+  get(id : number): Observable<Request> {
+      return this.http.get(`/api/private/requests/${id}`);
   }
 
 }
