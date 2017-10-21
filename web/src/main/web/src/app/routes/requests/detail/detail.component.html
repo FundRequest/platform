@@ -6,69 +6,68 @@
   <div class="col-lg-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <span class="label" [ngClass]="{['label-'+ status] : true}">{status}</span>
-        <span>{issueInformation.title}</span>
+        <span class="label" [ngClass]="['label-'+ request.status]">{{request.status}}</span>
+        <span>{{request.issueInformation.title}}</span>
         <span class="pull-right">
-          watchlink
-          <!--span th:replace="fragments/watchLink :: watchLink (${request})"></span-->
-                    </span>
+          <app-watchlink [request]="request"></app-watchlink>
+        </span>
       </div>
       <div class="panel-body">
         <div class="form-horizontal">
           <div class="form-group">
-            <label class="col-lg-2 control-label">Source</label>
-            <div class="col-lg-10 form-control-static">
-              <a target="_blank" href="{issueInformation.link}">
-                <i [ngClass]="{['fa fa-2x fa-' + issueInformation.source.key]: true}"></i>
+            <label class="col-lg-3 control-label">Source</label>
+            <div class="col-lg-9 form-control-static">
+              <a target="_blank" href="{{request.issueInformation.link}}">
+                <i [ngClass]="['fa fa-2x fa-' + request.issueInformation.source | lowercase]"></i>
               </a>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-lg-2 control-label">Owner</label>
-            <div class="col-lg-10 form-control-static">
+            <label class="col-lg-3 control-label">Owner</label>
+            <div class="col-lg-9 form-control-static">
               <label>
-                <span>{issueInformation.owner}</span>
+                <span>{{request.issueInformation.owner}}</span>
               </label>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-lg-2 control-label">Repo</label>
-            <div class="col-lg-10 form-control-static">
+            <label class="col-lg-3 control-label">Repo</label>
+            <div class="col-lg-9 form-control-static">
               <label>
-                <span>{issueInformation.repo}</span>
+                <span>{{request.issueInformation.repo}}</span>
               </label>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-lg-2 control-label">Issue</label>
-            <div class="col-lg-10 form-control-static">
+            <label class="col-lg-3 control-label">Issue</label>
+            <div class="col-lg-9 form-control-static">
               <label>
-                <span>{issueInformation.number}</span>
+                <span>{{request.issueInformation.number}}</span>
               </label>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-lg-2 control-label">Type</label>
-            <div class="col-lg-10 form-control-static">
+            <label class="col-lg-3 control-label">Type</label>
+            <div class="col-lg-9 form-control-static">
               <label>
-                <span>{type}</span>
+                <span>{{request.type}}</span>
               </label>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-lg-2 control-label">Technologies</label>
-            <div class="col-lg-10 form-control-static">
-              <div th:each="t : ${request.technologies}" th:remove="tag">
-                <span th:text="${t}" class="label label-primary">100</span>
-              </div>
+            <label class="col-lg-3 control-label">Technologies</label>
+            <div class="col-lg-9 form-control-static">
+              <ng-container *ngFor="let t of request.technologies">
+                <span class="label label-primary">{{t}}</span>
+              </ng-container>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-lg-2 control-label">Funded</label>
-            <div class="col-lg-10 form-control-static">
+            <label class="col-lg-3 control-label">Funded</label>
+            <div class="col-lg-9 form-control-static">
               <label>
-                <span data:request-balance="${request.id}"><i class="whirl whirl--sm whirl--fnd"></i></span>
-                <span>FND</span> <span data:request-balance-message="${request.id}"></span>
+                <span><i class="whirl whirl--sm whirl--fnd"></i></span>
+                <span>FND</span> <span></span>
               </label>
             </div>
           </div>
