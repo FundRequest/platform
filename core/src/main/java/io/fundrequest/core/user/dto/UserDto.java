@@ -1,4 +1,4 @@
-package io.fundrequest.core.user;
+package io.fundrequest.core.user.dto;
 
 public class UserDto {
     private String userId;

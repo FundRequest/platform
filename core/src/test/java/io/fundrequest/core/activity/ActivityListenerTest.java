@@ -2,8 +2,8 @@ package io.fundrequest.core.activity;
 
 
 import io.fundrequest.core.request.event.RequestCreatedEvent;
-import io.fundrequest.core.user.UserDto;
 import io.fundrequest.core.user.UserService;
+import io.fundrequest.core.user.dto.UserDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

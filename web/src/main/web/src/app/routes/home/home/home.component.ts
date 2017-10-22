@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Router, ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import {ColorsService} from "../../../shared/colors/colors.service";
 import {RequestsService} from "../../../core/requests/requests.service";
@@ -73,6 +73,7 @@ export class HomeComponent implements OnInit {
       // Listen for data
       civicSip.on('auth-code-received', function (event) {
         const jwtToken = event.response;
+        console.log(jwtToken);
         localStorageService.set('id_token', jwtToken);
         router.navigate([returnUrl]);
       });

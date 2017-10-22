@@ -1,5 +1,7 @@
 package io.fundrequest.core.user;
 
+import io.fundrequest.core.user.dto.UserDto;
+
 public final class UserDtoMother {
 
     public static UserDto davy() {

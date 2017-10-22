@@ -1,6 +1,8 @@
 package io.fundrequest.core.user;
 
 import io.fundrequest.core.user.domain.User;
+import io.fundrequest.core.user.dto.UserDto;
+import io.fundrequest.core.user.dto.UserDtoMapper;
 import io.fundrequest.core.user.infrastructure.UserRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -10,16 +12,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private UserDtoMapper userDtoMapper;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserDtoMapper userDtoMapper) {
         this.userRepository = userRepository;
+        this.userDtoMapper = userDtoMapper;
     }
 
     @Override
     @Cacheable("users")
     @Transactional(readOnly = true)
     public UserDto getUser(String userId) {
-        return null;
+        return userDtoMapper.map(
+                userRepository.findOne(userId).orElse(null)
+        );
     }
 
     @Override

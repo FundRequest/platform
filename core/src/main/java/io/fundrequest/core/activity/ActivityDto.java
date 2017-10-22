@@ -1,6 +1,6 @@
 package io.fundrequest.core.activity;
 
-import io.fundrequest.core.user.UserDto;
+import io.fundrequest.core.user.dto.UserDto;
 
 import java.time.LocalDateTime;
 
