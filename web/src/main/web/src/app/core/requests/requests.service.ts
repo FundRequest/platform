@@ -1,5 +1,4 @@
-import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
+import {ApplicationRef, Injectable} from "@angular/core";
 import {RequestsStats} from "./RequestsStats";
 import {Request} from "./Request";
 import {HttpClient} from "@angular/common/http";
@@ -7,20 +6,36 @@ import {HttpClient} from "@angular/common/http";
 @Injectable()
 export class RequestsService {
 
-  //public requests: Observable<Array<Request>>;
-  //public statistics: Observable<RequestsStats>;
-
-  constructor(private http: HttpClient) {
-    //this.requests = this.http.get('http://localhost:8080/api/requests').map(data => data.json());
-    //this.statistics = this.http.get('http://localhost:8080/api/requests/statistics').map(data => data.json());
+  constructor(private http: HttpClient, private ref: ApplicationRef) {
   }
 
-  getStatistics(): Observable<RequestsStats> {
-      return this.http.get('/api/public/requests/statistics');
+  getStatistics(): RequestsStats {
+    let statistics: RequestsStats = new RequestsStats();
+    this.http.get('/api/public/requests/statistics').subscribe((stats) => {
+      statistics.fillFromJSON(stats);
+    });
+
+    return statistics;
   }
 
-  get(id : number): Observable<Request> {
-      return this.http.get(`/api/private/requests/${id}`);
+  get(id: number): Request {
+    let request = new Request();
+    this.http.get(`/api/private/requests/${id}`).subscribe((response) => {
+      request.fillFromJSON(response);
+    });
+
+    return request;
   }
 
+  async getAll(): Promise<Array<Request>> {
+    let requests = [];
+    await this.http.get(`/api/private/requests`).subscribe((response: Array<Request>) => {
+      response.forEach(function (requestJson) {
+        let request: Request = new Request();
+        request.fillFromJSON(requestJson);
+        requests.push(request);
+      });
+    });
+    return requests;
+  };
 }

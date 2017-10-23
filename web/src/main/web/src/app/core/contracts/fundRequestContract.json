@@ -1,0 +1,25 @@
+[{
+  "constant": true,
+  "inputs": [{"name": "_data", "type": "string"}],
+  "name": "balance",
+  "outputs": [{"name": "", "type": "uint256"}],
+  "payable": false,
+  "type": "function"
+}, {
+  "constant": false,
+  "inputs": [{"name": "_from", "type": "address"}, {"name": "_value", "type": "uint256"}, {
+    "name": "_data",
+    "type": "string"
+  }],
+  "name": "fund",
+  "outputs": [{"name": "success", "type": "bool"}],
+  "payable": false,
+  "type": "function"
+}, {
+  "constant": true,
+  "inputs": [],
+  "name": "tokenAddress",
+  "outputs": [{"name": "", "type": "address"}],
+  "payable": false,
+  "type": "function"
+}, {"inputs": [{"name": "_tokenAddress", "type": "address"}], "payable": false, "type": "constructor"}]

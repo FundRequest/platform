@@ -6,6 +6,7 @@ import {SharedModule} from "../../shared/shared.module";
 import {OverviewComponent} from "./overview/overview.component";
 import {DetailComponent} from "./detail/detail.component";
 import {ComponentsModule} from "../../components/components.module";
+import {DataTableModule} from "angular2-datatable";
 
 const routes: Routes = [
   {path: '', component: OverviewComponent},
@@ -17,7 +18,8 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
     Ng2TableModule,
-    ComponentsModule
+    ComponentsModule,
+    DataTableModule
   ],
   declarations: [
     DetailComponent,

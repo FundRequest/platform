@@ -11,11 +11,10 @@ import {ActivatedRoute} from "@angular/router";
 export class DetailComponent implements OnInit {
 
   private subRoute;
-  private subRequest;
 
   public id;
 
-  public request: Request =  new Request();
+  public request: Request = new Request();
 
   constructor(private route: ActivatedRoute, private requestsService: RequestsService) {
   }
@@ -24,15 +23,11 @@ export class DetailComponent implements OnInit {
     this.subRoute = this.route.params.subscribe(params => {
       this.id = +params['id'];
 
-      this.subRequest = this.requestsService.get(this.id).subscribe((request) => {
-          this.request.fillFromJSON(request);
-        }
-      );
+      this.request = this.requestsService.get(this.id);
     });
   }
 
   ngOnDestroy(): void {
-      this.subRequest.unsubscribe();
-      this.subRoute.unsubscribe();
+    this.subRoute.unsubscribe();
   }
 }

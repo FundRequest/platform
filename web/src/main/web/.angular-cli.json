@@ -35,7 +35,8 @@
         "../node_modules/bootstrap/js/tooltip.js",
         "../node_modules/summernote/dist/summernote.js",
         "../node_modules/moment/min/moment-with-locales.min.js",
-        "../node_modules/fullcalendar/dist/fullcalendar.js"
+        "../node_modules/fullcalendar/dist/fullcalendar.js",
+        "../node_modules/web3/dist/web3.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

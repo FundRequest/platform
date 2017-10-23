@@ -2,24 +2,74 @@
   Requests
   <small>Let's fund some</small>
 </div>
-<alert [type]="'info'">Alert Example</alert>
-<h4 class="page-header">Heading
-  <small>Of table</small>
-</h4>
-<div class="mb-lg clearfix">
-  <div class="pull-let wd-md">
-    <input *ngIf="config.filtering" placeholder="Filter all columns" [ngTableFiltering]="config.filtering"
-           class="form-control" (tableChanged)="onChangeTable(config)"/>
-  </div>
-</div>
 <div class="panel panel-default">
-  <ng-table [config]="config" (tableChanged)="onChangeTable(config)" (cellClicked)="onCellClick($event)" [rows]="rows"
-            [columns]="columns">
-  </ng-table>
-</div>
-<div class="text-right">
-  <pagination *ngIf="config.paging" class="pagination-sm" [(ngModel)]="page" [totalItems]="length"
-              [itemsPerPage]="itemsPerPage" [maxSize]="maxSize" [boundaryLinks]="true" [rotate]="false"
-              (pageChanged)="onChangeTable(config, $event)" (numPages)="numPages = $event">
-  </pagination>
+  <div class="panel-heading">
+    <div class="pull-right text-muted">
+      <i class="fa fa-lightbulb-o mr-sm"></i><strong>{{requests?.length}}</strong>
+      <span i18n>{requests.length, plural, =1 {request} other {requests}}</span>
+    </div>
+  </div>
+  <table class="table table-striped table-bordered table-hover" [mfData]="requests" #mf="mfDataTable" [mfRowsOnPage]="10">
+    <thead>
+    <tr>
+      <th>
+        <mfDefaultSorter by="watchers"></mfDefaultSorter>
+      </th>
+      <th>
+        <mfDefaultSorter by="issueInformation.title">Summery</mfDefaultSorter>
+      </th>
+      <th>
+        <mfDefaultSorter by="status">Status</mfDefaultSorter>
+      </th>
+      <th>
+        <mfDefaultSorter by="issueInformation.source">Source</mfDefaultSorter>
+      </th>
+      <th>
+        <mfDefaultSorter by="type">Type</mfDefaultSorter>
+      </th>
+      <th>
+        <mfDefaultSorter by="technologies">Technologies</mfDefaultSorter>
+      </th>
+      <th>
+        <mfDefaultSorter by="funded">Funded</mfDefaultSorter>
+      </th>
+      <th>
+        Actions
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let request of mf.data">
+      <td><app-watchlink [request]="request"></app-watchlink></td>
+      <td>
+        <a routerLink="/requests/{{request.id}}">
+          {{request.issueInformation.title}}
+        </a>
+      </td>
+      <td>{{request.status}}</td>
+      <td>
+        <a target="_blank" href="{{request.issueInformation.link}}">
+          <i [ngClass]="['fa fa-2x fa-' + request.issueInformation.source | lowercase]"></i>
+        </a>
+      </td>
+      <td>{{request.type}}</td>
+      <td>
+        <ng-container *ngFor="let t of request.technologies">
+          <span class="label label-primary">{{t}}</span>
+        </ng-container>
+      </td>
+      <td>{{request.balance}}</td>
+      <td>
+        <button title="Fund" class="btn btn-primary" (click)="fundRequest(request)"><i class="fa fa-exchange"></i></button>
+      </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+      <td colspan="5">
+        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+      </td>
+    </tr>
+    </tfoot>
+  </table>
 </div>

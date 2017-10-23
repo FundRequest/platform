@@ -11,6 +11,7 @@ import {AuthService} from "./auth/auth.service";
 import {AuthGuard} from "./auth/auth.guard";
 import {HttpClientModule} from "@angular/common/http";
 import {ComponentsModule} from "../components/components.module";
+import {ContractService} from "./contracts/contracts.service";
 
 @NgModule({
     imports: [
@@ -23,6 +24,7 @@ import {ComponentsModule} from "../components/components.module";
         TranslatorService,
         MenuService,
         RequestsService,
+        ContractService,
         AuthService,
         AuthGuard,
     ],
@@ -31,6 +33,7 @@ import {ComponentsModule} from "../components/components.module";
     exports: [
     ]
 })
+
 export class CoreModule {
     constructor( @Optional() @SkipSelf() parentModule: CoreModule) {
         throwIfAlreadyLoaded(parentModule, 'CoreModule');

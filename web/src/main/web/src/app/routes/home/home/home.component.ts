@@ -30,23 +30,6 @@ export class HomeComponent implements OnInit {
     size: 55
   };
 
-  /*
-   methods: {
-   addFND(amount) {
-   return amount + ' FND';
-   },
-   fromWei(amountInWei) {
-   var number = Number(amountInWei) / 1000000000000000000;
-   return ((Math.round(number * 100) / 100).toFixed(2)).toLocaleString();
-   },
-   round(amount, digitsAfterDecimal) {
-   if (typeof digitsAfterDecimal === 'undefined') {
-   digitsAfterDecimal = 2;
-   }
-   var number = Number(amount);
-   return ((Math.round(number * 100) / 100).toFixed(digitsAfterDecimal)).toLocaleString()
-   }
-   */
   public statistics: RequestsStats = new RequestsStats();
 
   constructor(private localStorageService: LocalStorageService,
@@ -55,13 +38,10 @@ export class HomeComponent implements OnInit {
               private authService: AuthService,
               public colors: ColorsService,
               public requestsService: RequestsService) {
-    requestsService.getStatistics().subscribe((stats) => {
-        this.statistics.fillFromJSON(stats);
-      }
-    );
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.statistics = this.requestsService.getStatistics();
 
     if (!this.authService.isAuthenticated()) {
       const localStorageService: LocalStorageService = this.localStorageService;

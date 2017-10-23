@@ -31,7 +31,7 @@
         <div class="panel widget bg-primary">
           <div class="row row-table">
             <div class="col-xs-4 text-center pv-lg bg-primary-dark">
-              <div class="easypie-chart" easypiechart [options]="pieOptions" [percent]="statistics.percentageFunded">
+              <div class="easypie-chart" easypiechart [options]="pieOptions" [percent]="statistics.percentageFunded | async">
                 <span>{{statistics.percentageFunded | number: '1.0'}}%</span>
               </div>
             </div>

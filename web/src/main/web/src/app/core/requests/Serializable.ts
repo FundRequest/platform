@@ -1,5 +1,5 @@
 export class Serializable {
-  fillFromJSON(json: any) {
+  public fillFromJSON(json: any) {
     let jsonObj;
 
     if (typeof json !== 'object') {
@@ -9,7 +9,7 @@ export class Serializable {
     }
 
     console.log(jsonObj);
-    
+
     for (var propName in jsonObj) {
       this[propName] = jsonObj[propName]
     }

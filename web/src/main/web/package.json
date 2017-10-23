@@ -76,6 +76,7 @@
     "ts-helpers": "1.1.1",
     "weather-icons": "github:erikflowers/weather-icons",
     "web-animations-js": "2.2.2",
+    "web3": "^0.18.4",
     "zone.js": "0.8.4"
   },
   "devDependencies": {
