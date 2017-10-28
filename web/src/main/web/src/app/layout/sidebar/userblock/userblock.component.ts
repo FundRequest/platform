@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 
 import {UserblockService} from "./userblock.service";
+import {ContractService} from "../../../core/contracts/contracts.service";
 
 @Component({
     selector: 'app-userblock',
@@ -9,14 +10,17 @@ import {UserblockService} from "./userblock.service";
 })
 export class UserblockComponent implements OnInit {
     user: any;
-    constructor(public userblockService: UserblockService) {
+    balance: string;
 
+    constructor(public userblockService: UserblockService,
+                public contractService: ContractService) {
         this.user = {
             picture: 'assets/img/user/01.jpg'
         };
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+      this.balance = await this.contractService.getUserBalance();
     }
 
     userBlockIsVisible() {
