@@ -3,12 +3,8 @@ import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
-import {ToasterModule} from "angular2-toaster/angular2-toaster";
 
-import {AccordionModule} from "ngx-bootstrap/accordion";
-import {AlertModule} from "ngx-bootstrap/alert";
 import {ButtonsModule} from "ngx-bootstrap/buttons";
-import {CarouselModule} from "ngx-bootstrap/carousel";
 import {CollapseModule} from "ngx-bootstrap/collapse";
 import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 import {ModalModule} from "ngx-bootstrap/modal";
@@ -25,7 +21,6 @@ import {SparklineDirective} from "./directives/sparkline/sparkline.directive";
 import {EasypiechartDirective} from "./directives/easypiechart/easypiechart.directive";
 import {ColorsService} from "./colors/colors.service";
 import {CheckallDirective} from "./directives/checkall/checkall.directive";
-import {VectormapDirective} from "./directives/vectormap/vectormap.directive";
 import {NowDirective} from "./directives/now/now.directive";
 import {ScrollableDirective} from "./directives/scrollable/scrollable.directive";
 import {JqcloudDirective} from "./directives/jqcloud/jqcloud.directive";
@@ -39,10 +34,7 @@ import {LocalStorageModule} from "angular-2-local-storage";
         FormsModule,
         ReactiveFormsModule,
         TranslateModule,
-        AccordionModule.forRoot(),
-        AlertModule.forRoot(),
         ButtonsModule.forRoot(),
-        CarouselModule.forRoot(),
         CollapseModule.forRoot(),
         DatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
@@ -54,7 +46,6 @@ import {LocalStorageModule} from "angular-2-local-storage";
         TimepickerModule.forRoot(),
         TooltipModule.forRoot(),
         TypeaheadModule.forRoot(),
-        ToasterModule,
         LocalStorageModule.withConfig({
           prefix: 'FND',
           storageType: 'localStorage'
@@ -67,7 +58,6 @@ import {LocalStorageModule} from "angular-2-local-storage";
         SparklineDirective,
         EasypiechartDirective,
         CheckallDirective,
-        VectormapDirective,
         NowDirective,
         ScrollableDirective,
         JqcloudDirective
@@ -78,10 +68,7 @@ import {LocalStorageModule} from "angular-2-local-storage";
         ReactiveFormsModule,
         TranslateModule,
         RouterModule,
-        AccordionModule,
-        AlertModule,
         ButtonsModule,
-        CarouselModule,
         CollapseModule,
         DatepickerModule,
         BsDropdownModule,
@@ -93,11 +80,9 @@ import {LocalStorageModule} from "angular-2-local-storage";
         TimepickerModule,
         TooltipModule,
         TypeaheadModule,
-        ToasterModule,
         SparklineDirective,
         EasypiechartDirective,
         CheckallDirective,
-        VectormapDirective,
         NowDirective,
         ScrollableDirective,
         JqcloudDirective
