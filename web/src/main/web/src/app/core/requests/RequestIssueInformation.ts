@@ -1,7 +1,6 @@
-import {Serializable} from "./Serializable";
 import {RequestSource} from "./RequestSource";
 
-export class RequestIssueInformation extends Serializable {
+export class RequestIssueInformation {
 
   public link: String;
   public owner:  String;

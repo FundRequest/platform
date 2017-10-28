@@ -1,4 +1,5 @@
-<a href="#" class="watch-link"
+<a *ngIf="request"
+   href="#" class="watch-link"
    data-toggle="tooltip"
    data-html="true"
    title="{{request.watchers?.join('<br/>')}}">

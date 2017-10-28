@@ -2,14 +2,14 @@
   Request Details
   <small></small>
 </div>
-<div class="row">
+<div class="row" *ngIf="request">
   <div class="col-lg-6">
     <div class="panel panel-default">
       <div class="panel-heading">
         <span class="label" [ngClass]="['label-'+ request.status]">{{request.status}}</span>
         <span>{{request.issueInformation.title}}</span>
         <span class="pull-right">
-          <app-watchlink [request]="request"></app-watchlink>
+          <fnd-watchlink [request]="request"></fnd-watchlink>
         </span>
       </div>
       <div class="panel-body">

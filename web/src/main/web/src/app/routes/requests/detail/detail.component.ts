@@ -2,32 +2,32 @@ import {Component, OnInit} from "@angular/core";
 import {RequestsService} from "../../../core/requests/requests.service";
 import {Request} from "../../../core/requests/Request";
 import {ActivatedRoute} from "@angular/router";
+import {ContractService} from "app/core/contracts/contracts.service";
 
 @Component({
-  selector: 'app-request-detail',
+  selector: 'fnd-request-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss']
 })
 export class DetailComponent implements OnInit {
 
   private subRoute;
-
   public id;
+  public request: Request;
 
-  public request: Request = new Request();
-
-  constructor(private route: ActivatedRoute, private requestsService: RequestsService) {
+  constructor(private route: ActivatedRoute,
+              private requestsService: RequestsService,
+              private contractService: ContractService) {
   }
 
   ngOnInit(): void {
     this.subRoute = this.route.params.subscribe(params => {
-      this.id = +params['id'];
-
-      this.request = this.requestsService.get(this.id);
+      this.getRequest(+params['id']);
     });
   }
 
-  ngOnDestroy(): void {
-    this.subRoute.unsubscribe();
+  async getRequest(id: number) {
+    this.request = await this.requestsService.get(id);
+    this.request.balance = await this.contractService.getRequestBalance(String(id));
   }
 }

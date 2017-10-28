@@ -2,10 +2,10 @@
   Requests
   <small>Let's fund some</small>
 </div>
-<div class="panel panel-default">
+<div class="panel panel-default" *ngIf="requests">
   <div class="panel-heading">
     <div class="pull-right text-muted">
-      <i class="fa fa-lightbulb-o mr-sm"></i><strong>{{requests?.length}}</strong>
+      <i class="fa fa-lightbulb-o mr-sm"></i><strong>{{requests.length}}</strong>
       <span i18n>{requests.length, plural, =1 {request} other {requests}}</span>
     </div>
   </div>
@@ -40,7 +40,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let request of mf.data">
-      <td><app-watchlink [request]="request"></app-watchlink></td>
+      <td><fnd-watchlink [request]="request"></fnd-watchlink></td>
       <td>
         <a routerLink="/requests/{{request.id}}">
           {{request.issueInformation.title}}

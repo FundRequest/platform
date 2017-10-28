@@ -1,7 +1,8 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {Http} from "@angular/http";
 import {Request} from "app/core/requests/request";
 import {RequestsService} from "app/core/requests/requests.service";
+import {ContractService} from "app/core/contracts/contracts.service";
 
 @Component({
   selector: 'app-request-overview',
@@ -10,14 +11,22 @@ import {RequestsService} from "app/core/requests/requests.service";
 })
 export class OverviewComponent implements OnInit {
 
-  public requests: Array<Request> = [];
-  private _ngZone: NgZone = new NgZone(false);
+  public requests: Request[];
 
-  constructor(public http: Http, private requestsService: RequestsService) {
+  constructor(public http: Http,
+              private requestsService: RequestsService,
+              private contractService: ContractService) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.getRequests();
+  }
+
+  private async getRequests() {
     this.requests = await this.requestsService.getAll();
+    for (let i = 0; i < this.requests.length; i++) {
+      this.requests[i].balance = await this.contractService.getRequestBalance(String(this.requests[i].id));
+    }
   }
 
   // angular2-datatable
@@ -25,12 +34,10 @@ export class OverviewComponent implements OnInit {
     return a.name.length;
   };
 
-  public fundRequest(request: Request) {
-    console.log(request);
-    /*
-     this.requests = _.filter(this.requests, (elem) => elem != fundRequest);
-     console.log('Remove: ', item.email);
-     */
+  public async fundRequest(request: Request) {
+    request = await this.contractService.fundRequest(request, 1) as Request;
+    // TODO save to database
+    // await this.requestsService.update(request);
   }
 
   public onCellClick(data: any): any {
