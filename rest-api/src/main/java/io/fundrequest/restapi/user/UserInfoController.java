@@ -21,6 +21,8 @@ public class UserInfoController extends PrivateRestController {
     @GetMapping("/user/info")
     public UserDto getUserInfo(Principal principal) {
         UserAuthentication userAuthentication = (UserAuthentication) principal;
-        return userService.getUser(userAuthentication.getName());
+        UserDto user = userService.getUser(userAuthentication.getName());
+        user.setPicture( "https://api.adorable.io/avatars/75/" + user.getEmail() + ".png");
+        return user;
     }
 }

@@ -3,6 +3,7 @@ import {Component, OnInit} from "@angular/core";
 import {UserblockService} from "./userblock.service";
 import {ContractsService} from "../../../core/contracts/contracts.service";
 import {UserService} from "../../../core/user/user.service";
+import {User} from "../../../core/user/User";
 
 @Component({
     selector: 'app-userblock',
@@ -10,17 +11,15 @@ import {UserService} from "../../../core/user/user.service";
     styleUrls: ['./userblock.component.scss']
 })
 export class UserblockComponent implements OnInit {
-    user: any;
+    user: Promise<User>;
     balance: string;
 
     constructor(public userService: UserService,
                 public userblockService: UserblockService) {
-        this.user = {
-            picture: 'assets/img/user/01.jpg'
-        };
     }
 
     async ngOnInit() {
+      this.user = this.userService.getUserInfo();
       this.balance = await this.userService.getBalance();
     }
 

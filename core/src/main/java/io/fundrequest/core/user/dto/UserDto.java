@@ -4,6 +4,7 @@ public class UserDto {
     private String userId;
     private String phoneNumber;
     private String email;
+    private String picture;
 
     public String getUserId() {
         return userId;
@@ -29,4 +30,11 @@ public class UserDto {
         this.email = email;
     }
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public String setPicture(String picture) {
+        return this.picture = picture;
+    }
 }
