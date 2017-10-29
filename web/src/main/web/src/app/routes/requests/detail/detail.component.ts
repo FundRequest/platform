@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {RequestsService} from "../../../core/requests/requests.service";
 import {Request} from "../../../core/requests/Request";
 import {ActivatedRoute} from "@angular/router";
-import {ContractService} from "app/core/contracts/contracts.service";
+import {ContractsService} from "app/core/contracts/contracts.service";
 import {Subscription} from "rxjs/Subscription";
 
 @Component({
@@ -19,7 +19,7 @@ export class DetailComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private requestsService: RequestsService,
-              private contractService: ContractService) {
+              private contractsService: ContractsService) {
   }
 
   ngOnInit(): void {
@@ -30,6 +30,7 @@ export class DetailComponent implements OnInit {
 
   async getRequest(id: number) {
     this.request = await this.requestsService.get(id);
-    this.request.balance = await this.contractService.getRequestBalance(String(id));
+    this.request.balance = await this.contractsService.getRequestBalance(String(id));
+    console.log(this.request);
   }
 }

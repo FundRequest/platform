@@ -22,9 +22,9 @@ import {FundModalComponent} from "./fund-modal/fund-modal.component";
   ],
   exports: [
     WatchlinkComponent,
-    EasypiechartDirective,
     StatisticsComponent,
-    FundModalComponent
+    FundModalComponent,
+    EasypiechartDirective
   ],
   entryComponents: [
     FundModalComponent

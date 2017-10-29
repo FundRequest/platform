@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {Http} from "@angular/http";
 import {Request} from "app/core/requests/Request";
 import {RequestsService} from "app/core/requests/requests.service";
-import {ContractService} from "app/core/contracts/contracts.service";
+import {ContractsService} from "app/core/contracts/contracts.service";
 
 @Component({
   selector: 'app-request-overview',
@@ -15,17 +15,17 @@ export class OverviewComponent implements OnInit {
 
   constructor(public http: Http,
               private requestsService: RequestsService,
-              private contractService: ContractService) {
+              private contractsService: ContractsService) {
   }
 
   ngOnInit() {
     this.getRequests();
   }
 
-  private async getRequests() {
+  private async getRequests(): Promise<void> {
     this.requests = await this.requestsService.getAll();
     for (let i = 0; i < this.requests.length; i++) {
-      this.requests[i].balance = await this.contractService.getRequestBalance(String(this.requests[i].id));
+      this.requests[i].balance = await this.contractsService.getRequestBalance(String(this.requests[i].id));
     }
   }
 
@@ -34,8 +34,8 @@ export class OverviewComponent implements OnInit {
     return a.name.length;
   };
 
-  public async fundRequest(request: Request) {
-    request = await this.contractService.fundRequest(request, 1) as Request;
+  public async fundRequest(request: Request): Promise<void> {
+    request = await this.contractsService.fundRequest(request, 1) as Request;
     // TODO save to database
     // await this.requestsService.update(request);
   }

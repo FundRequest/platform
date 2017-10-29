@@ -10,7 +10,7 @@ import {Observable} from 'rxjs/Observable';
 import {AuthService} from "./auth.service";
 
 @Injectable()
-export class AuthInterceptor implements AuthInterceptor {
+export class AuthInterceptor implements HttpInterceptor {
   constructor(public auth: AuthService) {
   }
 
@@ -19,7 +19,7 @@ export class AuthInterceptor implements AuthInterceptor {
     headers['Access-Control-Allow-Origin'] = "*";
 
     if (request.url.startsWith('/api/private')) {
-      headers.Authorization = `Bearer ${this.auth.getToken()}`
+      headers.Authorization = `Bearer ${this.auth.getToken()}`;
     }
 
     request = request.clone({

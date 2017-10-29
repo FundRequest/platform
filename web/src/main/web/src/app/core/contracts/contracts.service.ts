@@ -8,7 +8,7 @@ let fundRequestAbi = require('./fundRequestContract.json');
 declare let window: any;
 
 @Injectable()
-export class ContractService {
+export class ContractsService {
   account: string;
   web3: any;
 
@@ -48,21 +48,17 @@ export class ContractService {
     this.fundRequestContract = this.web3.eth.contract(fundRequestAbi).at(this.fundRequestContractAddress);
   };
 
-  private init(): Promise<any> {
-    return this.getAccount()
-      .then(account => {
-        this.account = account as string;
-        this.web3.eth.defaultAccount = account
-      })
-      .then(account => this.getUserBalanceAsString())
-      .then(balance => this.balance = balance);
+  private async initVars(): Promise<void> {
+    this.account = await this.getAccount();
+    this.web3.eth.defaultAccount = this.account;
+    this.balance = await this.getUserBalanceAsString();
   }
 
   public async getUserBalance(): Promise<string> {
     if (!this.balance) {
-      await this.init();
+      await this.initVars();
     }
-    return Promise.resolve(this.balance);
+    return this.balance;
   }
 
   private static fromWeiRounded(amountInWei): string {
@@ -95,7 +91,7 @@ export class ContractService {
         this.tokenContract.balanceOf.call(this.account, function (err, result) {
           let balance;
           if (result) {
-            balance = ContractService.fromWeiRounded(result);
+            balance = ContractsService.fromWeiRounded(result);
           }
           resolve(balance);
         });
@@ -105,7 +101,7 @@ export class ContractService {
     })
   }
 
-  public async fundRequest(request: Request, value: number): Promise<any> {
+  public fundRequest(request: Request, value: number): Promise<any> {
     return new Promise((resolve, reject) => {
       let total = this.web3.toWei(value, 'ether');
       return this.tokenContract.transferFunding(total, String(request.id), function (err, result) {
@@ -125,7 +121,7 @@ export class ContractService {
       return this.fundRequestContract.balance.call(requestId, function (err, result) {
         let balance;
         if (result) {
-          balance = ContractService.fromWeiRounded(result);
+          balance = ContractsService.fromWeiRounded(result);
         }
         resolve(balance);
       });

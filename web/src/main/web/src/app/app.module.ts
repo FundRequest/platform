@@ -15,6 +15,7 @@ import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {AuthInterceptor} from "./core/auth/auth.interceptor";
 import {ComponentsModule} from "./components/components.module";
 import {ModalModule} from "ngx-bootstrap";
+import {EmptyResponseBodyErrorInterceptor} from "./core/empty-response-body-error-interceptor/empty-response-body-error-interceptor.service";
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: Http) {
@@ -47,6 +48,11 @@ export function createTranslateLoader(http: Http) {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: EmptyResponseBodyErrorInterceptor,
       multi: true
     }
   ],

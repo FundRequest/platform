@@ -5,12 +5,7 @@ import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.restapi.infrastructure.PrivateRestController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -45,7 +40,7 @@ public class RequestController extends PrivateRestController {
         return requestService.findRequest(id);
     }
 
-    @PostMapping("/requests/{id}/watchers")
+    @PutMapping("/requests/{id}/watchers")
     public ResponseEntity<?> addWatcher(@PathVariable("id") Long requestId, Principal principal) {
         requestService.addWatcherToRequest(principal, requestId);
         return ResponseEntity

@@ -6,7 +6,7 @@ import {RequestsService} from "../../../core/requests/requests.service";
 import {LocalStorageService} from 'angular-2-local-storage';
 import {AuthService} from "../../../core/auth/auth.service";
 import {RequestsStats} from "../../../core/requests/RequestsStats";
-import {ContractService} from "../../../core/contracts/contracts.service";
+import {ContractsService} from "../../../core/contracts/contracts.service";
 
 declare var civic: any;
 
