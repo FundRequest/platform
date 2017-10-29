@@ -3,6 +3,7 @@ import {RequestsService} from "../../../core/requests/requests.service";
 import {Request} from "../../../core/requests/Request";
 import {ActivatedRoute} from "@angular/router";
 import {ContractService} from "app/core/contracts/contracts.service";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
   selector: 'fnd-request-detail',
@@ -11,9 +12,10 @@ import {ContractService} from "app/core/contracts/contracts.service";
 })
 export class DetailComponent implements OnInit {
 
-  private subRoute;
+  private subRoute: Subscription;
   public id;
   public request: Request;
+
 
   constructor(private route: ActivatedRoute,
               private requestsService: RequestsService,

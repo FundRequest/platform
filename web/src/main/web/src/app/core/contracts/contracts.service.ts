@@ -105,7 +105,7 @@ export class ContractService {
     })
   }
 
-  public async fundRequest(request: Request, value) {
+  public async fundRequest(request: Request, value: number): Promise<any> {
     return new Promise((resolve, reject) => {
       let total = this.web3.toWei(value, 'ether');
       return this.tokenContract.transferFunding(total, String(request.id), function (err, result) {

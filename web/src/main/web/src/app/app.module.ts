@@ -6,6 +6,7 @@ import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 
 import {AppComponent} from "./app.component";
 
+import {FormsModule} from '@angular/forms';
 import {CoreModule} from "./core/core.module";
 import {LayoutModule} from "./layout/layout.module";
 import {SharedModule} from "./shared/shared.module";
@@ -13,6 +14,8 @@ import {RoutesModule} from "./routes/routes.module";
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {AuthInterceptor} from "./core/auth/auth.interceptor";
 import {ComponentsModule} from "./components/components.module";
+import {ModalModule} from "ngx-bootstrap";
+import {FundModalComponent} from "./routes/requests/fund-modal/fund-modal.component";
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: Http) {
@@ -30,7 +33,9 @@ export function createTranslateLoader(http: Http) {
     CoreModule,
     LayoutModule,
     SharedModule.forRoot(),
+    FormsModule,
     RoutesModule,
+    ModalModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

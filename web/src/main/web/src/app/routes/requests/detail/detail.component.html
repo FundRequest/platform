@@ -1,6 +1,13 @@
 <div class="content-heading">
-  Request Details
-  <small></small>
+  <div class="pull-right">
+    <div class="btn-group">
+      <fnd-fund-button [request]="request"></fnd-fund-button>
+    </div>
+  </div>
+  <div>
+    Request Details
+    <small></small>
+  </div>
 </div>
 <div class="row" *ngIf="request">
   <div class="col-lg-6">

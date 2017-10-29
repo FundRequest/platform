@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Http} from "@angular/http";
-import {Request} from "app/core/requests/request";
+import {Request} from "app/core/requests/Request";
 import {RequestsService} from "app/core/requests/requests.service";
 import {ContractService} from "app/core/contracts/contracts.service";
 
