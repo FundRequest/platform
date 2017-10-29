@@ -15,7 +15,6 @@ import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {AuthInterceptor} from "./core/auth/auth.interceptor";
 import {ComponentsModule} from "./components/components.module";
 import {ModalModule} from "ngx-bootstrap";
-import {FundModalComponent} from "./routes/requests/fund-modal/fund-modal.component";
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: Http) {

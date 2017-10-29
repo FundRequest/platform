@@ -60,7 +60,7 @@
       </td>
       <td>{{request.balance}}</td>
       <td>
-        <button title="Fund" class="btn btn-primary" (click)="fundRequest(request)"><i class="fa fa-exchange"></i></button>
+        <button fnd-fund [request]="request" title="Fund" class="btn btn-primary"><i class="fa fa-exchange"></i></button>
       </td>
     </tr>
     </tbody>

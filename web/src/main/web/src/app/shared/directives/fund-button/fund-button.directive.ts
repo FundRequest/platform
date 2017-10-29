@@ -1,14 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Directive, HostListener, Input} from '@angular/core';
 import {Request} from "../../../core/requests/Request";
-import {FundModalComponent} from "../fund-modal/fund-modal.component";
 import {BsModalRef, BsModalService} from "ngx-bootstrap";
+import {FundModalComponent} from "../../../components/fund-modal/fund-modal.component";
 
-@Component({
-  selector: 'fnd-fund-button',
-  templateUrl: './fund-button.component.html',
-  styleUrls: ['./fund-button.component.scss']
+@Directive({
+  selector: '[fnd-fund]'
 })
-export class FundButtonComponent implements OnInit {
+export class FundButtonDirective {
   @Input() request: Request;
 
   private bsModalRef: BsModalRef;
@@ -16,7 +14,9 @@ export class FundButtonComponent implements OnInit {
   constructor(private modalService: BsModalService) {
   }
 
-  ngOnInit() {
+  @HostListener('click', ['$event'])
+  onClick($event){
+    this.openFundModal();
   }
 
   public openFundModal() {

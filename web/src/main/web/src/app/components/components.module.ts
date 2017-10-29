@@ -6,6 +6,7 @@ import {CommonModule} from "@angular/common";
 import {StatisticsComponent} from './statistics/statistics.component';
 import {EasypiechartDirective} from "../shared/directives/easypiechart/easypiechart.directive";
 import {SharedModule} from "../shared/shared.module";
+import {FundModalComponent} from "./fund-modal/fund-modal.component";
 
 @NgModule({
   imports: [
@@ -16,12 +17,17 @@ import {SharedModule} from "../shared/shared.module";
   providers: [],
   declarations: [
     WatchlinkComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    FundModalComponent
   ],
   exports: [
     WatchlinkComponent,
     EasypiechartDirective,
-    StatisticsComponent
+    StatisticsComponent,
+    FundModalComponent
+  ],
+  entryComponents: [
+    FundModalComponent
   ]
 })
 export class ComponentsModule {

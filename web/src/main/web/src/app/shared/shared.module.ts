@@ -26,74 +26,77 @@ import {ScrollableDirective} from "./directives/scrollable/scrollable.directive"
 import {JqcloudDirective} from "./directives/jqcloud/jqcloud.directive";
 
 import {LocalStorageModule} from "angular-2-local-storage";
+import {FundButtonDirective} from "./directives/fund-button/fund-button.directive";
 
 // https://angular.io/styleguide#!#04-10
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        ButtonsModule.forRoot(),
-        CollapseModule.forRoot(),
-        DatepickerModule.forRoot(),
-        BsDropdownModule.forRoot(),
-        ModalModule.forRoot(),
-        PaginationModule.forRoot(),
-        ProgressbarModule.forRoot(),
-        RatingModule.forRoot(),
-        TabsModule.forRoot(),
-        TimepickerModule.forRoot(),
-        TooltipModule.forRoot(),
-        TypeaheadModule.forRoot(),
-        LocalStorageModule.withConfig({
-          prefix: 'FND',
-          storageType: 'localStorage'
-        })
-    ],
-    providers: [
-        ColorsService
-    ],
-    declarations: [
-        SparklineDirective,
-        EasypiechartDirective,
-        CheckallDirective,
-        NowDirective,
-        ScrollableDirective,
-        JqcloudDirective
-    ],
-    exports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        RouterModule,
-        ButtonsModule,
-        CollapseModule,
-        DatepickerModule,
-        BsDropdownModule,
-        ModalModule,
-        PaginationModule,
-        ProgressbarModule,
-        RatingModule,
-        TabsModule,
-        TimepickerModule,
-        TooltipModule,
-        TypeaheadModule,
-        SparklineDirective,
-        EasypiechartDirective,
-        CheckallDirective,
-        NowDirective,
-        ScrollableDirective,
-        JqcloudDirective
-    ]
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    ButtonsModule.forRoot(),
+    CollapseModule.forRoot(),
+    DatepickerModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    ModalModule.forRoot(),
+    PaginationModule.forRoot(),
+    ProgressbarModule.forRoot(),
+    RatingModule.forRoot(),
+    TabsModule.forRoot(),
+    TimepickerModule.forRoot(),
+    TooltipModule.forRoot(),
+    TypeaheadModule.forRoot(),
+    LocalStorageModule.withConfig({
+      prefix: 'FND',
+      storageType: 'localStorage'
+    })
+  ],
+  providers: [
+    ColorsService
+  ],
+  declarations: [
+    SparklineDirective,
+    EasypiechartDirective,
+    CheckallDirective,
+    NowDirective,
+    ScrollableDirective,
+    JqcloudDirective,
+    FundButtonDirective
+  ],
+  exports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    RouterModule,
+    ButtonsModule,
+    CollapseModule,
+    DatepickerModule,
+    BsDropdownModule,
+    ModalModule,
+    PaginationModule,
+    ProgressbarModule,
+    RatingModule,
+    TabsModule,
+    TimepickerModule,
+    TooltipModule,
+    TypeaheadModule,
+    SparklineDirective,
+    EasypiechartDirective,
+    CheckallDirective,
+    NowDirective,
+    ScrollableDirective,
+    JqcloudDirective,
+    FundButtonDirective
+  ]
 })
 
 // https://github.com/ocombe/ng2-translate/issues/209
 export class SharedModule {
-    static forRoot(): ModuleWithProviders {
-        return {
-            ngModule: SharedModule
-        };
-    }
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: SharedModule
+    };
+  }
 }

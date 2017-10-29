@@ -7,8 +7,6 @@ import {OverviewComponent} from "./overview/overview.component";
 import {DetailComponent} from "./detail/detail.component";
 import {ComponentsModule} from "../../components/components.module";
 import {DataTableModule} from "angular2-datatable";
-import {FundModalComponent} from "./fund-modal/fund-modal.component";
-import {FundButtonComponent} from "./fund-button/fund-button.component";
 
 const routes: Routes = [
   {path: '', component: OverviewComponent},
@@ -25,15 +23,10 @@ const routes: Routes = [
   ],
   declarations: [
     DetailComponent,
-    OverviewComponent,
-    FundModalComponent,
-    FundButtonComponent
+    OverviewComponent
   ],
   exports: [
     RouterModule
   ],
-  entryComponents: [
-    FundModalComponent
-  ]
 })
 export class RequestsModule {}
