@@ -8,7 +8,7 @@
   </div>
 
   <div class="user-block-info">
-    <span class="user-block-name">Hello, {{name}}</span>
+    <span class="user-block-name">{{(user | async)?.email}}</span>
     <span class="user-block-role">
         <span>Balance: </span><span>{{balance}}</span><span> FND</span>
     </span>

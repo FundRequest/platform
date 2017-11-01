@@ -27,6 +27,8 @@ import {JqcloudDirective} from "./directives/jqcloud/jqcloud.directive";
 
 import {LocalStorageModule} from "angular-2-local-storage";
 import {FundButtonDirective} from "./directives/fund-button/fund-button.directive";
+import {AddRequestDirective} from "./directives/add-request/add-request.directive";
+import {TagInputModule} from "ngx-chips";
 
 // https://angular.io/styleguide#!#04-10
 @NgModule({
@@ -44,6 +46,7 @@ import {FundButtonDirective} from "./directives/fund-button/fund-button.directiv
     ProgressbarModule.forRoot(),
     RatingModule.forRoot(),
     TabsModule.forRoot(),
+    TagInputModule,
     TimepickerModule.forRoot(),
     TooltipModule.forRoot(),
     TypeaheadModule.forRoot(),
@@ -62,7 +65,8 @@ import {FundButtonDirective} from "./directives/fund-button/fund-button.directiv
     NowDirective,
     ScrollableDirective,
     JqcloudDirective,
-    FundButtonDirective
+    FundButtonDirective,
+    AddRequestDirective
   ],
   exports: [
     CommonModule,
@@ -79,6 +83,7 @@ import {FundButtonDirective} from "./directives/fund-button/fund-button.directiv
     ProgressbarModule,
     RatingModule,
     TabsModule,
+    TagInputModule,
     TimepickerModule,
     TooltipModule,
     TypeaheadModule,
@@ -88,7 +93,8 @@ import {FundButtonDirective} from "./directives/fund-button/fund-button.directiv
     NowDirective,
     ScrollableDirective,
     JqcloudDirective,
-    FundButtonDirective
+    FundButtonDirective,
+    AddRequestDirective
   ]
 })
 

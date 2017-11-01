@@ -22,11 +22,14 @@ export class OverviewComponent implements OnInit {
     this.getRequests();
   }
 
-  private async getRequests(): Promise<void> {
+  private async getRequests(): Promise<Request[]> {
     this.requests = await this.requestsService.getAll();
     for (let i = 0; i < this.requests.length; i++) {
-      this.requests[i].balance = await this.contractsService.getRequestBalance(String(this.requests[i].id));
+      this.contractsService.getRequestBalance(String(this.requests[i].id)).then(
+        balance => this.requests[i].balance = balance
+      );
     }
+    return this.requests;
   }
 
   // angular2-datatable

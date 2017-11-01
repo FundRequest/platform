@@ -4,7 +4,6 @@ public class UserDto {
     private String userId;
     private String phoneNumber;
     private String email;
-    private String picture;
 
     public String getUserId() {
         return userId;
@@ -31,10 +30,6 @@ public class UserDto {
     }
 
     public String getPicture() {
-        return picture;
-    }
-
-    public String setPicture(String picture) {
-        return this.picture = picture;
+        return "https://api.adorable.io/avatars/75/" + getEmail() + ".png";
     }
 }

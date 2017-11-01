@@ -1,5 +1,11 @@
 <div class="content-heading">
-  Requests
+  <div class="pull-right">
+    <div class="btn-group">
+      <button fnd-add-request [requests]="requests" type="button" class="btn btn-info">Add request</button>
+    </div>
+  </div>
+
+  <span>Requests</span>
   <small>Let's fund some</small>
 </div>
 <div class="panel panel-default" *ngIf="requests">

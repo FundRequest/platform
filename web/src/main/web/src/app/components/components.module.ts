@@ -7,27 +7,31 @@ import {StatisticsComponent} from './statistics/statistics.component';
 import {EasypiechartDirective} from "../shared/directives/easypiechart/easypiechart.directive";
 import {SharedModule} from "../shared/shared.module";
 import {FundModalComponent} from "./fund-modal/fund-modal.component";
+import {RequestModalComponent} from './request-modal/request-modal.component';
 
 @NgModule({
   imports: [
     HttpClientModule,
     CommonModule,
-    SharedModule,
+    SharedModule
   ],
   providers: [],
   declarations: [
     WatchlinkComponent,
     StatisticsComponent,
-    FundModalComponent
+    FundModalComponent,
+    RequestModalComponent
   ],
   exports: [
     WatchlinkComponent,
     StatisticsComponent,
     FundModalComponent,
+    RequestModalComponent,
     EasypiechartDirective
   ],
   entryComponents: [
-    FundModalComponent
+    FundModalComponent,
+    RequestModalComponent
   ]
 })
 export class ComponentsModule {

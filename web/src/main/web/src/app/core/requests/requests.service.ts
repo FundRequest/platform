@@ -26,6 +26,16 @@ export class RequestsService {
       .catch(this.handleError);
   }
 
+  add(issueLink: string, technologies: string[]): Promise<Request> {
+    return this.http.post(`/api/private/requests/`, {
+      issueLink: issueLink,
+      technologies: technologies
+    })
+      .toPromise()
+      .then(response => console.log(response))//response as Request)
+      .catch(this.handleError);
+  }
+
   public getWatchers(requestId: number): Promise<string[]> {
     return this.http.get(`/api/private/requests/${requestId}/watchers`).toPromise();
   }
@@ -51,7 +61,7 @@ export class RequestsService {
   }
 
   public update(request: Request): Promise<Request> {
-    return this.http.post(`/api/private/requests/${request.id}`, request)
+    return this.http.put(`/api/private/requests/${request.id}`, request)
       .toPromise()
       .then(response => response as Request)
       .catch(this.handleError);
