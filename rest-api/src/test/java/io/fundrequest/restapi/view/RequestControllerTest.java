@@ -104,7 +104,7 @@ public class RequestControllerTest {
     public void addWatcher() throws Exception {
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/private/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
+                RestDocumentationRequestBuilders.put("/api/private/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
                                                 .principal(principal))
                     .andExpect(
                             MockMvcResultMatchers.status().isCreated())
