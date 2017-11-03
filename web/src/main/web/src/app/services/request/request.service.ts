@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 
 import {TypedRecord, makeTypedFactory} from 'typed-immutable-record';
 import {List} from 'immutable';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 interface IRequestSource {
   key: String;
@@ -74,18 +74,23 @@ export class RequestService {
     this.http.post(`/api/private/requests/`, {
       issueLink: issueLink,
       technologies: technologies
-    }).take(1).subscribe(
-      (id: number) => {
-        this.http.get(`/api/private/requests/${id}`)
-          .take(1).subscribe((request: IRequestRecord) => {
-            let newRequest = createRequest(request);
-            console.log('add request', request, newRequest, new AddRequest(newRequest));
+    }, {observe: 'response'}).take(1).subscribe((result) => {
+
+        let location = result.headers.get('location');
+        if (location.length > 0 ) {
+          this.http.get(location)
+            .take(1).subscribe((request: IRequestRecord) => {
+
+              let newRequest = createRequest(request);
+            console.log(request, newRequest, new AddRequest(newRequest));
+
             this.store.dispatch(new AddRequest(newRequest));
-          },
-          (error) => this.handleError(error)
-        )
-      },
-      (error) => this.handleError(error)
+
+            }, (error) => this.handleError(error)
+          )
+        }
+
+      }, (error) => this.handleError(error)
     )
   }
 

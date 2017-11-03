@@ -15,16 +15,18 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let headers: any = {};
-    headers['Access-Control-Allow-Origin'] = "*";
+    let restApiLocation: string = 'http://localhost:8080';
 
-    if (request.url.startsWith('/api/private')) {
+    let headers: any = {};
+    headers['Access-Control-Allow-Origin'] = '*';
+
+    if (request.url.startsWith('/api/private') || request.url.startsWith(restApiLocation) && request.url.indexOf('/api/private') > -1) {
       headers.Authorization = `Bearer ${this.auth.getToken()}`;
     }
 
     request = request.clone({
       setHeaders: headers,
-      url: request.url.startsWith('/api/') ? 'http://localhost:8080' + request.url : request.url
+      url: request.url.startsWith('/api/') ? restApiLocation + request.url : request.url
     });
 
     return next.handle(request);
