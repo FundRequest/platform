@@ -1,9 +1,7 @@
 import {Component, OnInit} from "@angular/core";
-import {Http} from "@angular/http";
 import {Request} from "app/core/requests/Request";
-import {RequestsService} from "app/core/requests/requests.service";
 import {ContractsService} from "app/core/contracts/contracts.service";
-import {UserService} from "../../../core/user/user.service";
+import {IRequestList, RequestService} from "app/services/request/request.service";
 
 @Component({
   selector: 'app-request-overview',
@@ -12,19 +10,18 @@ import {UserService} from "../../../core/user/user.service";
 })
 export class OverviewComponent implements OnInit {
 
-  public requests: Request[];
-  public allowance: string;
+  requests: IRequestList;
 
-  constructor(public http: Http,
-              private requestsService: RequestsService,
-              private contractsService: ContractsService,
-              private userService: UserService) {
+  constructor(public requestService: RequestService, public contractsService: ContractsService) {
+    this.requestService.requests.subscribe(list => {
+      this.requests = list;
+    });
   }
 
-  ngOnInit() {
-    this.getRequests();
+  ngOnInit(): void {
   }
 
+  /*
   private async getRequests(): Promise<Request[]> {
     this.requests = await this.requestsService.getAll();
     for (let i = 0; i < this.requests.length; i++) {
@@ -33,15 +30,17 @@ export class OverviewComponent implements OnInit {
       );
     }
     return this.requests;
-  }
+  }*/
 
   // angular2-datatable
   public sortByWordLength = (a: any) => {
     return a.name.length;
   };
 
+
   public async fundRequest(request: Request): Promise<void> {
     request = await this.contractsService.fundRequest(request, 1) as Request;
+
     // TODO save to database
     // await this.requestsService.update(request);
   }

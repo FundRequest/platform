@@ -13,6 +13,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {ComponentsModule} from "../components/components.module";
 import {ContractsService} from "./contracts/contracts.service";
 import {UserService} from "./user/user.service";
+import {RequestService} from "../services/request/request.service";
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import {UserService} from "./user/user.service";
     TranslatorService,
     MenuService,
     RequestsService,
+    RequestService,
     ContractsService,
     AuthService,
     AuthGuard,

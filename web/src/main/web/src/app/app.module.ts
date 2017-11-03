@@ -11,16 +11,27 @@ import {CoreModule} from "./core/core.module";
 import {LayoutModule} from "./layout/layout.module";
 import {SharedModule} from "./shared/shared.module";
 import {RoutesModule} from "./routes/routes.module";
+import {ActionReducer, ActionReducerMap, MetaReducer, StoreModule} from '@ngrx/store';
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {AuthInterceptor} from "./core/auth/auth.interceptor";
 import {ComponentsModule} from "./components/components.module";
 import {ModalModule} from "ngx-bootstrap";
 import {EmptyResponseBodyErrorInterceptor} from "./core/empty-response-body-error-interceptor/empty-response-body-error-interceptor.service";
+import {IState, REDUCER_MAP} from "./redux/store";
+import {localStorageSync} from "ngrx-store-localstorage";
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
+
+const reducers: ActionReducerMap<IState> = REDUCER_MAP;
+
+export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
+  return localStorageSync({keys: ['requests']})(reducer);
+}
+const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 
 @NgModule({
   declarations: [
@@ -35,6 +46,10 @@ export function createTranslateLoader(http: Http) {
     SharedModule.forRoot(),
     FormsModule,
     RoutesModule,
+    StoreModule.forRoot(
+      reducers,
+      {metaReducers}
+    ),
     ModalModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
