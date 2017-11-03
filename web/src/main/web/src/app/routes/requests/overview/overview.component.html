@@ -49,13 +49,13 @@
       <td><!--fnd-watchlink [request]="request"></fnd-watchlink--></td>
       <td>
         <a routerLink="/requests/{{request.id}}">
-          {{request.issueInformation.title}}
+          {{request.issueInformation?.title}}
         </a>
       </td>
       <td>{{request.status}}</td>
       <td>
-        <a target="_blank" href="{{request.issueInformation.link}}">
-          <i [ngClass]="['fa fa-2x fa-' + request.issueInformation.source | lowercase]"></i>
+        <a target="_blank" href="{{request.issueInformation?.link}}">
+          <i [ngClass]="['fa fa-2x fa-' + request.issueInformation?.source | lowercase]"></i>
         </a>
       </td>
       <td>{{request.type}}</td>

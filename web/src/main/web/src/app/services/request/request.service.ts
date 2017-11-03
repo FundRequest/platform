@@ -75,10 +75,15 @@ export class RequestService {
       issueLink: issueLink,
       technologies: technologies
     }).take(1).subscribe(
-      (request: IRequestRecord) => {
-        let newRequest = createRequest(request);
-        console.log(newRequest);
-        this.store.dispatch(new AddRequest(newRequest));
+      (id: number) => {
+        this.http.get(`/api/private/requests/${id}`)
+          .take(1).subscribe((request: IRequestRecord) => {
+            let newRequest = createRequest(request);
+            console.log('add request', request, newRequest, new AddRequest(newRequest));
+            this.store.dispatch(new AddRequest(newRequest));
+          },
+          (error) => this.handleError(error)
+        )
       },
       (error) => this.handleError(error)
     )
