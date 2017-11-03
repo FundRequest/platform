@@ -46,6 +46,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
         config.addAllowedOrigin("*");  // TODO: lock down before deploying
         config.addAllowedHeader("*");
         config.addExposedHeader(HttpHeaders.AUTHORIZATION);
+        config.addExposedHeader(HttpHeaders.LOCATION);
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
