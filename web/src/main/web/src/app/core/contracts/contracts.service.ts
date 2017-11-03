@@ -16,6 +16,7 @@ export class ContractsService {
   fundRequestContractAddress: string = "0x78b75506895392daca4273aee6393048714da5c3";
 
   balance: string;
+  allowance: string;
   status: string;
 
   tokenContract: any;
@@ -52,6 +53,7 @@ export class ContractsService {
     this.account = await this.getAccount();
     this.web3.eth.defaultAccount = this.account;
     this.balance = await this.getUserBalanceAsString();
+    this.allowance = await this.getUserAllowanceAsString();
   }
 
   public async getUserBalance(): Promise<string> {
@@ -59,6 +61,13 @@ export class ContractsService {
       await this.initVars();
     }
     return this.balance;
+  }
+
+  public async getUserAllowance(): Promise<string> {
+    if (!this.allowance) {
+      await this.initVars();
+    }
+    return this.allowance;
   }
 
   private static fromWeiRounded(amountInWei): string {
@@ -98,7 +107,38 @@ export class ContractsService {
       } else {
         reject('problem retrieving balance');
       }
+    });
+  }
+
+  private getUserAllowanceAsString(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (this.account) {
+        this.tokenContract.allowance.call(this.account, this.fundRequestContractAddress, function (err, result) {
+          let allowance;
+          if (result) {
+            allowance = ContractsService.fromWeiRounded(result);
+          }
+          resolve(allowance);
+        });
+      } else {
+        reject('problem retrieving allowance');
+      }
     })
+  }
+
+  public setUserAllowance(value: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let total = this.web3.toWei(value, 'ether');
+      return this.tokenContract.approve(this.account, total, function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          this.allowance = value.toFixed(2).toLocaleString();
+          // TODO: save transaction address (result)
+          resolve(this.allowance);
+        }
+      });
+    });
   }
 
   public fundRequest(request: Request, value: number): Promise<any> {

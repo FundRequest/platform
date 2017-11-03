@@ -44,7 +44,6 @@
         <label>
           <span *ngIf="request.balance.length == 0"><i class="whirl whirl--sm whirl--fnd"></i></span>
           <span *ngIf="request.balance.length != 0">{{request.balance}} FND</span>
-          <span>Message?</span>
         </label>
       </div>
     </div>
@@ -56,6 +55,9 @@
           <input [(ngModel)]="fundAmount" id="fund-amount" type="number" class="form-control">
           <span class="input-group-addon">FND</span>
         </div>
+      </div>
+      <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > allowance">
+          <label>You approved {{allowance}} FND, when trying to fund there will be an extra request to first approve {{fundAmount - allowance}} FND.</label>
       </div>
     </div>
   </div>

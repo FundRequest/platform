@@ -15,6 +15,15 @@ export class UserService {
     return this.contractsService.getUserBalance();
   }
 
+  public getAllowance(): Promise<string> {
+    return this.contractsService.getUserAllowance();
+  }
+
+
+  public setAllowance(value: number): Promise<string> {
+    return this.contractsService.setUserAllowance(value);
+  }
+
   public async getUserInfo(): Promise<User> {
     if(this.user == null) {
       this.user = this.http.get(`/api/private/user/info`).toPromise() as Promise<User>;

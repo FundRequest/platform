@@ -3,6 +3,7 @@ import {Http} from "@angular/http";
 import {Request} from "app/core/requests/Request";
 import {RequestsService} from "app/core/requests/requests.service";
 import {ContractsService} from "app/core/contracts/contracts.service";
+import {UserService} from "../../../core/user/user.service";
 
 @Component({
   selector: 'app-request-overview',
@@ -12,10 +13,12 @@ import {ContractsService} from "app/core/contracts/contracts.service";
 export class OverviewComponent implements OnInit {
 
   public requests: Request[];
+  public allowance: string;
 
   constructor(public http: Http,
               private requestsService: RequestsService,
-              private contractsService: ContractsService) {
+              private contractsService: ContractsService,
+              private userService: UserService) {
   }
 
   ngOnInit() {
