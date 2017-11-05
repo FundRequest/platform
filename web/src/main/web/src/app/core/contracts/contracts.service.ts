@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Request} from "../requests/request";
+import {Request} from "../requests/Request";
 import * as Web3 from 'web3';
 
 let tokenAbi = require('./tokenContract.json');
