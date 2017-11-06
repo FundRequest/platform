@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Request} from "../requests/request";
+import {Request} from "../requests/Request";
 import * as Web3 from 'web3';
 
 let tokenAbi = require('./tokenContract.json');
@@ -12,8 +12,8 @@ export class ContractsService {
   account: string;
   web3: any;
 
-  tokenContractAddress: string = "0x0fcffc21d5ed3a4dd3bb99bc4b4055002e348eb0";
-  fundRequestContractAddress: string = "0x78b75506895392daca4273aee6393048714da5c3";
+  tokenContractAddress: string = "0xbc84f3bf7dd607a37f9e5848a6333e6c188d926c";
+  fundRequestContractAddress: string = "0xa505ef7aad27f757fddbc2d3f875e28d4a75050b";
 
   balance: string;
   allowance: string;
@@ -35,7 +35,6 @@ export class ContractsService {
 
       if (this.web3.version.network !== '4') {
         alert('Please connect to the Rinkeby network');
-        //TODO redirect to a page with some extra explanation
       }
     } else {
       console.warn(
@@ -144,7 +143,7 @@ export class ContractsService {
   public fundRequest(request: Request, value: number): Promise<any> {
     return new Promise((resolve, reject) => {
       let total = this.web3.toWei(value, 'ether');
-      return this.tokenContract.transferFunding(total, String(request.id), function (err, result) {
+      return this.fundRequestContract.fund(total, String(request.id), '', function (err, result) {
         if (err) {
           reject(err);
         } else {

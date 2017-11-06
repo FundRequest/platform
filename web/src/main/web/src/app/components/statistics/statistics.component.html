@@ -52,7 +52,7 @@
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-chart"></em></div>
         <div class="col-xs-8 pv-lg">
-          <div class="h2 mt0">{{statistics.averageFundingPerRequest | number:'1.2'}} FND</div>
+          <div class="h2 mt0">{{statistics.averageFundingPerRequest | wei}} FND</div>
           <div class="text-uppercase">Average funding</div>
         </div>
       </div>
@@ -63,7 +63,7 @@
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-fire"></em></div>
         <div class="col-xs-8 pv-lg">
-          <div class="h2 mt0">{{statistics.totalAmountFunded | number:'1.2'}} FND</div>
+          <div class="h2 mt0">{{statistics.totalAmountFunded | wei}} FND</div>
           <div class="text-uppercase">Total funded</div>
         </div>
       </div>

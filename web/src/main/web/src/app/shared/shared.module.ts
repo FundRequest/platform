@@ -29,6 +29,7 @@ import {LocalStorageModule} from "angular-2-local-storage";
 import {FundButtonDirective} from "./directives/fund-button/fund-button.directive";
 import {AddRequestDirective} from "./directives/add-request/add-request.directive";
 import {TagInputModule} from "ngx-chips";
+import {WeiPipe} from './pipes/wei/wei.pipe';
 
 // https://angular.io/styleguide#!#04-10
 @NgModule({
@@ -66,7 +67,8 @@ import {TagInputModule} from "ngx-chips";
     ScrollableDirective,
     JqcloudDirective,
     FundButtonDirective,
-    AddRequestDirective
+    AddRequestDirective,
+    WeiPipe
   ],
   exports: [
     CommonModule,
@@ -94,7 +96,8 @@ import {TagInputModule} from "ngx-chips";
     ScrollableDirective,
     JqcloudDirective,
     FundButtonDirective,
-    AddRequestDirective
+    AddRequestDirective,
+    WeiPipe
   ]
 })
 

@@ -23,7 +23,8 @@ export class StatisticsComponent implements OnInit {
     size: 55
   };
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }

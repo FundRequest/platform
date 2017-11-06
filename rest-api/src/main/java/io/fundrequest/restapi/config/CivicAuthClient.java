@@ -8,7 +8,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @FeignClient(
         name = "civic-auth-client",
-        url = "http://localhost:3001/"
+        url = "${civic.sip.api.client.endpoint}"
 )
 public interface CivicAuthClient {
 

@@ -26,8 +26,8 @@
                 <version>1.3</version>
 
                 <configuration>
-                    <nodeVersion>v6.11.2</nodeVersion>
-                    <npmVersion>3.10.10</npmVersion>
+                    <nodeVersion>v8.7.0</nodeVersion>
+                    <npmVersion>5.4.2</npmVersion>
                     <workingDirectory>src/main/web</workingDirectory>
                 </configuration>
 
