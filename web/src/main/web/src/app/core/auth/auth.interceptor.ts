@@ -1,10 +1,5 @@
 import {Injectable} from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor
-} from '@angular/common/http';
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 
 import {Observable} from 'rxjs/Observable';
 import {AuthService} from "./auth.service";
@@ -23,8 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     request = request.clone({
-      setHeaders: headers,
-      url: request.url.startsWith('/api/') ? 'http://localhost:8080' + request.url : request.url
+      setHeaders: headers
     });
 
     return next.handle(request);
