@@ -55,6 +55,7 @@ export class ReplaceRequestList extends RequestAction {
   }
 
   public handle(state: IRequestList): IRequestList {
+    console.log('state', state, 'requestlist', this.requestList);
     return Object.assign({}, state, this.requestList);
   }
 }

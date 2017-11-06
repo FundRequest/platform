@@ -10,16 +10,18 @@ import {IRequestList, RequestService} from "../../services/request/request.servi
 export class RequestModalComponent {
   public title: string;
   public issueLink: string;
-  public technologies: string[] = [];
+  public technologies: any = [];
 
   constructor(public bsModalRef: BsModalRef, private requestService: RequestService) {
     this.title = 'Add Request';
-    this.technologies.push('test');
-    this.technologies.push('test2');
   }
 
   public addRequest() {
-    this.requestService.addRequest(this.issueLink, this.technologies);
+    let x = [];
+    for(let i = 0; i < this.technologies.length; i++) {
+      x.push(this.technologies[i].value);
+    }
+    this.requestService.addRequest(this.issueLink, x);
     this.bsModalRef.hide();
   }
 }

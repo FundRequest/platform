@@ -16,6 +16,7 @@ import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {AuthInterceptor} from "./core/auth/auth.interceptor";
 import {ComponentsModule} from "./components/components.module";
 import {ModalModule} from "ngx-bootstrap";
+
 import {EmptyResponseBodyErrorInterceptor} from "./core/empty-response-body-error/empty-response-body-error.interceptor";
 import {IState, REDUCER_MAP} from "./redux/store";
 import {localStorageSync} from "ngrx-store-localstorage";

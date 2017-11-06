@@ -3,6 +3,8 @@ import {ContractsService} from "../contracts/contracts.service";
 import {User} from "./User";
 import {HttpClient} from "@angular/common/http";
 
+import 'rxjs/add/operator/toPromise';
+
 @Injectable()
 export class UserService {
 

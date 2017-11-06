@@ -6,17 +6,17 @@
   </div>
 
   <span>Requests</span>
-  <small>Let's fund some</small>
-  <div *ngIf="requests$ | async">{{(requests$ | async) | json}}</div>
+  <small>Let's fund some {{(requests$ | async)?.length}}</small>
 </div>
-<div class="panel panel-default" *ngIf="(requests$ | async).count() > 0">
+<div class="panel panel-default" *ngIf="(requests$ | async)?.length > 0">
   <div class="panel-heading">
     <div class="pull-right text-muted">
-      <i class="fa fa-lightbulb-o mr-sm"></i><strong>{{(requests$ | async).count()}}</strong>
-      <span i18n>{(requests$ | async).count(), plural, =1 {request} other {requests}}</span>
+      <i class="fa fa-lightbulb-o mr-sm"></i><strong>{{(requests$ | async)?.length}}</strong>
+      <span i18n>{(requests$ | async)?.length, plural, =1 {request} other {requests}}</span>
     </div>
   </div>
-  <table class="table table-striped table-bordered table-hover" [mfData]="(requests$ | async).toArray()" #mf="mfDataTable" [mfRowsOnPage]="10">
+
+  <table class="table table-striped table-bordered table-hover" [mfData]="(requests$ | async)?.toArray()" #mf="mfDataTable" [mfRowsOnPage]="10">
     <thead>
     <tr>
       <th>

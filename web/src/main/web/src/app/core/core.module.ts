@@ -6,7 +6,6 @@ import {TranslatorService} from "./translator/translator.service";
 import {MenuService} from "./menu/menu.service";
 
 import {throwIfAlreadyLoaded} from "./module-import-guard";
-import {RequestsService} from "./requests/requests.service";
 import {AuthService} from "./auth/auth.service";
 import {AuthGuard} from "./auth/auth.guard";
 import {HttpClientModule} from "@angular/common/http";
@@ -25,7 +24,6 @@ import {RequestService} from "../services/request/request.service";
     ThemesService,
     TranslatorService,
     MenuService,
-    RequestsService,
     RequestService,
     ContractsService,
     AuthService,

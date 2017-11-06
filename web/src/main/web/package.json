@@ -4,7 +4,6 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "install": "napa",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
@@ -14,9 +13,6 @@
     "e2e": "ng e2e"
   },
   "private": true,
-  "napa": {
-    "ika.jvectormap": "kakirigi/ika.jvectormap"
-  },
   "dependencies": {
     "@agm/core": "1.0.0-beta.0",
     "@angular/animations": "4.4.4",
@@ -31,6 +27,7 @@
     "@ngrx/store": "^4.1.0",
     "@ngx-translate/core": "6.0.1",
     "@ngx-translate/http-loader": "0.0.3",
+    "@swimlane/ngx-datatable": "^11.0.0",
     "ag-grid": "9.0.3",
     "ag-grid-angular": "9.0.3",
     "angular-2-local-storage": "^1.0.1",
@@ -84,7 +81,7 @@
     "zone.js": "0.8.4"
   },
   "devDependencies": {
-    "@angular/cli": "^1.4.7",
+    "@angular/cli": "^1.5.0",
     "@angular/compiler-cli": "^4.4.4",
     "@types/codemirror": "0.0.38",
     "@types/jasmine": "2.5.38",

@@ -12,12 +12,20 @@ import {Observable} from "rxjs/Observable";
 export class OverviewComponent implements OnInit {
 
   requests$: Observable<IRequestList>;
-  request$: IRequestRecord;
+  requestsRows: any;
+  request: IRequestRecord;
 
   constructor(public requestService: RequestService, public contractsService: ContractsService) {
-    this.requests$ = this.requestService.requests;
-    this.requests$.map((list: IRequestList) => console.log(list && list.get(0))).subscribe(request => this.request$ = request);
     console.log(this.requests$);
+    this.requests$ = this.requestService.requests;
+    this.requests$.subscribe(requests => this.requestsRows = requests);
+    console.log(this.requests$);
+
+    /*
+    this.requests$.map(
+      (list: IRequestList) => list && list.get(0)
+    ).subscribe(request => this.request = request);
+    console.log(this.requests$);*/
   }
 
   ngOnInit(): void {
