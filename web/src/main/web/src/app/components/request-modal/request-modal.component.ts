@@ -13,16 +13,18 @@ export class RequestModalComponent {
   public requests: Request[];
   public title: string;
   public issueLink: string;
-  public technologies: string[] = [];
+  public technologies: any[] = [];
 
   constructor(public bsModalRef: BsModalRef, private requestService: RequestsService) {
     this.title = 'Add Request';
-    this.technologies.push('test');
-    this.technologies.push('test2');
   }
 
   public async addRequest() {
-    let request = await this.requestService.add(this.issueLink, this.technologies) as Request;
+    let x = [];
+    for(let i = 0; i < this.technologies.length; i++) {
+      x.push(this.technologies[i].value);
+    }
+    let request = await this.requestService.add(this.issueLink, x) as Request;
     console.log(request);
     this.requests.push(request);
     this.bsModalRef.hide();

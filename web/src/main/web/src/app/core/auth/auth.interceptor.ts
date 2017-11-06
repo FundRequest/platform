@@ -13,7 +13,7 @@ export class AuthInterceptor implements HttpInterceptor {
     let headers: any = {};
     headers['Access-Control-Allow-Origin'] = "*";
 
-    if (request.url.startsWith('/api/private')) {
+    if (request.url.indexOf('/api/private') > -1) {
       headers.Authorization = `Bearer ${this.auth.getToken()}`;
     }
 

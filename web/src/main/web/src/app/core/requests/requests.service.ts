@@ -26,14 +26,30 @@ export class RequestsService {
       .catch(this.handleError);
   }
 
-  add(issueLink: string, technologies: string[]): Promise<Request> {
-    return this.http.post(`/api/private/requests/`, {
+  async add(issueLink: string, technologies: string[]): Promise<Request> {
+    let myNewRequest: Request;
+    let location: string;
+
+    await this.http.post(`/api/private/requests/`, {
       issueLink: issueLink,
       technologies: technologies
-    })
+    }, {observe: 'response'})
       .toPromise()
-      .then(response => console.log(response))//response as Request)
-      .catch(this.handleError);
+      .then((response) => {
+        location = response.headers.get('location');
+      }).catch(this.handleError);
+
+    if (location && location.length > 0) {
+      await this.http.get(location)
+        .toPromise()
+        .then((request: Request) => {
+          console.log(request);
+          myNewRequest = request;
+        })
+        .catch(this.handleError);
+    }
+
+    return myNewRequest;
   }
 
   public getWatchers(requestId: number): Promise<string[]> {
