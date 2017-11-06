@@ -23,13 +23,14 @@ export class StatisticsComponent implements OnInit {
     size: 55
   };
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
 
   public get percentageFunded(): number {
-    return this.statistics.requestsFunded == 0 ? 0 : (this.statistics.numberOfRequests / this.statistics.requestsFunded) * 100;
+    return this.statistics.requestsFunded == 0 ? 0 : (this.statistics.requestsFunded / this.statistics.numberOfRequests) * 100;
   }
 }
 
