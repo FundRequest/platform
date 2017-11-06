@@ -1,12 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from '@angular/router';
 
-import {RequestsService} from "../../../core/requests/requests.service";
-
 import {LocalStorageService} from 'angular-2-local-storage';
 import {AuthService} from "../../../core/auth/auth.service";
 import {RequestsStats} from "../../../core/requests/RequestsStats";
-import {ContractsService} from "../../../core/contracts/contracts.service";
+import {RequestService} from "../../../services/request/request.service";
 
 declare var civic: any;
 
@@ -23,7 +21,7 @@ export class HomeComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private authService: AuthService,
-              public requestsService: RequestsService) {
+              private requestService: RequestService) {
   }
 
   ngOnInit() {
@@ -58,7 +56,7 @@ export class HomeComponent implements OnInit {
 
   get statistics(): Promise<RequestsStats> {
     if (!this._statistics) {
-      this._statistics = (async () => await this.requestsService.getStatistics() as RequestsStats)();
+      this._statistics = (async () => await this.requestService.getStatistics() as RequestsStats)();
     }
     return this._statistics;
   }

@@ -27,6 +27,17 @@ export class AddRequest extends RequestAction {
   }
 }
 
+export class RemoveRequest extends RequestAction {
+  constructor(private item: IRequestRecord) {
+    super('REMOVE_REQUEST');
+  }
+
+  public handle(state: IRequestList): IRequestList {
+    const index = state.indexOf(this.item);
+    return state.remove(index);
+  }
+}
+
 export class EditRequest extends RequestAction {
   constructor(private oldItem: IRequestRecord, private modifiedItem: IRequestRecord) {
     super('EDIT_REQUEST');
@@ -35,6 +46,16 @@ export class EditRequest extends RequestAction {
   public handle(state: IRequestList): IRequestList {
     const index = state.indexOf(this.oldItem);
     return state.set(index, this.modifiedItem);
+  }
+}
+
+export class ReplaceRequestList extends RequestAction {
+  constructor(private requestList: IRequestList) {
+    super('REPLACE_REQUEST_LIST');
+  }
+
+  public handle(state: IRequestList): IRequestList {
+    return Object.assign({}, state, this.requestList);
   }
 }
 

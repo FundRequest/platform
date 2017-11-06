@@ -1,7 +1,8 @@
 import {Component, OnInit} from "@angular/core";
 import {Request} from "app/core/requests/Request";
 import {ContractsService} from "app/core/contracts/contracts.service";
-import {IRequestList, RequestService} from "app/services/request/request.service";
+import {IRequestList, IRequestRecord, RequestService} from "app/services/request/request.service";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-request-overview',
@@ -10,12 +11,13 @@ import {IRequestList, RequestService} from "app/services/request/request.service
 })
 export class OverviewComponent implements OnInit {
 
-  requests: IRequestList;
+  requests$: Observable<IRequestList>;
+  request$: IRequestRecord;
 
   constructor(public requestService: RequestService, public contractsService: ContractsService) {
-    this.requestService.requests.subscribe(list => {
-      this.requests = list;
-    });
+    this.requests$ = this.requestService.requests;
+    this.requests$.map((list: IRequestList) => console.log(list && list.get(0))).subscribe(request => this.request$ = request);
+    console.log(this.requests$);
   }
 
   ngOnInit(): void {

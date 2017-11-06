@@ -1,8 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Request} from '../../core/requests/Request';
 import {UserService} from "../../core/user/user.service";
-import {RequestsService} from "../../core/requests/requests.service";
 import {User} from "../../core/user/User";
+import {IRequestRecord, RequestService} from "../../services/request/request.service";
 
 @Component({
   selector: 'fnd-watchlink',
@@ -10,17 +9,23 @@ import {User} from "../../core/user/User";
   styleUrls: ['./watchlink.component.scss']
 })
 export class WatchlinkComponent implements OnInit {
-  @Input() request: Request;
+  @Input() request: IRequestRecord;
 
   private user: User;
   public userIsWatcher: boolean = false;
 
-  constructor(private requestsService: RequestsService, private userService: UserService) {
+  constructor(private requestService: RequestService, private userService: UserService) {
 
   }
 
   async ngOnInit() {
     await this.initUser();
+    this.requestService
+      .requests.map(list => list.filter(request => request.id == this.request.id).toList())
+      .subscribe(list => {
+        this.request = list.first();
+        this.userIsWatcher = this.request.watchers.includes(this.user.email);
+      });
   }
 
   private async initUser(): Promise<void> {
@@ -30,12 +35,11 @@ export class WatchlinkComponent implements OnInit {
     }
   }
 
-  public async toggleIsWatcher(): Promise<void> {
+  public toggleIsWatcher(): void {
     if (!this.userIsWatcher) {
-      this.request.watchers = await this.requestsService.setUserAsWatcher(this.request, this.user) as string[];
+      this.requestService.setUserAsWatcher(this.request, this.user);
     } else {
-      this.request.watchers = await this.requestsService.unSetUserAsWatcher(this.request, this.user) as string[];
+      this.requestService.unSetUserAsWatcher(this.request, this.user);
     }
-    this.userIsWatcher = this.request.watchers.includes(this.user.email);
   }
 }
