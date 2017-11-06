@@ -3,6 +3,7 @@ package io.fundrequest.restapi.config;
 import io.fundrequest.core.user.UserAuthentication;
 import io.fundrequest.core.user.UserService;
 import io.fundrequest.restapi.security.UserJsonParser;
+import io.fundrequest.restapi.security.civic.CivicAuthService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ import static io.fundrequest.restapi.infrastructure.PrivateRestController.PRIVAT
 public class StatelessAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(StatelessAuthenticationFilter.class);
 
-    private CivicAuthClient civicAuthClient;
+    private CivicAuthService civicAuthService;
     private UserJsonParser userJsonParser;
     private UserService userService;
     private static final String AUTH_HEADER_NAME = "Authorization";
@@ -34,9 +35,9 @@ public class StatelessAuthenticationFilter extends AbstractAuthenticationProcess
     private AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
 
 
-    public StatelessAuthenticationFilter(CivicAuthClient civicAuthClient, UserJsonParser userJsonParser, UserService userService) {
+    public StatelessAuthenticationFilter(CivicAuthService civicAuthService, UserJsonParser userJsonParser, UserService userService) {
         super(new AntPathRequestMatcher(PRIVATE_API_LOCATION + "/**"));
-        this.civicAuthClient = civicAuthClient;
+        this.civicAuthService = civicAuthService;
         this.userJsonParser = userJsonParser;
         this.userService = userService;
         setContinueChainBeforeSuccessfulAuthentication(true);
@@ -58,7 +59,7 @@ public class StatelessAuthenticationFilter extends AbstractAuthenticationProcess
 
         String token = authorizationHeader.substring(BEARER.length()).trim();
         try {
-            UserAuthentication userAuthentication = userService.login(userJsonParser.parseUserLoginFromJson(civicAuthClient.getIssue(token)));
+            UserAuthentication userAuthentication = userService.login(userJsonParser.parseUserLoginFromJson(getUserData(token)));
             SecurityContextHolder.getContext().setAuthentication(userAuthentication);
             return userAuthentication;
 
@@ -67,6 +68,10 @@ public class StatelessAuthenticationFilter extends AbstractAuthenticationProcess
             failureHandler.onAuthenticationFailure(request, response, new AccountExpiredException("Authentication failed"));
         }
         return null;
+    }
+
+    private String getUserData(String token) {
+        return civicAuthService.getUserData(token);
     }
 
     @Override
