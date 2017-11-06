@@ -12,8 +12,8 @@ export class ContractsService {
   account: string;
   web3: any;
 
-  tokenContractAddress: string = "0x3aa6746c648c6b0df471776a7f02af45cb40c8b7";
-  fundRequestContractAddress: string = "0xa474ee658b90eccac3fd4b1f9d900b6536eede57";
+  tokenContractAddress: string = "0xbc84f3bf7dd607a37f9e5848a6333e6c188d926c";
+  fundRequestContractAddress: string = "0xa505ef7aad27f757fddbc2d3f875e28d4a75050b";
 
   balance: string;
   allowance: string;
@@ -35,7 +35,6 @@ export class ContractsService {
 
       if (this.web3.version.network !== '4') {
         alert('Please connect to the Rinkeby network');
-        //TODO redirect to a page with some extra explanation
       }
     } else {
       console.warn(
@@ -144,7 +143,7 @@ export class ContractsService {
   public fundRequest(request: Request, value: number): Promise<any> {
     return new Promise((resolve, reject) => {
       let total = this.web3.toWei(value, 'ether');
-      return this.tokenContract.transferFunding(total, String(request.id), function (err, result) {
+      return this.fundRequestContract.fund(total, String(request.id), '', function (err, result) {
         if (err) {
           reject(err);
         } else {
