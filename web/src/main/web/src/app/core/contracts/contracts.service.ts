@@ -128,12 +128,11 @@ export class ContractsService {
   public setUserAllowance(value: number): Promise<string> {
     return new Promise((resolve, reject) => {
       let total = this.web3.toWei(value, 'ether');
-      return this.tokenContract.approve(this.tokenContractAddress, total, function (err, result) {
+      return this.tokenContract.approve(this.fundRequestContractAddress, total, function (err, result) {
         if (err) {
           reject(err);
         } else {
           this.allowance = value.toFixed(2).toLocaleString();
-          // TODO: save transaction address (result)
           resolve(this.allowance);
         }
       });
@@ -148,7 +147,6 @@ export class ContractsService {
           reject(err);
         } else {
           request.balance = (Number.parseFloat(request.balance) + value).toFixed(2).toLocaleString();
-          // TODO: save transaction address (result)
           resolve(request);
         }
       });
