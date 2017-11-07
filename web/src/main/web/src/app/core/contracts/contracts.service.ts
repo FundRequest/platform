@@ -128,7 +128,7 @@ export class ContractsService {
   public setUserAllowance(value: number): Promise<string> {
     return new Promise((resolve, reject) => {
       let total = this.web3.toWei(value, 'ether');
-      return this.tokenContract.approve(this.account, total, function (err, result) {
+      return this.tokenContract.approve(this.tokenContractAddress, total, function (err, result) {
         if (err) {
           reject(err);
         } else {
