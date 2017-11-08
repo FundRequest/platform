@@ -1,27 +1,42 @@
-import {Component, Input} from '@angular/core';
-import {IUserRecord} from "../../redux/user.models";
-import {IRequestRecord} from "../../redux/requests.models";
-import {RequestService} from "../../services/request/request.service";
+import {Component, Input, OnInit} from '@angular/core';
+import {UserService} from "../../core/user/user.service";
+import {User} from "../../core/user/User";
+import {IRequestRecord, RequestService} from "../../services/request/request.service";
 
 @Component({
   selector: 'fnd-watchlink',
   templateUrl: './watchlink.component.html',
   styleUrls: ['./watchlink.component.scss']
 })
-export class WatchlinkComponent {
-  @Input() user: IUserRecord;
+export class WatchlinkComponent implements OnInit {
   @Input() request: IRequestRecord;
 
-  constructor(private requestService: RequestService) {
+  private user: User;
+  public userIsWatcher: boolean = false;
+
+  constructor(private requestService: RequestService, private userService: UserService) {
 
   }
 
-  public isWatcher(): boolean {
-    return this.request.watchers.indexOf(this.user.email) > -1;
+  async ngOnInit() {
+    await this.initUser();
+    this.requestService
+      .requests.map(list => list.filter(request => request.id == this.request.id).toList())
+      .subscribe(list => {
+        this.request = list.first();
+        this.userIsWatcher = this.request.watchers.includes(this.user.email);
+      });
+  }
+
+  private async initUser(): Promise<void> {
+    if (this.user == null) {
+      this.user = await this.userService.getUserInfo() as User;
+      this.userIsWatcher = this.request.watchers.includes(this.user.email);
+    }
   }
 
   public toggleIsWatcher(): void {
-    if (!this.isWatcher()) {
+    if (!this.userIsWatcher) {
       this.requestService.setUserAsWatcher(this.request, this.user);
     } else {
       this.requestService.unSetUserAsWatcher(this.request, this.user);

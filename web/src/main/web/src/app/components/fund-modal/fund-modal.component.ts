@@ -1,10 +1,9 @@
 import {Component} from '@angular/core';
+import {Request} from "../../core/requests/Request";
 
 import {BsModalRef} from 'ngx-bootstrap/modal/modal-options.class';
-import {IRequestRecord} from "../../redux/requests.models";
-import {IUserRecord} from "../../redux/user.models";
-import {RequestService} from "../../services/request/request.service";
-import {UserService} from "../../services/user/user.service";
+import {ContractsService} from "../../core/contracts/contracts.service";
+import {UserService} from "../../core/user/user.service";
 
 @Component({
   selector: 'modal-content',
@@ -13,26 +12,24 @@ import {UserService} from "../../services/user/user.service";
 })
 export class FundModalComponent {
 
-  public request: IRequestRecord;
-  public user: IUserRecord;
+  public request: Request;
   public fundAmount: number;
-  public allowance: number = 0;
-  public balance: number;
+  public allowance: number;
 
   constructor(public bsModalRef: BsModalRef,
-              private requestService: RequestService,
+              private contractsService: ContractsService,
               private userService: UserService) {
-    this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
-      this.allowance = user.allowance;
-      this.balance = user.balance;
-    });
+    userService.getAllowance().then(allowance => this.allowance = Number.parseFloat(allowance));
   }
 
   public async fund() {
+    console.log(this.fundAmount, this.allowance, this.fundAmount > this.allowance);
     if(this.fundAmount > this.allowance) {
       await this.userService.setAllowance(this.fundAmount - this.allowance);
     }
-    this.requestService.fundRequest(this.request, this.fundAmount);
+    this.request = await this.contractsService.fundRequest(this.request, this.fundAmount);
     this.bsModalRef.hide();
+    // TODO save to database
+    // await this.requestsService.update(request);
   }
 }

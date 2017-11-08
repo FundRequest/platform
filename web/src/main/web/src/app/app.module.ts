@@ -20,21 +20,20 @@ import {ModalModule} from "ngx-bootstrap";
 import {EmptyResponseBodyErrorInterceptor} from "./core/empty-response-body-error/empty-response-body-error.interceptor";
 import {IState, REDUCER_MAP} from "./redux/store";
 import {localStorageSync} from "ngrx-store-localstorage";
-import {ServiceModule} from "./services/service.module";
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
-/*
+
 const reducers: ActionReducerMap<IState> = REDUCER_MAP;
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
   return localStorageSync({keys: ['requests']})(reducer);
 }
 const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
-*/
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,12 +43,14 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
     ComponentsModule,
     BrowserAnimationsModule, // required for ng2-tag-input
     CoreModule,
-    ServiceModule,
     LayoutModule,
     SharedModule.forRoot(),
     FormsModule,
     RoutesModule,
-    StoreModule.forRoot(REDUCER_MAP),
+    StoreModule.forRoot(
+      reducers,
+      {metaReducers}
+    ),
     ModalModule.forRoot(),
     TranslateModule.forRoot({
       loader: {

@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {BsModalRef} from "ngx-bootstrap";
-import {RequestService} from "../../services/request/request.service";
+import {IRequestList, RequestService} from "../../services/request/request.service";
 
 @Component({
   selector: 'fnd-request-modal',
@@ -17,11 +17,11 @@ export class RequestModalComponent {
   }
 
   public addRequest() {
-    let technologies = [];
+    let x = [];
     for(let i = 0; i < this.technologies.length; i++) {
-      technologies.push(this.technologies[i].value);
+      x.push(this.technologies[i].value);
     }
-    this.requestService.addRequest(this.issueLink, technologies);
+    this.requestService.addRequest(this.issueLink, x);
     this.bsModalRef.hide();
   }
 }

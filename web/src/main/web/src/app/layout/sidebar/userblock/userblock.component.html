@@ -1,19 +1,19 @@
 <div class="item user-block" *ngIf="userBlockIsVisible()">
   <!-- User picture-->
-  <div class="user-block-picture" *ngIf="user">
+  <div class="user-block-picture" *ngIf="user | async">
     <div class="user-block-status">
-      <img class="img-thumbnail img-circle" [src]="user?.picture" alt="Avatar"/>
+      <img class="img-thumbnail img-circle" [src]="(user | async)?.picture" alt="Avatar"/>
       <div class="circle circle-success circle-lg"></div>
     </div>
   </div>
 
   <div class="user-block-info">
-    <span class="user-block-name">{{user?.email}}</span>
+    <span class="user-block-name">{{(user | async)?.email}}</span>
     <span class="user-block-role">
-        <span>Balance: </span><span>{{user?.balance}}</span><span> FND</span>
+        <span>Balance: </span><span>{{balance}}</span><span> FND</span>
     </span>
     <span class="user-block-role">
-        <span>Approved for use: </span><span>{{user?.allowance}}</span><span> FND</span>
+        <span>Approved for use: </span><span>{{allowance}}</span><span> FND</span>
     </span>
 
   </div>

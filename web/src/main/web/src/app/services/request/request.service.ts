@@ -1,45 +1,78 @@
 import {Injectable} from '@angular/core';
+import {AddRequest, EditRequest, IState, RemoveRequest, ReplaceRequestList} from "../../redux/store";
 import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
-import {HttpClient} from "@angular/common/http";
-import {RequestsStats} from "../../core/requests/RequestsStats";
-import {IState} from "../../redux/store";
-import {createRequest, IRequestList, IRequestRecord} from "../../redux/requests.models";
-import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from "../../redux/requests.reducer";
-import {IUserRecord} from "../../redux/user.models";
-import {ContractsService} from "../contracts/contracts.service";
 
-import 'rxjs/add/operator/toPromise';
+import {TypedRecord, makeTypedFactory} from 'typed-immutable-record';
+import {List} from 'immutable';
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {User} from "../../core/user/User";
+import {RequestsStats} from "../../core/requests/RequestsStats";
+
+interface IRequestSource {
+  key: String;
+  value: String;
+}
+
+
+interface IRequestIssueInformation {
+  link: String;
+  owner: String;
+  repo: String;
+  number: Number;
+  title: String;
+
+  source: IRequestSource;
+}
+
+interface IRequest {
+  id: number;
+  status: string;
+  type: string;
+  technologies: string[];
+  watchers: string[];
+  loggedInUserIsWatcher: boolean;
+  balance: string;
+  issueInformation: IRequestIssueInformation;
+}
+
+
+export interface IRequestRecord extends TypedRecord<IRequestRecord>, IRequest {
+}
+
+export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
+  id: 0,
+  status: '',
+  type: '',
+  technologies: [],
+  watchers: [],
+  loggedInUserIsWatcher: false,
+  balance: '0',
+  issueInformation: {
+    link: '',
+    owner: '',
+    repo: '',
+    number: 0,
+    title: '',
+    source: {
+      key: '',
+      value: ''
+    }
+  }
+});
+
+export type IRequestList = List<IRequestRecord>;
 
 @Injectable()
 export class RequestService {
-  private _requests: IRequestList = null;
-
-  constructor(private store: Store<IState>,
-              private http: HttpClient,
-              private contractService: ContractsService) {
+  constructor(private store: Store<IState>, private http: HttpClient) {
   }
 
   public get requests(): Observable<IRequestList> {
-    // if this._requests == null, initialize store, but always return state.requests
-    if (this._requests == null) {
-      this.http.get(`/api/private/requests`)
-        .take(1).subscribe((response: IRequestList) => {
-        this._requests = response;
-        this.store.dispatch(new ReplaceRequestList(response));
-        for (let i = 0; i < this._requests.size; i++) {
-          this.contractService.getRequestBalance(this._requests[i]).then(
-            balance => {
-              let modifiedRequest = createRequest(JSON.parse(JSON.stringify(this._requests[i])));
-              modifiedRequest.asMutable();
-              modifiedRequest.balance = balance;
-              modifiedRequest.asImmutable();
-              this.editRequestInStore(this._requests[i], modifiedRequest);
-            }
-          );
-        }
-      }, error => this.handleError(error));
-    }
+    this.http.get(`/api/private/requests`)
+      .take(1).subscribe((response: IRequestList) => {
+      this.store.dispatch(new ReplaceRequestList(response));
+    }, error => this.handleError(error));
 
     return this.store.select(state => state.requests);
   }
@@ -56,6 +89,7 @@ export class RequestService {
       issueLink: issueLink,
       technologies: technologies
     }, {observe: 'response'}).take(1).subscribe((result) => {
+
         let location = result.headers.get('location');
         if (location.length > 0) {
           this.http.get(location)
@@ -64,55 +98,32 @@ export class RequestService {
             }, error => this.handleError(error)
           )
         }
+
       }, error => this.handleError(error)
     )
   }
 
-  public async fundRequest(request: IRequestRecord, funding: number): Promise<void> {
-    let newRequest: IRequestRecord = createRequest(request).asMutable();
-    newRequest.balance = await this.contractService.getRequestBalance(request) as number;
-    newRequest = newRequest.asImmutable();
-    await this.contractService.fundRequest(request, funding);
-    this.editRequestInStore(request, newRequest);
-  }
-
-  public setUserAsWatcher(request: IRequestRecord, user: IUserRecord): void {
+  public setUserAsWatcher(request: IRequestRecord, user: User): void {
     this.updateWatcher(request, user.email, true);
   }
 
-  public unSetUserAsWatcher(request: IRequestRecord, user: IUserRecord): void {
+  public unSetUserAsWatcher(request: IRequestRecord, user: User): void {
     this.updateWatcher(request, user.email, false);
   }
 
   private updateWatcher(request: IRequestRecord, userId: string, add: boolean): void {
-    let newWatchers: string[] = JSON.parse(JSON.stringify(request.watchers));
-
+    let newWatchers: string[] = request.watchers.map(x => Object.assign({}, x));
     if (add) {
       newWatchers.push(userId);
     } else {
-      newWatchers = newWatchers.filter(function (watcher) {
-        return watcher != userId;
-      });
+      newWatchers = newWatchers.filter(watcher => watcher != userId);
     }
-
-    let newRequest: IRequestRecord = createRequest(request).asMutable();
-    newRequest.watchers = newWatchers;
-    newRequest = newRequest.asImmutable();
+    let newRequest: IRequestRecord = request.set('watchers', newWatchers);
     this.editRequestInStore(request, newRequest);
-
-    let httpUrl = `/api/private/requests/${request.id}/watchers`;
-    let httpCall: Observable<Object>;
-
-    if (add) {
-      httpCall = this.http.put(httpUrl, {
-        responseType: 'text',
-        requestId: request.id
-      });
-    } else {
-      httpCall = this.http.delete(httpUrl);
-    }
-
-    httpCall.take(1).subscribe(null,
+    this.http.put(`/api/private/requests/${request.id}/watchers`, {
+      responseType: 'text',
+      requestId: request.id
+    }).take(1).subscribe(null,
       error => {
         this.editRequestInStore(newRequest, request); // if something when wrong, update it back to the old value
         this.handleError(error);

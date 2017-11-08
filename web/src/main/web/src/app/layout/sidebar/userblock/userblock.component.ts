@@ -1,24 +1,28 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 
 import {UserblockService} from "./userblock.service";
-import {UserService} from "../../../services/user/user.service";
-import {IUserRecord} from "../../../redux/user.models";
+import {ContractsService} from "../../../core/contracts/contracts.service";
+import {UserService} from "../../../core/user/user.service";
+import {User} from "../../../core/user/User";
 
 @Component({
   selector: 'app-userblock',
   templateUrl: './userblock.component.html',
   styleUrls: ['./userblock.component.scss']
 })
-export class UserblockComponent {
-  public user: IUserRecord;
-  balance: number;
-  allowance: number;
+export class UserblockComponent implements OnInit {
+  user: Promise<User>;
+  balance: string;
+  allowance: string;
 
   constructor(public userService: UserService,
               public userblockService: UserblockService) {
-    userService.getCurrentUser().subscribe((user: IUserRecord) => {
-      this.user = user;
-    });
+  }
+
+  async ngOnInit() {
+    this.user = this.userService.getUserInfo();
+    this.balance = await this.userService.getBalance();
+    this.allowance = await this.userService.getAllowance();
   }
 
   userBlockIsVisible(): boolean {

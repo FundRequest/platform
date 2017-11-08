@@ -12,30 +12,29 @@ import {FooterComponent} from "./footer/footer.component";
 import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
-  imports: [
-    SharedModule
-  ],
-  providers: [
-    UserblockService
-  ],
-  declarations: [
-    LayoutComponent,
-    SidebarComponent,
-    UserblockComponent,
-    HeaderComponent,
-    NavsearchComponent,
-    OffsidebarComponent,
-    FooterComponent
-  ],
-  exports: [
-    LayoutComponent,
-    SidebarComponent,
-    UserblockComponent,
-    HeaderComponent,
-    NavsearchComponent,
-    OffsidebarComponent,
-    FooterComponent
-  ]
+    imports: [
+        SharedModule
+    ],
+    providers: [
+        UserblockService
+    ],
+    declarations: [
+        LayoutComponent,
+        SidebarComponent,
+        UserblockComponent,
+        HeaderComponent,
+        NavsearchComponent,
+        OffsidebarComponent,
+        FooterComponent
+    ],
+    exports: [
+        LayoutComponent,
+        SidebarComponent,
+        UserblockComponent,
+        HeaderComponent,
+        NavsearchComponent,
+        OffsidebarComponent,
+        FooterComponent
+    ]
 })
-export class LayoutModule {
-}
+export class LayoutModule { }

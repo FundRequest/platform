@@ -10,6 +10,9 @@ import {AuthService} from "./auth/auth.service";
 import {AuthGuard} from "./auth/auth.guard";
 import {HttpClientModule} from "@angular/common/http";
 import {ComponentsModule} from "../components/components.module";
+import {ContractsService} from "./contracts/contracts.service";
+import {UserService} from "./user/user.service";
+import {RequestService} from "../services/request/request.service";
 
 @NgModule({
   imports: [
@@ -21,8 +24,11 @@ import {ComponentsModule} from "../components/components.module";
     ThemesService,
     TranslatorService,
     MenuService,
+    RequestService,
+    ContractsService,
     AuthService,
-    AuthGuard
+    AuthGuard,
+    UserService
   ],
   declarations: [],
   exports: []

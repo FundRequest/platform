@@ -1,7 +1,7 @@
 /* ========================================================================
      Component: user-block
  ========================================================================== */
-
+ 
  // for use as navbar item
 .has-user-block {
   display: block;
@@ -13,9 +13,9 @@
 .user-block {
   position: relative;
   padding: 25px 0 10px;
-  cursor: default;
+  cursor: pointer;
   @include clearfix();
-
+  
   > .user-block-picture {
     position: relative;
     width: 60px;

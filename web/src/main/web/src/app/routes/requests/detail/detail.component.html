@@ -16,7 +16,7 @@
         <span class="label" [ngClass]="['label-'+ request.status]">{{request.status}}</span>
         <span>{{request.issueInformation.title}}</span>
         <span class="pull-right">
-          <fnd-watchlink *ngIf="request" [request]="request" [user]="user"></fnd-watchlink>
+          <fnd-watchlink [request]="request"></fnd-watchlink>
         </span>
       </div>
       <div class="panel-body">
