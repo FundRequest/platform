@@ -7,6 +7,8 @@ import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
 import io.fundrequest.core.request.fund.infrastructure.ProcessedBlockchainEventRepository;
 import io.fundrequest.core.request.fund.messaging.dto.FundedEthDto;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -27,6 +29,8 @@ public class AzraelMessageReceiver {
     private ObjectMapper objectMapper;
     private ProcessedBlockchainEventRepository processedBlockchainEventRepository;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzraelMessageReceiver.class);
+
     @Autowired
     public AzraelMessageReceiver(FundService fundService, ObjectMapper objectMapper, ProcessedBlockchainEventRepository processedBlockchainEventRepository) {
         this.fundService = fundService;
@@ -37,6 +41,7 @@ public class AzraelMessageReceiver {
     @Transactional
     public void receiveMessage(String message) throws IOException {
         FundedEthDto result = objectMapper.readValue(message, FundedEthDto.class);
+        LOGGER.debug("Recieved new message from Azrael: " + message);
         if (isNewFunding(result)) {
             AddFundsCommand command = new AddFundsCommand();
             command.setAmountInWei(new BigDecimal(result.getAmount()));
