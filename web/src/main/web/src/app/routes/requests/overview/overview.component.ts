@@ -1,58 +1,28 @@
-import {Component, OnInit} from "@angular/core";
-import {Request} from "app/core/requests/Request";
-import {ContractsService} from "app/core/contracts/contracts.service";
-import {IRequestList, IRequestRecord, RequestService} from "app/services/request/request.service";
+import {Component} from "@angular/core";
 import {Observable} from "rxjs/Observable";
+import {RequestService} from "../../../services/request/request.service";
+import {IRequestList, IRequestRecord} from "../../../redux/requests.models";
+import {IUserRecord} from "../../../redux/user.models";
+import {UserService} from "../../../services/user/user.service";
 
 @Component({
   selector: 'app-request-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss']
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent {
 
+  user: IUserRecord;
   requests$: Observable<IRequestList>;
-  requestsRows: any;
-  request: IRequestRecord;
+  requestsRows: Array<IRequestRecord> = [];
 
-  constructor(public requestService: RequestService, public contractsService: ContractsService) {
-    console.log(this.requests$);
+  constructor(private userServivce: UserService,
+              private requestService: RequestService) {
+    this.userServivce.getCurrentUser().subscribe(user => this.user = user);
     this.requests$ = this.requestService.requests;
-    this.requests$.subscribe(requests => this.requestsRows = requests);
-    console.log(this.requests$);
-
-    /*
-    this.requests$.map(
-      (list: IRequestList) => list && list.get(0)
-    ).subscribe(request => this.request = request);
-    console.log(this.requests$);*/
-  }
-
-  ngOnInit(): void {
-  }
-
-  /*
-  private async getRequests(): Promise<Request[]> {
-    this.requests = await this.requestsService.getAll();
-    for (let i = 0; i < this.requests.length; i++) {
-      this.contractsService.getRequestBalance(String(this.requests[i].id)).then(
-        balance => this.requests[i].balance = balance
-      );
-    }
-    return this.requests;
-  }*/
-
-  // angular2-datatable
-  public sortByWordLength = (a: any) => {
-    return a.name.length;
-  };
-
-
-  public async fundRequest(request: Request): Promise<void> {
-    request = await this.contractsService.fundRequest(request, 1) as Request;
-
-    // TODO save to database
-    // await this.requestsService.update(request);
+    this.requests$.map(requests => requests.toArray()).subscribe(
+      requests => this.requestsRows = requests
+    );
   }
 
   public onCellClick(data: any): any {
