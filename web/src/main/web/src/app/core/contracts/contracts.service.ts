@@ -142,7 +142,7 @@ export class ContractsService {
   public fundRequest(request: Request, value: number): Promise<any> {
     return new Promise((resolve, reject) => {
       let total = this.web3.toWei(value, 'ether');
-      return this.fundRequestContract.fund(total, String(request.id), '', function (err, result) {
+      return this.fundRequestContract.fund(total, this.web3.fromAscii(String)(request.id), '', function (err, result) {
         if (err) {
           reject(err);
         } else {
