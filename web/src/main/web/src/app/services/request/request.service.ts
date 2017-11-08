@@ -27,17 +27,15 @@ export class RequestService {
         .take(1).subscribe((response: IRequestList) => {
         this._requests = response;
         this.store.dispatch(new ReplaceRequestList(response));
-        for (let i = 0; i < this._requests.size; i++) {
-          this.contractService.getRequestBalance(this._requests[i]).then(
+        this._requests.forEach((request, index) => {
+          this.contractService.getRequestBalance(request).then(
             balance => {
-              let modifiedRequest = createRequest(JSON.parse(JSON.stringify(this._requests[i])));
-              modifiedRequest.asMutable();
+              let modifiedRequest = JSON.parse(JSON.stringify(request));
               modifiedRequest.balance = balance;
-              modifiedRequest.asImmutable();
-              this.editRequestInStore(this._requests[i], modifiedRequest);
+              this.editRequestInStore(request, createRequest(modifiedRequest));
             }
           );
-        }
+        })
       }, error => this.handleError(error));
     }
 

@@ -16,14 +16,14 @@ export class FundModalComponent {
   public request: IRequestRecord;
   public user: IUserRecord;
   public fundAmount: number;
-  public allowance: number = 0;
+  public allowance: number;
   public balance: number;
 
   constructor(public bsModalRef: BsModalRef,
               private requestService: RequestService,
               private userService: UserService) {
     this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
-      this.allowance = user.allowance;
+      this.allowance = user.allowance || 0;
       this.balance = user.balance;
     });
   }

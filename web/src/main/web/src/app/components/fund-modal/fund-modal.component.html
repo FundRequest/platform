@@ -42,8 +42,7 @@
       <label class="col-md-4 control-label">Funded</label>
       <div class="col-md-8 form-control-static">
         <label>
-          <span *ngIf="!request.balance"><i class="whirl whirl--sm whirl--fnd"></i></span>
-          <span *ngIf="request.balance">{{request.balance}} FND</span>
+          <span>{{(request.balance || 0) | number: '1.2-2'}} FND</span>
         </label>
       </div>
     </div>
@@ -53,7 +52,7 @@
       <div class="col-md-8">
         <div class="input-group">
           <input [(ngModel)]="fundAmount" id="fund-amount" type="number" class="form-control">
-          <span class="input-group-addon">FND {{allowance}}</span>
+          <span class="input-group-addon">FND</span>
         </div>
       </div>
       <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > balance">
