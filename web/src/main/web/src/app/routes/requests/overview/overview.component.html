@@ -6,17 +6,17 @@
   </div>
 
   <span>Requests</span>
-  <small>Let's fund some {{(requests$ | async)?.length}}</small>
+  <small>Let's fund some</small>
 </div>
-<div class="panel panel-default" *ngIf="(requests$ | async)?.length > 0">
+<div class="panel panel-default" *ngIf="requestsRows.length > 0">
   <div class="panel-heading">
     <div class="pull-right text-muted">
-      <i class="fa fa-lightbulb-o mr-sm"></i><strong>{{(requests$ | async)?.length}}</strong>
-      <span i18n>{(requests$ | async)?.length, plural, =1 {request} other {requests}}</span>
+      <i class="fa fa-lightbulb-o mr-sm"></i><strong>{{requestsRows.length}}</strong>
+      <span i18n>{requestsRows.length, plural, =1 {request} other {requests}}</span>
     </div>
   </div>
 
-  <table class="table table-striped table-bordered table-hover" [mfData]="(requests$ | async)?.toArray()" #mf="mfDataTable" [mfRowsOnPage]="10">
+  <table class="table table-striped table-bordered table-hover" [mfData]="requestsRows" #mf="mfDataTable" [mfRowsOnPage]="10">
     <thead>
     <tr>
       <th>
@@ -47,7 +47,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let request of mf.data">
-      <td><fnd-watchlink [request]="request"></fnd-watchlink></td>
+      <td><fnd-watchlink *ngIf="request" [request]="request" [user]="user"></fnd-watchlink></td>
       <td>
         <a routerLink="/requests/{{request.id}}">
           {{request.issueInformation?.title}}
@@ -65,7 +65,7 @@
           <span class="label label-primary">{{t}}</span>
         </ng-container>
       </td>
-      <td>{{request.balance}}</td>
+      <td>{{request.balance || 0 | number: '1.2-2'}}</td>
       <td>
         <button fnd-fund [request]="request" title="Fund" class="btn btn-primary"><i class="fa fa-exchange"></i></button>
       </td>

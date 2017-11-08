@@ -42,8 +42,8 @@
       <label class="col-md-4 control-label">Funded</label>
       <div class="col-md-8 form-control-static">
         <label>
-          <span *ngIf="request.balance.length == 0"><i class="whirl whirl--sm whirl--fnd"></i></span>
-          <span *ngIf="request.balance.length != 0">{{request.balance}} FND</span>
+          <span *ngIf="!request.balance"><i class="whirl whirl--sm whirl--fnd"></i></span>
+          <span *ngIf="request.balance">{{request.balance}} FND</span>
         </label>
       </div>
     </div>
@@ -53,8 +53,11 @@
       <div class="col-md-8">
         <div class="input-group">
           <input [(ngModel)]="fundAmount" id="fund-amount" type="number" class="form-control">
-          <span class="input-group-addon">FND</span>
+          <span class="input-group-addon">FND {{allowance}}</span>
         </div>
+      </div>
+      <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > balance">
+          <label>Balance to low to fund {{fundAmount}} FND.</label>
       </div>
       <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > allowance">
           <label>You approved {{allowance}} FND, when trying to fund there will be an extra request to first approve {{fundAmount - allowance}} FND.</label>
@@ -63,6 +66,6 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>
-    <button type="button" class="btn btn-primary" (click)="fund()">Fund</button>
+    <button [disabled]="fundAmount > balance" type="button" class="btn btn-primary" (click)="fund()">Fund</button>
   </div>
 </div>

@@ -1,8 +1,11 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
-import {ContractsService} from "app/core/contracts/contracts.service";
 import {Subscription} from "rxjs/Subscription";
-import {IRequestRecord, RequestService} from "../../../services/request/request.service";
+import {IRequestRecord} from "../../../redux/requests.models";
+import {RequestService} from "../../../services/request/request.service";
+import {ContractsService} from "../../../services/contracts/contracts.service";
+import {UserService} from "../../../services/user/user.service";
+import {IUserRecord} from "../../../redux/user.models";
 
 @Component({
   selector: 'fnd-request-detail',
@@ -11,16 +14,17 @@ import {IRequestRecord, RequestService} from "../../../services/request/request.
 })
 export class DetailComponent implements OnInit {
 
-  private subRoute: Subscription;
+  public user: IUserRecord;
   public request: IRequestRecord;
 
   constructor(private route: ActivatedRoute,
               private requestService: RequestService,
-              private contractsService: ContractsService) {
+              private userService: UserService) {
   }
 
   ngOnInit(): void {
-    this.subRoute = this.route.params.subscribe(params => {
+    this.userService.getCurrentUser().subscribe(user => this.user = user);
+    this.route.params.subscribe(params => {
       let id = +params['id'];
       this.requestService
         .requests.map(list => list.filter(request => request.id == id).first())
@@ -29,10 +33,4 @@ export class DetailComponent implements OnInit {
         });
     });
   }
-/*
-  async getRequest(id: number) {
-    this.request = await this.requestsService.get(id);
-    this.request.balance = await this.contractsService.getRequestBalance(String(id));
-    console.log(this.request);
-  }*/
 }

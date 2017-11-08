@@ -1,10 +1,6 @@
-import {Directive, HostListener, Input} from '@angular/core';
-import {Request} from "../../../core/requests/Request";
+import {Directive, HostListener} from '@angular/core';
 import {BsModalRef, BsModalService} from "ngx-bootstrap";
 import {RequestModalComponent} from "../../../components/request-modal/request-modal.component";
-import {Observable} from "rxjs/Observable";
-import {IRequestList, RequestService} from "../../../services/request/request.service";
-import {IState} from "../../../redux/store";
 
 @Directive({
   selector: '[fnd-add-request]'
