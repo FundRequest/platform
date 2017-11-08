@@ -155,7 +155,7 @@ export class ContractsService {
 
   public getRequestBalance(requestId: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      return this.fundRequestContract.balance.call(requestId, function (err, result) {
+      return this.fundRequestContract.balance.call(this.web3.fromAscii(requestId), function (err, result) {
         let balance;
         if (result) {
           balance = ContractsService.fromWeiRounded(result);
