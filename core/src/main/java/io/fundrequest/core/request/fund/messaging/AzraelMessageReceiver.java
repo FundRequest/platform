@@ -40,8 +40,8 @@ public class AzraelMessageReceiver {
 
     @Transactional
     public void receiveMessage(String message) throws IOException {
-        FundedEthDto result = objectMapper.readValue(message, FundedEthDto.class);
         LOGGER.debug("Recieved new message from Azrael: " + message);
+        FundedEthDto result = objectMapper.readValue(message, FundedEthDto.class);
         if (isNewFunding(result)) {
             AddFundsCommand command = new AddFundsCommand();
             command.setAmountInWei(new BigDecimal(result.getAmount()));
