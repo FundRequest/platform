@@ -67,11 +67,10 @@ export class RequestService {
   }
 
   public async fundRequest(request: IRequestRecord, funding: number): Promise<void> {
-    let newRequest: IRequestRecord = createRequest(request).asMutable();
+    let newRequest = JSON.parse(JSON.stringify(request));
     newRequest.balance = await this.contractService.getRequestBalance(request) as number;
-    newRequest = newRequest.asImmutable();
     await this.contractService.fundRequest(request, funding);
-    this.editRequestInStore(request, newRequest);
+    this.editRequestInStore(request, createRequest(newRequest));
   }
 
   public setUserAsWatcher(request: IRequestRecord, user: IUserRecord): void {
@@ -93,10 +92,9 @@ export class RequestService {
       });
     }
 
-    let newRequest: IRequestRecord = createRequest(request).asMutable();
+    let newRequest = JSON.parse(JSON.stringify(request));
     newRequest.watchers = newWatchers;
-    newRequest = newRequest.asImmutable();
-    this.editRequestInStore(request, newRequest);
+    this.editRequestInStore(request, createRequest(newRequest));
 
     let httpUrl = `/api/private/requests/${request.id}/watchers`;
     let httpCall: Observable<Object>;

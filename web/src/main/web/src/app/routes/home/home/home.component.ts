@@ -1,7 +1,6 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {ActivatedRoute, Router} from '@angular/router';
 
-import {LocalStorageService} from 'angular-2-local-storage';
 import {AuthService} from "../../../core/auth/auth.service";
 import {RequestsStats} from "../../../core/requests/RequestsStats";
 import {RequestService} from "../../../services/request/request.service";
@@ -14,23 +13,22 @@ declare var civic: any;
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
 
   private _statistics: Promise<RequestsStats>;
 
-  constructor(private localStorageService: LocalStorageService,
-              private route: ActivatedRoute,
+  constructor(private route: ActivatedRoute,
               private router: Router,
               private authService: AuthService,
               private requestService: RequestService,
               private userService: UserService) {
+    route.params.subscribe(val => {
+      if (!this.authService.isAuthenticated()) {
+        this.login();
+      }
+    });
   }
 
-  ngOnInit() {
-    if (!this.authService.isAuthenticated()) {
-      this.login();
-    }
-  }
 
   login(): void {
     const userService: UserService = this.userService;

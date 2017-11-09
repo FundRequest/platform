@@ -64,11 +64,9 @@ export class UserService {
 
   public setAllowance(value: number) {
     this.contractService.setUserAllowance(value).then(allowance => {
-      let user: IUserRecord = createUser(JSON.parse(JSON.stringify(this.user)));
-      user.asMutable();
+      let user = JSON.parse(JSON.stringify(this.user));
       user.allowance = allowance;
-      user.asImmutable();
-      this.store.dispatch(new ReplaceUser(user));
+      this.store.dispatch(new ReplaceUser(createUser(user)));
     });
     this.contractService.setUserAllowance(value);
   }
