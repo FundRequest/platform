@@ -113,13 +113,15 @@ export class ContractsService {
   public setUserAllowance(value: number): Promise<number> {
     return new Promise((resolve, reject) => {
       let total = this.web3.toWei(value, 'ether');
-      return this.tokenContract.approve(this.account, total, function (err, result) {
-        if (err) {
-          reject(err);
-        } else {
-          // TODO: save transaction address (result)
-          resolve(value);
-        }
+      this.getUserAllowance().then(function (currentBalance) {
+        return this.tokenContract.approve(this.account, currentBalance, total, function (err, result) {
+          if (err) {
+            reject(err);
+          } else {
+            // TODO: save transaction address (result)
+            resolve(value);
+          }
+        });
       });
     });
   }
