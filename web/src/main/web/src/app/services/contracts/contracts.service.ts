@@ -12,8 +12,8 @@ export class ContractsService {
   account: string;
   web3: any;
 
-  tokenContractAddress: string = "0xbc84f3bf7dd607a37f9e5848a6333e6c188d926c";
-  fundRequestContractAddress: string = "0xa505ef7aad27f757fddbc2d3f875e28d4a75050b";
+  tokenContractAddress: string = "0x441e36bc87d343e7b2f908570823b43ac4ef6cb6";
+  fundRequestContractAddress: string = "0x43a29f127adbc1e664c389367b0a0fceee36e764";
 
   status: string;
 
