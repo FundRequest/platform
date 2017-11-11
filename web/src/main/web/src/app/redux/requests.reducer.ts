@@ -9,7 +9,6 @@ export abstract class RequestAction implements Action {
   public abstract handle(state: IRequestList): IRequestList;
 }
 
-
 export class AddRequest extends RequestAction {
   constructor(private newItem: IRequestRecord) {
     super('ADD_REQUEST');
@@ -48,11 +47,7 @@ export class ReplaceRequestList extends RequestAction {
   }
 
   public handle(state: IRequestList): IRequestList {
-    state = state.clear();
-    this.requestList.forEach(function(request: IRequestRecord) {
-      state = state.push(request);
-    });
-    return state;
+    return List<IRequestRecord>(this.requestList);
   }
 }
 

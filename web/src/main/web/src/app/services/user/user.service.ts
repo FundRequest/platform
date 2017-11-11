@@ -9,20 +9,44 @@ import {ClearUser, ReplaceUser} from "../../redux/user.reducer";
 import {createUser, IUserRecord} from "../../redux/user.models";
 import {ContractsService} from "../contracts/contracts.service";
 import {AuthService} from "../../core/auth/auth.service";
+import {Router} from "@angular/router";
+
+declare var civic: any;
 
 @Injectable()
 export class UserService {
   private user: IUserRecord = null;
 
-  constructor(private store: Store<IState>,
+  constructor(private router: Router,
+              private store: Store<IState>,
               private http: HttpClient,
               private authService: AuthService,
               private contractService: ContractsService) {
   }
 
-  public login(jwtToken): void {
-    this.authService.login(jwtToken);
-    this.initUser();
+  public login(returnUrl?: string) {
+    const self = this;
+
+    const civicSip = new civic.sip({appId: 'S1wUxaf2b'});
+    civicSip.signup({style: 'popup', scopeRequest: civicSip.ScopeRequests.BASIC_SIGNUP});
+    // Listen for data
+    civicSip.on('auth-code-received', function (event) {
+      self.authService.login(event.response);
+      self.initUser();
+
+      if (returnUrl) {
+        self.router.navigate([returnUrl]);
+      }
+    });
+
+    civicSip.on('user-cancelled', function (event) {
+    });
+
+    // Error events.
+    civicSip.on('civic-sip-error', function (error) {
+      console.log('   Error type = ' + error.type);
+      console.log('   Error message = ' + error.message);
+    });
   }
 
   public logout(): void {
@@ -35,16 +59,14 @@ export class UserService {
     if (this.authService.isAuthenticated()) {
       this.http.get(`/api/private/user/info`)
         .take(1).subscribe((user: IUserRecord) => {
-        this.user = user;
+        this.user = createUser(user);
         this.store.dispatch(new ReplaceUser(this.user));
 
         this.contractService.getUserBalance().then(balance => {
-          console.log('getuserbalance', balance);
           let userObject = JSON.parse(JSON.stringify(this.user));
           userObject.balance = balance;
 
           this.contractService.getUserAllowance().then(allowance => {
-            console.log('getUserAllowance', allowance);
             userObject.allowance = allowance;
             let user: IUserRecord = createUser(userObject);
             this.store.dispatch(new ReplaceUser(user));

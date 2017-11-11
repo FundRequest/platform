@@ -79,9 +79,11 @@ export class ContractsService {
   }
 
   public async getUserBalance(): Promise<number> {
+    console.log('before init getUserBalance', this.account, this.fundRequestContractAddress);
     if (this.account == null) {
       await this.initVars();
     }
+    console.log('after init getUserBalance',this.account, this.fundRequestContractAddress);
 
     return new Promise((resolve, reject) => {
       this.tokenContract.balanceOf.call(this.account, function (err, result) {
@@ -89,6 +91,7 @@ export class ContractsService {
         if (+result > 0) {
           balance = ContractsService.fromWeiRounded(+result);
         }
+
         resolve(balance);
       });
     }) as Promise<number>;
@@ -105,6 +108,7 @@ export class ContractsService {
         if (+result > 0) {
           allowance = ContractsService.fromWeiRounded(+result);
         }
+
         resolve(allowance);
       });
     }) as Promise<number>;

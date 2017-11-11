@@ -11,30 +11,24 @@ import {CoreModule} from "./core/core.module";
 import {LayoutModule} from "./layout/layout.module";
 import {SharedModule} from "./shared/shared.module";
 import {RoutesModule} from "./routes/routes.module";
-import {ActionReducer, ActionReducerMap, MetaReducer, StoreModule} from '@ngrx/store';
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {AuthInterceptor} from "./core/auth/auth.interceptor";
 import {ComponentsModule} from "./components/components.module";
 import {ModalModule} from "ngx-bootstrap";
 
 import {EmptyResponseBodyErrorInterceptor} from "./core/empty-response-body-error/empty-response-body-error.interceptor";
-import {IState, REDUCER_MAP} from "./redux/store";
-import {localStorageSync} from "ngrx-store-localstorage";
+
 import {ServiceModule} from "./services/service.module";
+
+import {REDUCER_MAP} from "./redux/store";
+import {StoreModule} from "@ngrx/store";
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
-/*
-const reducers: ActionReducerMap<IState> = REDUCER_MAP;
-
-export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
-  return localStorageSync({keys: ['requests']})(reducer);
-}
-const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
-*/
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +43,6 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
     SharedModule.forRoot(),
     FormsModule,
     RoutesModule,
-    StoreModule.forRoot(REDUCER_MAP),
     ModalModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
@@ -58,6 +51,11 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
         deps: [Http]
       }
     }),
+    StoreModule.forRoot(REDUCER_MAP),
+    // Note that you must instrument after importing StoreModule
+    StoreDevtoolsModule.instrument({
+      maxAge: 25 //  Retains last 25 states
+    })
   ],
   providers: [
     {

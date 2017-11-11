@@ -21,6 +21,10 @@ export class UserblockComponent {
     });
   }
 
+  login(): void {
+    this.userService.login();
+  }
+
   userBlockIsVisible(): boolean {
     return this.userblockService.getVisibility();
   }
