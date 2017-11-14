@@ -27,7 +27,7 @@ export class DetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       let id = +params['id'];
       this.requestService
-        .requests.map(list => list.filter(request => request.id == id).first())
+        .requests$.map(list => list.filter(request => request.id == id).first())
         .subscribe(request => {
           this.request = request;
         });

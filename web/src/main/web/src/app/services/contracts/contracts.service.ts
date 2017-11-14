@@ -9,30 +9,36 @@ declare let window: any;
 
 @Injectable()
 export class ContractsService {
-  account: string;
-  web3: any;
+  private _account: string = null;
+  private _web3: any;
+
+  private _tokenContract: any;
+  private _fundRequestContract: any;
+
+  private _init: boolean = false;
 
   tokenContractAddress: string = "0xbc84f3bf7dd607a37f9e5848a6333e6c188d926c";
   fundRequestContractAddress: string = "0xa505ef7aad27f757fddbc2d3f875e28d4a75050b";
 
-  status: string;
-
-  tokenContract: any;
-  fundRequestContract: any;
-
   constructor() {
+    if(!this._init) {
+      this.init();
+    }
+  }
+
+  public init(): void {
     this.checkAndInstantiateWeb3();
     this.setContracts();
-    this.initVars();
+    this.getAccount();
   }
 
   private checkAndInstantiateWeb3(): void {
     // Checking if Web3 has been injected by the browser (Mist/MetaMask)
     if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
-      this.web3 = new Web3(window.web3.currentProvider);
+      this._web3 = new Web3(window.web3.currentProvider);
 
-      if (this.web3.version.network !== '4') {
+      if (this._web3.version.network !== '4') {
         alert('Please connect to the Rinkeby network');
       }
     } else {
@@ -43,50 +49,45 @@ export class ContractsService {
   };
 
   private setContracts(): void {
-    this.tokenContract = this.web3.eth.contract(tokenAbi).at(this.tokenContractAddress);
-    this.fundRequestContract = this.web3.eth.contract(fundRequestAbi).at(this.fundRequestContractAddress);
+    this._tokenContract = this._web3.eth.contract(tokenAbi).at(this.tokenContractAddress);
+    this._fundRequestContract = this._web3.eth.contract(fundRequestAbi).at(this.fundRequestContractAddress);
   };
-
-  private async initVars(): Promise<void> {
-    this.getAccount().then(account => {
-      this.account = account;
-      this.web3.eth.defaultAccount = account;
-    });
-  }
 
   private static fromWeiRounded(amountInWei: number): number {
     let number = amountInWei / 1000000000000000000;
     return (Math.round(number * 100) / 100);
   }
 
-  private getAccount(): Promise<string> {
-    return new Promise((resolve, reject) => {
-      this.web3.eth.getAccounts((err, accs) => {
-        if (err != null) {
-          alert('There was an error fetching your accounts.');
-          return;
-        }
+  private async getAccount(): Promise<string> {
+    if (this._account == null) {
+      this._account = await new Promise((resolve, reject) => {
+        this._web3.eth.getAccounts((err, accs) => {
+          if (err != null) {
+            alert('There was an error fetching your accounts.');
+            return;
+          }
 
-        if (accs.length === 0) {
-          alert(
-            'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
-          );
-          return;
-        }
-        resolve(accs[0])
-      })
-    });
+          if (accs.length === 0) {
+            alert(
+              'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
+            );
+            return;
+          }
+          resolve(accs[0]);
+        })
+      }) as string;
+
+      this._web3.eth.defaultAccount = this._account;
+    }
+
+    return Promise.resolve(this._account);
   }
 
   public async getUserBalance(): Promise<number> {
-    console.log('before init getUserBalance', this.account, this.fundRequestContractAddress);
-    if (this.account == null) {
-      await this.initVars();
-    }
-    console.log('after init getUserBalance',this.account, this.fundRequestContractAddress);
+    let account = await this.getAccount();
 
     return new Promise((resolve, reject) => {
-      this.tokenContract.balanceOf.call(this.account, function (err, result) {
+      this._tokenContract.balanceOf.call(account, function (err, result) {
         let balance: number;
         if (+result > 0) {
           balance = ContractsService.fromWeiRounded(+result);
@@ -98,14 +99,14 @@ export class ContractsService {
   }
 
   public async getUserAllowance(): Promise<number> {
-    if (this.account == null) {
-      await this.initVars();
-    }
+    let account = await this.getAccount();
 
     return new Promise((resolve, reject) => {
-      this.tokenContract.allowance.call(this.account, this.fundRequestContractAddress, function (err, result) {
-        let allowance: number;
-        if (+result > 0) {
+      this._tokenContract.allowance.call(account, this.fundRequestContractAddress, function (err, result) {
+        let allowance: number = 0;
+        if (err) {
+          reject(err);
+        } else if (+result > 0) {
           allowance = ContractsService.fromWeiRounded(+result);
         }
 
@@ -114,41 +115,47 @@ export class ContractsService {
     }) as Promise<number>;
   }
 
-  public setUserAllowance(value: number): Promise<number> {
+  public async setUserAllowance(value: number): Promise<number> {
+    let account = await this.getAccount();
+
     return new Promise((resolve, reject) => {
-      let total = this.web3.toWei(value, 'ether');
-      return this.tokenContract.approve(this.account, total, function (err, result) {
+      let total = this._web3.toWei(value, 'ether');
+      return this._tokenContract.approve(account, total, function (err, result) {
         if (err) {
           reject(err);
         } else {
           // TODO: save transaction address (result)
-          resolve(value);
         }
+
+        resolve(value);
       });
-    });
+    }) as Promise<number>;
   }
 
-  public fundRequest(request: IRequestRecord, value: number): Promise<number> {
+  public async fundRequest(request: IRequestRecord, value: number): Promise<number> {
     return new Promise((resolve, reject) => {
-      let total = this.web3.toWei(value, 'ether');
-      return this.fundRequestContract.fund(total, String(request.id), '', function (err, result) {
+      let total = this._web3.toWei(value, 'ether');
+      return this._fundRequestContract.fund(total, String(request.id), '', function (err, result) {
         if (err) {
           reject(err);
         } else {
-          resolve(request.balance + value)
+          // TODO: don't return new balance, but at variable pending
+          resolve(value);
         }
       });
-    });
+    }) as Promise<number>;
   }
 
   public getRequestBalance(request: IRequestRecord): Promise<number> {
     return new Promise((resolve, reject) => {
-      return this.fundRequestContract.balance.call(request.id, function (err, result) {
+      return this._fundRequestContract.balance.call(request.id, function (err, result) {
         let balance;
-        if (result) {
+        if (err) {
+          reject(err);
+        } else if (result) {
           balance = ContractsService.fromWeiRounded(result);
+          resolve(balance);
         }
-        resolve(balance);
       });
     });
   }

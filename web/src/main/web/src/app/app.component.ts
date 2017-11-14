@@ -1,5 +1,6 @@
 import {Component, HostBinding, OnInit} from "@angular/core";
 import {SettingsService} from "./core/settings/settings.service";
+import {ContractsService} from "./services/contracts/contracts.service";
 
 declare var $: any;
 
@@ -21,9 +22,10 @@ export class AppComponent implements OnInit {
     @HostBinding('class.aside-toggled') get asideToggled() { return this.settings.layout.asideToggled; };
     @HostBinding('class.aside-collapsed-text') get isCollapsedText() { return this.settings.layout.isCollapsedText; };
 
-    constructor(public settings: SettingsService) { }
+    constructor(public settings: SettingsService, private contractsService: ContractsService) { }
 
     ngOnInit() {
-        $(document).on('click', '[href="#"]', e => e.preventDefault());
+      this.contractsService.init();
+      $(document).on('click', '[href="#"]', e => e.preventDefault());
     }
 }

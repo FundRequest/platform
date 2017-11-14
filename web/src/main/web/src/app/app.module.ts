@@ -1,5 +1,5 @@
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations"; // this is needed!
-import {NgModule} from "@angular/core";
+import {APP_INITIALIZER, NgModule} from "@angular/core";
 import {Http, HttpModule} from "@angular/http";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
@@ -67,7 +67,13 @@ export function createTranslateLoader(http: Http) {
       provide: HTTP_INTERCEPTORS,
       useClass: EmptyResponseBodyErrorInterceptor,
       multi: true
-    }
+    },
+    /*{ // Function that is called before the app loads
+      provide: APP_INITIALIZER,
+      useFactory: (cs: ContractsService) => function() {return cs.init()},
+      deps: [ContractsService],
+      multi: true
+    }*/
   ],
   bootstrap: [AppComponent]
 })

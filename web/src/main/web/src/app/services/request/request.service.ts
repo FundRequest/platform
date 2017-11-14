@@ -20,7 +20,7 @@ export class RequestService {
               private contractService: ContractsService) {
   }
 
-  public get requests(): Observable<IRequestList> {
+  public get requests$(): Observable<IRequestList> {
     // if this._requests == null, initialize store, but always return state.requests
     if (this._requests == null) {
       this.http.get(`/api/private/requests`)

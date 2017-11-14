@@ -19,7 +19,7 @@ export class OverviewComponent {
   constructor(private userServivce: UserService,
               private requestService: RequestService) {
     this.userServivce.getCurrentUser().subscribe(user => this.user = user);
-    this.requests$ = this.requestService.requests;
+    this.requests$ = this.requestService.requests$;
     this.requests$.map(requests => requests.toArray()).subscribe(
       requests => this.requestsRows = requests
     );
