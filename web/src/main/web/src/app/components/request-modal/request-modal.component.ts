@@ -4,6 +4,7 @@ import {RequestService} from "../../services/request/request.service";
 import {IRequestList, IRequestRecord} from "../../redux/requests.models";
 import {Observable} from "rxjs/Observable";
 import {Subscription} from "rxjs/Subscription";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'fnd-request-modal',
@@ -13,17 +14,29 @@ import {Subscription} from "rxjs/Subscription";
 export class RequestModalComponent implements OnInit, OnDestroy {
   private _requests: IRequestList;
   private _subscription: Subscription;
+  private _currentRequest: IRequestRecord;
   public title: string;
   public issueLink: string;
   public technologies: any = [];
 
-  constructor(public bsModalRef: BsModalRef, private _rs: RequestService) {
+  constructor(public bsModalRef: BsModalRef, private _router: Router, private _rs: RequestService) {
   }
 
-  private issueExists(): boolean {
+  private requestExists(): boolean {
     if (this.issueLink != null && this._requests) {
-      return this._requests.filter((request: IRequestRecord) => request.issueInformation.link == this.issueLink.trim()).count() > 0;
+      let requests = this._requests.filter((request: IRequestRecord) => request.issueInformation.link == this.issueLink.trim())
+      if (requests.count() > 0) {
+        this._currentRequest = requests.first();
+        return true;
+      }
     }
+
+    return false;
+  }
+
+  private gotoRequest(): void {
+    this._router.navigate([`/requests/${this._currentRequest.id}`]);
+    this.bsModalRef.hide();
   }
 
   ngOnInit() {
