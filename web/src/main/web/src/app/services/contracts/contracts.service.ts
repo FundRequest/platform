@@ -2,10 +2,11 @@ import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
 import {IRequestRecord} from "../../redux/requests.models";
 
+declare let require: any;
+declare let window: any;
+
 let tokenAbi = require('./tokenContract.json');
 let fundRequestAbi = require('./fundRequestContract.json');
-
-declare let window: any;
 
 @Injectable()
 export class ContractsService {
@@ -17,8 +18,8 @@ export class ContractsService {
 
   private _init: boolean = false;
 
-  tokenContractAddress: string = "0xbc84f3bf7dd607a37f9e5848a6333e6c188d926c";
-  fundRequestContractAddress: string = "0xa505ef7aad27f757fddbc2d3f875e28d4a75050b";
+  private _tokenContractAddress: string = "0x441e36bc87d343e7b2f908570823b43ac4ef6cb6";
+  private _fundRequestContractAddress: string = "0x43a29f127adbc1e664c389367b0a0fceee36e764";
 
   constructor() {
     if(!this._init) {
@@ -49,8 +50,8 @@ export class ContractsService {
   };
 
   private setContracts(): void {
-    this._tokenContract = this._web3.eth.contract(tokenAbi).at(this.tokenContractAddress);
-    this._fundRequestContract = this._web3.eth.contract(fundRequestAbi).at(this.fundRequestContractAddress);
+    this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
+    this._fundRequestContract = this._web3.eth.contract(fundRequestAbi).at(this._fundRequestContractAddress);
   };
 
   private static fromWeiRounded(amountInWei: number): number {
@@ -98,38 +99,39 @@ export class ContractsService {
     }) as Promise<number>;
   }
 
-  public async getUserAllowance(): Promise<number> {
+  public async getUserAllowance(): Promise<string> {
     let account = await this.getAccount();
 
     return new Promise((resolve, reject) => {
-      this._tokenContract.allowance.call(account, this.fundRequestContractAddress, function (err, result) {
-        let allowance: number = 0;
+      this._tokenContract.allowance.call(account, this._fundRequestContractAddress, function (err, result) {
+        let allowance: string = "0";
         if (err) {
           reject(err);
         } else if (+result > 0) {
-          allowance = ContractsService.fromWeiRounded(+result);
+          allowance = result;
         }
 
         resolve(allowance);
       });
-    }) as Promise<number>;
+    }) as Promise<string>;
   }
 
-  public async setUserAllowance(value: number): Promise<number> {
-    let account = await this.getAccount();
+  public async setUserAllowance(value: number): Promise<string> {
+    let account: string = await this.getAccount();
+    let currentAllowance: string = await this.getUserAllowance();
 
     return new Promise((resolve, reject) => {
       let total = this._web3.toWei(value, 'ether');
-      return this._tokenContract.approve(account, total, function (err, result) {
-        if (err) {
-          reject(err);
-        } else {
-          // TODO: save transaction address (result)
-        }
-
-        resolve(value);
-      });
-    }) as Promise<number>;
+        return this._tokenContract.approve(account, currentAllowance, total, function (err, result) {
+          if (err) {
+            reject(err);
+          } else {
+            // TODO: save transaction address (result)
+            console.log('value of setUserAllowance', value);
+            resolve(value);
+          }
+        });
+    }) as Promise<string>;
   }
 
   public async fundRequest(request: IRequestRecord, value: number): Promise<number> {
