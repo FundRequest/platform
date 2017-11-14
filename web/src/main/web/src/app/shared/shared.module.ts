@@ -29,7 +29,8 @@ import {LocalStorageModule} from "angular-2-local-storage";
 import {FundButtonDirective} from "./directives/fund-button/fund-button.directive";
 import {AddRequestDirective} from "./directives/add-request/add-request.directive";
 import {TagInputModule} from "ngx-chips";
-import {WeiPipe} from './pipes/wei/wei.pipe';
+import {WeiAsNumberPipe, WeiPipe} from './pipes/wei/wei.pipe';
+import {ToasterModule} from "angular2-toaster";
 
 // https://angular.io/styleguide#!#04-10
 @NgModule({
@@ -47,6 +48,7 @@ import {WeiPipe} from './pipes/wei/wei.pipe';
     ProgressbarModule.forRoot(),
     RatingModule.forRoot(),
     TabsModule.forRoot(),
+    ToasterModule,
     TagInputModule,
     TimepickerModule.forRoot(),
     TooltipModule.forRoot(),
@@ -68,7 +70,8 @@ import {WeiPipe} from './pipes/wei/wei.pipe';
     JqcloudDirective,
     FundButtonDirective,
     AddRequestDirective,
-    WeiPipe
+    WeiPipe,
+    WeiAsNumberPipe,
   ],
   exports: [
     CommonModule,
@@ -85,6 +88,7 @@ import {WeiPipe} from './pipes/wei/wei.pipe';
     ProgressbarModule,
     RatingModule,
     TabsModule,
+    ToasterModule,
     TagInputModule,
     TimepickerModule,
     TooltipModule,
@@ -97,7 +101,8 @@ import {WeiPipe} from './pipes/wei/wei.pipe';
     JqcloudDirective,
     FundButtonDirective,
     AddRequestDirective,
-    WeiPipe
+    WeiPipe,
+    WeiAsNumberPipe,
   ]
 })
 

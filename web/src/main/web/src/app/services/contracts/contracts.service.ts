@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
 import {IRequestRecord} from "../../redux/requests.models";
+import {NotificationService} from "../notification/notification.service";
 
 declare let require: any;
 declare let window: any;
@@ -21,10 +22,18 @@ export class ContractsService {
   private _tokenContractAddress: string = "0x441e36bc87d343e7b2f908570823b43ac4ef6cb6";
   private _fundRequestContractAddress: string = "0x43a29f127adbc1e664c389367b0a0fceee36e764";
 
-  constructor() {
-    if(!this._init) {
+  constructor(private _ns: NotificationService) {
+    if (!this._init) {
       this.init();
     }
+  }
+
+  private async _getTransactionOptions(): Promise<any> {
+    let account = await this.getAccount();
+    return Promise.resolve({
+      from: account,
+      gas: 300000
+    });
   }
 
   public init(): void {
@@ -53,11 +62,6 @@ export class ContractsService {
     this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
     this._fundRequestContract = this._web3.eth.contract(fundRequestAbi).at(this._fundRequestContractAddress);
   };
-
-  private static fromWeiRounded(amountInWei: number): number {
-    let number = amountInWei / 1000000000000000000;
-    return (Math.round(number * 100) / 100);
-  }
 
   private async getAccount(): Promise<string> {
     if (this._account == null) {
@@ -89,12 +93,11 @@ export class ContractsService {
 
     return new Promise((resolve, reject) => {
       this._tokenContract.balanceOf.call(account, function (err, result) {
-        let balance: number;
-        if (+result > 0) {
-          balance = ContractsService.fromWeiRounded(+result);
+        if (err) {
+          reject(err);
         }
 
-        resolve(balance);
+        resolve(result);
       });
     }) as Promise<number>;
   }
@@ -104,61 +107,62 @@ export class ContractsService {
 
     return new Promise((resolve, reject) => {
       this._tokenContract.allowance.call(account, this._fundRequestContractAddress, function (err, result) {
-        let allowance: string = "0";
-        if (err) {
-          reject(err);
-        } else if (+result > 0) {
-          allowance = result;
-        }
-
-        resolve(allowance);
+        err ? reject(err) : resolve(result);
       });
     }) as Promise<string>;
   }
 
   public async setUserAllowance(value: number): Promise<string> {
-    let account: string = await this.getAccount();
     let currentAllowance: string = await this.getUserAllowance();
+    let total = this._web3.toWei(value, 'ether');
+
+    let tx = await new Promise((resolve, reject) => {
+      this._tokenContract.approve.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(), function (err, tx) {
+        err ? reject(err) : resolve(tx);
+      })
+    }) as string;
+
+    this._ns.success("Transaction 'set allowance' sent.", this._getTransactionLink(tx));
+
+    return Promise.resolve(total);
+  }
+
+  public async fundRequest(request: IRequestRecord, value: number): Promise<string> {
+    let currentAllowance: string = await this.getUserAllowance();
+    let total = this._web3.toWei(value, 'ether');
 
     return new Promise((resolve, reject) => {
-      let total = this._web3.toWei(value, 'ether');
-        return this._tokenContract.approve(account, currentAllowance, total, function (err, result) {
-          if (err) {
-            reject(err);
-          } else {
-            // TODO: save transaction address (result)
-            console.log('value of setUserAllowance', value);
-            resolve(value);
-          }
-        });
+      let batch = this._web3.createBatch();
+      if (+total > +currentAllowance) {
+        console.log(currentAllowance, total);
+        batch.add(this._tokenContract.approve.request(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(), function (err, result) {
+          err ? reject(err) : console.log('approve result: ', result);
+        }));
+      }
+      batch.add(this._fundRequestContract.fund.request(total, this._web3.fromAscii(String(request.id)), '', this._getTransactionOptions(), function (err, result) {
+        if (err) {
+          reject(err);
+        }
+        resolve(total);
+      }));
+      batch.execute();
     }) as Promise<string>;
   }
 
-  public async fundRequest(request: IRequestRecord, value: number): Promise<number> {
-    return new Promise((resolve, reject) => {
-      let total = this._web3.toWei(value, 'ether');
-      return this._fundRequestContract.fund(total, String(request.id), '', function (err, result) {
-        if (err) {
-          reject(err);
-        } else {
-          // TODO: don't return new balance, but at variable pending
-          resolve(value);
-        }
-      });
-    }) as Promise<number>;
-  }
-
-  public getRequestBalance(request: IRequestRecord): Promise<number> {
+  public getRequestBalance(request: IRequestRecord): Promise<string> {
     return new Promise((resolve, reject) => {
       return this._fundRequestContract.balance.call(request.id, function (err, result) {
-        let balance;
         if (err) {
           reject(err);
         } else if (result) {
-          balance = ContractsService.fromWeiRounded(result);
-          resolve(balance);
+          resolve(result);
         }
       });
-    });
+    }) as Promise<string>;
+  }
+
+  private _getTransactionLink(tx: string): string {
+    // TODO: Parametrize link
+    return `<a target="_blank" href="https://rinkeby.etherscan.io/tx/${tx}">Go to transaction.</a>`;
   }
 }

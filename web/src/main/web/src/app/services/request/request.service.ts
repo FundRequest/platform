@@ -13,7 +13,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class RequestService {
-  private _requests: IRequestList = null;
+  private _requestInitialized: boolean = false;
 
   constructor(private store: Store<IState>,
               private http: HttpClient,
@@ -21,22 +21,22 @@ export class RequestService {
   }
 
   public get requests$(): Observable<IRequestList> {
-    // if this._requests == null, initialize store, but always return state.requests
-    if (this._requests == null) {
-      this.http.get(`/api/private/requests`)
-        .take(1).subscribe((response: IRequestList) => {
-        this._requests = response;
-        this.store.dispatch(new ReplaceRequestList(response));
-        this._requests.forEach((request, index) => {
+    if (!this._requestInitialized) {
+      this._requestInitialized = true;
+
+      this.http.get(`/api/private/requests`).take(1).subscribe((requests: IRequestList) => {
+        this.store.dispatch(new ReplaceRequestList(requests));
+      });
+
+      this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
+        requests.forEach((request: IRequestRecord, index) => {
           this.contractService.getRequestBalance(request).then(
             balance => {
-              let modifiedRequest = JSON.parse(JSON.stringify(request));
-              modifiedRequest.balance = balance;
-              this.editRequestInStore(request, createRequest(modifiedRequest));
+              this.editRequestInStore(request, createRequest(request.set('balance', balance)));
             }
           );
         })
-      }, error => this.handleError(error));
+      });
     }
 
     return this.store.select(state => state.requests);
@@ -66,11 +66,11 @@ export class RequestService {
     )
   }
 
-  public async fundRequest(request: IRequestRecord, funding: number): Promise<void> {
-    let newRequest = JSON.parse(JSON.stringify(request));
-    newRequest.balance = await this.contractService.getRequestBalance(request) as number;
-    await this.contractService.fundRequest(request, funding);
-    this.editRequestInStore(request, createRequest(newRequest));
+  public async fundRequest(request: IRequestRecord, funding: number): Promise<string> {
+    //let balance = await this.contractService.getRequestBalance(request) as string;
+    return this.contractService.fundRequest(request, funding);
+    // only edit request when funding is processed
+    //this.editRequestInStore(request, createRequest(newRequest));
   }
 
   public setUserAsWatcher(request: IRequestRecord, user: IUserRecord): void {

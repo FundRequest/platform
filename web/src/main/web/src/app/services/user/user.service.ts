@@ -54,25 +54,23 @@ export class UserService {
     this.authService.logout();
   }
 
-  private initUser(): void {
+  private async initUser(): Promise<void> {
     this.user = createUser();
     if (this.authService.isAuthenticated()) {
-      this.http.get(`/api/private/user/info`)
-        .take(1).subscribe((user: IUserRecord) => {
-        this.user = createUser(user);
-        this.store.dispatch(new ReplaceUser(this.user));
+      let newUser: IUserRecord = await this.http.get(`/api/private/user/info`).toPromise() as IUserRecord;
+      this.user = createUser(newUser);
+      this.store.dispatch(new ReplaceUser(this.user));
 
-        this.contractService.getUserBalance().then(balance => {
-          let userObject = JSON.parse(JSON.stringify(this.user));
-          userObject.balance = balance;
+      let balance;
+      let allowance;
+      await Promise.all([
+        this.contractService.getUserBalance().then(result => balance = result),
+        this.contractService.getUserAllowance().then(result => allowance = result)
+      ]).catch(error => this.handleError(error));
 
-          this.contractService.getUserAllowance().then(allowance => {
-            userObject.allowance = allowance;
-            let user: IUserRecord = createUser(userObject);
-            this.store.dispatch(new ReplaceUser(user));
-          });
-        });
-      }, error => this.handleError(error));
+      this.user = this.user.set('balance', balance);
+      this.user = this.user.set('allowance', allowance);
+      this.store.dispatch(new ReplaceUser(this.user));
     }
   }
 
@@ -84,12 +82,10 @@ export class UserService {
     return this.store.select(state => state.user);
   }
 
-  public setAllowance(value: number) {
-    this.contractService.setUserAllowance(value).then(allowance => {
-      let user = JSON.parse(JSON.stringify(this.user));
-      user.allowance = allowance;
-      this.store.dispatch(new ReplaceUser(createUser(user)));
-    });
+  public async setAllowance(value: number) {
+    let allowance = await this.contractService.setUserAllowance(value);
+    this.user =  this.user.set('allowance', allowance);
+    this.store.dispatch(new ReplaceUser(this.user));
     this.contractService.setUserAllowance(value);
   }
 

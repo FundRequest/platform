@@ -1,18 +1,22 @@
 import {NgModule, Optional, SkipSelf} from "@angular/core";
+import {HttpClientModule} from "@angular/common/http";
+import {throwIfAlreadyLoaded} from "../core/module-import-guard";
+import {ToasterService} from "angular2-toaster";
 import {RequestService} from "./request/request.service";
 import {UserService} from "./user/user.service";
 import {ContractsService} from "./contracts/contracts.service";
-import {throwIfAlreadyLoaded} from "../core/module-import-guard";
-import {HttpClientModule} from "@angular/common/http";
+import {NotificationService} from "./notification/notification.service";
 
 @NgModule({
   imports: [
     HttpClientModule
   ],
   providers: [
+    ContractsService,
+    NotificationService,
     RequestService,
+    ToasterService,
     UserService,
-    ContractsService
   ],
   declarations: [],
   exports: []
