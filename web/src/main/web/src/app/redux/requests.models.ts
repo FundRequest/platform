@@ -23,7 +23,7 @@ interface IRequest {
   technologies: string[];
   watchers: string[];
   loggedInUserIsWatcher: boolean;
-  balance: number;
+  balance: string;
   issueInformation: IRequestIssueInformation;
 }
 
@@ -38,7 +38,7 @@ export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
   technologies: [],
   watchers: [],
   loggedInUserIsWatcher: false,
-  balance: 0,
+  balance: '0',
   issueInformation: {
     link: '',
     owner: '',
