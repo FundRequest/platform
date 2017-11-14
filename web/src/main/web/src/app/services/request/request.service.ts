@@ -26,16 +26,17 @@ export class RequestService {
 
       this.http.get(`/api/private/requests`).take(1).subscribe((requests: IRequestList) => {
         this.store.dispatch(new ReplaceRequestList(requests));
-      });
-
-      this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
-        requests.forEach((request: IRequestRecord, index) => {
-          this.contractService.getRequestBalance(request).then(
-            balance => {
-              this.editRequestInStore(request, createRequest(request.set('balance', balance)));
-            }
-          );
-        })
+        this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
+          requests.map((request: IRequestRecord) => {
+            this.contractService.getRequestBalance(request).then(
+              (balance) => {
+                let newRequest = request;
+                newRequest.balance = balance; //createRequest();
+                this.editRequestInStore(request, newRequest);
+              }
+            );
+          });
+        });
       });
     }
 

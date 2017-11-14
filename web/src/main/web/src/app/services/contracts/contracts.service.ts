@@ -28,14 +28,6 @@ export class ContractsService {
     }
   }
 
-  private async _getTransactionOptions(): Promise<any> {
-    let account = await this.getAccount();
-    return Promise.resolve({
-      from: account,
-      gas: 300000
-    });
-  }
-
   public init(): void {
     this.checkAndInstantiateWeb3();
     this.setContracts();
@@ -113,11 +105,12 @@ export class ContractsService {
   }
 
   public async setUserAllowance(value: number): Promise<string> {
+    let account: string = await this.getAccount();
     let currentAllowance: string = await this.getUserAllowance();
     let total = this._web3.toWei(value, 'ether');
 
     let tx = await new Promise((resolve, reject) => {
-      this._tokenContract.approve.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(), function (err, tx) {
+      this._tokenContract.approve.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, tx) {
         err ? reject(err) : resolve(tx);
       })
     }) as string;
@@ -128,33 +121,42 @@ export class ContractsService {
   }
 
   public async fundRequest(request: IRequestRecord, value: number): Promise<string> {
+    let account: string = await this.getAccount();
     let currentAllowance: string = await this.getUserAllowance();
     let total = this._web3.toWei(value, 'ether');
 
-    return new Promise((resolve, reject) => {
-      let batch = this._web3.createBatch();
-      if (+total > +currentAllowance) {
-        console.log(currentAllowance, total);
-        batch.add(this._tokenContract.approve.request(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(), function (err, result) {
+    if (+total > +currentAllowance) {
+      await new Promise((resolve, reject) => {
+        let batch = this._web3.createBatch();
+        batch.add(this._tokenContract.approve.request(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, result) {
           err ? reject(err) : console.log('approve result: ', result);
         }));
-      }
-      batch.add(this._fundRequestContract.fund.request(total, this._web3.fromAscii(String(request.id)), '', this._getTransactionOptions(), function (err, result) {
-        if (err) {
-          reject(err);
-        }
-        resolve(total);
-      }));
-      batch.execute();
-    }) as Promise<string>;
+        batch.add(this._fundRequestContract.fund.request(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptions(account), function (err, result) {
+          err ? reject(err) : resolve(total);
+        }));
+        batch.execute();
+      });
+      // TODO: Check if there is a way to get transaction hashes of batch
+    }
+    else {
+      let tx = await new Promise((resolve, reject) => {
+        this._fundRequestContract.fund.sendTransaction(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptions(account), function (err, tx) {
+          err ? reject(err) : resolve(tx);
+        })
+      }) as string;
+
+      this._ns.success("Transaction 'fund request' sent.", this._getTransactionLink(tx));
+    }
+
+    return Promise.resolve(total);
   }
 
   public getRequestBalance(request: IRequestRecord): Promise<string> {
     return new Promise((resolve, reject) => {
-      return this._fundRequestContract.balance.call(request.id, function (err, result) {
+      return this._fundRequestContract.balance.call(this._web3.fromAscii(String(request.id)), function (err, result) {
         if (err) {
           reject(err);
-        } else if (result) {
+        } else {
           resolve(result);
         }
       });
@@ -164,5 +166,12 @@ export class ContractsService {
   private _getTransactionLink(tx: string): string {
     // TODO: Parametrize link
     return `<a target="_blank" href="https://rinkeby.etherscan.io/tx/${tx}">Go to transaction.</a>`;
+  }
+
+  private _getTransactionOptions(account: string): any {
+    return {
+      from: account,
+      gas: 300000
+    };
   }
 }

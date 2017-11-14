@@ -31,7 +31,7 @@ export class FundModalComponent {
     });
   }
 
-  public async fund() {
+  public fund() {
     this.requestService.fundRequest(this.request, this.fundAmount);
     this.bsModalRef.hide();
   }
