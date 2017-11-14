@@ -8,6 +8,7 @@
   <div class="form-group">
     <label for="url" class="control-label">URL *</label>
     <input [(ngModel)]="issueLink" type="text" class="form-control" name="url" id="url">
+    <span *ngIf="issueExists()" class="text-danger">There already exists a request for this issue.</span>
   </div>
   <div class="form-group">
     <label for="technologies" class="control-label">
@@ -20,6 +21,6 @@
 <div class="modal-footer">
   <div class="btn-group" role="group">
     <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>
-    <button type="button" class="btn btn-primary" (click)="addRequest()">Add</button>
+    <button type="button" [disabled]="issueExists()" class="btn btn-primary" (click)="addRequest()">Add</button>
   </div>
 </div>
