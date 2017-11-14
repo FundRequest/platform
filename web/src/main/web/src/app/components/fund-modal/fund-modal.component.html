@@ -42,7 +42,7 @@
       <label class="col-md-4 control-label">Funded</label>
       <div class="col-md-8 form-control-static">
         <label>
-          <span>{{(request.balance || 0) | number: '1.2-2'}} FND</span>
+          <span>{{request.balance || 0 | wei}} FND</span>
         </label>
       </div>
     </div>
@@ -56,18 +56,21 @@
         </div>
       </div>
       <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount <= 0">
-          <label class="text-danger">Funding amount needs to be bigger then 0.</label>
+        <label class="text-danger">Funding amount needs to be bigger then 0.</label>
       </div>
       <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > balance">
-          <label class="text-danger">Balance to low to fund {{fundAmount}} FND.</label>
+        <label class="text-danger">Balance to low to fund {{fundAmount}} FND.</label>
       </div>
       <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > allowance">
-          <label class="text-warning">You approved {{allowance}} FND, when trying to fund there will be an extra request to first approve {{fundAmount - allowance}} FND.</label>
+        <label class="text-warning">You approved {{allowance}} FND, when trying to fund there will be an extra request
+          to first approve {{fundAmount - allowance}} FND.</label>
       </div>
     </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>
-    <button [disabled]="fundAmount > balance && fundAmount > 0" type="button" class="btn btn-primary" (click)="fund()">Fund</button>
+    <button [disabled]="fundAmount > balance && fundAmount > 0" type="button" class="btn btn-primary" (click)="fund()">
+      Fund
+    </button>
   </div>
 </div>

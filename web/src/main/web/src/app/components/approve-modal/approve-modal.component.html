@@ -1,75 +1,27 @@
-<div class="modal-header" *ngIf="request">
-  <h4 class="modal-title pull-left">{{request.issueInformation.title}}</h4>
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Approve FND's</h4>
   <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="modal-body" *ngIf="request">
+<div class="modal-body">
   <div class="form-horizontal">
     <div class="form-group">
-      <label class="col-md-4 control-label">Source</label>
-      <div class="col-md-8 form-control-static">
-        <a target="_blank" href="{{request.issueInformation.link}}">
-          <i class="fa fa-2x fa-{{request.issueInformation.source | lowercase}}"></i>
-        </a>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-md-4 control-label">Owner</label>
-      <div class="col-md-8 form-control-static">
-        <label>{{request.issueInformation.owner}}</label>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-md-4 control-label">Repo</label>
-      <div class="col-md-8 form-control-static">
-        <label>{{request.issueInformation.repo}}</label>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-md-4 control-label">Issue</label>
-      <div class="col-md-8 form-control-static">
-        <label>{{request.issueInformation.number}}</label>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-md-4 control-label">Type</label>
-      <div class="col-md-8 form-control-static">
-        <label>{{request.type}}</label>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-md-4 control-label">Funded</label>
-      <div class="col-md-8 form-control-static">
-        <label>
-          <span>{{request.balance || 0 | wei}} FND</span>
-        </label>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="fund-amount" class="col-md-4 control-label">Fund Amount</label>
+      <label for="approve-amount" class="col-md-4 control-label">Approve Amount</label>
       <div class="col-md-8">
         <div class="input-group">
-          <input [(ngModel)]="fundAmount" id="fund-amount" type="number" class="form-control">
+          <input [(ngModel)]="_approveAmount" id="approve-amount" type="number" class="form-control">
           <span class="input-group-addon">FND</span>
         </div>
       </div>
-      <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount <= 0">
-        <label class="text-danger">Funding amount needs to be bigger then 0.</label>
-      </div>
-      <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > balance">
-        <label class="text-danger">Balance to low to fund {{fundAmount}} FND.</label>
-      </div>
-      <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > allowance">
-        <label class="text-warning">You approved {{allowance}} FND, when trying to fund there will be an extra request
-          to first approve {{fundAmount - allowance}} FND.</label>
+      <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="_approveAmount < 0">
+        <label class="text-danger">Amount should be greater then 0.</label>
       </div>
     </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>
-    <button [disabled]="fundAmount > balance && fundAmount > 0" type="button" class="btn btn-primary" (click)="fund()">
+    <button [disabled]="_approveAmount < 0" type="button" class="btn btn-primary" (click)="approve()">
       Fund
     </button>
   </div>

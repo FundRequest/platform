@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FundModalComponent } from './fund-modal.component';
+import { ApproveModalComponent } from './approve-modal.component';
 
-describe('FundModalComponent', () => {
-  let component: FundModalComponent;
-  let fixture: ComponentFixture<FundModalComponent>;
+describe('ApproveModalComponent', () => {
+  let component: ApproveModalComponent;
+  let fixture: ComponentFixture<ApproveModalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FundModalComponent ]
+      declarations: [ ApproveModalComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FundModalComponent);
+    fixture = TestBed.createComponent(ApproveModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

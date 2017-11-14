@@ -7,6 +7,7 @@ import {EasypiechartDirective} from "../shared/directives/easypiechart/easypiech
 import {SharedModule} from "../shared/shared.module";
 import {FundModalComponent} from "./fund-modal/fund-modal.component";
 import {RequestModalComponent} from './request-modal/request-modal.component';
+import {ApproveModalComponent} from "./approve-modal/approve-modal.component";
 
 @NgModule({
   imports: [
@@ -19,17 +20,20 @@ import {RequestModalComponent} from './request-modal/request-modal.component';
     WatchlinkComponent,
     StatisticsComponent,
     FundModalComponent,
+    ApproveModalComponent,
     RequestModalComponent
   ],
   exports: [
     WatchlinkComponent,
     StatisticsComponent,
     FundModalComponent,
+    ApproveModalComponent,
     RequestModalComponent,
     EasypiechartDirective
   ],
   entryComponents: [
     FundModalComponent,
+    ApproveModalComponent,
     RequestModalComponent
   ]
 })

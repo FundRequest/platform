@@ -37,6 +37,7 @@
     "angular2-jwt": "^0.2.3",
     "angular2-text-mask": "8.0.0",
     "angular2-toaster": "3.0.1",
+    "bn.js": "^4.11.8",
     "bootstrap": "3.3.7",
     "chart.js": "2.5.0",
     "classlist.js": "1.1.20150312",

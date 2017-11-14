@@ -5,9 +5,11 @@ import {IRequestRecord} from "../../redux/requests.models";
 import {IUserRecord} from "../../redux/user.models";
 import {RequestService} from "../../services/request/request.service";
 import {UserService} from "../../services/user/user.service";
+import {ContractsService} from "../../services/contracts/contracts.service";
+import {Utils} from "../../shared/utils";
 
 @Component({
-  selector: 'modal-content',
+  selector: 'fund-modal-content',
   templateUrl: './fund-modal.component.html',
   styleUrls: ['./fund-modal.component.scss']
 })
@@ -23,15 +25,13 @@ export class FundModalComponent {
               private requestService: RequestService,
               private userService: UserService) {
     this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
-      this.allowance = user.allowance || 0;
-      this.balance = user.balance;
+      this.user = user;
+      this.balance = Utils.fromWeiRounded(user.balance);
+      this.allowance = Utils.fromWeiRounded(user.allowance);
     });
   }
 
   public async fund() {
-    if(this.fundAmount > this.allowance) {
-      await this.userService.setAllowance(this.fundAmount - this.allowance);
-    }
     this.requestService.fundRequest(this.request, this.fundAmount);
     this.bsModalRef.hide();
   }
