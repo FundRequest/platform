@@ -20,9 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto getUser(String userId) {
+    public UserDto getUser(String email) {
         return userDtoMapper.map(
-                userRepository.findOne(userId).orElse(null)
+                userRepository.findOne(email).orElse(null)
         );
     }
 

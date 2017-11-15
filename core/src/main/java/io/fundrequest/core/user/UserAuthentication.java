@@ -7,10 +7,10 @@ import java.util.Collection;
 
 public class UserAuthentication implements Authentication {
 
-    private String userId;
+    private String email;
 
-    public UserAuthentication(String userId) {
-        this.userId = userId;
+    public UserAuthentication(String email) {
+        this.email = email;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class UserAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return userId;
+        return email;
     }
 
     @Override
@@ -45,6 +45,6 @@ public class UserAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return userId;
+        return email;
     }
 }

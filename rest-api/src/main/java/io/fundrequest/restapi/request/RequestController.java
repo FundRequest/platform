@@ -3,7 +3,7 @@ package io.fundrequest.restapi.request;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.restapi.infrastructure.PrivateRestController;
+import io.fundrequest.restapi.infrastructure.PublicRestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-public class RequestController extends PrivateRestController {
+public class RequestController extends PublicRestController {
 
     private RequestService requestService;
 
