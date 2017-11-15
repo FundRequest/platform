@@ -4,6 +4,7 @@ import io.fundrequest.core.user.domain.User;
 import io.fundrequest.core.user.dto.UserDto;
 import io.fundrequest.core.user.dto.UserDtoMapper;
 import io.fundrequest.core.user.infrastructure.UserRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +29,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Cacheable("loginUserData")
     public UserAuthentication login(UserLoginCommand loginCommand) {
-        User user = userRepository.findOne(loginCommand.getEmail())
+        User user = userRepository.findOne(loginCommand.getUserId())
                 .map(u -> updateUser(loginCommand, u))
                 .orElseGet(() -> createNewUser(loginCommand));
 
         userRepository.save(user);
-        return new UserAuthentication(user.getEmail());
+        return new UserAuthentication(user.getUserId(), user.getEmail());
     }
 
     private User updateUser(UserLoginCommand loginCommand, User user) {
@@ -43,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private User createNewUser(UserLoginCommand loginCommand) {
-        return new User(loginCommand.getEmail());
+        return new User(loginCommand.getUserId(), loginCommand.getEmail());
     }
 
 }

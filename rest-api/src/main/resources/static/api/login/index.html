@@ -53,6 +53,7 @@
     if (!authenticated) {
       keycloak.login();
     } else {
+      console.log(keycloak.token);
       console.log(keycloak.tokenParsed);
       addBearerTokenToRequests();
       getRequests();
@@ -86,7 +87,7 @@
   }
 
   function getRequests() {
-    $.get('/api/private/requests', function (data) {
+    $.get('/api/public/requests', function (data) {
       console.log(data);
     });
   }

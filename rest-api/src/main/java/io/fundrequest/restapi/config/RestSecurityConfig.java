@@ -1,5 +1,6 @@
 package io.fundrequest.restapi.config;
 
+import io.fundrequest.core.user.UserService;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
@@ -15,8 +16,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.web.cors.CorsConfiguration;
@@ -29,8 +28,8 @@ import org.springframework.web.filter.CorsFilter;
 public class RestSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(keycloakAuthenticationProvider());
+    public void configureGlobal(AuthenticationManagerBuilder auth, UserService userService) throws Exception {
+        auth.authenticationProvider(new FrKeycloakAuthenticationProvider(userService));
     }
 
     @Bean
@@ -66,17 +65,9 @@ public class RestSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         super.configure(http);
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
-                .and()
-                .addFilterBefore(keycloakPreAuthActionsFilter(), LogoutFilter.class)
-                .addFilterBefore(keycloakAuthenticationProcessingFilter(), X509AuthenticationFilter.class)
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
                 .and()
                 .cors().and()
                 .anonymous().and()
-                .servletApi().and()
-                .csrf().disable()
-                .logout().and()
                 .authorizeRequests()
                 .antMatchers("/api/private").authenticated()
                 .antMatchers("/api/private/**").authenticated()

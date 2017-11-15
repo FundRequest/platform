@@ -4,18 +4,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class UserAuthentication implements Authentication {
 
+    private String userId;
     private String email;
 
-    public UserAuthentication(String email) {
+    public UserAuthentication(String userId, String email) {
+        this.userId = userId;
         this.email = email;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -25,12 +28,12 @@ public class UserAuthentication implements Authentication {
 
     @Override
     public Object getDetails() {
-        return null;
+        return email;
     }
 
     @Override
     public Object getPrincipal() {
-        return email;
+        return userId;
     }
 
     @Override
@@ -45,6 +48,6 @@ public class UserAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return email;
+        return userId;
     }
 }

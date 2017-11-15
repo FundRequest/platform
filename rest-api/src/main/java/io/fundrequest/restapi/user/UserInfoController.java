@@ -1,6 +1,5 @@
 package io.fundrequest.restapi.user;
 
-import io.fundrequest.core.user.UserAuthentication;
 import io.fundrequest.core.user.UserService;
 import io.fundrequest.core.user.dto.UserDto;
 import io.fundrequest.restapi.infrastructure.AbstractRestController;
@@ -20,8 +19,6 @@ public class UserInfoController extends AbstractRestController {
 
     @GetMapping(PRIVATE_PATH + "/user/info")
     public UserDto getUserInfo(Principal principal) {
-        UserAuthentication userAuthentication = (UserAuthentication) principal;
-        UserDto user = userService.getUser(userAuthentication.getName());
-        return user;
+        return userService.getUser(principal.getName());
     }
 }

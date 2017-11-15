@@ -12,20 +12,26 @@ import java.util.Objects;
 @Entity
 public class User extends AbstractEntity {
     @Id
+    @Column(name = "id")
+    private String userId;
     @Column(name = "email")
     private String email;
 
     protected User() {
     }
 
-    public User(String email) {
+    public User(String userId, String email) {
+        this.userId = userId;
         this.email = email;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getEmail() {
         return email;
     }
-
 
     public void setEmail(String email) {
         this.email = email;
@@ -36,11 +42,11 @@ public class User extends AbstractEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(email, user.email);
+        return Objects.equals(userId, user.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email);
+        return Objects.hash(userId);
     }
 }

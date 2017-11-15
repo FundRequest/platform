@@ -39,7 +39,8 @@ public class UserInfoControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         converter.setObjectMapper(objectMapper);
-        principal = new UserAuthentication(UserDtoMother.davy().getEmail());
+        UserDto davy = UserDtoMother.davy();
+        principal = new UserAuthentication(davy.getUserId(), davy.getEmail());
         mockMvc = MockMvcBuilders.standaloneSetup(new UserInfoController(userService))
                 .setMessageConverters(converter)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(this.restDocumentation))
