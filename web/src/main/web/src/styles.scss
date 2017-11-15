@@ -16,8 +16,6 @@
 @import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 @import '../node_modules/ag-grid/dist/styles/theme-fresh.css';
 
-@import '../node_modules/ika.jvectormap/jquery-jvectormap-1.2.2.css';
-
 @import '../node_modules/jqcloud2/dist/jqcloud.css';
 
 @import '../node_modules/summernote/dist/summernote.css';
@@ -33,3 +31,10 @@
 //== Application
 @import "./app/shared/styles/app.scss";
 
+
+.toast-custom-message {
+  a {
+    color: white;
+    text-decoration: underline;
+  }
+}

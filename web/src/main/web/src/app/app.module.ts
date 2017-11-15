@@ -1,5 +1,5 @@
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations"; // this is needed!
-import {NgModule} from "@angular/core";
+import {APP_INITIALIZER, NgModule} from "@angular/core";
 import {Http, HttpModule} from "@angular/http";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
@@ -15,7 +15,14 @@ import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {AuthInterceptor} from "./core/auth/auth.interceptor";
 import {ComponentsModule} from "./components/components.module";
 import {ModalModule} from "ngx-bootstrap";
-import {EmptyResponseBodyErrorInterceptor} from "./core/empty-response-body-error-interceptor/empty-response-body-error-interceptor.service";
+
+import {EmptyResponseBodyErrorInterceptor} from "./core/empty-response-body-error/empty-response-body-error.interceptor";
+
+import {ServiceModule} from "./services/service.module";
+
+import {REDUCER_MAP} from "./redux/store";
+import {StoreModule} from "@ngrx/store";
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: Http) {
@@ -31,6 +38,7 @@ export function createTranslateLoader(http: Http) {
     ComponentsModule,
     BrowserAnimationsModule, // required for ng2-tag-input
     CoreModule,
+    ServiceModule,
     LayoutModule,
     SharedModule.forRoot(),
     FormsModule,
@@ -43,6 +51,11 @@ export function createTranslateLoader(http: Http) {
         deps: [Http]
       }
     }),
+    StoreModule.forRoot(REDUCER_MAP),
+    // Note that you must instrument after importing StoreModule
+    StoreDevtoolsModule.instrument({
+      maxAge: 25 //  Retains last 25 states
+    })
   ],
   providers: [
     {
@@ -54,7 +67,13 @@ export function createTranslateLoader(http: Http) {
       provide: HTTP_INTERCEPTORS,
       useClass: EmptyResponseBodyErrorInterceptor,
       multi: true
-    }
+    },
+    /*{ // Function that is called before the app loads
+      provide: APP_INITIALIZER,
+      useFactory: (cs: ContractsService) => function() {return cs.init()},
+      deps: [ContractsService],
+      multi: true
+    }*/
   ],
   bootstrap: [AppComponent]
 })

@@ -366,7 +366,7 @@ export const TableData: Array<any> = [
     }, {
         'name': 'Josephine Sykes',
         'position': 'Blandit Congue Limited',
-        'office': 'Holy See (Vatican City State)',
+        'office': 'Holy See (Vatican City IState)',
         'ext': '4684',
         'startDate': '2014/12/22',
         'salary': 694.656

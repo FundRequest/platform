@@ -16,7 +16,7 @@
         <span class="label" [ngClass]="['label-'+ request.status]">{{request.status}}</span>
         <span>{{request.issueInformation.title}}</span>
         <span class="pull-right">
-          <fnd-watchlink [request]="request"></fnd-watchlink>
+          <fnd-watchlink *ngIf="request" [request]="request" [user]="user"></fnd-watchlink>
         </span>
       </div>
       <div class="panel-body">
@@ -73,7 +73,7 @@
             <label class="col-lg-3 control-label">Funded</label>
             <div class="col-lg-9 form-control-static">
               <label>
-                <span>{{request.balance}}</span>
+                <span>{{request.balance | wei}}</span>
                 <span>FND</span> <span></span>
               </label>
             </div>

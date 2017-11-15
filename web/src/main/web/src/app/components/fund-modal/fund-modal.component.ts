@@ -1,35 +1,38 @@
 import {Component} from '@angular/core';
-import {Request} from "../../core/requests/Request";
 
 import {BsModalRef} from 'ngx-bootstrap/modal/modal-options.class';
-import {ContractsService} from "../../core/contracts/contracts.service";
-import {UserService} from "../../core/user/user.service";
+import {IRequestRecord} from "../../redux/requests.models";
+import {IUserRecord} from "../../redux/user.models";
+import {RequestService} from "../../services/request/request.service";
+import {UserService} from "../../services/user/user.service";
+import {ContractsService} from "../../services/contracts/contracts.service";
+import {Utils} from "../../shared/utils";
 
 @Component({
-  selector: 'modal-content',
+  selector: 'fund-modal-content',
   templateUrl: './fund-modal.component.html',
   styleUrls: ['./fund-modal.component.scss']
 })
 export class FundModalComponent {
 
-  public request: Request;
+  public request: IRequestRecord;
+  public user: IUserRecord;
   public fundAmount: number;
   public allowance: number;
+  public balance: number;
 
   constructor(public bsModalRef: BsModalRef,
-              private contractsService: ContractsService,
+              private requestService: RequestService,
               private userService: UserService) {
-    userService.getAllowance().then(allowance => this.allowance = Number.parseFloat(allowance));
+    this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
+      this.user = user;
+      this.balance = Utils.fromWeiRounded(user.balance);
+      this.allowance = Utils.fromWeiRounded(user.allowance);
+    });
   }
 
-  public async fund() {
-    console.log(this.fundAmount, this.allowance, this.fundAmount > this.allowance);
-    if(this.fundAmount > this.allowance) {
-      await this.userService.setAllowance(this.fundAmount - this.allowance);
-    }
-    this.request = await this.contractsService.fundRequest(this.request, this.fundAmount);
+  public fund() {
+    this.requestService.fundRequest(this.request, this.fundAmount);
     this.bsModalRef.hide();
-    // TODO save to database
-    // await this.requestsService.update(request);
   }
 }

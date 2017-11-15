@@ -1,5 +1,4 @@
-import {Directive, HostListener, Input} from '@angular/core';
-import {Request} from "../../../core/requests/Request";
+import {Directive, HostListener} from '@angular/core';
 import {BsModalRef, BsModalService} from "ngx-bootstrap";
 import {RequestModalComponent} from "../../../components/request-modal/request-modal.component";
 
@@ -7,7 +6,6 @@ import {RequestModalComponent} from "../../../components/request-modal/request-m
   selector: '[fnd-add-request]'
 })
 export class AddRequestDirective {
-  @Input() requests: Request[];
 
   private bsModalRef: BsModalRef;
 
@@ -21,6 +19,5 @@ export class AddRequestDirective {
 
   public openModal() {
     this.bsModalRef = this.modalService.show(RequestModalComponent);
-    this.bsModalRef.content.requests = this.requests;
   }
 }

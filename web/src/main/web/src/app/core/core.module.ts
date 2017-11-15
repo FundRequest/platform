@@ -6,13 +6,10 @@ import {TranslatorService} from "./translator/translator.service";
 import {MenuService} from "./menu/menu.service";
 
 import {throwIfAlreadyLoaded} from "./module-import-guard";
-import {RequestsService} from "./requests/requests.service";
 import {AuthService} from "./auth/auth.service";
 import {AuthGuard} from "./auth/auth.guard";
 import {HttpClientModule} from "@angular/common/http";
 import {ComponentsModule} from "../components/components.module";
-import {ContractsService} from "./contracts/contracts.service";
-import {UserService} from "./user/user.service";
 
 @NgModule({
   imports: [
@@ -24,11 +21,8 @@ import {UserService} from "./user/user.service";
     ThemesService,
     TranslatorService,
     MenuService,
-    RequestsService,
-    ContractsService,
     AuthService,
-    AuthGuard,
-    UserService
+    AuthGuard
   ],
   declarations: [],
   exports: []
