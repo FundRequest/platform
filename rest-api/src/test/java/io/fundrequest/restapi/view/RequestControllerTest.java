@@ -88,7 +88,7 @@ public class RequestControllerTest {
                .thenReturn(RequestDtoMother.freeCodeCampNoUserStories());
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/public/requests").contentType(MediaType.APPLICATION_JSON).content(
+                RestDocumentationRequestBuilders.post("/api/private/requests").contentType(MediaType.APPLICATION_JSON).content(
                         this.objectMapper.writeValueAsString(command))
                                                 .principal(principal))
                     .andExpect(
@@ -104,7 +104,7 @@ public class RequestControllerTest {
     public void addWatcher() throws Exception {
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.put("/api/public/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
+                RestDocumentationRequestBuilders.put("/api/private/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
                                                 .principal(principal))
                     .andExpect(
                             MockMvcResultMatchers.status().isCreated())
@@ -115,7 +115,7 @@ public class RequestControllerTest {
     public void removeWatcher() throws Exception {
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/api/public/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
+                RestDocumentationRequestBuilders.delete("/api/private/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
                                                 .principal(principal))
                     .andExpect(
                             MockMvcResultMatchers.status().isOk())
@@ -126,7 +126,7 @@ public class RequestControllerTest {
     public void badRequest() throws Exception {
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/public/requests").contentType(MediaType.APPLICATION_JSON).content(
+                RestDocumentationRequestBuilders.post("/api/private/requests").contentType(MediaType.APPLICATION_JSON).content(
                         this.objectMapper.writeValueAsString(Collections.emptyMap()))
                                                 .principal(principal))
                     .andExpect(
