@@ -3,7 +3,7 @@
 <head>
     <title>Login with keycloak</title>
     <meta charset="utf-8">
-    <script src="https://dev-key.fundrequest.io//auth/js/keycloak.js"></script>
+    <script src="https://key.fundrequest.io//auth/js/keycloak.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script
@@ -45,7 +45,7 @@
 
 <script>
   var keycloak = Keycloak({
-    url: 'https://dev-key.fundrequest.io/auth',
+    url: 'https://key.fundrequest.io/auth',
     realm: 'fundrequest',
     clientId: 'fundrequest_dev'
   });
@@ -77,7 +77,7 @@
   }
 
   function getRequests() {
-    $.get('/requests', function (data) {
+    $.get('/api/private/requests', function (data) {
       console.log(data);
     });
   }

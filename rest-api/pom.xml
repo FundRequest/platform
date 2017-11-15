@@ -70,6 +70,10 @@
             <artifactId>json-path</artifactId>
             <version>2.3.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-boot-starter</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>io.fundrequest</groupId>

@@ -2,6 +2,7 @@ package io.fundrequest.restapi;
 
 import io.fundrequest.core.FundRequestCore;
 import io.fundrequest.core.infrastructure.IgnoreDuringComponentScan;
+import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringBootConfiguration;
@@ -19,7 +20,7 @@ import java.net.InetAddress;
 @SpringBootConfiguration
 @EnableAutoConfiguration
 @ComponentScan(
-        basePackageClasses = {RestApplication.class, FundRequestCore.class},
+        basePackageClasses = {RestApplication.class, FundRequestCore.class, KeycloakSecurityComponents.class},
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class),

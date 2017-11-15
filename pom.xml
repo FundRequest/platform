@@ -49,6 +49,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.keycloak.bom</groupId>
+                <artifactId>keycloak-adapter-bom</artifactId>
+                <version>3.4.0.CR1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.web3j</groupId>
                 <artifactId>core</artifactId>
                 <version>2.3.1</version>
