@@ -29,22 +29,21 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserAuthentication login(UserLoginCommand loginCommand) {
-        User user = userRepository.findOne(loginCommand.getUserId())
+        User user = userRepository.findOne(loginCommand.getEmail())
                 .map(u -> updateUser(loginCommand, u))
                 .orElseGet(() -> createNewUser(loginCommand));
 
         userRepository.save(user);
-        return new UserAuthentication(user.getUserId());
+        return new UserAuthentication(user.getEmail());
     }
 
     private User updateUser(UserLoginCommand loginCommand, User user) {
         user.setEmail(loginCommand.getEmail());
-        user.setPhoneNumber(loginCommand.getPhoneNumber());
         return user;
     }
 
     private User createNewUser(UserLoginCommand loginCommand) {
-        return new User(loginCommand.getUserId(), loginCommand.getPhoneNumber(), loginCommand.getEmail());
+        return new User(loginCommand.getEmail());
     }
 
 }

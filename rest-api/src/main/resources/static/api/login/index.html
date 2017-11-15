@@ -36,20 +36,20 @@
         <td>Email</td>
         <td id="email"></td>
     </tr>
-    <tr>
-        <td>Avatar</td>
-        <td id="avatar"></td>
-    </tr>
     </tbody>
 </table>
 
+<button id="btn-logout">Logout</button>
+
 <script>
+  var logoutBtn = document.getElementById('btn-logout');
+  logoutBtn.addEventListener('click', logout);
   var keycloak = Keycloak({
     url: 'https://key.fundrequest.io/auth',
     realm: 'fundrequest',
     clientId: 'fundrequest_dev'
   });
-  keycloak.init({checkLoginIframe: false, onLoad: 'login-required'}).success(function (authenticated) {
+  keycloak.init({checkLoginIframe: false, onLoad: 'login-required', flow: 'implicit' }).success(function (authenticated) {
     if (!authenticated) {
       keycloak.login();
     } else {
@@ -61,13 +61,22 @@
       $("#firstName").html(keycloak.tokenParsed.given_name);
       $("#lastName").html(keycloak.tokenParsed.family_name);
       $("#email").html(keycloak.tokenParsed.email);
-      $("#avatar").html("<img src='" + keycloak.tokenParsed.picture + "'>");
+
+      keycloak.loadUserProfile().success(function(profile) {
+        console.log(profile);
+      }).error(function() {
+        alert('Failed to load user profile');
+      });
 
     }
   }).error(function (e) {
     console.error(e);
     alert('failed to initialize');
   });
+
+  function logout() {
+    keycloak.logout();
+  }
   function addBearerTokenToRequests() {
     $.ajaxSetup({
       beforeSend: function (xhr) {
