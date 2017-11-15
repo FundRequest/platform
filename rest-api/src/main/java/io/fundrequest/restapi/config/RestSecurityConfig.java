@@ -2,6 +2,7 @@ package io.fundrequest.restapi.config;
 
 import io.fundrequest.core.user.UserService;
 import io.fundrequest.restapi.security.UserJsonParser;
+import io.fundrequest.restapi.security.civic.CivicAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +27,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationManager customAuthManager;
 
     @Autowired
-    private CivicAuthClient civicAuthClient;
+    private CivicAuthService civicAuthService;
 
     @Autowired
     private UserJsonParser userJsonParser;
@@ -66,7 +67,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/private/**").authenticated()
                 .antMatchers("/**").permitAll()
                 .and()
-                .addFilterBefore(new StatelessAuthenticationFilter(civicAuthClient, userJsonParser, userService),
+                .addFilterBefore(new StatelessAuthenticationFilter(civicAuthService, userJsonParser, userService),
                         UsernamePasswordAuthenticationFilter.class);
     }
 
