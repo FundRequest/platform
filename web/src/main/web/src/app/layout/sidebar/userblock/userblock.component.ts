@@ -1,32 +1,37 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 
 import {UserblockService} from "./userblock.service";
-import {ContractsService} from "../../../core/contracts/contracts.service";
-import {UserService} from "../../../core/user/user.service";
-import {User} from "../../../core/user/User";
+import {UserService} from "../../../services/user/user.service";
+import {IUserRecord} from "../../../redux/user.models";
+import {BsModalRef, BsModalService} from "ngx-bootstrap";
+import {ApproveModalComponent} from "../../../components/approve-modal/approve-modal.component";
 
 @Component({
   selector: 'app-userblock',
   templateUrl: './userblock.component.html',
   styleUrls: ['./userblock.component.scss']
 })
-export class UserblockComponent implements OnInit {
-  user: Promise<User>;
-  balance: string;
-  allowance: string;
+export class UserblockComponent {
+  private _bsModalRef: BsModalRef;
+  private _user: IUserRecord;
 
   constructor(public userService: UserService,
-              public userblockService: UserblockService) {
+              public userblockService: UserblockService,
+              private modalService: BsModalService) {
+    userService.getCurrentUser().subscribe((user: IUserRecord) => {
+      this._user = user;
+    });
   }
 
-  async ngOnInit() {
-    this.user = this.userService.getUserInfo();
-    this.balance = await this.userService.getBalance();
-    this.allowance = await this.userService.getAllowance();
+  approveModal(): void {
+    this._bsModalRef = this.modalService.show(ApproveModalComponent);
+  }
+
+  login(): void {
+    this.userService.login();
   }
 
   userBlockIsVisible(): boolean {
     return this.userblockService.getVisibility();
   }
-
 }

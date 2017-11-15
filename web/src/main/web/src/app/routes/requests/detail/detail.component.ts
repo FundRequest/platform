@@ -1,9 +1,11 @@
 import {Component, OnInit} from "@angular/core";
-import {RequestsService} from "../../../core/requests/requests.service";
-import {Request} from "../../../core/requests/Request";
 import {ActivatedRoute} from "@angular/router";
-import {ContractsService} from "app/core/contracts/contracts.service";
 import {Subscription} from "rxjs/Subscription";
+import {IRequestRecord} from "../../../redux/requests.models";
+import {RequestService} from "../../../services/request/request.service";
+import {ContractsService} from "../../../services/contracts/contracts.service";
+import {UserService} from "../../../services/user/user.service";
+import {IUserRecord} from "../../../redux/user.models";
 
 @Component({
   selector: 'fnd-request-detail',
@@ -12,25 +14,23 @@ import {Subscription} from "rxjs/Subscription";
 })
 export class DetailComponent implements OnInit {
 
-  private subRoute: Subscription;
-  public id;
-  public request: Request;
-
+  public user: IUserRecord;
+  public request: IRequestRecord;
 
   constructor(private route: ActivatedRoute,
-              private requestsService: RequestsService,
-              private contractsService: ContractsService) {
+              private requestService: RequestService,
+              private userService: UserService) {
   }
 
   ngOnInit(): void {
-    this.subRoute = this.route.params.subscribe(params => {
-      this.getRequest(+params['id']);
+    this.userService.getCurrentUser().subscribe(user => this.user = user);
+    this.route.params.subscribe(params => {
+      let id = +params['id'];
+      this.requestService
+        .requests$.map(list => list.filter(request => request.id == id).first())
+        .subscribe(request => {
+          this.request = request;
+        });
     });
-  }
-
-  async getRequest(id: number) {
-    this.request = await this.requestsService.get(id);
-    this.request.balance = await this.contractsService.getRequestBalance(String(id));
-    console.log(this.request);
   }
 }
