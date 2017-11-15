@@ -3,12 +3,5 @@
          xsi:noNamespaceSchemaLocation="http://www.ehcache.org/ehcache.xsd"
 >
 
-    <cache name="civicUserData"
-           maxElementsInMemory="10000"
-           overflowToDisk="false"
-           timeToLiveSeconds="300"
-           timeToIdleSeconds="0"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
 
 </ehcache>
