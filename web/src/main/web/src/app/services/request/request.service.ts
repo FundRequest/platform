@@ -97,7 +97,7 @@ export class RequestService {
     newRequest.watchers = newWatchers;
     this.editRequestInStore(request, createRequest(newRequest));
 
-    let httpUrl = `/api/public/requests/${request.id}/watchers`;
+    let httpUrl = `/api/private/requests/${request.id}/watchers`;
     let httpCall: Observable<Object>;
 
     if (add) {
