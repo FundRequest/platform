@@ -22,8 +22,8 @@ export class ContractsService {
 
   private _init: boolean = false;
 
-  private _tokenContractAddress: string = "0x441e36bc87d343e7b2f908570823b43ac4ef6cb6";
-  private _fundRequestContractAddress: string = "0x43a29f127adbc1e664c389367b0a0fceee36e764";
+  private _tokenContractAddress: string = "0x07fecaf3dc56505dccbbf788faada71f5a19cdf9";
+  private _fundRequestContractAddress: string = "0xeb076405ea28b81261c9756379e8a38b3b057ca0";
 
   constructor(private _ns: NotificationService) {
     if (!this._init) {
