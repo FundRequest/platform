@@ -69,7 +69,7 @@ public class RequestController extends AbstractRestController {
                 createRequestCommand
         );
         return ResponseEntity
-                .created(getLocationFromCurrentPath("/{id}", result.getId()))
+                .created(getPublicLocationFromCurrentPath("/{id}", result.getId()))
                 .build();
     }
 }

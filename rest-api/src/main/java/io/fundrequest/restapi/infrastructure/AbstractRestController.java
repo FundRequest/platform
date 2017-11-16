@@ -18,4 +18,18 @@ public abstract class AbstractRestController {
         return builder.buildAndExpand(urlVariables).toUri();
     }
 
+    protected URI getPublicLocationFromCurrentPath(String path, Object... urlVariables) {
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder
+                .fromCurrentRequest();
+        builder.path(path);
+        return URI.create(builder.buildAndExpand(urlVariables).toString().replace(PRIVATE_PATH, PUBLIC_PATH));
+    }
+
+    protected URI getPrivateLocationFromCurrentPath(String path, Object... urlVariables) {
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder
+                .fromCurrentRequest();
+        builder.path(path);
+        return URI.create(builder.buildAndExpand(urlVariables).toString().replace(PUBLIC_PATH, PRIVATE_PATH));
+    }
+
 }
