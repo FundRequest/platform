@@ -10,8 +10,6 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let restApiLocation: string = 'http://localhost:8080';
-
     let headers: any = {};
     headers['Access-Control-Allow-Origin'] = '*';
 
@@ -20,8 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     request = request.clone({
-      setHeaders: headers,
-      url: request.url.startsWith('/api/') ? restApiLocation + request.url : request.url
+      setHeaders: headers
     });
 
     return next.handle(request);
