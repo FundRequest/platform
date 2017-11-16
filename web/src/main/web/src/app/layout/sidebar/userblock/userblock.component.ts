@@ -35,7 +35,4 @@ export class UserblockComponent {
     return this.userblockService.getVisibility();
   }
 
-  userLoggedIn() : boolean {
-    return (this._user !=  null && !!this._user.userId);
-  }
 }

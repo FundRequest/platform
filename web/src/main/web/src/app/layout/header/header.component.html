@@ -113,7 +113,7 @@
       -->
 
       <!-- todo: add logout functionality -->
-      <li>
+      <li *ngIf="userService.userIsLoggedIn()">
         <a (click)="logout($event)">
           <em class="fa fa-sign-out"></em>
         </a>

@@ -78,6 +78,10 @@ export class UserService {
   private handleError(error: any): void {
     console.error('An error occurred', error);
   }
+
+  public userIsLoggedIn(): boolean {
+    return (this.user !=  null && !!this.user.userId);
+  }
 }
 
 
