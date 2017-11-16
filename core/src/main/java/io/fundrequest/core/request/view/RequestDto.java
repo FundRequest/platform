@@ -2,18 +2,11 @@ package io.fundrequest.core.request.view;
 
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
-import io.fundrequest.core.user.UserDto;
-import io.fundrequest.core.user.UserService;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class RequestDto {
-
-    private UserService userService;
 
     private Long id;
 
@@ -79,29 +72,6 @@ public class RequestDto {
 
     public Set<String> getWatchers() {
         return watchers;
-    }
-
-    public UserService getUserService() {
-        return userService;
-    }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    public Set<String> getWatchersNames() {
-        if (userService == null) {
-            return Collections.EMPTY_SET;
-        }
-
-        Set<String> watchersNames = new HashSet<>();
-        for (String watcher : watchers) {
-            UserDto user = userService.getUser(watcher);
-            if (user != null) {
-                watchersNames.add(user.getName());
-            }
-        }
-        return watchersNames;
     }
 
     public void setWatchers(Set<String> watchers) {

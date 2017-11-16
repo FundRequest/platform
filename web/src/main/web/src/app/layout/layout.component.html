@@ -1,0 +1,12 @@
+<div class="wrapper">
+    <app-header class="topnavbar-wrapper"></app-header>
+    <app-sidebar class="aside"></app-sidebar>
+    <app-offsidebar class="offsidebar"></app-offsidebar>
+    <section>
+        <div class="content-wrapper">
+            <router-outlet></router-outlet>
+        </div>
+    </section>
+    <toaster-container [toasterconfig]="_toasterConfig"></toaster-container>
+    <footer app-footer></footer>
+</div>

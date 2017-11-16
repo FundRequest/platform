@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>FundRequest</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://key.fundrequest.io//auth/js/keycloak.js"></script>
+
+</head>
+
+<body>
+<script>
+  var keycloak = Keycloak({
+    url: 'https://key.fundrequest.io/auth',
+    realm: 'fundrequest',
+    clientId: 'fundrequest_dev'
+  });
+  keycloak.init({checkLoginIframe: false, onLoad: '', flow: 'implicit'})
+    .success((authenticated) => {
+      console.log("Authenticated: " + authenticated);
+    }).error((e) => {
+    console.error(e);
+  });
+</script>
+
+<app-root></app-root>
+<div class="preloader">
+  <div class="preloader-progress">
+    <div class="preloader-progress-bar"></div>
+  </div>
+</div>
+
+
+</body>
+
+</html>

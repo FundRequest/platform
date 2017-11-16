@@ -1,0 +1,8 @@
+<a *ngIf="(request && request?.watchers)"
+   (click)="toggleIsWatcher()" class="watch-link"
+   title="request.watchers.join('<br/>')">
+  <i [ngClass]="{'fa fa-lg': true, 'fa-star': isWatcher(), 'fa-star-o': !isWatcher()}"></i>
+  <small>
+    <strong>{{request.watchers.length}}</strong>
+  </small>
+</a>

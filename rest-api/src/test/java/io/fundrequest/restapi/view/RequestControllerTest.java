@@ -54,7 +54,7 @@ public class RequestControllerTest {
 
         Mockito.when(requestService.findAll()).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/requests").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/public/requests").accept(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcRestDocumentation.document("requests-list-example"));
     }
@@ -64,7 +64,7 @@ public class RequestControllerTest {
         RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
         Mockito.when(requestService.findRequest(request.getId())).thenReturn(request);
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/requests/{id}", request.getId()).accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/public/requests/{id}", request.getId()).accept(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcRestDocumentation.document("request-get-example"));
     }
@@ -73,7 +73,7 @@ public class RequestControllerTest {
     public void findRequestsForUser() throws Exception {
         Mockito.when(requestService.findRequestsForUser(principal)).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/user/requests").accept(MediaType.APPLICATION_JSON).principal(principal))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/public/user/requests").accept(MediaType.APPLICATION_JSON).principal(principal))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcRestDocumentation.document("requests-user-list-example"));
     }
@@ -88,7 +88,7 @@ public class RequestControllerTest {
                .thenReturn(RequestDtoMother.freeCodeCampNoUserStories());
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/requests").contentType(MediaType.APPLICATION_JSON).content(
+                RestDocumentationRequestBuilders.post("/api/private/requests").contentType(MediaType.APPLICATION_JSON).content(
                         this.objectMapper.writeValueAsString(command))
                                                 .principal(principal))
                     .andExpect(
@@ -104,7 +104,7 @@ public class RequestControllerTest {
     public void addWatcher() throws Exception {
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
+                RestDocumentationRequestBuilders.put("/api/private/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
                                                 .principal(principal))
                     .andExpect(
                             MockMvcResultMatchers.status().isCreated())
@@ -115,7 +115,7 @@ public class RequestControllerTest {
     public void removeWatcher() throws Exception {
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
+                RestDocumentationRequestBuilders.delete("/api/private/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
                                                 .principal(principal))
                     .andExpect(
                             MockMvcResultMatchers.status().isOk())
@@ -126,7 +126,7 @@ public class RequestControllerTest {
     public void badRequest() throws Exception {
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/requests").contentType(MediaType.APPLICATION_JSON).content(
+                RestDocumentationRequestBuilders.post("/api/private/requests").contentType(MediaType.APPLICATION_JSON).content(
                         this.objectMapper.writeValueAsString(Collections.emptyMap()))
                                                 .principal(principal))
                     .andExpect(

@@ -1,6 +1,5 @@
 package io.fundrequest.restapi;
 
-import com.auth0.spring.security.api.Auth0SecurityConfig;
 import io.fundrequest.core.FundRequestCore;
 import io.fundrequest.core.infrastructure.IgnoreDuringComponentScan;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;

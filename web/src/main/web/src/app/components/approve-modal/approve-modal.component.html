@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Approve FND's</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="form-horizontal">
+    <div class="form-group">
+      <label for="approve-amount" class="col-md-4 control-label">Approve Amount</label>
+      <div class="col-md-8">
+        <div class="input-group">
+          <input [(ngModel)]="_approveAmount" id="approve-amount" type="number" class="form-control">
+          <span class="input-group-addon">FND</span>
+        </div>
+      </div>
+      <div class="col-md-push-4 col-md-8 form-control-static" *ngIf="_approveAmount < 0">
+        <label class="text-danger">Amount should be greater then 0.</label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>
+    <button [disabled]="_approveAmount < 0" type="button" class="btn btn-primary" (click)="approve()">
+      Approve
+    </button>
+  </div>
+</div>

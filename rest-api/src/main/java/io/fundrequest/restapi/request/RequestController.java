@@ -1,15 +1,15 @@
 package io.fundrequest.restapi.request;
 
-import io.fundrequest.core.infrastructure.repository.AbstractController;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.restapi.infrastructure.AbstractRestController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,8 +18,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@CrossOrigin(maxAge = 3600, value = "*")
-public class RequestController extends AbstractController {
+public class RequestController extends AbstractRestController {
 
     private RequestService requestService;
 
@@ -27,27 +26,27 @@ public class RequestController extends AbstractController {
         this.requestService = requestService;
     }
 
-    @GetMapping("/requests")
+    @GetMapping(PUBLIC_PATH + "/requests")
     public List<RequestDto> findAll() {
         return requestService.findAll();
     }
 
-    @GetMapping("/user/requests")
+    @GetMapping(PUBLIC_PATH + "/user/requests")
     public List<RequestDto> findRequestsForUser(Principal principal) {
         return requestService.findRequestsForUser(principal);
     }
 
-    @GetMapping("/requests/{id}")
+    @GetMapping(PUBLIC_PATH + "/requests/{id}")
     public RequestDto findOne(@PathVariable("id") Long id) {
         return requestService.findRequest(id);
     }
 
-    @GetMapping({ "/requests/{id}/watchers","/requests/{id}/watchlink" })
+    @GetMapping({PUBLIC_PATH + "/requests/{id}/watchers", "/requests/{id}/watchlink"})
     public RequestDto findWatchers(@PathVariable("id") Long id) {
         return requestService.findRequest(id);
     }
 
-    @PostMapping("/requests/{id}/watchers")
+    @PutMapping(PRIVATE_PATH + "/requests/{id}/watchers")
     public ResponseEntity<?> addWatcher(@PathVariable("id") Long requestId, Principal principal) {
         requestService.addWatcherToRequest(principal, requestId);
         return ResponseEntity
@@ -55,12 +54,12 @@ public class RequestController extends AbstractController {
                 .build();
     }
 
-    @DeleteMapping("/requests/{id}/watchers")
+    @DeleteMapping(PRIVATE_PATH + "/requests/{id}/watchers")
     public void removeWatcher(@PathVariable("id") Long requestId, Principal principal) {
         requestService.removeWatcherFromRequest(principal, requestId);
     }
 
-    @PostMapping("/requests")
+    @PostMapping(PRIVATE_PATH + "/requests")
     public ResponseEntity<?> createRequest(
             Principal principal,
             @RequestBody @Valid CreateRequestCommand createRequestCommand) {

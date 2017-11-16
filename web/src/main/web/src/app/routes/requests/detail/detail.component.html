@@ -1,0 +1,94 @@
+<div class="content-heading">
+  <div class="pull-right">
+    <div class="btn-group">
+      <button fnd-fund [request]="request" title="Fund" class="btn btn-primary">Fund</button>
+    </div>
+  </div>
+  <div>
+    Request Details
+    <small></small>
+  </div>
+</div>
+<div class="row" *ngIf="request">
+  <div class="col-lg-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="label" [ngClass]="['label-'+ request.status]">{{request.status}}</span>
+        <span>{{request.issueInformation.title}}</span>
+        <span class="pull-right">
+          <fnd-watchlink *ngIf="request" [request]="request" [user]="user"></fnd-watchlink>
+        </span>
+      </div>
+      <div class="panel-body">
+        <div class="form-horizontal">
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Source</label>
+            <div class="col-lg-9 form-control-static">
+              <a target="_blank" href="{{request.issueInformation.link}}">
+                <i [ngClass]="['fa fa-2x fa-' + request.issueInformation.source | lowercase]"></i>
+              </a>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Owner</label>
+            <div class="col-lg-9 form-control-static">
+              <label>
+                <span>{{request.issueInformation.owner}}</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Repo</label>
+            <div class="col-lg-9 form-control-static">
+              <label>
+                <span>{{request.issueInformation.repo}}</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Issue</label>
+            <div class="col-lg-9 form-control-static">
+              <label>
+                <span>{{request.issueInformation.number}}</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Type</label>
+            <div class="col-lg-9 form-control-static">
+              <label>
+                <span>{{request.type}}</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Technologies</label>
+            <div class="col-lg-9 form-control-static">
+              <ng-container *ngFor="let t of request.technologies">
+                <span class="label label-primary">{{t}}</span>
+              </ng-container>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Funded</label>
+            <div class="col-lg-9 form-control-static">
+              <label>
+                <span>{{request.balance | wei}}</span>
+                <span>FND</span> <span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span>Other Info</span>
+      </div>
+      <div class="panel-body">
+      </div>
+    </div>
+  </div>
+</div>

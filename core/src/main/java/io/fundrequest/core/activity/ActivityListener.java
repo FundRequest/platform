@@ -4,9 +4,7 @@ import io.fundrequest.core.request.event.RequestCreatedEvent;
 import io.fundrequest.core.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -36,11 +34,4 @@ public class ActivityListener {
                 "Request <i>" + requestCreatedEvent.getTitle() + "</i> has been created",
                 requestCreatedEvent.getLink(), LocalDateTime.now()));
     }
-
-    @EventListener
-    public void onLogin(AuthenticationSuccessEvent event) {
-        onActivity(new ActivityDto(userService.getUser(event.getAuthentication().getName()),
-                "has logged in","has logged in", LocalDateTime.now()));
-    }
-
 }

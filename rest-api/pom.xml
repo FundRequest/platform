@@ -6,12 +6,14 @@
 
     <parent>
         <groupId>io.fundrequest</groupId>
-        <artifactId>mvp-back-end</artifactId>
+        <artifactId>platform</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <properties>
         <spring-restdocs.version>1.2.1.RELEASE</spring-restdocs.version>
+        <keycloak.version>3.4.0.Final</keycloak.version>
+        <keycloak-client.version>3.1.4.Final</keycloak-client.version>
     </properties>
 
     <artifactId>rest-api</artifactId>
@@ -24,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>io.fundrequest</groupId>
-            <artifactId>web2.0</artifactId>
+            <artifactId>web</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>
@@ -38,6 +40,44 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.6</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.keycloak.bom</groupId>
+            <artifactId>keycloak-adapter-bom</artifactId>
+            <version>${keycloak.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${keycloak-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <version>${keycloak-client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
@@ -46,6 +86,21 @@
             <artifactId>spring-restdocs-mockmvc</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-boot-starter</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>io.fundrequest</groupId>
             <artifactId>core</artifactId>

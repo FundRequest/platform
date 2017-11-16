@@ -4,8 +4,8 @@ application-*.properties
 
 # node
 **/node_modules/
-web2.0/src/main/web/node
-web2.0/src/main/web/package-lock.json
+web/src/main/web/node
+web2.0
 
 # Created by https://www.gitignore.io/api/intellij+iml,windows,linux,eclipse,maven,java,macos
 ### EthereumJ ###

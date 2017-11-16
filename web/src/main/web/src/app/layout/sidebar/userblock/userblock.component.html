@@ -1,0 +1,24 @@
+<div class="item user-block" *ngIf="userBlockIsVisible()">
+  <!-- User picture-->
+  <div class="user-block-picture">
+    <div class="user-block-status">
+      <img class="img-thumbnail img-circle" [src]="_user?.picture || 'https://api.adorable.io/avatars/75/fundrequest.io.png'" alt="Avatar"/>
+      <div class="circle circle-lg" [ngClass]="[userService.userIsLoggedIn() ? 'circle-success' : 'circle-danger']"></div>
+    </div>
+  </div>
+
+  <div class="user-block-info" *ngIf="_user?.email">
+    <span class="user-block-name">{{_user?.email}}</span>
+    <span class="user-block-role">
+        <span>Balance: </span><span>{{_user?.balance | wei}}</span><span> FND</span>
+    </span>
+    <span class="user-block-role">
+      <div><span>Approved for use: </span><span>{{_user?.allowance | wei}}</span><span> FND</span></div>
+        <button (click)="approveModal($event)" class="btn btn-xs btn-default">Approve FNDs</button>
+    </span>
+  </div>
+
+  <div class="user-block-info" *ngIf="!(_user?.email)">
+    <button (click)="login($event)" class="btn btn-default">Login</button>
+  </div>
+</div>
