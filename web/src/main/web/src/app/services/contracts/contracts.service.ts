@@ -110,7 +110,7 @@ export class ContractsService {
     let total = this._web3.toWei(value, 'ether');
 
     let tx = await new Promise((resolve, reject) => {
-      this._tokenContract.approve.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, tx) {
+      this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, tx) {
         err ? reject(err) : resolve(tx);
       })
     }) as string;
