@@ -24,7 +24,7 @@ export class RequestService {
     if (!this._requestInitialized) {
       this._requestInitialized = true;
 
-      this.http.get(`/api/private/requests`).take(1).subscribe((requests: IRequestList) => {
+      this.http.get(`/api/public/requests`).take(1).subscribe((requests: IRequestList) => {
         this.store.dispatch(new ReplaceRequestList(requests));
         this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
           requests.map((request: IRequestRecord) => {

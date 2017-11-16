@@ -2,7 +2,6 @@ package io.fundrequest.core.user.dto;
 
 public class UserDto {
     private String userId;
-    private String phoneNumber;
     private String email;
 
     public String getUserId() {
@@ -11,14 +10,6 @@ public class UserDto {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public String getEmail() {

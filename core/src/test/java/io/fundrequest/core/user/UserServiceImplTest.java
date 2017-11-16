@@ -31,10 +31,10 @@ public class UserServiceImplTest {
     public void getUser() throws Exception {
         User user = UserMother.davy();
         UserDto userDto = UserDtoMother.davy();
-        when(userRepository.findOne(user.getUserId())).thenReturn(Optional.of(user));
+        when(userRepository.findOne(user.getEmail())).thenReturn(Optional.of(user));
         when(userDtoMapper.map(user)).thenReturn(userDto);
 
-        UserDto result = userService.getUser(user.getUserId());
+        UserDto result = userService.getUser(user.getEmail());
 
         assertThat(result).isEqualToComparingFieldByField(userDto);
     }

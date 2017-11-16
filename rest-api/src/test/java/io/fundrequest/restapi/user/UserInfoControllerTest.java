@@ -39,7 +39,8 @@ public class UserInfoControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         converter.setObjectMapper(objectMapper);
-        principal = new UserAuthentication(UserDtoMother.davy().getUserId());
+        UserDto davy = UserDtoMother.davy();
+        principal = new UserAuthentication(davy.getUserId(), davy.getEmail());
         mockMvc = MockMvcBuilders.standaloneSetup(new UserInfoController(userService))
                 .setMessageConverters(converter)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(this.restDocumentation))
@@ -50,7 +51,7 @@ public class UserInfoControllerTest {
     public void findAll() throws Exception {
         UserDto user = UserDtoMother.davy();
 
-        Mockito.when(userService.getUser(user.getUserId())).thenReturn(user);
+        Mockito.when(userService.getUser(user.getEmail())).thenReturn(user);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/private/user/info").accept(MediaType.APPLICATION_JSON).principal(principal))
                 .andExpect(MockMvcResultMatchers.status().isOk())

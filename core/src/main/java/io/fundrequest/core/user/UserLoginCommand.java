@@ -4,21 +4,15 @@ import java.util.Objects;
 
 public class UserLoginCommand {
     private String userId;
-    private String phoneNumber;
     private String email;
 
-    public UserLoginCommand(String userId, String phoneNumber, String email) {
+    public UserLoginCommand(String userId, String email) {
         this.userId = userId;
-        this.phoneNumber = phoneNumber;
         this.email = email;
     }
 
     public String getUserId() {
         return userId;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
     }
 
     public String getEmail() {

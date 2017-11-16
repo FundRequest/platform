@@ -14,17 +14,14 @@ public class User extends AbstractEntity {
     @Id
     @Column(name = "id")
     private String userId;
-    @Column(name = "phone_number")
-    private String phoneNumber;
     @Column(name = "email")
     private String email;
 
     protected User() {
     }
 
-    public User(String userId, String phoneNumber, String email) {
+    public User(String userId, String email) {
         this.userId = userId;
-        this.phoneNumber = phoneNumber;
         this.email = email;
     }
 
@@ -32,16 +29,8 @@ public class User extends AbstractEntity {
         return userId;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public void setEmail(String email) {

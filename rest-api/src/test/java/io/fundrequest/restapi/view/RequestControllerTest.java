@@ -54,7 +54,7 @@ public class RequestControllerTest {
 
         Mockito.when(requestService.findAll()).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/private/requests").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/public/requests").accept(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcRestDocumentation.document("requests-list-example"));
     }
@@ -64,7 +64,7 @@ public class RequestControllerTest {
         RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
         Mockito.when(requestService.findRequest(request.getId())).thenReturn(request);
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/private/requests/{id}", request.getId()).accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/public/requests/{id}", request.getId()).accept(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcRestDocumentation.document("request-get-example"));
     }
@@ -73,7 +73,7 @@ public class RequestControllerTest {
     public void findRequestsForUser() throws Exception {
         Mockito.when(requestService.findRequestsForUser(principal)).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/private/user/requests").accept(MediaType.APPLICATION_JSON).principal(principal))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/public/user/requests").accept(MediaType.APPLICATION_JSON).principal(principal))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcRestDocumentation.document("requests-user-list-example"));
     }

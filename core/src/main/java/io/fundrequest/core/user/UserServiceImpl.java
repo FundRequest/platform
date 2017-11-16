@@ -4,6 +4,7 @@ import io.fundrequest.core.user.domain.User;
 import io.fundrequest.core.user.dto.UserDto;
 import io.fundrequest.core.user.dto.UserDtoMapper;
 import io.fundrequest.core.user.infrastructure.UserRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,31 +21,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto getUser(String userId) {
+    public UserDto getUser(String email) {
         return userDtoMapper.map(
-                userRepository.findOne(userId).orElse(null)
+                userRepository.findOne(email).orElse(null)
         );
     }
 
     @Override
     @Transactional
+    @Cacheable("loginUserData")
     public UserAuthentication login(UserLoginCommand loginCommand) {
         User user = userRepository.findOne(loginCommand.getUserId())
                 .map(u -> updateUser(loginCommand, u))
                 .orElseGet(() -> createNewUser(loginCommand));
 
         userRepository.save(user);
-        return new UserAuthentication(user.getUserId());
+        return new UserAuthentication(user.getUserId(), user.getEmail());
     }
 
     private User updateUser(UserLoginCommand loginCommand, User user) {
         user.setEmail(loginCommand.getEmail());
-        user.setPhoneNumber(loginCommand.getPhoneNumber());
         return user;
     }
 
     private User createNewUser(UserLoginCommand loginCommand) {
-        return new User(loginCommand.getUserId(), loginCommand.getPhoneNumber(), loginCommand.getEmail());
+        return new User(loginCommand.getUserId(), loginCommand.getEmail());
     }
 
 }

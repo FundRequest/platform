@@ -3,6 +3,9 @@ import * as Web3 from 'web3';
 import {IRequestRecord} from "../../redux/requests.models";
 import {NotificationService} from "../notification/notification.service";
 
+
+const swal = require('sweetalert');
+
 declare let require: any;
 declare let window: any;
 
@@ -30,8 +33,10 @@ export class ContractsService {
 
   public init(): void {
     this.checkAndInstantiateWeb3();
-    this.setContracts();
-    this.getAccount();
+    if (this._web3) {
+      this.setContracts();
+      this.getAccount();
+    }
   }
 
   private checkAndInstantiateWeb3(): void {
@@ -39,14 +44,11 @@ export class ContractsService {
     if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
-
       if (this._web3.version.network !== '4') {
-        alert('Please connect to the Rinkeby network');
+        this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io'));
       }
     } else {
-      console.warn(
-        'Please use a dapp browser like mist or MetaMask plugin for chrome'
-      );
+      this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io'));
     }
   };
 
@@ -60,14 +62,13 @@ export class ContractsService {
       this._account = await new Promise((resolve, reject) => {
         this._web3.eth.getAccounts((err, accs) => {
           if (err != null) {
-            alert('There was an error fetching your accounts.');
+            // alert('There was an error fetching your accounts.');
+            resolve();
             return;
           }
 
           if (accs.length === 0) {
-            alert(
-              'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
-            );
+            resolve();
             return;
           }
           resolve(accs[0]);
@@ -105,50 +106,68 @@ export class ContractsService {
   }
 
   public async setUserAllowance(value: number): Promise<string> {
+    console.log('blah');
     let account: string = await this.getAccount();
-    let currentAllowance: string = await this.getUserAllowance();
-    let total = this._web3.toWei(value, 'ether');
+    if (account != null) {
+      let currentAllowance: string = await this.getUserAllowance();
+      let total = this._web3.toWei(value, 'ether');
 
-    let tx = await new Promise((resolve, reject) => {
-      this._tokenContract.approve.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, tx) {
-        err ? reject(err) : resolve(tx);
-      })
-    }) as string;
 
-    this._ns.success("Transaction 'set allowance' sent.", this._getTransactionLink(tx));
-
-    return Promise.resolve(total);
-  }
-
-  public async fundRequest(request: IRequestRecord, value: number): Promise<string> {
-    let account: string = await this.getAccount();
-    let currentAllowance: string = await this.getUserAllowance();
-    let total = this._web3.toWei(value, 'ether');
-
-    if (+total > +currentAllowance) {
-      await new Promise((resolve, reject) => {
-        let batch = this._web3.createBatch();
-        batch.add(this._tokenContract.approve.request(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, result) {
-          err ? reject(err) : console.log('approve result: ', result);
-        }));
-        batch.add(this._fundRequestContract.fund.request(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptions(account), function (err, result) {
-          err ? reject(err) : resolve(total);
-        }));
-        batch.execute();
-      });
-      // TODO: Check if there is a way to get transaction hashes of batch
-    }
-    else {
       let tx = await new Promise((resolve, reject) => {
-        this._fundRequestContract.fund.sendTransaction(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptions(account), function (err, tx) {
+        this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, tx) {
           err ? reject(err) : resolve(tx);
         })
       }) as string;
 
-      this._ns.success("Transaction 'fund request' sent.", this._getTransactionLink(tx));
+      this._ns.success("Transaction 'set allowance' sent.", this._getTransactionLink(tx));
+      return Promise.resolve(total);
+    } else {
+      this.showLimitedFunctionalityAlert();
+      return Promise.resolve('0');
+    }
+  }
+
+  private showLimitedFunctionalityAlert() {
+    swal('Limited functionality',
+      'You cannot execute transactions since you are not using a Dapp browser like Mist or have MetaMask enabled', 'error'
+    );
+  }
+
+  public async fundRequest(request: IRequestRecord, value: number): Promise<string> {
+    let account: string = await this.getAccount();
+    if (!!account) {
+      let currentAllowance: string = await this.getUserAllowance();
+      let total = this._web3.toWei(value, 'ether');
+
+      if (+total > +currentAllowance) {
+        await new Promise((resolve, reject) => {
+          let batch = this._web3.createBatch();
+          batch.add(this._tokenContract.approve.request(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, result) {
+            err ? reject(err) : console.log('approve result: ', result);
+          }));
+          batch.add(this._fundRequestContract.fund.request(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptions(account), function (err, result) {
+            err ? reject(err) : resolve(total);
+          }));
+          batch.execute();
+        });
+        // TODO: Check if there is a way to get transaction hashes of batch
+      }
+      else {
+        let tx = await new Promise((resolve, reject) => {
+          this._fundRequestContract.fund.sendTransaction(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptions(account), function (err, tx) {
+            err ? reject(err) : resolve(tx);
+          })
+        }) as string;
+
+        this._ns.success("Transaction 'fund request' sent.", this._getTransactionLink(tx));
+      }
+
+      return Promise.resolve(total);
+    } else {
+      this.showLimitedFunctionalityAlert();
+      return Promise.resolve('0');
     }
 
-    return Promise.resolve(total);
   }
 
   public getRequestBalance(request: IRequestRecord): Promise<string> {

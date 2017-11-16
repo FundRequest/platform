@@ -34,4 +34,5 @@ export class UserblockComponent {
   userBlockIsVisible(): boolean {
     return this.userblockService.getVisibility();
   }
+
 }
