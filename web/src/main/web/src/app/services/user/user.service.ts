@@ -11,10 +11,11 @@ import {ContractsService} from "../contracts/contracts.service";
 import {AuthService} from "../../core/auth/auth.service";
 import {Router} from "@angular/router";
 
-declare var civic: any;
+declare let keycloak: any;
 
 @Injectable()
 export class UserService {
+
   private user: IUserRecord = null;
 
   constructor(private router: Router,
@@ -22,36 +23,21 @@ export class UserService {
               private http: HttpClient,
               private authService: AuthService,
               private contractService: ContractsService) {
+    const self = this;
+    if (keycloak.token) {
+      self.authService.login(keycloak.token);
+      self.initUser();
+    }
   }
 
   public login(returnUrl?: string) {
     const self = this;
-
-    const civicSip = new civic.sip({appId: 'S1wUxaf2b'});
-    civicSip.signup({style: 'popup', scopeRequest: civicSip.ScopeRequests.BASIC_SIGNUP});
-    // Listen for data
-    civicSip.on('auth-code-received', function (event) {
-      self.authService.login(event.response);
-      self.initUser();
-
-      if (returnUrl) {
-        self.router.navigate([returnUrl]);
-      }
-    });
-
-    civicSip.on('user-cancelled', function (event) {
-    });
-
-    // Error events.
-    civicSip.on('civic-sip-error', function (error) {
-      console.log('   Error type = ' + error.type);
-      console.log('   Error message = ' + error.message);
-    });
+    keycloak.login();
   }
 
   public logout(): void {
     this.store.dispatch(new ClearUser());
-    this.authService.logout();
+    window.location.href = keycloak.authServerUrl + "/realms/fundrequest/protocol/openid-connect/logout?redirect_uri="+window.location.href;
   }
 
   private async initUser(): Promise<void> {
@@ -84,7 +70,7 @@ export class UserService {
 
   public async setAllowance(value: number) {
     let allowance = await this.contractService.setUserAllowance(value);
-    this.user =  this.user.set('allowance', allowance);
+    this.user = this.user.set('allowance', allowance);
     this.store.dispatch(new ReplaceUser(this.user));
     this.contractService.setUserAllowance(value);
   }
