@@ -65,7 +65,7 @@ public class RestSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         super.configure(http);
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .and().csrf().disable()
                 .cors().and()
                 .anonymous().and()
                 .authorizeRequests()

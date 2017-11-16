@@ -18,9 +18,9 @@
     realm: 'fundrequest',
     clientId: 'fundrequest_dev'
   });
-  keycloak.init({checkLoginIframe: false, onLoad: '', flow: 'implicit'})
+  keycloak.init({checkLoginIframe: true, onLoad: '', flow: 'implicit'})
     .success((authenticated) => {
-      console.log("Authenticated");
+      console.log("Authenticated: " + authenticated);
     }).error((e) => {
     console.error(e);
   });
