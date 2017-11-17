@@ -34,7 +34,7 @@ public class CreateGithubCommentOnFundHandler {
             CreateGithubComment comment = new CreateGithubComment();
             BigDecimal amount = Convert.fromWei(event.getAmountInWei(), Convert.Unit.ETHER);
             String funder = (user == null || StringUtils.isEmpty(user.getEmail())) ? "Anonymous" : user.getEmail();
-            comment.setBody("Great! " + funder + " funded " + amount.toString() + " FND to this issue. For more information, go to https://fundrequest.io.");
+            comment.setBody("Great! " + amount.toString() + " FND was added to this issue. For more information, go to https://alpha.fundrequest.io.");
             githubClient.createCommentOnIssue(event.getOwner(), event.getRepo(), event.getNumber(), comment);
         }
     }

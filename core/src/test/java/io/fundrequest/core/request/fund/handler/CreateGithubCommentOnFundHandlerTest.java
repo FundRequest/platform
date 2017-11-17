@@ -49,7 +49,7 @@ public class CreateGithubCommentOnFundHandlerTest {
 
         ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
         verify(githubClient).createCommentOnIssue(eq(event.getOwner()), eq(event.getRepo()), eq(event.getNumber()), createGithubCommentArgumentCaptor.capture());
-        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo("Great! davy@fundrequest.io funded 50.33 FND to this issue. For more information, go to https://fundrequest.io.");
+        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo("Great! 50.33 FND was added to this issue. For more information, go to https://alpha.fundrequest.io.");
 
     }
 
