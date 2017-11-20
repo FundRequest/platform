@@ -6,24 +6,30 @@ import {AuthService} from "./auth.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(public auth: AuthService) {
+  constructor(private _as: AuthService) {
+  }
+
+  private getRequest(request, headers) {
+    let restApiLocation: string = document.baseURI.startsWith('http://localhost:4200') ? 'http://localhost:8080' : '';
+
+    return request.clone({
+      setHeaders: headers,
+      url: request.url.startsWith('/api/') ? restApiLocation + request.url : request.url
+    });
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let restApiLocation: string = 'http://localhost:8080';
-
     let headers: any = {};
     headers['Access-Control-Allow-Origin'] = '*';
 
     if (request.url.indexOf('/api/private') > -1) {
-      headers.Authorization = `Bearer ${this.auth.getToken()}`;
+      return this._as.getToken()
+        .mergeMap((token: string) => {
+          headers.Authorization = `Bearer ${token}`;
+          return next.handle(this.getRequest(request, headers));
+        });
+    } else {
+      return next.handle(this.getRequest(request, headers));
     }
-
-    request = request.clone({
-      setHeaders: headers,
-      url: request.url.startsWith('/api/') ? restApiLocation + request.url : request.url
-    });
-
-    return next.handle(request);
   }
 }

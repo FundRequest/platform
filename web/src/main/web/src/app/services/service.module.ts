@@ -6,6 +6,7 @@ import {RequestService} from "./request/request.service";
 import {UserService} from "./user/user.service";
 import {ContractsService} from "./contracts/contracts.service";
 import {NotificationService} from "./notification/notification.service";
+import {KeycloakService} from "./keycloak/keycloak.service";
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import {NotificationService} from "./notification/notification.service";
     RequestService,
     ToasterService,
     UserService,
+    KeycloakService
   ],
   declarations: [],
   exports: []
