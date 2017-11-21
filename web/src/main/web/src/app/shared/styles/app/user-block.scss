@@ -13,7 +13,7 @@
 .user-block {
   position: relative;
   padding: 25px 0 10px;
-  cursor: default;
+  cursor: pointer;
   @include clearfix();
 
   > .user-block-picture {

@@ -1,17 +1,17 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
-import {Store} from "@ngrx/store";
-import {IState} from "../../redux/store";
-import {Observable} from "rxjs/Observable";
-import {ClearUser, ReplaceUser} from "../../redux/user.reducer";
+import { Store } from '@ngrx/store';
+import { IState } from '../../redux/store';
+import { Observable } from 'rxjs/Observable';
+import { ClearUser, ReplaceUser } from '../../redux/user.reducer';
 
-import {createUser, IUserRecord} from "../../redux/user.models";
-import {ContractsService} from "../contracts/contracts.service";
-import {AuthService} from "../../core/auth/auth.service";
-import {Router} from "@angular/router";
+import { createUser, IUserRecord } from '../../redux/user.models';
+import { ContractsService } from '../contracts/contracts.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { Router } from '@angular/router';
 
-import {KeycloakService} from "../keycloak/keycloak.service";
+import { KeycloakService } from '../keycloak/keycloak.service';
 
 @Injectable()
 export class UserService {

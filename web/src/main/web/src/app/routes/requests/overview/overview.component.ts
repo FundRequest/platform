@@ -1,14 +1,14 @@
-import {Component} from "@angular/core";
-import {Observable} from "rxjs/Observable";
-import {RequestService} from "../../../services/request/request.service";
-import {IRequestList, IRequestRecord} from "../../../redux/requests.models";
-import {IUserRecord} from "../../../redux/user.models";
-import {UserService} from "../../../services/user/user.service";
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { RequestService } from '../../../services/request/request.service';
+import { IRequestList, IRequestRecord } from '../../../redux/requests.models';
+import { IUserRecord } from '../../../redux/user.models';
+import { UserService } from '../../../services/user/user.service';
 
 @Component({
-  selector: 'app-request-overview',
+  selector   : 'app-request-overview',
   templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.scss']
+  styleUrls  : ['./overview.component.scss']
 })
 export class OverviewComponent {
 

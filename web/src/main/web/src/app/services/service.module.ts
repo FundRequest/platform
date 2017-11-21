@@ -1,18 +1,19 @@
-import {NgModule, Optional, SkipSelf} from "@angular/core";
-import {HttpClientModule} from "@angular/common/http";
-import {throwIfAlreadyLoaded} from "../core/module-import-guard";
-import {ToasterService} from "angular2-toaster";
-import {RequestService} from "./request/request.service";
-import {UserService} from "./user/user.service";
-import {ContractsService} from "./contracts/contracts.service";
-import {NotificationService} from "./notification/notification.service";
-import {KeycloakService} from "./keycloak/keycloak.service";
+import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+
+import { ContractsService } from './contracts/contracts.service';
+import { KeycloakService } from './keycloak/keycloak.service';
+import { NotificationService } from './notification/notification.service';
+import { RequestService } from './request/request.service';
+import { throwIfAlreadyLoaded } from '../core/module-import-guard';
+import { ToasterService } from 'angular2-toaster';
+import { UserService } from './user/user.service';
 
 @NgModule({
-  imports: [
+  imports     : [
     HttpClientModule
   ],
-  providers: [
+  providers   : [
     ContractsService,
     NotificationService,
     RequestService,
@@ -21,7 +22,7 @@ import {KeycloakService} from "./keycloak/keycloak.service";
     KeycloakService
   ],
   declarations: [],
-  exports: []
+  exports     : []
 })
 
 export class ServiceModule {

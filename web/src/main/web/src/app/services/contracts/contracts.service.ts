@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as Web3 from 'web3';
-import {IRequestRecord} from "../../redux/requests.models";
-import {NotificationService} from "../notification/notification.service";
+import { IRequestRecord } from '../../redux/requests.models';
+import { NotificationService } from '../notification/notification.service';
 
 
 const swal = require('sweetalert');
@@ -22,8 +22,8 @@ export class ContractsService {
 
   private _init: boolean = false;
 
-  private _tokenContractAddress: string = "0x441e36bc87d343e7b2f908570823b43ac4ef6cb6";
-  private _fundRequestContractAddress: string = "0x43a29f127adbc1e664c389367b0a0fceee36e764";
+  private _tokenContractAddress: string = '0x441e36bc87d343e7b2f908570823b43ac4ef6cb6';
+  private _fundRequestContractAddress: string = '0x43a29f127adbc1e664c389367b0a0fceee36e764';
 
   constructor(private _ns: NotificationService) {
     if (!this._init) {
@@ -72,7 +72,7 @@ export class ContractsService {
             return;
           }
           resolve(accs[0]);
-        })
+        });
       }) as string;
 
       this._web3.eth.defaultAccount = this._account;
@@ -115,10 +115,10 @@ export class ContractsService {
       let tx = await new Promise((resolve, reject) => {
         this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, tx) {
           err ? reject(err) : resolve(tx);
-        })
+        });
       }) as string;
 
-      this._ns.success("Transaction 'set allowance' sent.", this._getTransactionLink(tx));
+      this._ns.success('Transaction \'set allowance\' sent.', this._getTransactionLink(tx));
       return Promise.resolve(total);
     } else {
       this.showLimitedFunctionalityAlert();
@@ -155,10 +155,10 @@ export class ContractsService {
         let tx = await new Promise((resolve, reject) => {
           this._fundRequestContract.fund.sendTransaction(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptions(account), function (err, tx) {
             err ? reject(err) : resolve(tx);
-          })
+          });
         }) as string;
 
-        this._ns.success("Transaction 'fund request' sent.", this._getTransactionLink(tx));
+        this._ns.success('Transaction \'fund request\' sent.', this._getTransactionLink(tx));
       }
 
       return Promise.resolve(total);
@@ -189,7 +189,7 @@ export class ContractsService {
   private _getTransactionOptions(account: string): any {
     return {
       from: account,
-      gas: 300000
+      gas : 300000
     };
   }
 }

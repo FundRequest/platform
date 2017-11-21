@@ -1,4 +1,4 @@
-import {WeiAsNumberPipe, WeiPipe} from './wei.pipe';
+import { WeiAsNumberPipe, WeiPipe } from './wei.pipe';
 
 describe('WeiPipe', () => {
   it('create an instance', () => {

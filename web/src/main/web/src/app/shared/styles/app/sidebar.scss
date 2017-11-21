@@ -181,10 +181,11 @@ $tablet-landscape: 1025px;
     border: 1px solid rgba(0,0,0,0.15);
     margin-left: -1px;
     // we resuse the collapse element so we need to override
-    &, .collapse {
+    &, .sidebar-subnav {
       height: auto !important;
       display: block !important;
       visibility: visible !important;
+      animation: none !important;
     }
     > .sidebar-subnav-header {
       display: block;

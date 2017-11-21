@@ -1,4 +1,4 @@
-import {makeTypedFactory, TypedRecord} from "typed-immutable-record";
+import { makeTypedFactory, TypedRecord } from 'typed-immutable-record';
 
 interface IUser {
   userId: string,
@@ -13,10 +13,10 @@ export interface IUserRecord extends TypedRecord<IUserRecord>, IUser {
 }
 
 export const createUser = makeTypedFactory<IUser, IUserRecord>({
-  userId: '',
+  userId     : '',
   phoneNumber: '',
-  email: '',
-  picture: '',
-  balance: '0',
-  allowance: '0'
+  email      : '',
+  picture    : '',
+  balance    : '0',
+  allowance  : '0'
 });

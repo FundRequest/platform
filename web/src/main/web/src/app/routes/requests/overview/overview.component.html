@@ -16,14 +16,14 @@
     </div>
   </div>
 
-  <table class="table table-striped table-bordered table-hover" [mfData]="requestsRows" #mf="mfDataTable" [mfRowsOnPage]="10">
+  <table class="table table-striped table-hover" [mfData]="requestsRows" #mf="mfDataTable" [mfRowsOnPage]="10">
     <thead>
     <tr>
       <th>
         <mfDefaultSorter by="watchers"></mfDefaultSorter>
       </th>
       <th>
-        <mfDefaultSorter by="issueInformation.title">Summery</mfDefaultSorter>
+        <mfDefaultSorter by="issueInformation.title">Summary</mfDefaultSorter>
       </th>
       <th>
         <mfDefaultSorter by="status">Status</mfDefaultSorter>

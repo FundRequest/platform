@@ -1,5 +1,5 @@
-import {makeTypedFactory, TypedRecord} from "typed-immutable-record";
-import {List} from "immutable";
+import { makeTypedFactory, TypedRecord } from 'typed-immutable-record';
+import { List } from 'immutable';
 
 interface IRequestSource {
   key: String;
@@ -32,21 +32,21 @@ export interface IRequestRecord extends TypedRecord<IRequestRecord>, IRequest {
 }
 
 export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
-  id: 0,
-  status: '',
-  type: '',
-  technologies: [],
-  watchers: [],
+  id                   : 0,
+  status               : '',
+  type                 : '',
+  technologies         : [],
+  watchers             : [],
   loggedInUserIsWatcher: false,
-  balance: '0',
-  issueInformation: {
-    link: '',
-    owner: '',
-    repo: '',
+  balance              : '0',
+  issueInformation     : {
+    link  : '',
+    owner : '',
+    repo  : '',
     number: 0,
-    title: '',
+    title : '',
     source: {
-      key: '',
+      key  : '',
       value: ''
     }
   }

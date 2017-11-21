@@ -1,7 +1,7 @@
-import {Directive, HostListener, Input} from '@angular/core';
-import {BsModalRef, BsModalService} from "ngx-bootstrap";
-import {FundModalComponent} from "../../../components/fund-modal/fund-modal.component";
-import {IRequestRecord} from "../../../redux/requests.models";
+import { Directive, HostListener, Input } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { FundModalComponent } from '../../../components/fund-modal/fund-modal.component';
+import { IRequestRecord } from '../../../redux/requests.models';
 
 @Directive({
   selector: '[fnd-fund]'
@@ -15,7 +15,7 @@ export class FundButtonDirective {
   }
 
   @HostListener('click', ['$event'])
-  onClick($event){
+  onClick($event) {
     this.openFundModal();
   }
 

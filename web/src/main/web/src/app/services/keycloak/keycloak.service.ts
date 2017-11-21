@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {environment} from "../../../environments/environment";
+import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import * as Keycloak from 'keycloak-js';
 
 @Injectable()
@@ -40,7 +40,7 @@ export class KeycloakService {
 
   public static login(returnUri?): void {
     console.log('**  LOGIN');
-    if(returnUri != null) {
+    if (returnUri != null) {
       KeycloakService.auth.authz.login({returnUri: returnUri});
     } else {
       KeycloakService.auth.authz.login();

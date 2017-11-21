@@ -1,6 +1,6 @@
-import {List} from 'immutable';
-import {Action} from '@ngrx/store';
-import {IRequestList, IRequestRecord} from "./requests.models";
+import { List } from 'immutable';
+import { Action } from '@ngrx/store';
+import { IRequestList, IRequestRecord } from './requests.models';
 
 export abstract class RequestAction implements Action {
   constructor(public type: string) {
