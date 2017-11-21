@@ -1,11 +1,12 @@
 package io.fundrequest.core.request.fund.handler;
 
+import io.fundrequest.core.request.domain.RequestSource;
+import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.infrastructure.github.CreateGithubComment;
 import io.fundrequest.core.request.infrastructure.github.GithubClient;
-import io.fundrequest.core.user.UserService;
-import io.fundrequest.core.user.dto.UserDto;
-import org.apache.commons.lang3.StringUtils;
+import io.fundrequest.core.request.view.IssueInformationDto;
+import io.fundrequest.core.request.view.RequestDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -18,24 +19,25 @@ import java.math.BigDecimal;
 public class CreateGithubCommentOnFundHandler {
 
     private GithubClient githubClient;
-    private UserService userService;
     private Boolean addComment;
 
-    public CreateGithubCommentOnFundHandler(GithubClient githubClient, UserService userService, @Value("${github.add-comment-when-funded}") Boolean addComment) {
+    public CreateGithubCommentOnFundHandler(GithubClient githubClient, @Value("${github.add-comment-when-funded}") Boolean addComment) {
         this.githubClient = githubClient;
-        this.userService = userService;
         this.addComment = addComment;
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void createGithubCommentOnRequestFunded(RequestFundedEvent event) {
         if (addComment) {
-            UserDto user = userService.getUser(event.getFunder());
             CreateGithubComment comment = new CreateGithubComment();
-            BigDecimal amount = Convert.fromWei(event.getAmountInWei(), Convert.Unit.ETHER);
-            String funder = (user == null || StringUtils.isEmpty(user.getEmail())) ? "Anonymous" : user.getEmail();
+            FundDto fundDto = event.getFundDto();
+            BigDecimal amount = Convert.fromWei(fundDto.getAmountInWei(), Convert.Unit.ETHER);
             comment.setBody("Great! " + amount.toString() + " FND was added to this issue. For more information, go to https://alpha.fundrequest.io.");
-            githubClient.createCommentOnIssue(event.getOwner(), event.getRepo(), event.getNumber(), comment);
+            RequestDto request = event.getRequestDto();
+            IssueInformationDto issueInformation = request.getIssueInformation();
+            if (issueInformation.getSource() == RequestSource.GITHUB) {
+                githubClient.createCommentOnIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), comment);
+            }
         }
     }
 }

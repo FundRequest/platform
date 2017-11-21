@@ -42,7 +42,13 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RequestDto>     findRequestsForUser(Principal principal) {
+    public List<RequestDto> findAll(Iterable<Long> ids) {
+        return mappers.mapList(Request.class, RequestDto.class, requestRepository.findAll(ids));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RequestDto> findRequestsForUser(Principal principal) {
         return mappers.mapList(Request.class, RequestDto.class, requestRepository.findRequestsForUser(principal.getName()));
     }
 
@@ -61,8 +67,9 @@ class RequestServiceImpl implements RequestService {
         request.ifPresent(r -> updateRequestInformation(user, command, r));
 
         Request r = request.orElseGet(() -> createNewRequest(user, command));
-        eventPublisher.publishEvent(new RequestCreatedEvent(principal.getName(), r.getIssueInformation().getLink(), r.getIssueInformation().getTitle(), r.getIssueInformation().getSource()));
-        return mappers.map(Request.class, RequestDto.class, r);
+        RequestDto requestDto = mappers.map(Request.class, RequestDto.class, r);
+        eventPublisher.publishEvent(new RequestCreatedEvent(requestDto));
+        return requestDto;
     }
 
     @Override

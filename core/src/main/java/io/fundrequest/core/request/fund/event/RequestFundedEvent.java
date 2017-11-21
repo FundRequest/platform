@@ -1,46 +1,22 @@
 package io.fundrequest.core.request.fund.event;
 
-import java.math.BigDecimal;
+import io.fundrequest.core.request.fund.dto.FundDto;
+import io.fundrequest.core.request.view.RequestDto;
 
 public class RequestFundedEvent {
-    private Long requestId;
-    private String owner;
-    private String repo;
-    private String number;
-    private String funder;
-    private BigDecimal amountInWei;
+    private FundDto fundDto;
+    private RequestDto requestDto;
 
-    public RequestFundedEvent(Long requestId, String owner, String repo, String number, String funder, BigDecimal amountInWei) {
-        this.requestId = requestId;
-        this.owner = owner;
-        this.repo = repo;
-        this.number = number;
-        this.funder = funder;
-        this.amountInWei = amountInWei;
+    public RequestFundedEvent(FundDto fundDto, RequestDto requestDto) {
+        this.fundDto = fundDto;
+        this.requestDto = requestDto;
     }
 
-    public Long getRequestId() {
-        return requestId;
+    public FundDto getFundDto() {
+        return fundDto;
     }
 
-    public String getOwner() {
-        return owner;
+    public RequestDto getRequestDto() {
+        return requestDto;
     }
-
-    public String getRepo() {
-        return repo;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public String getFunder() {
-        return funder;
-    }
-
-    public BigDecimal getAmountInWei() {
-        return amountInWei;
-    }
-
 }

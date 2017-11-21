@@ -2,6 +2,7 @@ package io.fundrequest.restapi.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -13,6 +14,11 @@ public class CustomWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
     private String[] allowedOrigins;
 
     @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        configurer.setDefaultTimeout(1000000);
+    }
+
+    @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("redirect:/index.html");
         registry.addViewController("/api").setViewName("redirect:/api/");
@@ -21,8 +27,8 @@ public class CustomWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
         registry.addViewController("/api/docs/").setViewName("forward:/api/docs/index.html");
         registry.addViewController("/api/login").setViewName("redirect:/api/login/");
         registry.addViewController("/api/login/").setViewName("forward:/api/login/index.html");
-        registry.addViewController("/api/activity").setViewName("redirect:/api/activity/");
-        registry.addViewController("/api/activity/").setViewName("forward:/api/activity/index.html");
+        registry.addViewController("/api/notification").setViewName("redirect:/api/notification/");
+        registry.addViewController("/api/notification/").setViewName("forward:/api/notification/index.html");
         super.addViewControllers(registry);
     }
 

@@ -10,7 +10,7 @@ public final class FundMother {
         return FundBuilder
                 .aFund()
                 .withAmountInWei(
-                        new BigDecimal("1000")
+                        new BigDecimal("50330000000000000000")
                 )
                 .withFunder("davy")
                 .withRequestId(1L);

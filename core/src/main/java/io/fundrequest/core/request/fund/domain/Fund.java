@@ -36,6 +36,14 @@ public class Fund extends AbstractEntity {
         this.requestId = requestId;
     }
 
+    void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public String getFunder() {
         return funder;
     }

@@ -13,7 +13,7 @@ public final class FundDtoMother {
     }
 
     public static FundDto aFundDto() {
-        return mapper.map(FundMother.aFund().build());
+        return mapper.map(FundMother.aFund().withId(234L).build());
     }
 
 }

@@ -4,11 +4,19 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class FundDto {
-
+    private Long id;
     private String funder;
     private BigDecimal amountInWei;
     private Long requestId;
     private LocalDateTime creationDate;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getFunder() {
         return funder;

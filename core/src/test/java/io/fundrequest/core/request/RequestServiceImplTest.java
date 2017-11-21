@@ -21,6 +21,8 @@ import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,6 +64,20 @@ public class RequestServiceImplTest {
         when(mappers.mapList(Request.class, RequestDto.class, requests)).thenReturn(expectedRequests);
 
         List<RequestDto> result = requestService.findAll();
+
+        assertThat(result).isEqualTo(expectedRequests);
+    }
+
+    @Test
+    public void findAllByIterable() throws Exception {
+        List<Request> requests = singletonList(RequestMother.freeCodeCampNoUserStories().build());
+        Set<Long> ids = requests.stream().map(Request::getId).collect(Collectors.toSet());
+        when(requestRepository.findAll(ids)).thenReturn(requests);
+
+        List<RequestDto> expectedRequests = singletonList(RequestDtoMother.freeCodeCampNoUserStories());
+        when(mappers.mapList(Request.class, RequestDto.class, requests)).thenReturn(expectedRequests);
+
+        List<RequestDto> result = requestService.findAll(ids);
 
         assertThat(result).isEqualTo(expectedRequests);
     }

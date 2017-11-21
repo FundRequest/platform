@@ -6,12 +6,18 @@ public final class FundBuilder {
     private String funder;
     private BigDecimal amountInWei;
     private Long requestId;
+    private Long id;
 
     private FundBuilder() {
     }
 
     public static FundBuilder aFund() {
         return new FundBuilder();
+    }
+
+    public FundBuilder withId(Long id) {
+        this.id = id;
+        return this;
     }
 
     public FundBuilder withFunder(String funder) {
@@ -30,6 +36,8 @@ public final class FundBuilder {
     }
 
     public Fund build() {
-        return new Fund(funder, amountInWei, requestId);
+        Fund fund = new Fund(funder, amountInWei, requestId);
+        fund.setId(this.id);
+        return fund;
     }
 }
