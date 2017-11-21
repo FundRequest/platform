@@ -39,11 +39,15 @@ export class KeycloakService {
   }
 
   public static login(returnUri?): void {
-    console.log('**  LOGIN');
-    if (returnUri != null) {
-      KeycloakService.auth.authz.login({returnUri: returnUri});
+    if(KeycloakService.auth.authz == null) {
+      this.init();
     } else {
-      KeycloakService.auth.authz.login();
+      console.log('* *  LOGIN');
+      if (returnUri != null) {
+        KeycloakService.auth.authz.login({returnUri: returnUri});
+      } else {
+        KeycloakService.auth.authz.login();
+      }
     }
   }
 

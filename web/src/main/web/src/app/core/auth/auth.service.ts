@@ -15,7 +15,7 @@ export class AuthService {
   }
 
   public login(returnUri?): void {
-    //KeycloakService.login(returnUri);
+    KeycloakService.login(returnUri);
   }
 
   public logout(): void {

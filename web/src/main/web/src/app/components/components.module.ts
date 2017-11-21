@@ -8,13 +8,15 @@ import { SharedModule } from '../shared/shared.module';
 import { FundModalComponent } from './fund-modal/fund-modal.component';
 import { RequestModalComponent } from './request-modal/request-modal.component';
 import { ApproveModalComponent } from './approve-modal/approve-modal.component';
+import { TagInputModule } from 'ngx-chips';
 
 @NgModule({
   imports        : [
     HttpClientModule,
     CommonModule,
-    SharedModule
-  ],
+    SharedModule,
+    TagInputModule
+],
   providers      : [],
   declarations   : [
     WatchlinkComponent,
