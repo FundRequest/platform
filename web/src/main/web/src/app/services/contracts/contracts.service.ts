@@ -63,12 +63,12 @@ export class ContractsService {
         this._web3.eth.getAccounts((err, accs) => {
           if (err != null) {
             // alert('There was an error fetching your accounts.');
-            resolve();
+            resolve(null);
             return;
           }
 
           if (accs.length === 0) {
-            resolve();
+            resolve(null);
             return;
           }
           resolve(accs[0]);
@@ -106,12 +106,11 @@ export class ContractsService {
   }
 
   public async setUserAllowance(value: number): Promise<string> {
-    console.log('blah');
     let account: string = await this.getAccount();
+
     if (account != null) {
       let currentAllowance: string = await this.getUserAllowance();
       let total = this._web3.toWei(value, 'ether');
-
 
       let tx = await new Promise((resolve, reject) => {
         this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, tx) {

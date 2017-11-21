@@ -11,38 +11,33 @@ import {ContractsService} from "../contracts/contracts.service";
 import {AuthService} from "../../core/auth/auth.service";
 import {Router} from "@angular/router";
 
-declare let keycloak: any;
+import {KeycloakService} from "../keycloak/keycloak.service";
 
 @Injectable()
 export class UserService {
 
   private user: IUserRecord = null;
 
-  constructor(private router: Router,
-              private store: Store<IState>,
+  constructor(private store: Store<IState>,
               private http: HttpClient,
-              private authService: AuthService,
-              private contractService: ContractsService) {
-    const self = this;
-    if (keycloak.token) {
-      self.authService.login(keycloak.token);
-      self.initUser();
-    }
+              private _as: AuthService,
+              private _cs: ContractsService) {
+    this.initUser();
   }
 
-  public login(returnUrl?: string) {
-    const self = this;
-    keycloak.login();
+  public login(returnUri?: string) {
+    this._as.login(returnUri);
   }
 
   public logout(): void {
     this.store.dispatch(new ClearUser());
-    window.location.href = keycloak.authServerUrl + "/realms/fundrequest/protocol/openid-connect/logout?redirect_uri="+window.location.href;
+    this._as.logout();
   }
 
   private async initUser(): Promise<void> {
     this.user = createUser();
-    if (this.authService.isAuthenticated()) {
+
+    if (this._as.isAuthenticated()) {
       let newUser: IUserRecord = await this.http.get(`/api/private/user/info`).toPromise() as IUserRecord;
       this.user = createUser(newUser);
       this.store.dispatch(new ReplaceUser(this.user));
@@ -50,8 +45,8 @@ export class UserService {
       let balance;
       let allowance;
       await Promise.all([
-        this.contractService.getUserBalance().then(result => balance = result),
-        this.contractService.getUserAllowance().then(result => allowance = result)
+        this._cs.getUserBalance().then(result => balance = result),
+        this._cs.getUserAllowance().then(result => allowance = result)
       ]).catch(error => this.handleError(error));
 
       this.user = this.user.set('balance', balance);
@@ -69,10 +64,10 @@ export class UserService {
   }
 
   public async setAllowance(value: number) {
-    let allowance = await this.contractService.setUserAllowance(value);
+    let allowance = await this._cs.setUserAllowance(value);
     this.user = this.user.set('allowance', allowance);
     this.store.dispatch(new ReplaceUser(this.user));
-    this.contractService.setUserAllowance(value);
+    this._cs.setUserAllowance(value);
   }
 
   private handleError(error: any): void {
@@ -80,7 +75,7 @@ export class UserService {
   }
 
   public userIsLoggedIn(): boolean {
-    return (this.user !=  null && !!this.user.userId);
+    return true; //(this.user != null && !!this.user.userId);
   }
 }
 

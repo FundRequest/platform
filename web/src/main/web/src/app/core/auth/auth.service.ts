@@ -1,23 +1,28 @@
 import {Injectable} from '@angular/core';
+import {KeycloakService} from "../../services/keycloak/keycloak.service";
+import {Observable} from "rxjs/Observable";
+import 'rxjs/add/observable/fromPromise';
 
 @Injectable()
 export class AuthService {
-  private jwtToken: string;
 
-  public getToken(): any {
-    return this.jwtToken;
+  constructor(private _ks: KeycloakService){
+
   }
 
-  public login(jwtToken: string): void {
-    this.jwtToken = jwtToken;
+  public getToken(): Observable<string> {
+    return Observable.fromPromise(this._ks.getToken());
+  }
+
+  public login(returnUri?): void {
+    KeycloakService.login(returnUri);
   }
 
   public logout(): void {
-    this.jwtToken = null;
+    KeycloakService.logout();
   }
 
   public isAuthenticated(): boolean {
-    return this.jwtToken != null;
-
+    return KeycloakService.auth.loggedIn;
   }
 }
