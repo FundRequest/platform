@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 import { RequestService } from '../../services/request/request.service';
-import { IRequestList, IRequestRecord } from '../../redux/requests.models';
+import { IRequestList } from '../../redux/requests.models';
 import { Subscription } from 'rxjs/Subscription';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Issue } from './issue';
 import { CustomValidators } from '../../custom-validators/custom-validators';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector   : 'fnd-request-modal',
@@ -50,16 +49,14 @@ export class RequestModalComponent implements OnInit, OnDestroy {
 
   public addRequest() {
     let technologies = [];
-    for (let i = 0; i < this.issue.technologies.length; i++) {
-      technologies.push(this.issue.technologies[i].value);
+    for(let tech in this.technologies.value) {
+      technologies.push(this.technologies.value[tech].value);
     }
-    this._rs.addRequest(this.issue.link.trim(), technologies);
+    this._rs.addRequest(this.link.value.trim(), technologies);
     this.bsModalRef.hide();
   }
 
   get link() { return this.requestForm.get('link'); }
 
   get technologies() { return this.requestForm.get('technologies'); }
-
-  //(ngSubmit)="addRequest(); requestFormDir.reset()"
 }
