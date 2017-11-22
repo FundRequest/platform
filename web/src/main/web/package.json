@@ -65,6 +65,7 @@
     "lodash": "4.17.4",
     "modernizr": "3.5.0",
     "moment": "2.19.2",
+    "ng-event-source": "^1.0.6",
     "ng2-charts": "1.6.0",
     "ng2-dnd": "5.0.1",
     "ng2-file-upload": "1.2.1",

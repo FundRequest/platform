@@ -8,6 +8,7 @@ import { RequestService } from './request/request.service';
 import { throwIfAlreadyLoaded } from '../core/module-import-guard';
 import { ToasterService } from 'angular2-toaster';
 import { UserService } from './user/user.service';
+import { NotificationStreamService } from './sse/notification-stream.service';
 
 @NgModule({
   imports     : [
@@ -19,7 +20,8 @@ import { UserService } from './user/user.service';
     RequestService,
     ToasterService,
     UserService,
-    KeycloakService
+    KeycloakService,
+    NotificationStreamService
   ],
   declarations: [],
   exports     : []

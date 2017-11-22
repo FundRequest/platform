@@ -31,7 +31,7 @@ export class RequestModalComponent implements OnInit, OnDestroy {
     this.requestForm = new FormGroup({
       link        : new FormControl(this.issue.link, [
         Validators.required,
-        Validators.pattern(/https:\/\/github.com\/FundRequest\/area51\/issues\/[0-9]+/),
+        Validators.pattern(/^https:\/\/github.com\/FundRequest\/area51\/issues\/[0-9]+$/),
         CustomValidators.requestExists(this._requests),
       ]),
       technologies: new FormControl(this.issue.technologies),

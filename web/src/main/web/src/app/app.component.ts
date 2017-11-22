@@ -4,6 +4,7 @@ declare var $: any;
 import { ContractsService } from './services/contracts/contracts.service';
 import { NotificationService } from './services/notification/notification.service';
 import { SettingsService } from './core/settings/settings.service';
+import { NotificationStreamService } from './services/sse/notification-stream.service';
 
 @Component({
   selector   : 'app-root',
@@ -32,7 +33,7 @@ export class AppComponent implements OnInit {
 
   @HostBinding('class.aside-collapsed-text') get isCollapsedText() { return this.settings.layout.isCollapsedText; };
 
-  constructor(public settings: SettingsService, private _cs: ContractsService, private _ns: NotificationService) { }
+  constructor(public settings: SettingsService, private _nss: NotificationStreamService, private _cs: ContractsService, private _ns: NotificationService) { }
 
   ngOnInit() {
     this._cs.init();
