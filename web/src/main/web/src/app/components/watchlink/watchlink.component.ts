@@ -1,12 +1,12 @@
-import {Component, Input} from '@angular/core';
-import {IUserRecord} from "../../redux/user.models";
-import {IRequestRecord} from "../../redux/requests.models";
-import {RequestService} from "../../services/request/request.service";
+import { Component, Input } from '@angular/core';
+import { IUserRecord } from '../../redux/user.models';
+import { IRequestRecord } from '../../redux/requests.models';
+import { RequestService } from '../../services/request/request.service';
 
 @Component({
-  selector: 'fnd-watchlink',
+  selector   : 'fnd-watchlink',
   templateUrl: './watchlink.component.html',
-  styleUrls: ['./watchlink.component.scss']
+  styleUrls  : ['./watchlink.component.scss']
 })
 export class WatchlinkComponent {
   @Input() user: IUserRecord;

@@ -26,11 +26,11 @@
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark">
           <div class="easypie-chart" easypiechart [options]="pieOptions" [percent]="percentageFunded">
-            <span>{{percentageFunded | number: '1.0-0'}}%</span>
+            <span>%</span>
           </div>
         </div>
         <div class="col-xs-8 pv-lg">
-          <div class="h2 mt0">%</div>
+          <div class="h2 mt0">{{percentageFunded | number: '1.2-2'}}%</div>
           <div class="text-uppercase">Funded requests</div>
         </div>
       </div>

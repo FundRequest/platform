@@ -1,15 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {BsModalRef} from "ngx-bootstrap";
-import {RequestService} from "../../services/request/request.service";
-import {IRequestList, IRequestRecord} from "../../redux/requests.models";
-import {Observable} from "rxjs/Observable";
-import {Subscription} from "rxjs/Subscription";
-import {Router} from "@angular/router";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BsModalRef } from 'ngx-bootstrap';
+import { RequestService } from '../../services/request/request.service';
+import { IRequestList, IRequestRecord } from '../../redux/requests.models';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'fnd-request-modal',
+  selector   : 'fnd-request-modal',
   templateUrl: './request-modal.component.html',
-  styleUrls: ['./request-modal.component.scss']
+  styleUrls  : ['./request-modal.component.scss']
 })
 export class RequestModalComponent implements OnInit, OnDestroy {
   private _requests: IRequestList;
@@ -24,7 +24,7 @@ export class RequestModalComponent implements OnInit, OnDestroy {
 
   private requestExists(): boolean {
     if (this.issueLink != null && this._requests) {
-      let requests = this._requests.filter((request: IRequestRecord) => request.issueInformation.link == this.issueLink.trim())
+      let requests = this._requests.filter((request: IRequestRecord) => request.issueInformation.link == this.issueLink.trim());
       if (requests.count() > 0) {
         this._currentRequest = requests.first();
         return true;

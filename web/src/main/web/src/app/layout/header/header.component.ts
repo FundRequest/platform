@@ -1,17 +1,17 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
-import {UserblockService} from "../sidebar/userblock/userblock.service";
-import {SettingsService} from "../../core/settings/settings.service";
-import {MenuService} from "../../core/menu/menu.service";
-import {UserService} from "../../services/user/user.service";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { UserblockService } from '../sidebar/userblock/userblock.service';
+import { SettingsService } from '../../core/settings/settings.service';
+import { MenuService } from '../../core/menu/menu.service';
+import { UserService } from '../../services/user/user.service';
 
 const screenfull = require('screenfull');
 const browser = require('jquery.browser');
 declare var $: any;
 
 @Component({
-  selector: 'app-header',
+  selector   : 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls  : ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
 
@@ -21,12 +21,10 @@ export class HeaderComponent implements OnInit {
   isNavSearchVisible: boolean;
   @ViewChild('fsbutton') fsbutton;  // the fullscreen button
 
-  constructor(
-    public menu: MenuService,
-    public userblockService: UserblockService,
-    public settings: SettingsService,
-    public userService: UserService
-  ) {
+  constructor(public menu: MenuService,
+              public userblockService: UserblockService,
+              public settings: SettingsService,
+              public userService: UserService) {
     this.menuItems = menu.getMenu().slice(0, 4); // for horizontal layout
   }
 

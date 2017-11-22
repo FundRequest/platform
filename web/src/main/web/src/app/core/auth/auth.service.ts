@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {KeycloakService} from "../../services/keycloak/keycloak.service";
-import {Observable} from "rxjs/Observable";
+import { Injectable } from '@angular/core';
+import { KeycloakService } from '../../services/keycloak/keycloak.service';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 
 @Injectable()
 export class AuthService {
 
-  constructor(private _ks: KeycloakService){
+  constructor(private _ks: KeycloakService) {
 
   }
 

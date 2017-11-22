@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {Store} from '@ngrx/store';
-import {HttpClient} from "@angular/common/http";
-import {RequestsStats} from "../../core/requests/RequestsStats";
-import {IState} from "../../redux/store";
-import {createRequest, IRequestList, IRequestRecord} from "../../redux/requests.models";
-import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from "../../redux/requests.reducer";
-import {IUserRecord} from "../../redux/user.models";
-import {ContractsService} from "../contracts/contracts.service";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+import { HttpClient } from '@angular/common/http';
+import { RequestsStats } from '../../core/requests/RequestsStats';
+import { IState } from '../../redux/store';
+import { createRequest, IRequestList, IRequestRecord } from '../../redux/requests.models';
+import { AddRequest, EditRequest, RemoveRequest, ReplaceRequestList } from '../../redux/requests.reducer';
+import { IUserRecord } from '../../redux/user.models';
+import { ContractsService } from '../contracts/contracts.service';
 
 import 'rxjs/add/operator/toPromise';
 
@@ -52,7 +52,7 @@ export class RequestService {
 
   public addRequest(issueLink: string, technologies: String[]): void {
     this.http.post(`/api/private/requests/`, {
-      issueLink: issueLink,
+      issueLink   : issueLink,
       technologies: technologies
     }, {observe: 'response'}).take(1).subscribe((result) => {
         let location = result.headers.get('location');
@@ -61,10 +61,10 @@ export class RequestService {
             .take(1).subscribe((request: IRequestRecord) => {
               this.addRequestInStore(createRequest(request));
             }, error => this.handleError(error)
-          )
+          );
         }
       }, error => this.handleError(error)
-    )
+    );
   }
 
   public async fundRequest(request: IRequestRecord, funding: number): Promise<string> {
@@ -103,7 +103,7 @@ export class RequestService {
     if (add) {
       httpCall = this.http.put(httpUrl, {
         responseType: 'text',
-        requestId: request.id
+        requestId   : request.id
       });
     } else {
       httpCall = this.http.delete(httpUrl);
@@ -114,7 +114,7 @@ export class RequestService {
         this.editRequestInStore(newRequest, request); // if something when wrong, update it back to the old value
         this.handleError(error);
       }
-    )
+    );
   }
 
   private removeRequestInStore(request: IRequestRecord) {

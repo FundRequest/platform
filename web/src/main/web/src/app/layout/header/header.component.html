@@ -15,7 +15,7 @@
         <a class="hidden-xs" trigger-resize="" (click)="toggleCollapsedSideabar()" *ngIf="!isCollapsedText()">
           <em class="fa fa-navicon"></em>
         </a>
-        <a class="visible-xs sidebar-toggle" (click)="settings.layout.asideToggled =! settings.layout.asideToggled">
+        <a class="visible-xs sidebar-toggle" (click)="settings.layout.asideToggled =! settings.layout.asideToggled; $event.stopPropagation()">
           <em class="fa fa-navicon"></em>
         </a>
       </li>

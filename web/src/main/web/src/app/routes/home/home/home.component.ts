@@ -1,30 +1,18 @@
-import {Component} from "@angular/core";
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component } from '@angular/core';
 
-import {AuthService} from "../../../core/auth/auth.service";
-import {RequestsStats} from "../../../core/requests/RequestsStats";
-import {RequestService} from "../../../services/request/request.service";
-import {UserService} from "../../../services/user/user.service";
+import { RequestService } from '../../../services/request/request.service';
+import { RequestsStats } from '../../../core/requests/RequestsStats';
 
 @Component({
-  selector: 'app-home',
+  selector   : 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls  : ['./home.component.scss']
 })
 export class HomeComponent {
 
   private _statistics: Promise<RequestsStats>;
 
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              private authService: AuthService,
-              private requestService: RequestService,
-              private userService: UserService) {
-    /*route.params.subscribe(val => {
-      if (!this.authService.isAuthenticated()) {
-        this.login();
-      }
-    });*/
+  constructor(private requestService: RequestService) {
   }
 
   get statistics(): Promise<RequestsStats> {

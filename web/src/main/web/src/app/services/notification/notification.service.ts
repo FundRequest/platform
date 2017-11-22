@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import {BodyOutputType, Toast, ToasterConfig, ToasterService} from "angular2-toaster";
+import { BodyOutputType, Toast, ToasterConfig, ToasterService } from 'angular2-toaster';
 
 @Injectable()
 export class NotificationService {
 
   private _toastSuccess: Toast = {
-    type: 'success',
+    type          : 'success',
     bodyOutputType: BodyOutputType.TrustedHtml,
   };
 
   private _toastError: Toast = {
-    type: 'error',
+    type          : 'error',
     bodyOutputType: BodyOutputType.TrustedHtml,
   };
 

@@ -1,14 +1,14 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
-import {BsModalRef} from 'ngx-bootstrap/modal/modal-options.class';
-import {IUserRecord} from "../../redux/user.models";
-import {UserService} from "../../services/user/user.service";
-import {ContractsService} from "../../services/contracts/contracts.service";
+import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
+import { IUserRecord } from '../../redux/user.models';
+import { UserService } from '../../services/user/user.service';
+import { ContractsService } from '../../services/contracts/contracts.service';
 
 @Component({
-  selector: 'approve-modal-content',
+  selector   : 'approve-modal-content',
   templateUrl: './approve-modal.component.html',
-  styleUrls: ['./approve-modal.component.scss']
+  styleUrls  : ['./approve-modal.component.scss']
 })
 export class ApproveModalComponent {
 
