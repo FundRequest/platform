@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
-import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
 import { IUserRecord } from '../../redux/user.models';
 import { UserService } from '../../services/user/user.service';
 import { ContractsService } from '../../services/contracts/contracts.service';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
   selector   : 'approve-modal-content',
@@ -13,7 +13,7 @@ import { ContractsService } from '../../services/contracts/contracts.service';
 export class ApproveModalComponent {
 
   private _user: IUserRecord;
-  private _approveAmount: number = 0;
+  public approveAmount: number = 0;
 
   constructor(public bsModalRef: BsModalRef,
               private _cs: ContractsService,
@@ -24,7 +24,7 @@ export class ApproveModalComponent {
   }
 
   public approve() {
-    this._cs.setUserAllowance(this._approveAmount);
+    this._cs.setUserAllowance(this.approveAmount);
     this.bsModalRef.hide();
   }
 }

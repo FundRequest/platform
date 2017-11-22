@@ -8,7 +8,7 @@ import { ToasterConfig } from 'angular2-toaster';
 })
 export class LayoutComponent implements OnInit {
 
-  private _toasterConfig = new ToasterConfig({
+  public toasterConfig = new ToasterConfig({
     positionClass: 'toast-bottom-right',
     messageClass : 'toast-custom-message'
   });

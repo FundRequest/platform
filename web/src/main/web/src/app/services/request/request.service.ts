@@ -43,11 +43,11 @@ export class RequestService {
     return this.store.select(state => state.requests);
   }
 
-  public getStatistics(): Promise<RequestsStats> {
-    return this.http.get('/api/public/requests/statistics')
-      .toPromise()
-      .then(response => response as RequestsStats)
-      .catch(this.handleError);
+  public async getStatistics(): Promise<RequestsStats> {
+    return await this.http.get('/api/public/requests/statistics')
+      .toPromise() as RequestsStats;
+      //.then(response => response as RequestsStats)
+      //.catch(this.handleError);
   }
 
   public addRequest(issueLink: string, technologies: String[]): void {

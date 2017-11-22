@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 
-import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
 import { IRequestRecord } from '../../redux/requests.models';
 import { IUserRecord } from '../../redux/user.models';
 import { RequestService } from '../../services/request/request.service';
 import { UserService } from '../../services/user/user.service';
-import { ContractsService } from '../../services/contracts/contracts.service';
 import { Utils } from '../../shared/utils';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
   selector   : 'fund-modal-content',
