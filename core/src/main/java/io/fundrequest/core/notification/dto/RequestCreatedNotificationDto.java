@@ -9,8 +9,8 @@ public class RequestCreatedNotificationDto extends NotificationDto {
 
     private RequestDto requestDto;
 
-    public RequestCreatedNotificationDto(NotificationType type, LocalDateTime date, RequestDto requestDto) {
-        super(type, date);
+    public RequestCreatedNotificationDto(Long id, NotificationType type, LocalDateTime date, RequestDto requestDto) {
+        super(id, type, date);
         this.requestDto = requestDto;
     }
 
