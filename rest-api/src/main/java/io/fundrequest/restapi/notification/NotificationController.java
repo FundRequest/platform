@@ -26,7 +26,7 @@ public class NotificationController {
 
     @GetMapping(path = "/api/public/notifications-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter getNotificationsStream() {
-        SseEmitter emitter = new SseEmitter();
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         notificationService.getLastNotifications().forEach(n -> {
             try {
                 emitter.send(n, MediaType.APPLICATION_JSON);
