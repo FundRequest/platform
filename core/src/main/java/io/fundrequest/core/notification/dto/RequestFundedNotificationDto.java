@@ -11,8 +11,8 @@ public class RequestFundedNotificationDto extends NotificationDto {
     private RequestDto requestDto;
     private FundDto fundDto;
 
-    public RequestFundedNotificationDto(NotificationType type, LocalDateTime date, RequestDto requestDto, FundDto fundDto) {
-        super(type, date);
+    public RequestFundedNotificationDto(Long id, NotificationType type, LocalDateTime date, RequestDto requestDto, FundDto fundDto) {
+        super(id, type, date);
         this.requestDto = requestDto;
         this.fundDto = fundDto;
     }

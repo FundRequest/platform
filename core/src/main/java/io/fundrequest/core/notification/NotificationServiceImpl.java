@@ -64,7 +64,7 @@ class NotificationServiceImpl implements NotificationService {
                         .stream().collect(Collectors.toMap(RequestDto::getId, n -> n));
 
         return requestCreatedNotifications.stream()
-                .map(n -> new RequestCreatedNotificationDto(NotificationType.REQUEST_CREATED, n.getDate(), requestMap.get(n.getRequestId())))
+                .map(n -> new RequestCreatedNotificationDto(n.getId(), NotificationType.REQUEST_CREATED, n.getDate(), requestMap.get(n.getRequestId())))
                 .collect(Collectors.toList());
     }
 
@@ -86,6 +86,7 @@ class NotificationServiceImpl implements NotificationService {
 
         return requestFundedNotifications.stream()
                 .map(n -> new RequestFundedNotificationDto(
+                        n.getId(),
                         NotificationType.REQUEST_FUNDED,
                         n.getDate(),
                         requestMap.get(fundedMap.get(n.getFundId()).getRequestId()),
@@ -97,26 +98,27 @@ class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void onRequestCreated(RequestCreatedEvent requestCreatedEvent) {
         RequestCreatedNotification notification = new RequestCreatedNotification(NotificationType.REQUEST_CREATED, LocalDateTime.now(), requestCreatedEvent.getRequestDto().getId());
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
         publishNotification(
-                createRequestCreatedNotification(requestCreatedEvent.getRequestDto())
+                createRequestCreatedNotification(notification.getId(), requestCreatedEvent.getRequestDto())
         );
     }
 
-    private RequestCreatedNotificationDto createRequestCreatedNotification(RequestDto requestDto) {
-        return new RequestCreatedNotificationDto(NotificationType.REQUEST_CREATED, LocalDateTime.now(), requestDto);
+    private RequestCreatedNotificationDto createRequestCreatedNotification(Long id, RequestDto requestDto) {
+        return new RequestCreatedNotificationDto(id, NotificationType.REQUEST_CREATED, LocalDateTime.now(), requestDto);
     }
 
     @EventListener
     @Transactional
     public void onFunded(RequestFundedEvent fundedEvent) {
         RequestFundedNotification notification = new RequestFundedNotification(NotificationType.REQUEST_FUNDED, LocalDateTime.now(), fundedEvent.getFundDto().getId());
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
         publishNotification(createRequestFundedNotification(notification, fundedEvent.getRequestDto(), fundedEvent.getFundDto()));
     }
 
     private RequestFundedNotificationDto createRequestFundedNotification(RequestFundedNotification notification, RequestDto requestDto, FundDto fundDto) {
         return new RequestFundedNotificationDto(
+                notification.getId(),
                 NotificationType.REQUEST_FUNDED,
                 notification.getDate(),
                 requestDto,

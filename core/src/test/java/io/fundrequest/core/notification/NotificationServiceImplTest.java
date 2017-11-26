@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,6 +46,7 @@ public class NotificationServiceImplTest {
     @Before
     public void setUp() throws Exception {
         notificationRepository = mock(NotificationRepository.class);
+        when(notificationRepository.save(any(Notification.class))).then(returnsFirstArg());
         eventPublisher = mock(ApplicationEventPublisher.class);
         requestService = mock(RequestService.class);
         fundService = mock(FundService.class);
