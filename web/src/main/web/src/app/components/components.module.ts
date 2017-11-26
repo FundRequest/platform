@@ -9,13 +9,16 @@ import { FundModalComponent } from './fund-modal/fund-modal.component';
 import { RequestModalComponent } from './request-modal/request-modal.component';
 import { ApproveModalComponent } from './approve-modal/approve-modal.component';
 import { TagInputModule } from 'ngx-chips';
+import { NotificationStreamComponent } from './notification-stream/notification-stream.component';
+import { MomentModule } from 'angular2-moment';
 
 @NgModule({
   imports        : [
     HttpClientModule,
     CommonModule,
     SharedModule,
-    TagInputModule
+    TagInputModule,
+    MomentModule
 ],
   providers      : [],
   declarations   : [
@@ -23,7 +26,8 @@ import { TagInputModule } from 'ngx-chips';
     StatisticsComponent,
     FundModalComponent,
     ApproveModalComponent,
-    RequestModalComponent
+    RequestModalComponent,
+    NotificationStreamComponent
   ],
   exports        : [
     WatchlinkComponent,
@@ -31,7 +35,8 @@ import { TagInputModule } from 'ngx-chips';
     FundModalComponent,
     ApproveModalComponent,
     RequestModalComponent,
-    EasypiechartDirective
+    EasypiechartDirective,
+    NotificationStreamComponent
   ],
   entryComponents: [
     FundModalComponent,
