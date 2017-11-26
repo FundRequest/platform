@@ -4,8 +4,10 @@ import { List } from 'immutable';
 interface INotification {
   id: number;
   type: string;
-  date: Date,
+  date: Date;
   description: string;
+  link: string;
+  linkMessage: string;
 }
 
 
@@ -17,6 +19,8 @@ export const createNotification = makeTypedFactory<INotification, INotificationR
   type       : '',
   date       : new Date(),
   description: '',
+  link       : '',
+  linkMessage: ''
 });
 
 export type INotificationList = List<INotificationRecord>;

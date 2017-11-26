@@ -11,7 +11,7 @@
         </div>
         <div class="media-box-body clearfix">
           <small class="pull-right">
-              {{notification.date | amTimeAgo}}
+            {{notification.date | amTimeAgo}}
           </small>
 
           <!--strong  *ngIf="message.user !== null" class="media-box-heading text-primary">
@@ -19,7 +19,11 @@
             <span>{{message.user.name}}</span>
           </strong-->
           <p class="mb-sm">
-            <small>{{notification.description}}</small>
+            <small [innerHTML]="notification.description"></small>
+            <small *ngIf="notification.link">
+              <a [routerLink]="notification.link"
+                 [innerHTML]="notification.linkMessage"></a>
+            </small>
           </p>
         </div>
       </div>

@@ -50,7 +50,7 @@ export class RequestService {
       //.catch(this.handleError);
   }
 
-  public addRequest(issueLink: string, technologies: String[]): void {
+  public addRequest(issueLink: string, technologies: string[]): void {
     this.http.post(`/api/private/requests/`, {
       issueLink   : issueLink,
       technologies: technologies
