@@ -24,6 +24,7 @@ import { ServiceModule } from './services/service.module';
 import { REDUCER_MAP } from './redux/store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { MomentModule } from 'angular2-moment';
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: HttpClient) {
@@ -51,6 +52,7 @@ export function createTranslateLoader(http: HttpClient) {
     ModalModule.forRoot(),
     FormsModule,
     ComponentsModule,
+    MomentModule,
     ServiceModule,
     StoreModule.forRoot(REDUCER_MAP),
     // Note that you must instrument after importing StoreModule
