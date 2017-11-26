@@ -32,16 +32,12 @@ export class NotificationStreamService {
   }
 
   private _commit(message: NotificationStreamMessage) {
-    this._addNotificationInStore(message.notification);
-    this._addRequestInStore(message.request);
+    this.addNotificationInStore(message.notification);
+    this._rs.addRequestInStore(message.request);
   }
 
-  private _addNotificationInStore(newNotification: INotificationRecord) {
+  public addNotificationInStore(newNotification: INotificationRecord) {
     this._store.dispatch(new AddNotification(newNotification));
-  }
-
-  private _addRequestInStore(newRequest: IRequestRecord) {
-    this._store.dispatch(new AddRequest(newRequest));
   }
 }
 

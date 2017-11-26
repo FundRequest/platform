@@ -55,14 +55,14 @@ export class RequestService {
       issueLink   : issueLink,
       technologies: technologies
     }, {observe: 'response'}).take(1).subscribe((result) => {
-        let location = result.headers.get('location');
+        /*let location = result.headers.get('location');
         if (location.length > 0) {
           this.http.get(location)
             .take(1).subscribe((request: IRequestRecord) => {
               this.addRequestInStore(createRequest(request));
             }, error => this.handleError(error)
           );
-        }
+        }*/
       }, error => this.handleError(error)
     );
   }
@@ -117,15 +117,15 @@ export class RequestService {
     );
   }
 
-  private removeRequestInStore(request: IRequestRecord) {
+  public removeRequestInStore(request: IRequestRecord) {
     this.store.dispatch(new RemoveRequest(request));
   }
 
-  private addRequestInStore(newRequest: IRequestRecord) {
+  public addRequestInStore(newRequest: IRequestRecord) {
     this.store.dispatch(new AddRequest(newRequest));
   }
 
-  private editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {
+  public editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {
     this.store.dispatch(new EditRequest(oldRequest, modifiedRequest));
   }
 

@@ -2,16 +2,16 @@ import { makeTypedFactory, TypedRecord } from 'typed-immutable-record';
 import { List } from 'immutable';
 
 interface IRequestSource {
-  key: String;
-  value: String;
+  key: string;
+  value: string;
 }
 
 interface IRequestIssueInformation {
-  link: String;
-  owner: String;
-  repo: String;
+  link: string;
+  owner: string;
+  repo: string;
   number: Number;
-  title: String;
+  title: string;
 
   source: IRequestSource;
 }
