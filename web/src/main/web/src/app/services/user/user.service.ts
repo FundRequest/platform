@@ -9,9 +9,6 @@ import { ClearUser, ReplaceUser } from '../../redux/user.reducer';
 import { createUser, IUserRecord } from '../../redux/user.models';
 import { ContractsService } from '../contracts/contracts.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { Router } from '@angular/router';
-
-import { KeycloakService } from '../keycloak/keycloak.service';
 
 @Injectable()
 export class UserService {
@@ -75,7 +72,7 @@ export class UserService {
   }
 
   public userIsLoggedIn(): boolean {
-    return true; //(this.user != null && !!this.user.userId);
+    return this.user != null && !!this.user.userId;
   }
 }
 

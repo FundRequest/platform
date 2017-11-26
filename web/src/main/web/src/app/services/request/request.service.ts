@@ -10,6 +10,7 @@ import { IUserRecord } from '../../redux/user.models';
 import { ContractsService } from '../contracts/contracts.service';
 
 import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/take';
 
 @Injectable()
 export class RequestService {

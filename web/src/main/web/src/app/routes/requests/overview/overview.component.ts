@@ -11,21 +11,19 @@ import { UserService } from '../../../services/user/user.service';
   styleUrls  : ['./overview.component.scss']
 })
 export class OverviewComponent {
+  public user: IUserRecord;
+  public requests$: Observable<IRequestList>;
+  public requestsRows: Array<IRequestRecord> = [];
 
-  user: IUserRecord;
-  requests$: Observable<IRequestList>;
-  requestsRows: Array<IRequestRecord> = [];
-
-  constructor(private userServivce: UserService,
-              private requestService: RequestService) {
-    this.userServivce.getCurrentUser().subscribe(user => this.user = user);
-    this.requests$ = this.requestService.requests$;
+  constructor(private _us: UserService,
+              private _rs: RequestService) {
+    this._us.getCurrentUser().subscribe(user => this.user = user);
+    this.requests$ = this._rs.requests$;
     this.requests$.map(requests => requests.toArray()).subscribe(
       requests => this.requestsRows = requests
     );
   }
 
   public onCellClick(data: any): any {
-    console.log(data);
   }
 }

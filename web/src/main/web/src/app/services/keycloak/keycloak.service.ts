@@ -17,7 +17,6 @@ export class KeycloakService {
     return new Promise((resolve, reject) => {
       keycloakAuth.init({checkLoginIframe: false, onLoad: 'check-sso', flow: 'implicit'})
         .success((authenticated) => {
-          console.log('init kc', authenticated, keycloakAuth);
           KeycloakService.auth.loggedIn = true;
           KeycloakService.auth.authz = keycloakAuth;
           KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl
@@ -31,7 +30,6 @@ export class KeycloakService {
   }
 
   public static logout() {
-    console.log('**  LOGOUT');
     KeycloakService.auth.loggedIn = false;
     KeycloakService.auth.authz = null;
 
@@ -42,7 +40,6 @@ export class KeycloakService {
     if(KeycloakService.auth.authz == null) {
       this.init();
     } else {
-      console.log('* *  LOGIN');
       if (returnUri != null) {
         KeycloakService.auth.authz.login({returnUri: returnUri});
       } else {
@@ -53,7 +50,6 @@ export class KeycloakService {
 
   public getToken(): Promise<string> {
     return new Promise((resolve, reject) => {
-      console.log(KeycloakService.auth.authz.token);
       if (KeycloakService.auth.authz.token) {
         resolve(<string>KeycloakService.auth.authz.token);
         KeycloakService.auth.authz

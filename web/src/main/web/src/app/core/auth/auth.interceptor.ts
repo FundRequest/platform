@@ -27,7 +27,8 @@ export class AuthInterceptor implements HttpInterceptor {
         .mergeMap((token: string) => {
           headers.Authorization = `Bearer ${token}`;
           return next.handle(this.getRequest(request, headers));
-        });
+        })
+        .catch((e: any) => Observable.throw(console.log(e)));
     } else {
       return next.handle(this.getRequest(request, headers));
     }

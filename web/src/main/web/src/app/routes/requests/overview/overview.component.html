@@ -15,68 +15,68 @@
       <span i18n>{requestsRows.length, plural, =1 {request} other {requests}}</span>
     </div>
   </div>
-
-  <table class="table table-striped table-hover" [mfData]="requestsRows" #mf="mfDataTable" [mfRowsOnPage]="10">
-    <thead>
-    <tr>
-      <th>
-        <mfDefaultSorter by="watchers"></mfDefaultSorter>
-      </th>
-      <th>
-        <mfDefaultSorter by="issueInformation.title">Summary</mfDefaultSorter>
-      </th>
-      <th>
-        <mfDefaultSorter by="status">Status</mfDefaultSorter>
-      </th>
-      <th>
-        <mfDefaultSorter by="issueInformation.source">Source</mfDefaultSorter>
-      </th>
-      <th>
-        <mfDefaultSorter by="type">Type</mfDefaultSorter>
-      </th>
-      <th>
-        <mfDefaultSorter by="technologies">Technologies</mfDefaultSorter>
-      </th>
-      <th>
-        <mfDefaultSorter by="funded">Funded</mfDefaultSorter>
-      </th>
-      <th>
-        Actions
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let request of mf.data">
-      <td><fnd-watchlink *ngIf="request" [request]="request" [user]="user"></fnd-watchlink></td>
-      <td>
-        <a routerLink="/requests/{{request.id}}">
-          {{request.issueInformation?.title}}
-        </a>
-      </td>
-      <td>{{request.status}}</td>
-      <td>
-        <a target="_blank" href="{{request.issueInformation?.link}}">
-          <i [ngClass]="['fa fa-2x fa-' + request.issueInformation?.source | lowercase]"></i>
-        </a>
-      </td>
-      <td>{{request.type}}</td>
-      <td>
-        <ng-container *ngFor="let t of request.technologies">
-          <span class="label label-primary">{{t}}</span>
-        </ng-container>
-      </td>
-      <td>{{request.balance || 0 | wei}}</td>
-      <td>
-        <button fnd-fund [request]="request" title="Fund" class="btn btn-primary"><i class="fa fa-exchange"></i></button>
-      </td>
-    </tr>
-    </tbody>
-    <tfoot>
-    <tr>
-      <td colspan="8">
-        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
-      </td>
-    </tr>
-    </tfoot>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover" [mfData]="requestsRows" #mf="mfDataTable" [mfRowsOnPage]="10">
+      <thead>
+      <tr>
+        <th>
+          <mfDefaultSorter by="watchers"></mfDefaultSorter>
+        </th>
+        <th>
+          <mfDefaultSorter by="issueInformation.title">Summary</mfDefaultSorter>
+        </th>
+        <th>
+          <mfDefaultSorter by="status">Status</mfDefaultSorter>
+        </th>
+        <th>
+          <mfDefaultSorter by="issueInformation.source">Source</mfDefaultSorter>
+        </th>
+        <th>
+          <mfDefaultSorter by="type">Type</mfDefaultSorter>
+        </th>
+        <th class="hidden-xs">
+          <mfDefaultSorter by="technologies">Technologies</mfDefaultSorter>
+        </th>
+        <th class="hidden-xs">
+          <mfDefaultSorter by="funded">Funded</mfDefaultSorter>
+        </th>
+        <th class="hidden-xs">
+          Actions
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let request of mf.data">
+        <td>
+          <fnd-watchlink *ngIf="request" [request]="request" [user]="user"></fnd-watchlink>
+        </td>
+        <td>
+          <a routerLink="/requests/{{request.id}}">
+            {{request.issueInformation?.title}}
+          </a>
+        </td>
+        <td>{{request.status}}</td>
+        <td>
+          <a target="_blank" href="{{request.issueInformation?.link}}">
+            <i [ngClass]="['fa fa-2x fa-' + request.issueInformation?.source | lowercase]"></i>
+          </a>
+        </td>
+        <td>{{request.type}}</td>
+        <td class="hidden-xs">
+          <ng-container *ngFor="let t of request.technologies">
+            <span class="label label-primary">{{t}}</span>
+          </ng-container>
+        </td>
+        <td class="hidden-xs">{{request.balance || 0 | wei}}</td>
+        <td class="hidden-xs">
+          <button fnd-fund [request]="request" title="Fund" class="btn btn-primary"><i class="fa fa-exchange"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel-footer">
+    <mfBootstrapPaginator [mfTable]="mf" [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+  </div>
 </div>

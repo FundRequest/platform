@@ -36,12 +36,16 @@ export function createTranslateLoader(http: HttpClient) {
     AppComponent,
   ],
   imports     : [
-    HttpClientModule,
     BrowserAnimationsModule, // required for ng2-tag-input
     CoreModule,
+    ComponentsModule,
+    FormsModule,
+    HttpClientModule,
     LayoutModule,
-    SharedModule.forRoot(),
+    ModalModule.forRoot(),
+    MomentModule,
     RoutesModule,
+    SharedModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide   : TranslateLoader,
@@ -49,16 +53,12 @@ export function createTranslateLoader(http: HttpClient) {
         deps      : [HttpClient]
       }
     }),
-    ModalModule.forRoot(),
-    FormsModule,
-    ComponentsModule,
-    MomentModule,
     ServiceModule,
-    StoreModule.forRoot(REDUCER_MAP),
     // Note that you must instrument after importing StoreModule
     StoreDevtoolsModule.instrument({
       maxAge: 25 //  Retains last 25 states
-    })
+    }),
+    StoreModule.forRoot(REDUCER_MAP),
   ],
   providers   : [
     {

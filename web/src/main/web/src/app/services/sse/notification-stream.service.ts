@@ -3,13 +3,10 @@ import { EventSourcePolyfill, OnMessageEvent } from 'ng-event-source';
 import { environment } from '../../../environments/environment';
 import { RequestService } from '../request/request.service';
 import { NotificationStreamMessage } from './notification-stream-message';
-import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { AddNotification } from '../../redux/notifications.reducer';
-import { createNotification, INotificationRecord } from '../../redux/notifications.models';
+import { INotificationRecord } from '../../redux/notifications.models';
 import { IState } from '../../redux/store';
-import { IRequestRecord } from '../../redux/requests.models';
-import { AddRequest } from '../../redux/requests.reducer';
 
 @Injectable()
 export class NotificationStreamService {

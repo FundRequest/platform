@@ -15,7 +15,7 @@ export class AddRequest extends RequestAction {
   }
 
   public handle(state: IRequestList): IRequestList {
-    if (state.indexOf(this.newItem) != -1) {
+    if (state.findIndex((item: IRequestRecord) => item.id == this.newItem.id) != -1) {
       return state;
     }
     return state.push(this.newItem);
