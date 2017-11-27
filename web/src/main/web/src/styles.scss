@@ -11,7 +11,7 @@
 
 @import '../node_modules/angular2-toaster/toaster.css';
 
-@import '../node_modules/ng2-dnd/style.css';
+@import '../node_modules/ng2-dnd/bundles/style.css';
 
 @import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 @import '../node_modules/ag-grid/dist/styles/theme-fresh.css';
@@ -23,8 +23,6 @@
 @import '../node_modules/fullcalendar/dist/fullcalendar.min.css';
 
 @import '../node_modules/codemirror/lib/codemirror.css';
-
-@import '../node_modules/sweetalert/dist/sweetalert.css';
 
 //== Bootstrap
 @import "./app/shared/styles/bootstrap.scss";

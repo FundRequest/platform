@@ -1,22 +1,22 @@
-import {NgModule, Optional, SkipSelf} from "@angular/core";
+import { NgModule, Optional, SkipSelf } from '@angular/core';
 
-import {SettingsService} from "./settings/settings.service";
-import {ThemesService} from "./themes/themes.service";
-import {TranslatorService} from "./translator/translator.service";
-import {MenuService} from "./menu/menu.service";
+import { SettingsService } from './settings/settings.service';
+import { ThemesService } from './themes/themes.service';
+import { TranslatorService } from './translator/translator.service';
+import { MenuService } from './menu/menu.service';
 
-import {throwIfAlreadyLoaded} from "./module-import-guard";
-import {AuthService} from "./auth/auth.service";
-import {AuthGuard} from "./auth/auth.guard";
-import {HttpClientModule} from "@angular/common/http";
-import {ComponentsModule} from "../components/components.module";
+import { throwIfAlreadyLoaded } from './module-import-guard';
+import { AuthService } from './auth/auth.service';
+import { AuthGuard } from './auth/auth.guard';
+import { HttpClientModule } from '@angular/common/http';
+import { ComponentsModule } from '../components/components.module';
 
 @NgModule({
-  imports: [
+  imports     : [
     HttpClientModule,
     ComponentsModule
   ],
-  providers: [
+  providers   : [
     SettingsService,
     ThemesService,
     TranslatorService,
@@ -25,7 +25,7 @@ import {ComponentsModule} from "../components/components.module";
     AuthGuard
   ],
   declarations: [],
-  exports: []
+  exports     : []
 })
 
 export class CoreModule {

@@ -1,8 +1,6 @@
-
 @import '../app/variables';
 @import '../bootstrap/bootstrap/mixins/gradients';
 @import '../app/media-queries';
-
 
 //
 // Variables to change general look
@@ -10,44 +8,43 @@
 
 // LAYOUT
 
-$content-bg:                    #f5f7fa;
-$aside-bg:                      #fff;
+$content-bg: #f5f7fa;
+$aside-bg: #fff;
 // NAVBAR TOP
 
-$nav-top-bg:                    #f3f5f6;
-$nav-top-bg-start:              #f3f5f6;
-$nav-top-bg-end:                #f3f5f6;
-$nav-header-bg:                 transparent;
+$nav-top-bg: #f3f5f6;
+$nav-top-bg-start: #f3f5f6;
+$nav-top-bg-end: #f3f5f6;
+$nav-header-bg: transparent;
 
-$nav-top-item-mobile:           #1eaaf1;
-$nav-top-item-mobile-active:    darken($nav-top-item-mobile, 20%);
+$nav-top-item-mobile: #1eaaf1;
+$nav-top-item-mobile-active: darken($nav-top-item-mobile, 20%);
 
-$nav-top-item-desktop:          #1eaaf1;
-$nav-top-item-desktop-active:   darken($nav-top-item-desktop, 20%);
+$nav-top-item-desktop: #1eaaf1;
+$nav-top-item-desktop-active: darken($nav-top-item-desktop, 20%);
 
 // SIDEBAR
 
-$sidebar-bg:                      $aside-bg;
+$sidebar-bg: $aside-bg;
 
-$sidebar-item-color:              black;
-$sidebar-item-color-active:       $nav-top-item-desktop;
-$sidebar-item-bg-active:          darken($sidebar-bg, 1%);
+$sidebar-item-color: black;
+$sidebar-item-color-active: $nav-top-item-desktop;
+$sidebar-item-bg-active: darken($sidebar-bg, 1%);
 
-$sidebar-icon-color:              black;
-$sidebar-icon-color-active:       $sidebar-item-color-active;
+$sidebar-icon-color: black;
+$sidebar-icon-color-active: $sidebar-item-color-active;
 
-$sidebar-bullet-color:            rgba(0,0,0,.25);
-$sidebar-bullet-color-active:     $sidebar-icon-color-active;
+$sidebar-bullet-color: rgba(0, 0, 0, .25);
+$sidebar-bullet-color-active: $sidebar-icon-color-active;
 
-$sidebar-heading-color:           #919DA8;
-$sidebar-label-color:             $sidebar-item-color;
+$sidebar-heading-color: #919DA8;
+$sidebar-label-color: $sidebar-item-color;
 
 // OFFSIDEBAR
 
-$offsidebar-bg:           #fff;
+$offsidebar-bg: #fff;
 $offsidebar-border-color: greyscale(darken($offsidebar-bg, 20%));
-$offsidebar-color:        $text-color;
-
+$offsidebar-color: $text-color;
 
 /* ========================================================================
    Component: layout
@@ -57,6 +54,7 @@ body,
 .wrapper > section {
   background-color: $content-bg;
 }
+
 .wrapper > .aside {
   background-color: $aside-bg;
 }
@@ -77,6 +75,10 @@ body,
       background-image: none;
     }
   }
+
+  .navbar-brand img {
+    max-height: 34px;
+  }
   .navbar-nav > li > .navbar-text {
     color: $nav-top-item-mobile;
   }
@@ -86,11 +88,15 @@ body,
     &:hover, &:focus {
       color: $nav-top-item-mobile-active;
     }
+
+    > em {
+      color: $nav-top-item-mobile;
+    }
   }
 
   // Navbar link active style
   .navbar-nav > .active > a,
-  .navbar-nav > .open   > a {
+  .navbar-nav > .open > a {
     &, &:hover, &:focus {
       background-color: transparent;
     }
@@ -119,11 +125,11 @@ body,
 
     .navbar-nav > .open > a {
       &, &:hover, &:focus {
-        box-shadow: 0 -3px 0 rgba(255,255,255,.5) inset;
+        box-shadow: 0 -3px 0 rgba(255, 255, 255, .5) inset;
       }
     }
     .navbar-nav > li > .navbar-text {
-        color: $nav-top-item-desktop;
+      color: $nav-top-item-desktop;
     }
     .navbar-nav > li > a,
     .navbar-nav > .open > a {
@@ -133,7 +139,8 @@ body,
       }
     }
 
-  } // .topnavbar
+  }
+  // .topnavbar
 
 }
 
@@ -188,7 +195,7 @@ body,
   > .sidebar-subnav-header {
     color: $sidebar-item-color;
   }
-  > li  {
+  > li {
     > a,
     > .nav-item {
       color: $sidebar-item-color;
@@ -207,7 +214,8 @@ body,
         }
       }
     }
-  } // li
+  }
+  // li
 }
 
 /* ========================================================================
@@ -218,4 +226,20 @@ body,
   border-left: 1px solid $offsidebar-border-color;
   background-color: $offsidebar-bg;
   color: $offsidebar-color;
+}
+
+.form-group .control-label {
+  padding-top: 7px;
+}
+
+.panel-heading {
+  display: block;
+
+  &::after {
+    content: '';
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
 }

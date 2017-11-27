@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 
-import {inject, TestBed} from "@angular/core/testing";
-import {SettingsService} from "./settings.service";
+import { TestBed, async, inject } from '@angular/core/testing';
+import { SettingsService } from './settings.service';
 
 describe('Service: Settings', () => {
   beforeEach(() => {

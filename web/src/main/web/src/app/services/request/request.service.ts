@@ -1,15 +1,16 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {Store} from '@ngrx/store';
-import {HttpClient} from "@angular/common/http";
-import {RequestsStats} from "../../core/requests/RequestsStats";
-import {IState} from "../../redux/store";
-import {createRequest, IRequestList, IRequestRecord} from "../../redux/requests.models";
-import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from "../../redux/requests.reducer";
-import {IUserRecord} from "../../redux/user.models";
-import {ContractsService} from "../contracts/contracts.service";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+import { HttpClient } from '@angular/common/http';
+import { RequestsStats } from '../../core/requests/RequestsStats';
+import { IState } from '../../redux/store';
+import { createRequest, IRequestList, IRequestRecord } from '../../redux/requests.models';
+import { AddRequest, EditRequest, RemoveRequest, ReplaceRequestList } from '../../redux/requests.reducer';
+import { IUserRecord } from '../../redux/user.models';
+import { ContractsService } from '../contracts/contracts.service';
 
 import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/take';
 
 @Injectable()
 export class RequestService {
@@ -43,28 +44,28 @@ export class RequestService {
     return this.store.select(state => state.requests);
   }
 
-  public getStatistics(): Promise<RequestsStats> {
-    return this.http.get('/api/public/requests/statistics')
-      .toPromise()
-      .then(response => response as RequestsStats)
-      .catch(this.handleError);
+  public async getStatistics(): Promise<RequestsStats> {
+    return await this.http.get('/api/public/requests/statistics')
+      .toPromise() as RequestsStats;
+      //.then(response => response as RequestsStats)
+      //.catch(this.handleError);
   }
 
-  public addRequest(issueLink: string, technologies: String[]): void {
+  public addRequest(issueLink: string, technologies: string[]): void {
     this.http.post(`/api/private/requests/`, {
-      issueLink: issueLink,
+      issueLink   : issueLink,
       technologies: technologies
     }, {observe: 'response'}).take(1).subscribe((result) => {
-        let location = result.headers.get('location');
+        /*let location = result.headers.get('location');
         if (location.length > 0) {
           this.http.get(location)
             .take(1).subscribe((request: IRequestRecord) => {
               this.addRequestInStore(createRequest(request));
             }, error => this.handleError(error)
-          )
-        }
+          );
+        }*/
       }, error => this.handleError(error)
-    )
+    );
   }
 
   public async fundRequest(request: IRequestRecord, funding: number): Promise<string> {
@@ -103,7 +104,7 @@ export class RequestService {
     if (add) {
       httpCall = this.http.put(httpUrl, {
         responseType: 'text',
-        requestId: request.id
+        requestId   : request.id
       });
     } else {
       httpCall = this.http.delete(httpUrl);
@@ -114,18 +115,18 @@ export class RequestService {
         this.editRequestInStore(newRequest, request); // if something when wrong, update it back to the old value
         this.handleError(error);
       }
-    )
+    );
   }
 
-  private removeRequestInStore(request: IRequestRecord) {
+  public removeRequestInStore(request: IRequestRecord) {
     this.store.dispatch(new RemoveRequest(request));
   }
 
-  private addRequestInStore(newRequest: IRequestRecord) {
+  public addRequestInStore(newRequest: IRequestRecord) {
     this.store.dispatch(new AddRequest(newRequest));
   }
 
-  private editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {
+  public editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {
     this.store.dispatch(new EditRequest(oldRequest, modifiedRequest));
   }
 

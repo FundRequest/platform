@@ -1,35 +1,42 @@
-import {NgModule} from "@angular/core";
-import {HttpClientModule} from "@angular/common/http";
-import {WatchlinkComponent} from "./watchlink/watchlink.component";
-import {CommonModule} from "@angular/common";
-import {StatisticsComponent} from './statistics/statistics.component';
-import {EasypiechartDirective} from "../shared/directives/easypiechart/easypiechart.directive";
-import {SharedModule} from "../shared/shared.module";
-import {FundModalComponent} from "./fund-modal/fund-modal.component";
-import {RequestModalComponent} from './request-modal/request-modal.component';
-import {ApproveModalComponent} from "./approve-modal/approve-modal.component";
+import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { WatchlinkComponent } from './watchlink/watchlink.component';
+import { CommonModule } from '@angular/common';
+import { StatisticsComponent } from './statistics/statistics.component';
+import { EasypiechartDirective } from '../shared/directives/easypiechart/easypiechart.directive';
+import { SharedModule } from '../shared/shared.module';
+import { FundModalComponent } from './fund-modal/fund-modal.component';
+import { RequestModalComponent } from './request-modal/request-modal.component';
+import { ApproveModalComponent } from './approve-modal/approve-modal.component';
+import { TagInputModule } from 'ngx-chips';
+import { NotificationStreamComponent } from './notification-stream/notification-stream.component';
+import { MomentModule } from 'angular2-moment';
 
 @NgModule({
-  imports: [
+  imports        : [
     HttpClientModule,
     CommonModule,
-    SharedModule
-  ],
-  providers: [],
-  declarations: [
-    WatchlinkComponent,
-    StatisticsComponent,
-    FundModalComponent,
-    ApproveModalComponent,
-    RequestModalComponent
-  ],
-  exports: [
+    SharedModule,
+    TagInputModule,
+    MomentModule
+],
+  providers      : [],
+  declarations   : [
     WatchlinkComponent,
     StatisticsComponent,
     FundModalComponent,
     ApproveModalComponent,
     RequestModalComponent,
-    EasypiechartDirective
+    NotificationStreamComponent
+  ],
+  exports        : [
+    WatchlinkComponent,
+    StatisticsComponent,
+    FundModalComponent,
+    ApproveModalComponent,
+    RequestModalComponent,
+    EasypiechartDirective,
+    NotificationStreamComponent
   ],
   entryComponents: [
     FundModalComponent,

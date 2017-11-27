@@ -1,6 +1,6 @@
-import {List} from 'immutable';
-import {Action} from '@ngrx/store';
-import {IRequestList, IRequestRecord} from "./requests.models";
+import { List } from 'immutable';
+import { Action } from '@ngrx/store';
+import { IRequestList, IRequestRecord } from './requests.models';
 
 export abstract class RequestAction implements Action {
   constructor(public type: string) {
@@ -15,6 +15,9 @@ export class AddRequest extends RequestAction {
   }
 
   public handle(state: IRequestList): IRequestList {
+    if (state.findIndex((item: IRequestRecord) => item.id == this.newItem.id) != -1) {
+      return state;
+    }
     return state.push(this.newItem);
   }
 }

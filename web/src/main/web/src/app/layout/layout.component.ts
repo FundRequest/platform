@@ -1,16 +1,16 @@
-import {Component, OnInit} from "@angular/core";
-import {ToasterConfig} from "angular2-toaster";
+import { Component, OnInit } from '@angular/core';
+import { ToasterConfig } from 'angular2-toaster';
 
 @Component({
-  selector: 'app-layout',
+  selector   : 'app-layout',
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss']
+  styleUrls  : ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit {
 
-  private _toasterConfig = new ToasterConfig({
+  public toasterConfig = new ToasterConfig({
     positionClass: 'toast-bottom-right',
-    messageClass: 'toast-custom-message'
+    messageClass : 'toast-custom-message'
   });
 
   constructor() {

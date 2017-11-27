@@ -9,5 +9,9 @@ import java.util.List;
 public interface FundService {
     List<FundDto> findAll();
 
+    List<FundDto> findAll(Iterable<Long> ids);
+
+    FundDto findOne(Long id);
+
     void addFunds(Principal funder, AddFundsCommand command);
 }

@@ -4,5 +4,13 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  restApiLocation: 'http://localhost:8080',
+  keycloak: {
+    url: 'https://key.fundrequest.io/auth',
+    realm: 'fundrequest',
+    clientId: 'fundrequest_dev',
+    //'ssl-required': 'external',
+    //'public-client': true
+  }
 };

@@ -1,16 +1,16 @@
-import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
-import {Subscription} from "rxjs/Subscription";
-import {IRequestRecord} from "../../../redux/requests.models";
-import {RequestService} from "../../../services/request/request.service";
-import {ContractsService} from "../../../services/contracts/contracts.service";
-import {UserService} from "../../../services/user/user.service";
-import {IUserRecord} from "../../../redux/user.models";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import { IRequestRecord } from '../../../redux/requests.models';
+import { RequestService } from '../../../services/request/request.service';
+import { ContractsService } from '../../../services/contracts/contracts.service';
+import { UserService } from '../../../services/user/user.service';
+import { IUserRecord } from '../../../redux/user.models';
 
 @Component({
-  selector: 'fnd-request-detail',
+  selector   : 'fnd-request-detail',
   templateUrl: './detail.component.html',
-  styleUrls: ['./detail.component.scss']
+  styleUrls  : ['./detail.component.scss']
 })
 export class DetailComponent implements OnInit {
 

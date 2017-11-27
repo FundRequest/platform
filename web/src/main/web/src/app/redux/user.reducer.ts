@@ -1,5 +1,5 @@
-import {Action} from '@ngrx/store';
-import {createUser, IUserRecord} from "./user.models";
+import { Action } from '@ngrx/store';
+import { createUser, IUserRecord } from './user.models';
 
 export abstract class UserAction implements Action {
   constructor(public type: string) {

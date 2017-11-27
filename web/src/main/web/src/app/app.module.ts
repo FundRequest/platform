@@ -1,31 +1,33 @@
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations"; // this is needed!
-import {APP_INITIALIZER, NgModule} from "@angular/core";
-import {Http, HttpModule} from "@angular/http";
-import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
-import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
+import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import {AppComponent} from "./app.component";
+import { AppComponent } from './app.component';
 
-import {FormsModule} from '@angular/forms';
-import {CoreModule} from "./core/core.module";
-import {LayoutModule} from "./layout/layout.module";
-import {SharedModule} from "./shared/shared.module";
-import {RoutesModule} from "./routes/routes.module";
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
-import {AuthInterceptor} from "./core/auth/auth.interceptor";
-import {ComponentsModule} from "./components/components.module";
-import {ModalModule} from "ngx-bootstrap";
+import { CoreModule } from './core/core.module';
+import { LayoutModule } from './layout/layout.module';
+import { SharedModule } from './shared/shared.module';
+import { RoutesModule } from './routes/routes.module';
 
-import {EmptyResponseBodyErrorInterceptor} from "./core/empty-response-body-error/empty-response-body-error.interceptor";
+import { FormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './core/auth/auth.interceptor';
+import { ComponentsModule } from './components/components.module';
+import { ModalModule } from 'ngx-bootstrap';
 
-import {ServiceModule} from "./services/service.module";
+import { EmptyResponseBodyErrorInterceptor } from './core/empty-response-body-error/empty-response-body-error.interceptor';
 
-import {REDUCER_MAP} from "./redux/store";
-import {StoreModule} from "@ngrx/store";
-import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import { ServiceModule } from './services/service.module';
+
+import { REDUCER_MAP } from './redux/store';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { MomentModule } from 'angular2-moment';
 
 // https://github.com/ocombe/ng2-translate/issues/218
-export function createTranslateLoader(http: Http) {
+export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
@@ -33,49 +35,50 @@ export function createTranslateLoader(http: Http) {
   declarations: [
     AppComponent,
   ],
-  imports: [
-    HttpModule,
-    ComponentsModule,
+  imports     : [
     BrowserAnimationsModule, // required for ng2-tag-input
     CoreModule,
-    ServiceModule,
-    LayoutModule,
-    SharedModule.forRoot(),
+    ComponentsModule,
     FormsModule,
-    RoutesModule,
+    HttpClientModule,
+    LayoutModule,
     ModalModule.forRoot(),
+    MomentModule,
+    RoutesModule,
+    SharedModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
-        provide: TranslateLoader,
+        provide   : TranslateLoader,
         useFactory: (createTranslateLoader),
-        deps: [Http]
+        deps      : [HttpClient]
       }
     }),
-    StoreModule.forRoot(REDUCER_MAP),
+    ServiceModule,
     // Note that you must instrument after importing StoreModule
     StoreDevtoolsModule.instrument({
       maxAge: 25 //  Retains last 25 states
-    })
+    }),
+    StoreModule.forRoot(REDUCER_MAP),
   ],
-  providers: [
+  providers   : [
     {
-      provide: HTTP_INTERCEPTORS,
+      provide : HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true
+      multi   : true
     },
     {
-      provide: HTTP_INTERCEPTORS,
+      provide : HTTP_INTERCEPTORS,
       useClass: EmptyResponseBodyErrorInterceptor,
-      multi: true
+      multi   : true
     },
     /*{ // Function that is called before the app loads
-      provide: APP_INITIALIZER,
-      useFactory: (cs: ContractsService) => function() {return cs.init()},
-      deps: [ContractsService],
-      multi: true
-    }*/
+     provide: APP_INITIALIZER,
+     useFactory: (cs: ContractsService) => function() {return cs.init()},
+     deps: [ContractsService],
+     multi: true
+     }*/
   ],
-  bootstrap: [AppComponent]
+  bootstrap   : [AppComponent]
 })
 export class AppModule {
 }

@@ -5,6 +5,9 @@
     var progressBar = document.querySelector('.preloader-progress-bar');
     var body = document.querySelector('body');
 
+    // if preloader not present => abort
+    if (!preloader) return;
+
     // disables scrollbar
     body.style.overflow = 'hidden';
 
@@ -19,7 +22,7 @@
         var remaining = 100 - counter;
         counter = counter + (0.015 * Math.pow(1 - Math.sqrt(remaining), 2));
 
-        if(progressBar) progressBar.style.width = Math.round(counter)+'%';
+        if (progressBar) progressBar.style.width = Math.round(counter) + '%';
 
         timeout = setTimeout(startCounter, 20);
     }
@@ -28,7 +31,7 @@
 
         clearTimeout(timeout);
 
-        if(progressBar) progressBar.style.width = '100%';
+        if (progressBar) progressBar.style.width = '100%';
 
         setTimeout(function() {
             // animate preloader hiding

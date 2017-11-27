@@ -7,11 +7,12 @@
 $animate-fade-distance: 18px;
 $animate-duration: 0.5s;
 
-// https://github.com/angular/angular/issues/9845
-// exclude some elements that breaks visibility
-app-layout router-outlet + *:not(app-codeeditor, app-notification) {
+app-layout router-outlet + * {
     display: block;
-    @extend .animated;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: backwards;
+    animation-fill-mode: backwards;
     @extend .fadeIn;
 }
 

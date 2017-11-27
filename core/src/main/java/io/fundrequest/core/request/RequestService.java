@@ -9,6 +9,8 @@ import java.util.List;
 public interface RequestService {
     List<RequestDto> findAll();
 
+    List<RequestDto> findAll(Iterable<Long> ids);
+
     List<RequestDto> findRequestsForUser(Principal principal);
 
     RequestDto findRequest(Long id);

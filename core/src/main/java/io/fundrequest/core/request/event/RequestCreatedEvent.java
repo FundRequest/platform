@@ -1,36 +1,17 @@
 package io.fundrequest.core.request.event;
 
-import io.fundrequest.core.request.domain.RequestSource;
+import io.fundrequest.core.request.view.RequestDto;
 
 public class RequestCreatedEvent {
 
-    private String creator;
-    private String link;
+    private RequestDto requestDto;
 
-    private String title;
-
-    private RequestSource source;
-
-    public RequestCreatedEvent(String creator, String link, String title, RequestSource source) {
-        this.creator = creator;
-        this.link = link;
-        this.title = title;
-        this.source = source;
+    public RequestCreatedEvent(RequestDto requestDto) {
+        this.requestDto = requestDto;
     }
 
-    public String getLink() {
-        return link;
-    }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public RequestSource getSource() {
-        return source;
-    }
-
-    public String getCreator() {
-        return creator;
+    public RequestDto getRequestDto() {
+        return requestDto;
     }
 }

@@ -5,5 +5,10 @@
 <section>
   <div id="dashboard">
     <fnd-statistics [statistics]="statistics | async"></fnd-statistics>
+    <div class="row mb-2">
+      <div class="col-sm-push-2 col-sm-8">
+        <fnd-notification-stream></fnd-notification-stream>
+      </div>
+    </div>
   </div>
 </section>

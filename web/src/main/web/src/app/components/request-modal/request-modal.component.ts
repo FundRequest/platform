@@ -1,47 +1,46 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {BsModalRef} from "ngx-bootstrap";
-import {RequestService} from "../../services/request/request.service";
-import {IRequestList, IRequestRecord} from "../../redux/requests.models";
-import {Observable} from "rxjs/Observable";
-import {Subscription} from "rxjs/Subscription";
-import {Router} from "@angular/router";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BsModalRef } from 'ngx-bootstrap';
+import { RequestService } from '../../services/request/request.service';
+import { IRequestList } from '../../redux/requests.models';
+import { Subscription } from 'rxjs/Subscription';
+import { Router } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Issue } from './issue';
+import { CustomValidators } from '../../custom-validators/custom-validators';
 
 @Component({
-  selector: 'fnd-request-modal',
+  selector   : 'fnd-request-modal',
   templateUrl: './request-modal.component.html',
-  styleUrls: ['./request-modal.component.scss']
+  styleUrls  : ['./request-modal.component.scss']
 })
 export class RequestModalComponent implements OnInit, OnDestroy {
   private _requests: IRequestList;
   private _subscription: Subscription;
-  private _currentRequest: IRequestRecord;
-  public title: string;
-  public issueLink: string;
-  public technologies: any = [];
+
+  public title: string = 'Add Request';
+  public requestForm: FormGroup;
+
+  public issue: Issue = new Issue;
 
   constructor(public bsModalRef: BsModalRef, private _router: Router, private _rs: RequestService) {
   }
 
-  private requestExists(): boolean {
-    if (this.issueLink != null && this._requests) {
-      let requests = this._requests.filter((request: IRequestRecord) => request.issueInformation.link == this.issueLink.trim())
-      if (requests.count() > 0) {
-        this._currentRequest = requests.first();
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private gotoRequest(): void {
-    this._router.navigate([`/requests/${this._currentRequest.id}`]);
-    this.bsModalRef.hide();
-  }
-
-  ngOnInit() {
-    this.title = 'Add Request';
+  ngOnInit(): void {
     this._subscription = this._rs.requests$.subscribe(result => this._requests = result);
+
+    this.requestForm = new FormGroup({
+      link        : new FormControl(this.issue.link, [
+        Validators.required,
+        Validators.pattern(/^https:\/\/github.com\/FundRequest\/area51\/issues\/[0-9]+$/),
+        CustomValidators.requestExists(this._requests),
+      ]),
+      technologies: new FormControl(this.issue.technologies),
+    });
+  }
+
+  public gotoRequest(id: number | string): void {
+    this._router.navigate([`/requests/${id}`]);
+    this.bsModalRef.hide();
   }
 
   ngOnDestroy() {
@@ -50,10 +49,14 @@ export class RequestModalComponent implements OnInit, OnDestroy {
 
   public addRequest() {
     let technologies = [];
-    for (let i = 0; i < this.technologies.length; i++) {
-      technologies.push(this.technologies[i].value);
+    for(let tech in this.technologies.value) {
+      technologies.push(this.technologies.value[tech].value);
     }
-    this._rs.addRequest(this.issueLink.trim(), technologies);
+    this._rs.addRequest(this.link.value.trim(), technologies);
     this.bsModalRef.hide();
   }
+
+  get link() { return this.requestForm.get('link'); }
+
+  get technologies() { return this.requestForm.get('technologies'); }
 }

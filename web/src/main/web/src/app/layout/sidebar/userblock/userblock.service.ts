@@ -1,23 +1,24 @@
-import {Injectable} from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class UserblockService {
-    public userBlockVisible: boolean;
-    constructor() {
-        // initially visible
-        this.userBlockVisible  = true;
-    }
+  public userBlockVisible: boolean;
 
-    getVisibility() {
-        return this.userBlockVisible;
-    }
+  constructor() {
+    // initially visible
+    this.userBlockVisible = true;
+  }
 
-    setVisibility(stat = true) {
-        this.userBlockVisible = stat;
-    }
+  getVisibility() {
+    return this.userBlockVisible;
+  }
 
-    toggleVisibility() {
-        this.userBlockVisible = !this.userBlockVisible;
-    }
+  setVisibility(stat = true) {
+    this.userBlockVisible = stat;
+  }
+
+  toggleVisibility() {
+    this.userBlockVisible = !this.userBlockVisible;
+  }
 
 }

@@ -1,6 +1,6 @@
-import {Directive, HostListener} from '@angular/core';
-import {BsModalRef, BsModalService} from "ngx-bootstrap";
-import {RequestModalComponent} from "../../../components/request-modal/request-modal.component";
+import { Directive, HostListener } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { RequestModalComponent } from '../../../components/request-modal/request-modal.component';
 
 @Directive({
   selector: '[fnd-add-request]'

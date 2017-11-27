@@ -1,0 +1,32 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <div class="panel-title">Recent events</div>
+  </div>
+  <div data-stream="activities" class="list-group">
+    <a href="#" class="list-group-item" *ngFor="let notification of notifications$ | async as INotification">
+      <div class="media-box">
+        <div class="pull-left">
+          <!--img *ngIf="message.user !== null" [src]="message.user.picture" [alt]="message.user.picture"
+               class="media-box-object img-circle thumb32"-->
+        </div>
+        <div class="media-box-body clearfix">
+          <small class="pull-right">
+            {{notification.date | amTimeAgo}}
+          </small>
+
+          <!--strong  *ngIf="message.user !== null" class="media-box-heading text-primary">
+            <span class="circle circle-success circle-lg text-left"></span>
+            <span>{{message.user.name}}</span>
+          </strong-->
+          <p class="mb-sm">
+            <small [innerHTML]="notification.description"></small>
+            <small *ngIf="notification.link">
+              <a [routerLink]="notification.link"
+                 [innerHTML]="notification.linkMessage"></a>
+            </small>
+          </p>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
