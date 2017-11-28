@@ -11,7 +11,7 @@ To report a bug or request a feature or change in the [Alpha](https://alpha.fund
 You can find the Alpha platform by clicking on this link : https://alpha.fundrequest.io
 
 #### How can I get test FND tokens which I can use in the Alpha?
-If you want to request to receive test FND tokens you must send your Rinkeby address to the [#faucet](https://fundrequest.slack.com/messages/faucet) channel in our [slack](https://fundrequest.slack.com). [(subscribe)](https://slack.fundrequest.io)
+If you want to request to receive test FND tokens you must send your Rinkeby address to the [#faucet](https://fundrequest.chat) channel in our [Rocket.Chat](https://fundrequest.chat). [(subscribe)](https://slack.fundrequest.io)
 
 #### Where can I find more documentation on the Alpha release and the platform?
 * Documentation on the Alpha release can be found here : https://docs.fundrequest.io/display/PUB/Alpha+Release
