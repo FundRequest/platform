@@ -20,6 +20,14 @@ export class WatchlinkComponent {
     return this.request.watchers.indexOf(this.user.email) > -1;
   }
 
+  public get first10watchers(): string[] {
+    return this.request.watchers.filter((item: string, index: number) => index < 10);
+  }
+
+  public get hasMoreWatchers(): boolean {
+    return this.request.watchers.length > 10;
+  }
+
   public toggleIsWatcher(): void {
     if (!this.isWatcher()) {
       this.requestService.setUserAsWatcher(this.request, this.user);
