@@ -33,12 +33,6 @@
         -->
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <!-- Search
-      <li>
-        <a (click)="openNavSearch($event)">
-          <em class="icon-magnifier"></em>
-        </a>
-      </li>
       <!-- Fullscreen (only desktops)
       <li class="visible-lg">
         <a #fsbutton (click)="toggleFullScreen($event)">
@@ -111,8 +105,13 @@
       </a>
       </li>
       -->
-
-      <!-- todo: add logout functionality -->
+      <!-- Search
+      <li>
+        <a (click)="openNavSearch($event)">
+          <em class="icon-magnifier"></em>
+        </a>
+      </li>
+      -->
       <li *ngIf="userService.userIsLoggedIn()">
         <a (click)="logout($event)">
           <em class="fa fa-sign-out"></em>
@@ -121,6 +120,6 @@
     </ul>
   </div>
 
-  <app-navsearch [visible]="getNavSearchVisible()" (onclose)="setNavSearchVisible(false)"></app-navsearch>
+  <!--app-navsearch [visible]="getNavSearchVisible()" (onclose)="setNavSearchVisible(false)"></app-navsearch-->
 
 </nav>

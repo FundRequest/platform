@@ -8,15 +8,34 @@
   <span>Requests</span>
   <small>Let's fund some</small>
 </div>
-<div class="panel panel-default" *ngIf="requestsRows.length > 0">
+<div class="panel panel-default">
   <div class="panel-heading">
-    <div class="pull-right text-muted">
-      <i class="fa fa-lightbulb-o mr-sm"></i><strong>{{requestsRows.length}}</strong>
-      <span i18n>{requestsRows.length, plural, =1 {request} other {requests}}</span>
+    <div class="row form-horizontal">
+      <div class="col-md-6">
+        <input [(ngModel)]="requestFilter.issueInformation.title" type="search" class="form-control"
+               placeholder="Search by summary">
+      </div>
+      <div class="col-md-6">
+        <div class="text-muted control-label">
+          <i class="fa fa-lightbulb-o mr-sm"></i><strong>{{(requestsRows | filterBy: requestFilter).length}}</strong>
+          <span i18n>{requestsRows.length, plural, =1 {request} other {requests}}</span>
+        </div>
+      </div>
     </div>
   </div>
+</div>
+<ng-template #not_found>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      No results.
+    </div>
+  </div>
+</ng-template>
+
+<div class="panel panel-default" *ngIf="(requestsRows | filterBy: requestFilter).length > 0; else not_found">
   <div class="table-responsive">
-    <table class="table table-striped table-hover" [mfData]="requestsRows" #mf="mfDataTable" [mfRowsOnPage]="10">
+    <table class="table table-striped table-hover" [mfData]="requestsRows | filterBy: requestFilter" #mf="mfDataTable"
+           [mfRowsOnPage]="10">
       <thead>
       <tr>
         <th>
