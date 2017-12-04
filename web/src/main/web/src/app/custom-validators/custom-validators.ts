@@ -9,7 +9,7 @@ export class CustomValidators {
       if (control.value != null && requests) {
         let checkRequests = requests.filter((request: IRequestRecord) => request.issueInformation.link == control.value.trim());
         if (checkRequests.count() > 0) {
-          return {'requestExists': requests.first().id};
+          return {'requestExists': checkRequests.first().id};
         }
       }
 
