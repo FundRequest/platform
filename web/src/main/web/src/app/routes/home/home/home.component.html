@@ -6,7 +6,26 @@
   <div id="dashboard">
     <fnd-statistics [statistics]="statistics | async"></fnd-statistics>
     <div class="row mb-2">
-      <div class="col-sm-push-2 col-sm-8">
+      <div class="col col-sm-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-lg-3 col-md-4">
+                <div class="text-center">
+                  <img alt="fundrequest" class="img-responsive center-block home-logo" src="assets/img/logo-single.png">
+                </div>
+              </div>
+              <div class="col-lg-9 col-md-8 home-text">
+                <div class="panel-title mb-sm">Don't know where to start?</div>
+                <p>
+                  <a class="btn btn-primary btn-lg" href="https://docs.fundrequest.io/display/PUB/Alpha+Release">Documentation</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col col-sm-8">
         <fnd-notification-stream></fnd-notification-stream>
       </div>
     </div>
