@@ -141,10 +141,10 @@ export class ContractsService {
       if (+total > +currentAllowance) {
         await new Promise((resolve, reject) => {
           let batch = this._web3.createBatch();
-          batch.add(this._tokenContract.approve.request(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, result) {
+          batch.add(this._tokenContract.approve.request(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptionsForBatch(account), function (err, result) {
             err ? reject(err) : console.log('approve result: ', result);
           }));
-          batch.add(this._fundRequestContract.fund.request(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptions(account), function (err, result) {
+          batch.add(this._fundRequestContract.fund.request(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptionsForBatch(account), function (err, result) {
             err ? reject(err) : resolve(total);
           }));
           batch.execute();
@@ -184,6 +184,13 @@ export class ContractsService {
   private _getTransactionLink(tx: string): string {
     // TODO: Parametrize link
     return `<a target="_blank" href="https://rinkeby.etherscan.io/tx/${tx}">Go to transaction.</a>`;
+  }
+
+  private _getTransactionOptionsForBatch(account: string): any {
+    return {
+      from: account,
+      gas : 1
+    };
   }
 
   private _getTransactionOptions(account: string): any {
