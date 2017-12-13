@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.infrastructure.github.parser;
 
 import io.fundrequest.core.request.domain.IssueInformation;
-import io.fundrequest.core.request.domain.RequestSource;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +34,8 @@ public class GithubParser {
                 issueInformation.getNumber()
         );
         issueInformation.setTitle(githubResult.getTitle());
-        issueInformation.setSource(RequestSource.GITHUB);
+        issueInformation.setPlatform(Platform.GITHUB);
+        issueInformation.setPlatformId("" + githubResult.getId());
         return issueInformation;
     }
 

@@ -1,6 +1,6 @@
 package io.fundrequest.core.request.fund.handler;
 
-import io.fundrequest.core.request.domain.RequestSource;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.infrastructure.github.CreateGithubComment;
@@ -35,7 +35,7 @@ public class CreateGithubCommentOnFundHandler {
             comment.setBody("Great! " + amount.toString() + " FND was added to this issue. For more information, go to https://alpha.fundrequest.io.");
             RequestDto request = event.getRequestDto();
             IssueInformationDto issueInformation = request.getIssueInformation();
-            if (issueInformation.getSource() == RequestSource.GITHUB) {
+            if (issueInformation.getPlatform() == Platform.GITHUB) {
                 githubClient.createCommentOnIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), comment);
             }
         }
