@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
-import { IRequestRecord } from '../../redux/requests.models';
-import { NotificationService } from '../notification/notification.service';
+import {IRequestRecord} from '../../redux/requests.models';
+import {NotificationService} from '../notification/notification.service';
 
 
 const swal = require('sweetalert');
@@ -31,20 +31,21 @@ export class ContractsService {
     }
   }
 
-  public init(): void {
-    this.checkAndInstantiateWeb3();
+  public async init() {
+    await this.checkAndInstantiateWeb3();
     if (this._web3) {
       this.setContracts();
       this.getAccount();
     }
   }
 
-  private checkAndInstantiateWeb3(): void {
+  private async checkAndInstantiateWeb3() {
     // Checking if Web3 has been injected by the browser (Mist/MetaMask)
     if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
-      if (this._web3.version.network !== '4') {
+      let netId = await this.getNetwork();
+      if (netId !== '4') {
         this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io'));
       }
     } else {
@@ -56,6 +57,19 @@ export class ContractsService {
     this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
     this._fundRequestContract = this._web3.eth.contract(fundRequestAbi).at(this._fundRequestContractAddress);
   };
+
+  private async getNetwork(): Promise<string> {
+    return await new Promise((resolve, reject) => {
+      this._web3.version.getNetwork((err, netId) => {
+        if (err != null) {
+          // alert('There was an error fetching your accounts.');
+          resolve(null);
+          return;
+        }
+        resolve(netId);
+      });
+    }) as string;
+  }
 
   private async getAccount(): Promise<string> {
     if (this._account == null) {
@@ -189,14 +203,14 @@ export class ContractsService {
   private _getTransactionOptionsForBatch(account: string): any {
     return {
       from: account,
-      gas : 1
+      gas: 1
     };
   }
 
   private _getTransactionOptions(account: string): any {
     return {
       from: account,
-      gas : 300000
+      gas: 300000
     };
   }
 }
