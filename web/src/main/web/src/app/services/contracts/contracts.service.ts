@@ -22,8 +22,8 @@ export class ContractsService {
 
   private _init: boolean = false;
 
-  private _tokenContractAddress: string = '0x441e36bc87d343e7b2f908570823b43ac4ef6cb6';
-  private _fundRequestContractAddress: string = '0x43a29f127adbc1e664c389367b0a0fceee36e764';
+  private _tokenContractAddress: string = '0x659e11eb18d41b62ca3a642703bc62b59c97adfa';
+  private _fundRequestContractAddress: string = '0x566f1ce586364a6d0ada982fe473fa22a5046b55';
 
   constructor(private _ns: NotificationService) {
     if (!this._init) {
@@ -146,7 +146,7 @@ export class ContractsService {
     );
   }
 
-  public async fundRequest(request: IRequestRecord, value: number): Promise<string> {
+  public async fundRequest(platform: string, platformId: string, value: number): Promise<string> {
     let account: string = await this.getAccount();
     if (!!account) {
       let currentAllowance: string = await this.getUserAllowance();
@@ -154,20 +154,20 @@ export class ContractsService {
 
       if (+total > +currentAllowance) {
         await new Promise((resolve, reject) => {
-          let batch = this._web3.createBatch();
-          batch.add(this._tokenContract.approve.request(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptionsForBatch(account), function (err, result) {
+          // let batch = this._web3.createBatch();
+          this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, result) {
             err ? reject(err) : console.log('approve result: ', result);
-          }));
-          batch.add(this._fundRequestContract.fund.request(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptionsForBatch(account), function (err, result) {
+          });
+          this._fundRequestContract.fund.sendTransaction(platform, platformId, total, this._getTransactionOptions(account), function (err, result) {
             err ? reject(err) : resolve(total);
-          }));
-          batch.execute();
+          });
+          // batch.execute();
         });
         // TODO: Check if there is a way to get transaction hashes of batch
       }
       else {
         let tx = await new Promise((resolve, reject) => {
-          this._fundRequestContract.fund.sendTransaction(total, this._web3.fromAscii(String(request.id)), account, this._getTransactionOptions(account), function (err, tx) {
+          this._fundRequestContract.fund.sendTransaction(platform, platformId, total, this._getTransactionOptions(account), function (err, tx) {
             err ? reject(err) : resolve(tx);
           });
         }) as string;
