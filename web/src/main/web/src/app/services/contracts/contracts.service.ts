@@ -154,20 +154,20 @@ export class ContractsService {
 
       if (+total > +currentAllowance) {
         await new Promise((resolve, reject) => {
-          // let batch = this._web3.createBatch();
-          this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, result) {
-            err ? reject(err) : console.log('approve result: ', result);
-          });
-          this._fundRequestContract.fund.sendTransaction(platform, platformId, total, this._getTransactionOptions(account), function (err, result) {
+          let batch = this._web3.createBatch();
+          batch.add(this._fundRequestContract.fund.sendTransaction(this._web3.fromAscii(platform), this._web3.fromAscii(String(platformId)), total, this._getTransactionOptions(account), function (err, result) {
             err ? reject(err) : resolve(total);
-          });
-          // batch.execute();
+          }));
+          batch.add(this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, tx) {
+            err ? reject(err) : resolve(tx);
+          }));
+          batch.execute();
         });
         // TODO: Check if there is a way to get transaction hashes of batch
       }
       else {
         let tx = await new Promise((resolve, reject) => {
-          this._fundRequestContract.fund.sendTransaction(platform, platformId, total, this._getTransactionOptions(account), function (err, tx) {
+          this._fundRequestContract.fund.sendTransaction(this._web3.fromAscii(platform), this._web3.fromAscii(String(platformId)), total, this._getTransactionOptions(account), function (err, tx) {
             err ? reject(err) : resolve(tx);
           });
         }) as string;
