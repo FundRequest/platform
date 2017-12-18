@@ -119,13 +119,10 @@ export class RequestService {
     this.store.dispatch(new AddRequest(newRequest));
     this.contractService.getRequestBalance(newRequest).then(
       (balance) => {
-        let nr = {...newRequest};
-        nr.balance = balance;
-        console.log(newRequest);
-        console.log(nr);
-        this.editRequestInStore(newRequest, nr);
+        let updatedRequests: IRequestRecord = newRequest.set('balance', balance);
+        this.editRequestInStore(newRequest, updatedRequests);
       }
-    )
+    );
   }
 
   public editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {
