@@ -1,21 +1,14 @@
 package io.fundrequest.core.request.domain;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum Platform {
-    GITHUB("github", 1),
-    STACK_OVERFLOW("stack-overflow", 2);
+    GITHUB,
+    STACK_OVERFLOW;
 
-    private final String key;
-    private final Integer value;
 
-    Platform(String key, Integer value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    public String getKey() {
-        return key;
-    }
-    public Integer getValue() {
-        return value;
+    public static Optional<Platform> getPlatform(String platform) {
+        return Arrays.stream(Platform.values()).filter(p -> p.toString().equalsIgnoreCase(platform)).findFirst();
     }
 }

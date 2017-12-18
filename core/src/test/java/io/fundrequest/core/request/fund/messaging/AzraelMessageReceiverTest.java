@@ -1,6 +1,7 @@
 package io.fundrequest.core.request.fund.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.command.AddFundsCommand;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
@@ -26,13 +27,15 @@ public class AzraelMessageReceiverTest {
     private FundService fundService;
     private ProcessedBlockchainEventRepository blockchainEventRepository;
     private ObjectMapper objectMapper;
+    private RequestService requestService;
 
     @Before
     public void setUp() throws Exception {
         fundService = mock(FundService.class);
         blockchainEventRepository = mock(ProcessedBlockchainEventRepository.class);
+        requestService = mock(RequestService.class);
         objectMapper = new ObjectMapper();
-        messageReceiver = new AzraelMessageReceiver(fundService, objectMapper, blockchainEventRepository);
+        messageReceiver = new AzraelMessageReceiver(requestService, objectMapper, blockchainEventRepository);
     }
 
     @Test
@@ -63,19 +66,17 @@ public class AzraelMessageReceiverTest {
     private FundedEthDto createDto() {
         FundedEthDto dto = new FundedEthDto();
         dto.setAmount("5223000000000000000");
-        dto.setData("1");
+        dto.setPlatform("GITHUB");
+        dto.setPlatformId("1");
         dto.setFrom("0x");
         dto.setTransactionHash("0xh");
-        dto.setUser("1234567890123456789012345678901234567890");
         return dto;
     }
 
     private void verifyFundsAdded(FundedEthDto dto) {
         ArgumentCaptor<Principal> principalArgumentCaptor = ArgumentCaptor.forClass(Principal.class);
         ArgumentCaptor<AddFundsCommand> addFundsCommandArgumentCaptor = ArgumentCaptor.forClass(AddFundsCommand.class);
-        verify(fundService).addFunds(principalArgumentCaptor.capture(), addFundsCommandArgumentCaptor.capture());
-        assertThat(principalArgumentCaptor.getValue().getName()).isEqualTo(dto.getUser());
-        assertThat(addFundsCommandArgumentCaptor.getValue().getRequestId()).isEqualTo(new Long(dto.getData()));
+        verify(fundService).addFunds(addFundsCommandArgumentCaptor.capture());
         assertThat(addFundsCommandArgumentCaptor.getValue().getAmountInWei()).isEqualTo(dto.getAmount());
     }
 }

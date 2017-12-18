@@ -4,21 +4,22 @@ import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.IssueInformationMother;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
+import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
+import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubParser;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.security.Principal;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -39,20 +40,22 @@ public class RequestServiceImplTest {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private GithubParser githubLinkParser;
-    private ApplicationEventPublisher eventPublisher;
+    private FundService fundService;
+    private GithubClient githubClient;
 
     @Before
     public void setUp() throws Exception {
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
         githubLinkParser = mock(GithubParser.class);
-        eventPublisher = mock(ApplicationEventPublisher.class);
+        fundService = mock(FundService.class);
+        githubClient = mock(GithubClient.class);
         requestService = new RequestServiceImpl(
                 requestRepository,
                 mappers,
                 githubLinkParser,
-                eventPublisher
-        );
+                fundService,
+                githubClient);
     }
 
     @Test
@@ -145,10 +148,8 @@ public class RequestServiceImplTest {
 
     private CreateRequestCommand createCommand() {
         CreateRequestCommand command = new CreateRequestCommand();
-        command.setIssueLink("link");
-        HashSet<String> technologies = new HashSet<>();
-        technologies.add("java");
-        command.setTechnologies(technologies);
+        command.setPlatform(Platform.GITHUB);
+        command.setPlatformId("1");
         return command;
     }
 

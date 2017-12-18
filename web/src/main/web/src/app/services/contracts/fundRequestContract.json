@@ -1,5 +1,35 @@
 [
   {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_platform",
+        "type": "bytes32"
+      },
+      {
+        "name": "_platformId",
+        "type": "bytes32"
+      },
+      {
+        "name": "_url",
+        "type": "string"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "fund",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [
       {
@@ -29,32 +59,6 @@
       {
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_platform",
-        "type": "bytes32"
-      },
-      {
-        "name": "_platformId",
-        "type": "bytes32"
-      },
-      {
-        "name": "_value",
-        "type": "uint256"
-      }
-    ],
-    "name": "fund",
-    "outputs": [
-      {
-        "name": "success",
-        "type": "bool"
       }
     ],
     "payable": false,
@@ -139,6 +143,11 @@
         "indexed": false,
         "name": "platformId",
         "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "url",
+        "type": "string"
       },
       {
         "indexed": false,

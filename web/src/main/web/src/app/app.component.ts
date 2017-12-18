@@ -1,10 +1,10 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
-declare var $: any;
+import {Component, HostBinding, OnInit} from '@angular/core';
+import {ContractsService} from './services/contracts/contracts.service';
+import {NotificationService} from './services/notification/notification.service';
+import {SettingsService} from './core/settings/settings.service';
+import {NotificationStreamService} from './services/sse/notification-stream.service';
 
-import { ContractsService } from './services/contracts/contracts.service';
-import { NotificationService } from './services/notification/notification.service';
-import { SettingsService } from './core/settings/settings.service';
-import { NotificationStreamService } from './services/sse/notification-stream.service';
+declare var $: any;
 
 @Component({
   selector   : 'app-root',
@@ -35,8 +35,8 @@ export class AppComponent implements OnInit {
 
   constructor(public settings: SettingsService, private _nss: NotificationStreamService, private _cs: ContractsService, private _ns: NotificationService) { }
 
-  ngOnInit() {
-    this._cs.init();
+  async ngOnInit() {
+    await this._cs.init();
     $(document).on('click', '[href="#"]', e => e.preventDefault());
   }
 }

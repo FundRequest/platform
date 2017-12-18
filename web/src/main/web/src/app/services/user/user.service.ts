@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
-import { Store } from '@ngrx/store';
-import { IState } from '../../redux/store';
-import { Observable } from 'rxjs/Observable';
-import { ClearUser, ReplaceUser } from '../../redux/user.reducer';
+import {Store} from '@ngrx/store';
+import {IState} from '../../redux/store';
+import {Observable} from 'rxjs/Observable';
+import {ClearUser, ReplaceUser} from '../../redux/user.reducer';
 
-import { createUser, IUserRecord } from '../../redux/user.models';
-import { ContractsService } from '../contracts/contracts.service';
-import { AuthService } from '../../core/auth/auth.service';
+import {createUser, IUserRecord} from '../../redux/user.models';
+import {ContractsService} from '../contracts/contracts.service';
+import {AuthService} from '../../core/auth/auth.service';
 
 @Injectable()
 export class UserService {
@@ -19,7 +19,6 @@ export class UserService {
               private http: HttpClient,
               private _as: AuthService,
               private _cs: ContractsService) {
-    this.initUser();
   }
 
   public login(returnUri?: string) {

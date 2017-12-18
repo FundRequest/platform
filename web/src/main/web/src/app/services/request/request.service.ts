@@ -23,6 +23,7 @@ export class RequestService {
 
   public get requests$(): Observable<IRequestList> {
     if (!this._requestInitialized) {
+      console.log('getting requests');
       this._requestInitialized = true;
 
       this.http.get(`/api/public/requests`).take(1).subscribe((requests: IRequestList) => {
@@ -55,14 +56,14 @@ export class RequestService {
     let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
     let url = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/issues/' + matches[3];
     this.http.get(url).subscribe(data => {
-      this.contractService.fundRequest("GITHUB", data['id'], fundAmount);
+      this.contractService.fundRequest("GITHUB", data['id'], issueLink, fundAmount);
     });
 
   }
 
   public async fundRequest(request: IRequestRecord, funding: number): Promise<string> {
     //let balance = await this.contractService.getRequestBalance(request) as string;
-    return this.contractService.fundRequest(request.issueInformation.platform.value, request.issueInformation.platformId, funding);
+    return this.contractService.fundRequest(request.issueInformation.platform, request.issueInformation.platformId, request.issueInformation.link, funding);
     // only edit request when funding is processed
     //this.editRequestInStore(request, createRequest(newRequest));
   }
@@ -116,6 +117,15 @@ export class RequestService {
 
   public addRequestInStore(newRequest: IRequestRecord) {
     this.store.dispatch(new AddRequest(newRequest));
+    this.contractService.getRequestBalance(newRequest).then(
+      (balance) => {
+        let nr = {...newRequest};
+        nr.balance = balance;
+        console.log(newRequest);
+        console.log(nr);
+        this.editRequestInStore(newRequest, nr);
+      }
+    )
   }
 
   public editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {

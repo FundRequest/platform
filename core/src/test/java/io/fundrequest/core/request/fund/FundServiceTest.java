@@ -102,7 +102,7 @@ public class FundServiceTest {
         when(mappers.map(eq(Request.class), eq(RequestDto.class), any(Request.class)))
                 .thenReturn(requestDto);
 
-        fundService.addFunds(funder, command);
+        fundService.addFunds(command);
 
         verifyFundsSaved(command, funder);
         verifyEventCreated(requestDto, fundDto);

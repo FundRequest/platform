@@ -21,7 +21,7 @@ public class CreateGithubCommentOnFundHandler {
     private GithubClient githubClient;
     private Boolean addComment;
 
-    public CreateGithubCommentOnFundHandler(GithubClient githubClient, @Value("${github.add-comment-when-funded}") Boolean addComment) {
+    public CreateGithubCommentOnFundHandler(GithubClient githubClient, @Value("${github.add-comment-when-funded:false}") Boolean addComment) {
         this.githubClient = githubClient;
         this.addComment = addComment;
     }

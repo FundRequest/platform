@@ -35,7 +35,6 @@ public class GithubParserTest {
         assertThat(result.getLink()).isEqualTo(link);
         assertThat(result.getTitle()).isEqualTo(githubResult.getTitle());
         assertThat(result.getPlatform()).isEqualTo(Platform.GITHUB);
-        assertThat(result.getPlatform().getKey()).isEqualTo(Platform.GITHUB.getKey());
         assertThat(result.getPlatformId()).isEqualTo("198379346");
     }
 }

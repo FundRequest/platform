@@ -31,14 +31,15 @@ export class RequestModalComponent implements OnInit, OnDestroy {
   public issue: Issue = new Issue;
 
   constructor(public bsModalRef: BsModalRef, private _router: Router, private _rs: RequestService, private userService: UserService) {
+
+  }
+
+  ngOnInit(): void {
     this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
       this.user = user;
       this.balance = Utils.fromWeiRounded(user.balance);
       this.allowance = Utils.fromWeiRounded(user.allowance);
     });
-  }
-
-  ngOnInit(): void {
     this._subscription = this._rs.requests$.subscribe(result => this._requests = result);
 
     this.requestForm = new FormGroup({

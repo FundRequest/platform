@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -57,11 +56,10 @@ class FundServiceImpl implements FundService {
 
     @Transactional
     @Override
-    public void addFunds(Principal funder, AddFundsCommand command) {
+    public void addFunds(AddFundsCommand command) {
         Request request = requestRepository.findOne(command.getRequestId())
                 .orElseThrow(() -> new RuntimeException("Unable to find request"));
         Fund fund = FundBuilder.aFund()
-                .withFunder(funder.getName())
                 .withAmountInWei(command.getAmountInWei())
                 .withRequestId(command.getRequestId())
                 .build();
