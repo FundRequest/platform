@@ -18,7 +18,7 @@ export class RequestService {
 
   constructor(private store: Store<IState>,
               private http: HttpClient,
-              private contractService: ContractsService) {
+              private _cs: ContractsService) {
   }
 
   public get requests$(): Observable<IRequestList> {
@@ -30,11 +30,9 @@ export class RequestService {
         this.store.dispatch(new ReplaceRequestList(requests));
         this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
           requests.map((request: IRequestRecord) => {
-            this.contractService.getRequestBalance(request).then(
+            this._cs.getRequestBalance(request).then(
               (balance) => {
-                let newRequest = request;
-                newRequest.balance = balance; //createRequest();
-                this.editRequestInStore(request, newRequest);
+                this.editRequestInStore(request, request.set('balance', balance));
               }
             );
           });
@@ -56,14 +54,14 @@ export class RequestService {
     let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
     let url = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/issues/' + matches[3];
     this.http.get(url).subscribe(data => {
-      this.contractService.fundRequest("GITHUB", data['id'], issueLink, fundAmount);
+      this._cs.fundRequest("GITHUB", data['id'], issueLink, fundAmount);
     });
 
   }
 
   public async fundRequest(request: IRequestRecord, funding: number): Promise<string> {
     //let balance = await this.contractService.getRequestBalance(request) as string;
-    return this.contractService.fundRequest(request.issueInformation.platform, request.issueInformation.platformId, request.issueInformation.link, funding);
+    return this._cs.fundRequest(request.issueInformation.platform, request.issueInformation.platformId, request.issueInformation.link, funding);
     // only edit request when funding is processed
     //this.editRequestInStore(request, createRequest(newRequest));
   }
@@ -87,9 +85,9 @@ export class RequestService {
       });
     }
 
-    let newRequest = JSON.parse(JSON.stringify(request));
-    newRequest.watchers = newWatchers;
-    this.editRequestInStore(request, createRequest(newRequest));
+    let newRequest: IRequestRecord = createRequest(JSON.parse(JSON.stringify(request)));
+    newRequest = newRequest.set('watchers', newWatchers);
+    this.editRequestInStore(request, newRequest);
 
     let httpUrl = `/api/private/requests/${request.id}/watchers`;
     let httpCall: Observable<Object>;
@@ -117,10 +115,9 @@ export class RequestService {
 
   public addRequestInStore(newRequest: IRequestRecord) {
     this.store.dispatch(new AddRequest(newRequest));
-    this.contractService.getRequestBalance(newRequest).then(
+    this._cs.getRequestBalance(newRequest).then(
       (balance) => {
-        let updatedRequests: IRequestRecord = newRequest.set('balance', balance);
-        this.editRequestInStore(newRequest, updatedRequests);
+        this.editRequestInStore(newRequest, newRequest.set('balance', balance));
       }
     );
   }
