@@ -44,10 +44,9 @@ export class ContractsService {
     if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
-      // let netId = await this.getNetwork();
-      // if (netId !== '4') {
-      //   this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io'));
-      // }
+      if (await this.getNetwork() !== '4') {
+        this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io'));
+      }
     } else {
       this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io'));
     }
@@ -96,10 +95,13 @@ export class ContractsService {
   }
 
   public async getUserBalance(): Promise<number> {
-    let account = await this.getAccount();
-    if (account != null) {
+    if (!this._init) {
+      await this.init();
+    }
+
+    if (this._account != null) {
       return new Promise((resolve, reject) => {
-        this._tokenContract.balanceOf.call(account, function (err, result) {
+        this._tokenContract.balanceOf.call(this._account, function (err, result) {
           if (err) {
             reject(err);
           }
@@ -115,10 +117,13 @@ export class ContractsService {
   }
 
   public async getUserAllowance(): Promise<string> {
-    let account = await this.getAccount();
-    if (account != null) {
+    if (!this._init) {
+      await this.init();
+    }
+
+    if (this._account != null) {
       return new Promise((resolve, reject) => {
-        this._tokenContract.allowance.call(account, this._fundRequestContractAddress, function (err, result) {
+        this._tokenContract.allowance.call(this._account, this._fundRequestContractAddress, function (err, result) {
           err ? reject(err) : resolve(result);
         });
       }) as Promise<string>;
@@ -130,14 +135,16 @@ export class ContractsService {
   }
 
   public async setUserAllowance(value: number): Promise<string> {
-    let account: string = await this.getAccount();
+    if (!this._init) {
+      await this.init();
+    }
 
-    if (account != null) {
+    if (this._account != null) {
       let currentAllowance: string = await this.getUserAllowance();
       let total = this._web3.toWei(value, 'ether');
 
       let tx = await new Promise((resolve, reject) => {
-        this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, tx) {
+        this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(this._account), function (err, tx) {
           err ? reject(err) : resolve(tx);
         });
       }) as string;
@@ -157,28 +164,30 @@ export class ContractsService {
   }
 
   public async fundRequest(platform: string, platformId: string, url: string, value: number): Promise<string> {
-    let account: string = await this.getAccount();
-    console.log(url);
-    if (!!account) {
+    if (!this._init) {
+      await this.init();
+    }
+
+    if (!!this._account) {
       let currentAllowance: string = await this.getUserAllowance();
       let total = this._web3.toWei(value, 'ether');
 
       if (+total > +currentAllowance) {
         let tx1 = await new Promise((resolve, reject) => {
-          this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(account), function (err, tx) {
+          this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(this._account), function (err, tx) {
             err ? reject(err) : resolve(tx);
           });
         }) as string;
 
         let tx2 = await new Promise((resolve, reject) => {
-          this._fundRequestContract.fund.sendTransaction(this._web3.fromAscii(platform), this._web3.fromAscii(String(platformId)), url, total, this._getTransactionOptions(account), function (err, tx) {
+          this._fundRequestContract.fund.sendTransaction(this._web3.fromAscii(platform), this._web3.fromAscii(String(platformId)), url, total, this._getTransactionOptions(this._account), function (err, tx) {
             err ? reject(err) : resolve(tx);
           });
         }) as string;
       }
       else {
         let tx = await new Promise((resolve, reject) => {
-          this._fundRequestContract.fund.sendTransaction(this._web3.fromAscii(platform), this._web3.fromAscii(String(platformId)), url, total, this._getTransactionOptions(account), function (err, tx) {
+          this._fundRequestContract.fund.sendTransaction(this._web3.fromAscii(platform), this._web3.fromAscii(String(platformId)), url, total, this._getTransactionOptions(this._account), function (err, tx) {
             err ? reject(err) : resolve(tx);
           });
         }) as string;
@@ -194,7 +203,11 @@ export class ContractsService {
 
   }
 
-  public getRequestBalance(request: IRequestRecord): Promise<string> {
+  public async getRequestBalance(request: IRequestRecord): Promise<string> {
+    if (!this._init) {
+      await this.init();
+    }
+
     return new Promise((resolve, reject) => {
       return this._fundRequestContract.balance.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), function (err, result) {
         if (err) {
