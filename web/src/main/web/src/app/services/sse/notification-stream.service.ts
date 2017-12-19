@@ -5,8 +5,9 @@ import {RequestService} from '../request/request.service';
 import {NotificationStreamMessage} from './notification-stream-message';
 import {Store} from '@ngrx/store';
 import {AddNotification} from '../../redux/notifications.reducer';
-import {INotificationRecord} from '../../redux/notifications.models';
+import {createNotification, INotificationRecord} from '../../redux/notifications.models';
 import {IState} from '../../redux/store';
+import {createRequest} from '../../redux/requests.models';
 
 @Injectable()
 export class NotificationStreamService {
@@ -26,8 +27,8 @@ export class NotificationStreamService {
   }
 
   private _commit(message: NotificationStreamMessage) {
-    this.addNotificationInStore(message.notification);
-    this._rs.addRequestInStore(message.request);
+    this.addNotificationInStore(createNotification(message.notification));
+    this._rs.editOrAddRequestInStore(createRequest(message.request));
   }
 
   public addNotificationInStore(newNotification: INotificationRecord) {

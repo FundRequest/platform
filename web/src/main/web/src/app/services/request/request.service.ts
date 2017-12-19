@@ -31,9 +31,9 @@ export class RequestService {
           requests.map((request: IRequestRecord) => {
             this._cs.getRequestBalance(request).then(
               (balance) => {
-                let newRequest = request;
-                newRequest.balance = balance; //createRequest();
-                this.editRequestInStore(request, newRequest);
+                let existingRequest: IRequestRecord = createRequest(request);
+                let newRequest: IRequestRecord = existingRequest.set('balance', balance);
+                this.editRequestInStore(existingRequest, newRequest);
               }
             );
           });
@@ -125,6 +125,23 @@ export class RequestService {
 
   public editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {
     this.store.dispatch(new EditRequest(oldRequest, modifiedRequest));
+  }
+
+  public editOrAddRequestInStore(newOrModifiedRequest: IRequestRecord) {
+    let existingRequest: IRequestRecord;
+
+    this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
+      requests.filter((request: IRequestRecord) => request.id == newOrModifiedRequest.id)
+        .map((request: IRequestRecord) => {
+          existingRequest = request;
+        });
+    });
+
+    if (existingRequest == null) {
+      this.addRequestInStore(newOrModifiedRequest);
+    } else {
+      this.editRequestInStore(existingRequest, newOrModifiedRequest);
+    }
   }
 
   private handleError(error: any): void {
