@@ -1,6 +1,5 @@
-import { IRequestList, IRequestRecord } from '../redux/requests.models';
-import { AbstractControl, AsyncValidatorFn, ValidatorFn } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {IRequestList, IRequestRecord} from '../redux/requests.models';
+import {AbstractControl, ValidatorFn} from '@angular/forms';
 
 export class CustomValidators {
 

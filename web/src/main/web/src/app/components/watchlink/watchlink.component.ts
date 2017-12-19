@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
-import { IUserRecord } from '../../redux/user.models';
-import { IRequestRecord } from '../../redux/requests.models';
-import { RequestService } from '../../services/request/request.service';
+import {Component, Input} from '@angular/core';
+import {IUserRecord} from '../../redux/user.models';
+import {IRequestRecord} from '../../redux/requests.models';
+import {RequestService} from '../../services/request/request.service';
 
 @Component({
   selector   : 'fnd-watchlink',
