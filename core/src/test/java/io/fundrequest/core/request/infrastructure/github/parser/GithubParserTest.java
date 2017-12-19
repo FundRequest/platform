@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.infrastructure.github.parser;
 
 import io.fundrequest.core.request.domain.IssueInformation;
-import io.fundrequest.core.request.domain.RequestSource;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class GithubParserTest {
         assertThat(result.getRepo()).isEqualTo("api-stub");
         assertThat(result.getLink()).isEqualTo(link);
         assertThat(result.getTitle()).isEqualTo(githubResult.getTitle());
-        assertThat(result.getSource()).isEqualTo(RequestSource.GITHUB);
-        assertThat(result.getSource().getKey()).isEqualTo(RequestSource.GITHUB.getKey());
+        assertThat(result.getPlatform()).isEqualTo(Platform.GITHUB);
+        assertThat(result.getPlatformId()).isEqualTo("198379346");
     }
 }

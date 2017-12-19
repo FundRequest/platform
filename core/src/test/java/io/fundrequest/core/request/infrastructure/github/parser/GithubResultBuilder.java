@@ -1,6 +1,7 @@
 package io.fundrequest.core.request.infrastructure.github.parser;
 
 public final class GithubResultBuilder {
+    private String id;
     private String number;
     private String title;
     private String state;
@@ -10,6 +11,12 @@ public final class GithubResultBuilder {
 
     public static GithubResultBuilder aGithubResult() {
         return new GithubResultBuilder();
+    }
+
+
+    public GithubResultBuilder withId(String id) {
+        this.id = id;
+        return this;
     }
 
     public GithubResultBuilder withNumber(String number) {
@@ -28,11 +35,12 @@ public final class GithubResultBuilder {
     }
 
     public GithubResultBuilder but() {
-        return aGithubResult().withNumber(number).withTitle(title).withState(state);
+        return aGithubResult().withId(id).withNumber(number).withTitle(title).withState(state);
     }
 
     public GithubResult build() {
         GithubResult githubResult = new GithubResult();
+        githubResult.setId(id);
         githubResult.setNumber(number);
         githubResult.setTitle(title);
         githubResult.setState(state);

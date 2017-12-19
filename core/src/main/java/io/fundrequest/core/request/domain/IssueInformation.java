@@ -23,9 +23,16 @@ public class IssueInformation {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "source")
+    @Column(name = "platform")
     @Enumerated(value = EnumType.STRING)
-    private RequestSource source;
+    private Platform platform;
+
+    @Column(name = "platform_id")
+    private String platformId;
+
+    public Platform getPlatform() {
+        return platform;
+    }
 
     public String getLink() {
         return link;
@@ -45,10 +52,6 @@ public class IssueInformation {
 
     public String getTitle() {
         return title;
-    }
-
-    public RequestSource getSource() {
-        return source;
     }
 
     public void setLink(String link) {
@@ -71,7 +74,15 @@ public class IssueInformation {
         this.title = title;
     }
 
-    public void setSource(RequestSource source) {
-        this.source = source;
+    public void setPlatform(Platform platform) {
+        this.platform = platform;
+    }
+
+    public String getPlatformId() {
+        return platformId;
+    }
+
+    public void setPlatformId(String platformId) {
+        this.platformId = platformId;
     }
 }

@@ -6,6 +6,7 @@ public final class GithubResultMother {
         return GithubResultBuilder.aGithubResult()
                 .withNumber("42")
                 .withState("open")
+                .withId("198379346")
                 .withTitle("Change to use Kotlin instead of Groovy on Mapper Interface");
     }
 }

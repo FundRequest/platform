@@ -1,9 +1,18 @@
 package io.fundrequest.core.request.infrastructure.github.parser;
 
 public class GithubResult {
+    private String id;
     private String number;
     private String title;
     private String state;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getNumber() {
         return number;
@@ -28,4 +37,5 @@ public class GithubResult {
     public void setState(String state) {
         this.state = state;
     }
+
 }

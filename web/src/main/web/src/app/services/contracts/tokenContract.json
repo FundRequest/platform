@@ -89,6 +89,19 @@
   {
     "constant": true,
     "inputs": [],
+    "name": "limitedTransferAgent",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
     "name": "decimals",
     "outputs": [
       {
@@ -476,6 +489,10 @@
   },
   {
     "inputs": [
+      {
+        "name": "_limitedTransferAgent",
+        "type": "address"
+      },
       {
         "name": "_tokenFactory",
         "type": "address"

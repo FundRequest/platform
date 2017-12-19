@@ -7,8 +7,8 @@
     </div>
   </div>
 
-  <div class="user-block-info" *ngIf="_user?.email">
-    <span class="user-block-name">{{_user?.email}}</span>
+  <div class="user-block-info">
+    <span class="user-block-name" *ngIf="_user?.email">{{_user?.email}}</span>
     <span class="user-block-role">
         <span>Balance: </span><span>{{_user?.balance | wei}}</span><span> FND</span>
     </span>

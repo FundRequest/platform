@@ -25,20 +25,31 @@
           URL is required
         </div>
       </div>
-
     </div>
     <div class="form-group">
-      <label for="technologies" class="control-label">
-        Technologies
-        <span class="text-sm text-muted">Type and press Enter</span>
-      </label>
-      <tag-input formControlName="technologies" id="technologies"></tag-input>
+      <label for="fund-amount" class="col-xs-6 col-md-4 control-label">Fund Amount</label>
+      <div class="input-group">
+        <input [(ngModel)]="fundAmount" id="fund-amount" formControlName="fund-amount" type="number" class="form-control">
+        <span class="input-group-addon">FND</span>
+      </div>
+      <div class="text-danger" *ngIf="fundAmount <= 0">
+        Funding amount needs to be bigger then 0.
+      </div>
+      <div class="text-danger" *ngIf="fundAmount > balance">
+        Balance to low to fund {{fundAmount}} FND.
+      </div>
+      <div class="text-warning" *ngIf="fundAmount > allowance">
+        You approved {{allowance}} FND, when trying to fund there will be an extra request
+          to first approve {{fundAmount - allowance}} FND.
+      </div>
     </div>
-  </div>
-  <div class="modal-footer">
-    <div class="btn-group" role="group">
-      <button type="button" class="btn btn-default" (click)="bsModalRef.hide(); requestForm.reset()">Close</button>
-      <button type="submit" [disabled]="!requestForm.valid" class="btn btn-primary">Add</button>
+
+    <div class="modal-footer">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-default" (click)="bsModalRef.hide(); requestForm.reset()">Close</button>
+        <button type="submit" [disabled]="!requestForm.valid" class="btn btn-primary">Add</button>
+      </div>
     </div>
+
   </div>
 </form>

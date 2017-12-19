@@ -1,6 +1,7 @@
 package io.fundrequest.core.request.infrastructure;
 
 import io.fundrequest.core.infrastructure.AbstractRepositoryTest;
+import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import org.junit.Test;
@@ -36,6 +37,19 @@ public class RequestRepositoryTest extends AbstractRepositoryTest {
 
         assertThat(
                 requestRepository.findByIssueLink(request.getIssueInformation().getLink())
+        ).isPresent().contains(request);
+    }
+
+    @Test
+    public void findByPlatformAndPlatformId() throws Exception {
+        Request request = RequestMother
+                .freeCodeCampNoUserStories()
+                .build();
+        requestRepository.saveAndFlush(request);
+
+        IssueInformation issueInformation = request.getIssueInformation();
+        assertThat(
+                requestRepository.findByPlatformAndPlatformId(issueInformation.getPlatform(), issueInformation.getPlatformId())
         ).isPresent().contains(request);
     }
 

@@ -5,6 +5,8 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Map;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -28,5 +30,11 @@ public interface GithubClient {
             @PathVariable("repo") String repo,
             @PathVariable("number") String number,
             CreateGithubComment comment
+    );
+
+    @RequestMapping(value = "/repos/{owner}/{repo}/languages", method = GET)
+    Map<String, Long> getLanguages(
+            @PathVariable("owner") String owner,
+            @PathVariable("repo") String repo
     );
 }

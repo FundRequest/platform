@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Store } from '@ngrx/store';
-import { HttpClient } from '@angular/common/http';
-import { RequestsStats } from '../../core/requests/RequestsStats';
-import { IState } from '../../redux/store';
-import { createRequest, IRequestList, IRequestRecord } from '../../redux/requests.models';
-import { AddRequest, EditRequest, RemoveRequest, ReplaceRequestList } from '../../redux/requests.reducer';
-import { IUserRecord } from '../../redux/user.models';
-import { ContractsService } from '../contracts/contracts.service';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {Store} from '@ngrx/store';
+import {HttpClient} from '@angular/common/http';
+import {RequestsStats} from '../../core/requests/RequestsStats';
+import {IState} from '../../redux/store';
+import {createRequest, IRequestList, IRequestRecord} from '../../redux/requests.models';
+import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
+import {IUserRecord} from '../../redux/user.models';
+import {ContractsService} from '../contracts/contracts.service';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
@@ -18,18 +18,19 @@ export class RequestService {
 
   constructor(private store: Store<IState>,
               private http: HttpClient,
-              private contractService: ContractsService) {
+              private _cs: ContractsService) {
   }
 
   public get requests$(): Observable<IRequestList> {
     if (!this._requestInitialized) {
+      console.log('getting requests');
       this._requestInitialized = true;
 
       this.http.get(`/api/public/requests`).take(1).subscribe((requests: IRequestList) => {
         this.store.dispatch(new ReplaceRequestList(requests));
         this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
           requests.map((request: IRequestRecord) => {
-            this.contractService.getRequestBalance(request).then(
+            this._cs.getRequestBalance(request).then(
               (balance) => {
                 let newRequest = request;
                 newRequest.balance = balance; //createRequest();
@@ -47,30 +48,22 @@ export class RequestService {
   public async getStatistics(): Promise<RequestsStats> {
     return await this.http.get('/api/public/requests/statistics')
       .toPromise() as RequestsStats;
-      //.then(response => response as RequestsStats)
-      //.catch(this.handleError);
+    //.then(response => response as RequestsStats)
+    //.catch(this.handleError);
   }
 
-  public addRequest(issueLink: string, technologies: string[]): void {
-    this.http.post(`/api/private/requests/`, {
-      issueLink   : issueLink,
-      technologies: technologies
-    }, {observe: 'response'}).take(1).subscribe((result) => {
-        /*let location = result.headers.get('location');
-        if (location.length > 0) {
-          this.http.get(location)
-            .take(1).subscribe((request: IRequestRecord) => {
-              this.addRequestInStore(createRequest(request));
-            }, error => this.handleError(error)
-          );
-        }*/
-      }, error => this.handleError(error)
-    );
+  public addRequest(issueLink: string, fundAmount: number): void {
+    let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
+    let url = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/issues/' + matches[3];
+    this.http.get(url).subscribe(data => {
+      this._cs.fundRequest("GITHUB", data['id'], issueLink, fundAmount);
+    });
+
   }
 
   public async fundRequest(request: IRequestRecord, funding: number): Promise<string> {
     //let balance = await this.contractService.getRequestBalance(request) as string;
-    return this.contractService.fundRequest(request, funding);
+    return this._cs.fundRequest(request.issueInformation.platform, request.issueInformation.platformId, request.issueInformation.link, funding);
     // only edit request when funding is processed
     //this.editRequestInStore(request, createRequest(newRequest));
   }
@@ -94,9 +87,9 @@ export class RequestService {
       });
     }
 
-    let newRequest = JSON.parse(JSON.stringify(request));
-    newRequest.watchers = newWatchers;
-    this.editRequestInStore(request, createRequest(newRequest));
+    let newRequest: IRequestRecord = createRequest(JSON.parse(JSON.stringify(request)));
+    newRequest = newRequest.set('watchers', newWatchers);
+    this.editRequestInStore(request, newRequest);
 
     let httpUrl = `/api/private/requests/${request.id}/watchers`;
     let httpCall: Observable<Object>;
@@ -104,7 +97,7 @@ export class RequestService {
     if (add) {
       httpCall = this.http.put(httpUrl, {
         responseType: 'text',
-        requestId   : request.id
+        requestId: request.id
       });
     } else {
       httpCall = this.http.delete(httpUrl);
@@ -124,6 +117,11 @@ export class RequestService {
 
   public addRequestInStore(newRequest: IRequestRecord) {
     this.store.dispatch(new AddRequest(newRequest));
+    this._cs.getRequestBalance(newRequest).then(
+      (balance) => {
+        this.editRequestInStore(newRequest, newRequest.set('balance', balance));
+      }
+    );
   }
 
   public editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {

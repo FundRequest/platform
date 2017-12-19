@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import {Injectable} from '@angular/core';
+import {environment} from '../../../environments/environment';
 import * as Keycloak from 'keycloak-js';
 
 @Injectable()
@@ -17,7 +17,9 @@ export class KeycloakService {
     return new Promise((resolve, reject) => {
       keycloakAuth.init({checkLoginIframe: false, onLoad: 'check-sso', flow: 'implicit'})
         .success((authenticated) => {
-          KeycloakService.auth.loggedIn = true;
+          if (<string>KeycloakService.auth.authz) {
+            KeycloakService.auth.loggedIn = true;
+          }
           KeycloakService.auth.authz = keycloakAuth;
           KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl
             + `/realms/${environment.keycloak.realm}/protocol/openid-connect/logout?redirect_uri=${document.baseURI}`;
@@ -37,7 +39,7 @@ export class KeycloakService {
   }
 
   public static login(returnUri?): void {
-    if(KeycloakService.auth.authz == null) {
+    if (KeycloakService.auth.authz == null) {
       this.init();
     } else {
       if (returnUri != null) {
@@ -50,7 +52,7 @@ export class KeycloakService {
 
   public getToken(): Promise<string> {
     return new Promise((resolve, reject) => {
-      if (KeycloakService.auth.authz.token) {
+      if (KeycloakService.auth.authz && KeycloakService.auth.authz.token) {
         resolve(<string>KeycloakService.auth.authz.token);
         KeycloakService.auth.authz
           .updateToken(5)

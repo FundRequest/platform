@@ -34,6 +34,7 @@ import { LocalStorageModule } from 'angular-2-local-storage';
 import { FundButtonDirective } from './directives/fund-button/fund-button.directive';
 import { AddRequestDirective } from './directives/add-request/add-request.directive';
 import { WeiAsNumberPipe, WeiPipe } from './pipes/wei/wei.pipe';
+import { Ng2FilterPipeModule } from 'ng2-filter-pipe';
 
 // https://angular.io/styleguide#!#04-10
 @NgModule({
@@ -49,6 +50,7 @@ import { WeiAsNumberPipe, WeiPipe } from './pipes/wei/wei.pipe';
     DatepickerModule.forRoot(),
     BsDropdownModule.forRoot(),
     ModalModule.forRoot(),
+    Ng2FilterPipeModule,
     PaginationModule.forRoot(),
     ProgressbarModule.forRoot(),
     RatingModule.forRoot(),
@@ -93,6 +95,7 @@ import { WeiAsNumberPipe, WeiPipe } from './pipes/wei/wei.pipe';
     DatepickerModule,
     BsDropdownModule,
     ModalModule,
+    Ng2FilterPipeModule,
     PaginationModule,
     ProgressbarModule,
     RatingModule,

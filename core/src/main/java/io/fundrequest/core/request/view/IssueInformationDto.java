@@ -1,6 +1,6 @@
 package io.fundrequest.core.request.view;
 
-import io.fundrequest.core.request.domain.RequestSource;
+import io.fundrequest.core.request.domain.Platform;
 
 public class IssueInformationDto {
 
@@ -9,7 +9,8 @@ public class IssueInformationDto {
     private String repo;
     private String number;
     private String title;
-    private RequestSource source;
+    private Platform platform;
+    private String platformId;
 
     public String getLink() {
         return link;
@@ -51,11 +52,20 @@ public class IssueInformationDto {
         this.title = title;
     }
 
-    public RequestSource getSource() {
-        return source;
+
+    public Platform getPlatform() {
+        return platform;
     }
 
-    public void setSource(RequestSource source) {
-        this.source = source;
+    public void setPlatform(Platform platform) {
+        this.platform = platform;
+    }
+
+    public String getPlatformId() {
+        return platformId;
+    }
+
+    public void setPlatformId(String platformId) {
+        this.platformId = platformId;
     }
 }

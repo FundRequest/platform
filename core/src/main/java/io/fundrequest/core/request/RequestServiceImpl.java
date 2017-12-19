@@ -3,19 +3,22 @@ package io.fundrequest.core.request;
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestBuilder;
-import io.fundrequest.core.request.event.RequestCreatedEvent;
+import io.fundrequest.core.request.fund.FundService;
+import io.fundrequest.core.request.fund.command.AddFundsCommand;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
+import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubParser;
 import io.fundrequest.core.request.view.RequestDto;
-import org.springframework.context.ApplicationEventPublisher;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,13 +28,15 @@ class RequestServiceImpl implements RequestService {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private GithubParser githubLinkParser;
-    private ApplicationEventPublisher eventPublisher;
+    private FundService fundService;
+    private GithubClient githubClient;
 
-    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser, ApplicationEventPublisher eventPublisher) {
+    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser, FundService fundService, GithubClient githubClient) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
-        this.eventPublisher = eventPublisher;
+        this.fundService = fundService;
+        this.githubClient = githubClient;
     }
 
     @Override
@@ -61,15 +66,18 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public RequestDto createRequest(Principal principal, CreateRequestCommand command) {
-        Optional<Request> request = requestRepository.findByIssueLink(command.getIssueLink());
-        String user = principal.getName();
-        request.ifPresent(r -> updateRequestInformation(user, command, r));
+    public RequestDto createRequest(CreateRequestCommand command) {
+        Optional<Request> request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId());
+        Request r = request.orElseGet(() -> createNewRequest(command));
+        fundRequest(command, r);
+        return mappers.map(Request.class, RequestDto.class, r);
+    }
 
-        Request r = request.orElseGet(() -> createNewRequest(user, command));
-        RequestDto requestDto = mappers.map(Request.class, RequestDto.class, r);
-        eventPublisher.publishEvent(new RequestCreatedEvent(requestDto));
-        return requestDto;
+    private void fundRequest(CreateRequestCommand command, Request r) {
+        AddFundsCommand fundsCommand = new AddFundsCommand();
+        fundsCommand.setRequestId(r.getId());
+        fundsCommand.setAmountInWei(command.getFunds());
+        fundService.addFunds(fundsCommand);
     }
 
     @Override
@@ -88,14 +96,11 @@ class RequestServiceImpl implements RequestService {
         return requestRepository.findOne(requestId).orElseThrow(ResourceNotFoundException::new);
     }
 
-    private void updateRequestInformation(String user, CreateRequestCommand command, Request r) {
-        addWatcherToRequest(user, r);
-        addTechnologiesToRequest(command.getTechnologies(), r);
-    }
-
     private void addWatcherToRequest(String user, Request r) {
-        r.addWatcher(user);
-        requestRepository.save(r);
+        if (StringUtils.isNotBlank(user)) {
+            r.addWatcher(user);
+            requestRepository.save(r);
+        }
     }
 
     private void removeWatcherFromRequest(String user, Request r) {
@@ -103,19 +108,17 @@ class RequestServiceImpl implements RequestService {
         requestRepository.save(r);
     }
 
-    private void addTechnologiesToRequest(Set<String> technologies, Request r) {
-        technologies.forEach(t ->
-                r.addTechnology(t.toLowerCase())
-        );
-        requestRepository.save(r);
-    }
-
-    private Request createNewRequest(String user, CreateRequestCommand command) {
+    private Request createNewRequest(CreateRequestCommand command) {
+        IssueInformation issueInformation = githubLinkParser.parseIssue(command.getIssueLink());
         Request request = RequestBuilder.aRequest()
-                .withIssueInformation(githubLinkParser.parseIssue(command.getIssueLink()))
-                .withWatchers(Collections.singletonList(user))
-                .withTechnologies(command.getTechnologies())
+                .withIssueInformation(issueInformation)
+                .withTechnologies(getTechnologies(issueInformation))
                 .build();
         return requestRepository.save(request);
+    }
+
+    private Set<String> getTechnologies(IssueInformation issueInformation) {
+        Map<String, Long> languages = githubClient.getLanguages(issueInformation.getOwner(), issueInformation.getRepo());
+        return languages.keySet();
     }
 }

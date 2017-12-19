@@ -242,4 +242,12 @@ body,
     clear: both;
     visibility: hidden;
   }
+
+  + .list-group .list-group-item {
+    padding: 10px 15px;
+  }
+}
+
+.user-block {
+  cursor: default;
 }
