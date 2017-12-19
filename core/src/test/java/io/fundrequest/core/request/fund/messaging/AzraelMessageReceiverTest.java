@@ -2,6 +2,7 @@ package io.fundrequest.core.request.fund.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.command.AddFundsCommand;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
@@ -47,8 +48,17 @@ public class AzraelMessageReceiverTest {
 
         messageReceiver.receiveMessage(w.toString());
 
-        verifyFundsAdded(dto);
+        verifyRequestCreated(dto);
         verify(blockchainEventRepository).save(new ProcessedBlockchainEvent(dto.getTransactionHash()));
+    }
+
+    private void verifyRequestCreated(FundedEthDto dto) {
+        ArgumentCaptor<CreateRequestCommand> captor = ArgumentCaptor.forClass(CreateRequestCommand.class);
+        verify(requestService).createRequest(captor.capture());
+        assertThat(captor.getValue().getIssueLink()).isEqualTo(dto.getUrl());
+        assertThat(captor.getValue().getPlatformId()).isEqualTo(dto.getPlatformId());
+        assertThat(captor.getValue().getPlatform().toString()).isEqualTo(dto.getPlatform());
+        assertThat(captor.getValue().getFunds()).isEqualTo(dto.getAmount());
     }
 
     @Test
@@ -71,12 +81,5 @@ public class AzraelMessageReceiverTest {
         dto.setFrom("0x");
         dto.setTransactionHash("0xh");
         return dto;
-    }
-
-    private void verifyFundsAdded(FundedEthDto dto) {
-        ArgumentCaptor<Principal> principalArgumentCaptor = ArgumentCaptor.forClass(Principal.class);
-        ArgumentCaptor<AddFundsCommand> addFundsCommandArgumentCaptor = ArgumentCaptor.forClass(AddFundsCommand.class);
-        verify(fundService).addFunds(addFundsCommandArgumentCaptor.capture());
-        assertThat(addFundsCommandArgumentCaptor.getValue().getAmountInWei()).isEqualTo(dto.getAmount());
     }
 }

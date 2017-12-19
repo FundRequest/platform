@@ -49,7 +49,7 @@ public class AzraelMessageReceiver {
             createRequestCommand.setPlatformId(result.getPlatformId());
             createRequestCommand.setFunds(new BigDecimal(result.getAmount()));
             createRequestCommand.setIssueLink(result.getUrl());
-            requestService.createRequest(null, createRequestCommand);
+            requestService.createRequest(createRequestCommand);
             processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
         }
     }

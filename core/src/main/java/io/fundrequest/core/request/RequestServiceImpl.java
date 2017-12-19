@@ -66,7 +66,7 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public RequestDto createRequest(Principal principal, CreateRequestCommand command) {
+    public RequestDto createRequest(CreateRequestCommand command) {
         Optional<Request> request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId());
         Request r = request.orElseGet(() -> createNewRequest(command));
         fundRequest(command, r);

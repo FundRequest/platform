@@ -15,7 +15,7 @@ public interface RequestService {
 
     RequestDto findRequest(Long id);
 
-    RequestDto createRequest(Principal principal, CreateRequestCommand command);
+    RequestDto createRequest(CreateRequestCommand command);
 
     void addWatcherToRequest(Principal principal, Long requestId);
 

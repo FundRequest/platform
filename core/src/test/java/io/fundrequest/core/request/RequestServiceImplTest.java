@@ -115,12 +115,12 @@ public class RequestServiceImplTest {
     @Test
     public void createWithNewIssue() throws Exception {
         CreateRequestCommand command = createCommand();
-        when(requestRepository.findByIssueLink(command.getIssueLink())).thenReturn(Optional.empty());
+        when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.empty());
         IssueInformation issueInformation = IssueInformationMother.kazuki43zooApiStub().build();
         when(githubLinkParser.parseIssue(command.getIssueLink())).thenReturn(issueInformation);
         when(requestRepository.save(any(Request.class))).then(returnsFirstArg());
 
-        requestService.createRequest(mock(Principal.class, RETURNS_DEEP_STUBS), command);
+        requestService.createRequest(command);
 
         ArgumentCaptor<Request> savedRequest = ArgumentCaptor.forClass(Request.class);
         verify(requestRepository).save(savedRequest.capture());
@@ -133,17 +133,13 @@ public class RequestServiceImplTest {
     public void createWithExistingIssue() throws Exception {
         CreateRequestCommand command = createCommand();
         Optional<Request> request = Optional.of(RequestMother.freeCodeCampNoUserStories().build());
-        when(requestRepository.findByIssueLink(command.getIssueLink())).thenReturn(request);
+        when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(request);
         IssueInformation issueInformation = IssueInformationMother.kazuki43zooApiStub().build();
         when(githubLinkParser.parseIssue(command.getIssueLink())).thenReturn(issueInformation);
         when(requestRepository.save(any(Request.class))).then(returnsFirstArg());
 
-        Principal user = mock(Principal.class, RETURNS_DEEP_STUBS);
-        when(user.getName()).thenReturn("davy");
+        requestService.createRequest(command);
 
-        requestService.createRequest(user, command);
-
-        assertThat(request.get().getWatchers()).contains("davy");
     }
 
     private CreateRequestCommand createCommand() {
