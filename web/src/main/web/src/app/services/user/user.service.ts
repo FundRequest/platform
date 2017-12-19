@@ -33,22 +33,23 @@ export class UserService {
   private async initUser(): Promise<void> {
     this.user = createUser();
 
+    console.log(this._as.isAuthenticated());
     if (this._as.isAuthenticated()) {
       let newUser: IUserRecord = await this.http.get(`/api/private/user/info`).toPromise() as IUserRecord;
       this.user = createUser(newUser);
       this.store.dispatch(new ReplaceUser(this.user));
 
-      let balance;
-      let allowance;
-      await Promise.all([
-        this._cs.getUserBalance().then(result => balance = result),
-        this._cs.getUserAllowance().then(result => allowance = result)
-      ]).catch(error => this.handleError(error));
-
-      this.user = this.user.set('balance', balance);
-      this.user = this.user.set('allowance', allowance);
-      this.store.dispatch(new ReplaceUser(this.user));
     }
+    let balance;
+    let allowance;
+    await Promise.all([
+      this._cs.getUserBalance().then(result => balance = result),
+      this._cs.getUserAllowance().then(result => allowance = result)
+    ]).catch(error => this.handleError(error));
+
+    this.user = this.user.set('balance', balance);
+    this.user = this.user.set('allowance', allowance);
+    this.store.dispatch(new ReplaceUser(this.user));
   }
 
   public getCurrentUser(): Observable<IUserRecord> {

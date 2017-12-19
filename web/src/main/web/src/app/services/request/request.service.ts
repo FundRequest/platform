@@ -32,7 +32,9 @@ export class RequestService {
           requests.map((request: IRequestRecord) => {
             this._cs.getRequestBalance(request).then(
               (balance) => {
-                this.editRequestInStore(request, request.set('balance', balance));
+                let newRequest = request;
+                newRequest.balance = balance; //createRequest();
+                this.editRequestInStore(request, newRequest);
               }
             );
           });

@@ -97,26 +97,36 @@ export class ContractsService {
 
   public async getUserBalance(): Promise<number> {
     let account = await this.getAccount();
+    if (account != null) {
+      return new Promise((resolve, reject) => {
+        this._tokenContract.balanceOf.call(account, function (err, result) {
+          if (err) {
+            reject(err);
+          }
 
-    return new Promise((resolve, reject) => {
-      this._tokenContract.balanceOf.call(account, function (err, result) {
-        if (err) {
-          reject(err);
-        }
-
-        resolve(result);
-      });
-    }) as Promise<number>;
+          resolve(result);
+        });
+      }) as Promise<number>;
+    } else {
+      return new Promise((resolve, reject) => {
+        resolve(0);
+      }) as Promise<number>;
+    }
   }
 
   public async getUserAllowance(): Promise<string> {
     let account = await this.getAccount();
-
-    return new Promise((resolve, reject) => {
-      this._tokenContract.allowance.call(account, this._fundRequestContractAddress, function (err, result) {
-        err ? reject(err) : resolve(result);
-      });
-    }) as Promise<string>;
+    if (account != null) {
+      return new Promise((resolve, reject) => {
+        this._tokenContract.allowance.call(account, this._fundRequestContractAddress, function (err, result) {
+          err ? reject(err) : resolve(result);
+        });
+      }) as Promise<string>;
+    } else {
+      return new Promise((resolve, reject) => {
+        resolve('0');
+      }) as Promise<string>;
+    }
   }
 
   public async setUserAllowance(value: number): Promise<string> {
