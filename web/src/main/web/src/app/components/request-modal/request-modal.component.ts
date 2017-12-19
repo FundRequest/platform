@@ -6,7 +6,6 @@ import {Subscription} from 'rxjs/Subscription';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Issue} from './issue';
-import {CustomValidators} from '../../custom-validators/custom-validators';
 import {Utils} from '../../shared/utils';
 import {UserService} from "../../services/user/user.service";
 import {IUserRecord} from "../../redux/user.models";
@@ -46,7 +45,6 @@ export class RequestModalComponent implements OnInit, OnDestroy {
       link        : new FormControl(this.issue.link, [
         Validators.required,
         Validators.pattern(/^https:\/\/github.com\/FundRequest\/area51\/issues\/[0-9]+$/),
-        CustomValidators.requestExists(this._requests),
       ]),
       'fund-amount': new FormControl(this.fundAmount)
     });
