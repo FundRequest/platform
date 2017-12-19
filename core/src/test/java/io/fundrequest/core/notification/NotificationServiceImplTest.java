@@ -47,6 +47,7 @@ public class NotificationServiceImplTest {
     public void setUp() throws Exception {
         notificationRepository = mock(NotificationRepository.class);
         when(notificationRepository.save(any(Notification.class))).then(returnsFirstArg());
+        when(notificationRepository.saveAndFlush(any(Notification.class))).then(returnsFirstArg());
         eventPublisher = mock(ApplicationEventPublisher.class);
         requestService = mock(RequestService.class);
         fundService = mock(FundService.class);
@@ -104,7 +105,7 @@ public class NotificationServiceImplTest {
 
     private void assertRequestFundedNotificationSaved(FundDto fundDto) {
         ArgumentCaptor<RequestFundedNotification> captor = ArgumentCaptor.forClass(RequestFundedNotification.class);
-        verify(notificationRepository).save(captor.capture());
+        verify(notificationRepository).saveAndFlush(captor.capture());
         assertThat(captor.getValue().getFundId()).isEqualTo(fundDto.getId());
         assertThat(captor.getValue().getDate()).isEqualToIgnoringSeconds(LocalDateTime.now());
         assertThat(captor.getValue().getType()).isEqualTo(NotificationType.REQUEST_FUNDED);
