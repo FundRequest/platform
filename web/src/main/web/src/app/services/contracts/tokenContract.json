@@ -20,10 +20,6 @@
         "type": "address"
       },
       {
-        "name": "_currentValue",
-        "type": "uint256"
-      },
-      {
         "name": "_amount",
         "type": "uint256"
       }
@@ -93,6 +89,19 @@
   {
     "constant": true,
     "inputs": [],
+    "name": "limitedTransferAgent",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
     "name": "decimals",
     "outputs": [
       {
@@ -113,32 +122,6 @@
     ],
     "name": "changeController",
     "outputs": [],
-    "payable": false,
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_spender",
-        "type": "address"
-      },
-      {
-        "name": "_currentValue",
-        "type": "uint256"
-      },
-      {
-        "name": "_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "approve",
-    "outputs": [
-      {
-        "name": "success",
-        "type": "bool"
-      }
-    ],
     "payable": false,
     "type": "function"
   },
@@ -466,6 +449,32 @@
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_spender",
+        "type": "address"
+      },
+      {
+        "name": "_currentValue",
+        "type": "uint256"
+      },
+      {
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "safeApprove",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [],
     "name": "controller",
@@ -480,6 +489,10 @@
   },
   {
     "inputs": [
+      {
+        "name": "_limitedTransferAgent",
+        "type": "address"
+      },
       {
         "name": "_tokenFactory",
         "type": "address"

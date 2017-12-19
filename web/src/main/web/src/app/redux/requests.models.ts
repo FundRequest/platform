@@ -1,10 +1,5 @@
-import { makeTypedFactory, TypedRecord } from 'typed-immutable-record';
-import { List } from 'immutable';
-
-interface IRequestSource {
-  key: string;
-  value: string;
-}
+import {makeTypedFactory, TypedRecord} from 'typed-immutable-record';
+import {List} from 'immutable';
 
 interface IRequestIssueInformation {
   link: string;
@@ -13,7 +8,8 @@ interface IRequestIssueInformation {
   number: Number;
   title: string;
 
-  source: IRequestSource;
+  platform: string;
+  platformId: string;
 }
 
 interface IRequest {
@@ -45,10 +41,8 @@ export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
     repo  : '',
     number: 0,
     title : '',
-    source: {
-      key  : '',
-      value: ''
-    }
+    platform: '',
+    platformId  : ''
   }
 });
 

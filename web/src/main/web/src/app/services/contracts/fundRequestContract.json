@@ -3,16 +3,20 @@
     "constant": false,
     "inputs": [
       {
-        "name": "_value",
-        "type": "uint256"
-      },
-      {
-        "name": "_data",
+        "name": "_platform",
         "type": "bytes32"
       },
       {
-        "name": "_user",
+        "name": "_platformId",
+        "type": "bytes32"
+      },
+      {
+        "name": "_url",
         "type": "string"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
       }
     ],
     "name": "fund",
@@ -29,11 +33,67 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_data",
+        "name": "_platform",
+        "type": "bytes32"
+      },
+      {
+        "name": "_platformId",
         "type": "bytes32"
       }
     ],
     "name": "balance",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "requestsFunded",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "totalFunded",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "totalBalance",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "totalNumberOfFunders",
     "outputs": [
       {
         "name": "",
@@ -76,18 +136,23 @@
       },
       {
         "indexed": false,
-        "name": "value",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "data",
+        "name": "platform",
         "type": "bytes32"
       },
       {
         "indexed": false,
-        "name": "user",
+        "name": "platformId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "url",
         "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "value",
+        "type": "uint256"
       }
     ],
     "name": "Funded",

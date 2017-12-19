@@ -1,6 +1,6 @@
-import { Utils } from '../../shared/utils';
-import { createNotification, INotificationRecord } from '../../redux/notifications.models';
-import { createRequest, IRequestRecord } from '../../redux/requests.models';
+import {Utils} from '../../shared/utils';
+import {createNotification, INotificationRecord} from '../../redux/notifications.models';
+import {createRequest, IRequestRecord} from '../../redux/requests.models';
 
 interface FundDto {
   id: number;
@@ -78,7 +78,7 @@ export class NotificationStreamMessage {
           requestId: this._message.fundDto.requestId,
           date: this._message.fundDto.date
         };
-        let desc = `${this._fund.funder} funded ${this._fund.amount} FND to "${this._request.issueInformation.title}".`;
+        let desc = `${this._fund.amount} FND was funded on "${this._request.issueInformation.title}".`;
         this._notification = this._notification.set('description', desc);
         break;
     }

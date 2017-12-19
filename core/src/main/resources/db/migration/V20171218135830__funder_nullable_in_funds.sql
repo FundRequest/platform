@@ -1,0 +1,2 @@
+ALTER TABLE fund
+  MODIFY funder TEXT NULL;

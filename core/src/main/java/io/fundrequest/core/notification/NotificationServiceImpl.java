@@ -18,6 +18,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -108,7 +110,7 @@ class NotificationServiceImpl implements NotificationService {
         return new RequestCreatedNotificationDto(id, NotificationType.REQUEST_CREATED, LocalDateTime.now(), requestDto);
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
     @Transactional
     public void onFunded(RequestFundedEvent fundedEvent) {
         RequestFundedNotification notification = new RequestFundedNotification(NotificationType.REQUEST_FUNDED, LocalDateTime.now(), fundedEvent.getFundDto().getId());

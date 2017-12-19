@@ -59,17 +59,4 @@ public class RequestController extends AbstractRestController {
         requestService.removeWatcherFromRequest(principal, requestId);
     }
 
-    @PostMapping(PRIVATE_PATH + "/requests")
-    public ResponseEntity<?> createRequest(
-            Principal principal,
-            @RequestBody @Valid CreateRequestCommand createRequestCommand) {
-
-        RequestDto result = requestService.createRequest(
-                principal,
-                createRequestCommand
-        );
-        return ResponseEntity
-                .created(getPublicLocationFromCurrentPath("/{id}", result.getId()))
-                .build();
-    }
 }

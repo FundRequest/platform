@@ -78,27 +78,6 @@ public class RequestControllerTest {
                     .andDo(MockMvcRestDocumentation.document("requests-user-list-example"));
     }
 
-    @Test
-    public void createRequest() throws Exception {
-        CreateRequestCommand command = new CreateRequestCommand();
-        command.setIssueLink("https://github.com/FundRequest/area51/issues/4");
-        command.setTechnologies(Collections.singleton("java"));
-
-        Mockito.when(requestService.createRequest(principal, command))
-               .thenReturn(RequestDtoMother.freeCodeCampNoUserStories());
-
-        this.mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/private/requests").contentType(MediaType.APPLICATION_JSON).content(
-                        this.objectMapper.writeValueAsString(command))
-                                                .principal(principal))
-                    .andExpect(
-                            MockMvcResultMatchers.status().isCreated())
-                    .andDo(MockMvcRestDocumentation.document("requests-create-example",
-                                                             PayloadDocumentation.requestFields(
-                                                                     PayloadDocumentation.fieldWithPath("issueLink").description("The Github link to the issue"),
-                                                                     PayloadDocumentation.fieldWithPath("technologies").description("An array of technologies")
-                                                                                               )));
-    }
 
     @Test
     public void addWatcher() throws Exception {
@@ -122,15 +101,4 @@ public class RequestControllerTest {
                     .andDo(MockMvcRestDocumentation.document("requests-remove-watcher-example"));
     }
 
-    @Test
-    public void badRequest() throws Exception {
-
-        this.mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/private/requests").contentType(MediaType.APPLICATION_JSON).content(
-                        this.objectMapper.writeValueAsString(Collections.emptyMap()))
-                                                .principal(principal))
-                    .andExpect(
-                            MockMvcResultMatchers.status().isBadRequest())
-                    .andDo(MockMvcRestDocumentation.document("requests-create-error-example"));
-    }
 }

@@ -102,7 +102,7 @@ public class FundServiceTest {
         when(mappers.map(eq(Request.class), eq(RequestDto.class), any(Request.class)))
                 .thenReturn(requestDto);
 
-        fundService.addFunds(funder, command);
+        fundService.addFunds(command);
 
         verifyFundsSaved(command, funder);
         verifyEventCreated(requestDto, fundDto);
@@ -118,7 +118,6 @@ public class FundServiceTest {
     private void verifyFundsSaved(AddFundsCommand command, Principal funder) {
         ArgumentCaptor<Fund> fundArgumentCaptor = ArgumentCaptor.forClass(Fund.class);
         verify(fundRepository).saveAndFlush(fundArgumentCaptor.capture());
-        assertThat(fundArgumentCaptor.getValue().getFunder()).isEqualTo(funder.getName());
         assertThat(fundArgumentCaptor.getValue().getRequestId()).isEqualTo(command.getRequestId());
         assertThat(fundArgumentCaptor.getValue().getAmountInWei()).isEqualTo(command.getAmountInWei());
     }

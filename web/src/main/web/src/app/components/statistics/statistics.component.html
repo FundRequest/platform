@@ -1,16 +1,5 @@
 <div class="row" *ngIf="statistics">
-  <div class="col-sm-6 col-lg-4">
-    <div class="panel widget bg-primary">
-      <div class="row row-table">
-        <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x fa fa-file-code-o"></em></div>
-        <div class="col-xs-8 pv-lg">
-          <div class="h2 mt0">{{statistics.numberOfRequests}}</div>
-          <div class="text-uppercase"># Requests</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-lg-4">
+  <div class="col-sm-6 col-lg-6">
     <div class="panel widget bg-primary">
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x fa fa-magic"></em></div>
@@ -21,22 +10,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-lg-4">
-    <div class="panel widget bg-primary">
-      <div class="row row-table">
-        <div class="col-xs-4 text-center pv-lg bg-primary-dark">
-          <div class="easypie-chart" easypiechart [options]="pieOptions" [percent]="percentageFunded">
-            <span>%</span>
-          </div>
-        </div>
-        <div class="col-xs-8 pv-lg">
-          <div class="h2 mt0">{{percentageFunded | number: '1.2-2'}}%</div>
-          <div class="text-uppercase">Funded requests</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-lg-4">
+  <div class="col-sm-6 col-lg-6">
     <div class="panel widget bg-primary">
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-people"></em></div>
@@ -47,7 +21,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-lg-4">
+  <div class="col-sm-6 col-lg-6">
     <div class="panel widget bg-primary">
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-chart"></em></div>
@@ -58,7 +32,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-lg-4">
+  <div class="col-sm-6 col-lg-6">
     <div class="panel widget bg-primary">
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-fire"></em></div>

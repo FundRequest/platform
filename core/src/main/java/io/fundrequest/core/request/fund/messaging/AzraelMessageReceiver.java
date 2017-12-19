@@ -1,8 +1,9 @@
 package io.fundrequest.core.request.fund.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundrequest.core.request.fund.FundService;
-import io.fundrequest.core.request.fund.command.AddFundsCommand;
+import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
 import io.fundrequest.core.request.fund.infrastructure.ProcessedBlockchainEventRepository;
 import io.fundrequest.core.request.fund.messaging.dto.FundedEthDto;
@@ -25,15 +26,15 @@ import java.math.BigDecimal;
 @Component
 public class AzraelMessageReceiver {
 
-    private FundService fundService;
+    private RequestService requestService;
     private ObjectMapper objectMapper;
     private ProcessedBlockchainEventRepository processedBlockchainEventRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AzraelMessageReceiver.class);
 
     @Autowired
-    public AzraelMessageReceiver(FundService fundService, ObjectMapper objectMapper, ProcessedBlockchainEventRepository processedBlockchainEventRepository) {
-        this.fundService = fundService;
+    public AzraelMessageReceiver(RequestService requestService, ObjectMapper objectMapper, ProcessedBlockchainEventRepository processedBlockchainEventRepository) {
+        this.requestService = requestService;
         this.objectMapper = objectMapper;
         this.processedBlockchainEventRepository = processedBlockchainEventRepository;
     }
@@ -43,17 +44,19 @@ public class AzraelMessageReceiver {
         LOGGER.debug("Recieved new message from Azrael: " + message);
         FundedEthDto result = objectMapper.readValue(message, FundedEthDto.class);
         if (isNewFunding(result)) {
-            AddFundsCommand command = new AddFundsCommand();
-            command.setAmountInWei(new BigDecimal(result.getAmount()));
-            command.setRequestId(new Long(result.getData()));
-            fundService.addFunds(result::getUser, command);
+            CreateRequestCommand createRequestCommand = new CreateRequestCommand();
+            createRequestCommand.setPlatform(Platform.getPlatform(result.getPlatform()).orElseThrow(() -> new RuntimeException("Platform " + result.getPlatform() + " is unknown!")));
+            createRequestCommand.setPlatformId(result.getPlatformId());
+            createRequestCommand.setFunds(new BigDecimal(result.getAmount()));
+            createRequestCommand.setIssueLink(result.getUrl());
+            requestService.createRequest(createRequestCommand);
             processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
         }
     }
 
     private boolean isNewFunding(FundedEthDto result) {
         return !processedBlockchainEventRepository.findOne(result.getTransactionHash()).isPresent()
-                && StringUtils.isNumeric(result.getData());
+                && StringUtils.isNumeric(result.getPlatformId());
     }
 
     @Bean

@@ -8,7 +8,8 @@ public final class IssueInformationMother {
                 .withNumber("42")
                 .withOwner("kazuki43zoo")
                 .withRepo("api-stub")
-                .withSource(RequestSource.GITHUB)
+                .withPlatform(Platform.GITHUB)
+                .withPlatformId("3")
                 .withTitle("Change to use Kotlin instead of Groovy on Mapper Interface");
     }
 }

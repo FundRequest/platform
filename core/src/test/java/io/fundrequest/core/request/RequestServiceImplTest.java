@@ -4,21 +4,22 @@ import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.IssueInformationMother;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
+import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
+import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubParser;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.security.Principal;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -39,20 +40,22 @@ public class RequestServiceImplTest {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private GithubParser githubLinkParser;
-    private ApplicationEventPublisher eventPublisher;
+    private FundService fundService;
+    private GithubClient githubClient;
 
     @Before
     public void setUp() throws Exception {
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
         githubLinkParser = mock(GithubParser.class);
-        eventPublisher = mock(ApplicationEventPublisher.class);
+        fundService = mock(FundService.class);
+        githubClient = mock(GithubClient.class);
         requestService = new RequestServiceImpl(
                 requestRepository,
                 mappers,
                 githubLinkParser,
-                eventPublisher
-        );
+                fundService,
+                githubClient);
     }
 
     @Test
@@ -112,12 +115,12 @@ public class RequestServiceImplTest {
     @Test
     public void createWithNewIssue() throws Exception {
         CreateRequestCommand command = createCommand();
-        when(requestRepository.findByIssueLink(command.getIssueLink())).thenReturn(Optional.empty());
+        when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.empty());
         IssueInformation issueInformation = IssueInformationMother.kazuki43zooApiStub().build();
         when(githubLinkParser.parseIssue(command.getIssueLink())).thenReturn(issueInformation);
         when(requestRepository.save(any(Request.class))).then(returnsFirstArg());
 
-        requestService.createRequest(mock(Principal.class, RETURNS_DEEP_STUBS), command);
+        requestService.createRequest(command);
 
         ArgumentCaptor<Request> savedRequest = ArgumentCaptor.forClass(Request.class);
         verify(requestRepository).save(savedRequest.capture());
@@ -130,25 +133,19 @@ public class RequestServiceImplTest {
     public void createWithExistingIssue() throws Exception {
         CreateRequestCommand command = createCommand();
         Optional<Request> request = Optional.of(RequestMother.freeCodeCampNoUserStories().build());
-        when(requestRepository.findByIssueLink(command.getIssueLink())).thenReturn(request);
+        when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(request);
         IssueInformation issueInformation = IssueInformationMother.kazuki43zooApiStub().build();
         when(githubLinkParser.parseIssue(command.getIssueLink())).thenReturn(issueInformation);
         when(requestRepository.save(any(Request.class))).then(returnsFirstArg());
 
-        Principal user = mock(Principal.class, RETURNS_DEEP_STUBS);
-        when(user.getName()).thenReturn("davy");
+        requestService.createRequest(command);
 
-        requestService.createRequest(user, command);
-
-        assertThat(request.get().getWatchers()).contains("davy");
     }
 
     private CreateRequestCommand createCommand() {
         CreateRequestCommand command = new CreateRequestCommand();
-        command.setIssueLink("link");
-        HashSet<String> technologies = new HashSet<>();
-        technologies.add("java");
-        command.setTechnologies(technologies);
+        command.setPlatform(Platform.GITHUB);
+        command.setPlatformId("1");
         return command;
     }
 

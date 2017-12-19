@@ -3,9 +3,10 @@ package io.fundrequest.core.request.fund.messaging.dto;
 public class FundedEthDto {
     private String transactionHash;
     private String from;
+    private String platform;
+    private String platformId;
     private String amount;
-    private String data;
-    private String user;
+    private String url;
 
     public String getFrom() {
         return from;
@@ -23,20 +24,20 @@ public class FundedEthDto {
         this.amount = amount;
     }
 
-    public String getData() {
-        return data;
+    public String getPlatform() {
+        return platform;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
-    public String getUser() {
-        return user;
+    public String getPlatformId() {
+        return platformId;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setPlatformId(String platformId) {
+        this.platformId = platformId;
     }
 
     public String getTransactionHash() {
@@ -45,5 +46,13 @@ public class FundedEthDto {
 
     public void setTransactionHash(String transactionHash) {
         this.transactionHash = transactionHash;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

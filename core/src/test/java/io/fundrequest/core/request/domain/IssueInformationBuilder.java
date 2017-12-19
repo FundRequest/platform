@@ -6,7 +6,8 @@ public final class IssueInformationBuilder {
     private String repo;
     private String number;
     private String title;
-    private RequestSource source;
+    private Platform platform;
+    private String platformId;
 
     private IssueInformationBuilder() {
     }
@@ -35,18 +36,23 @@ public final class IssueInformationBuilder {
         return this;
     }
 
+    public IssueInformationBuilder withPlatformId(String platformId) {
+        this.platformId = platformId;
+        return this;
+    }
+
     public IssueInformationBuilder withTitle(String title) {
         this.title = title;
         return this;
     }
 
-    public IssueInformationBuilder withSource(RequestSource source) {
-        this.source = source;
+    public IssueInformationBuilder withPlatform(Platform platform) {
+        this.platform = platform;
         return this;
     }
 
     public IssueInformationBuilder but() {
-        return anIssueInformation().withLink(link).withOwner(owner).withRepo(repo).withNumber(number).withTitle(title).withSource(source);
+        return anIssueInformation().withLink(link).withOwner(owner).withRepo(repo).withNumber(number).withTitle(title).withPlatform(platform);
     }
 
     public IssueInformation build() {
@@ -56,7 +62,8 @@ public final class IssueInformationBuilder {
         issueInformation.setRepo(repo);
         issueInformation.setNumber(number);
         issueInformation.setTitle(title);
-        issueInformation.setSource(source);
+        issueInformation.setPlatform(platform);
+        issueInformation.setPlatformId(platformId);
         return issueInformation;
     }
 }
