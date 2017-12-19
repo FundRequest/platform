@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {BsModalRef} from 'ngx-bootstrap';
 import {RequestService} from '../../services/request/request.service';
-import {IRequestList} from '../../redux/requests.models';
+import {IRequestList, IRequestRecord} from '../../redux/requests.models';
 import {Subscription} from 'rxjs/Subscription';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
@@ -66,5 +66,10 @@ export class RequestModalComponent implements OnInit, OnDestroy {
   }
 
   get link() { return this.requestForm.get('link'); }
+
+  public requestExists():boolean {
+    let checkRequests = this._requests.filter((request: IRequestRecord) => request.issueInformation.link == this.link.value.trim());
+    return checkRequests.count() > 0;
+  }
 
 }

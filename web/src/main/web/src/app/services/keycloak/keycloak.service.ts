@@ -17,10 +17,10 @@ export class KeycloakService {
     return new Promise((resolve, reject) => {
       keycloakAuth.init({checkLoginIframe: false, onLoad: 'check-sso', flow: 'implicit'})
         .success((authenticated) => {
-          if (<string>KeycloakService.auth.authz) {
+          KeycloakService.auth.authz = keycloakAuth;
+          if (keycloakAuth.token) {
             KeycloakService.auth.loggedIn = true;
           }
-          KeycloakService.auth.authz = keycloakAuth;
           KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl
             + `/realms/${environment.keycloak.realm}/protocol/openid-connect/logout?redirect_uri=${document.baseURI}`;
           resolve();
