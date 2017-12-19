@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import { EventSourcePolyfill, OnMessageEvent } from 'ng-event-source';
-import { environment } from '../../../environments/environment';
-import { RequestService } from '../request/request.service';
-import { NotificationStreamMessage } from './notification-stream-message';
-import { Store } from '@ngrx/store';
-import { AddNotification } from '../../redux/notifications.reducer';
-import { INotificationRecord } from '../../redux/notifications.models';
-import { IState } from '../../redux/store';
+import {Injectable} from '@angular/core';
+import {EventSourcePolyfill, OnMessageEvent} from 'ng-event-source';
+import {environment} from '../../../environments/environment';
+import {RequestService} from '../request/request.service';
+import {NotificationStreamMessage} from './notification-stream-message';
+import {Store} from '@ngrx/store';
+import {AddNotification} from '../../redux/notifications.reducer';
+import {INotificationRecord} from '../../redux/notifications.models';
+import {IState} from '../../redux/store';
 
 @Injectable()
 export class NotificationStreamService {
@@ -20,11 +20,8 @@ export class NotificationStreamService {
       this._commit(notificationStreamMessage);
     });
     this._eventSource.onopen = (a) => {
-      console.log('open', a);// Do stuff here
     };
     this._eventSource.onerror = (e) => {
-      // Do stuff here
-      console.log('error', e);
     };
   }
 

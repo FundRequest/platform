@@ -23,7 +23,6 @@ export class RequestService {
 
   public get requests$(): Observable<IRequestList> {
     if (!this._requestInitialized) {
-      console.log('getting requests');
       this._requestInitialized = true;
 
       this.http.get(`/api/public/requests`).take(1).subscribe((requests: IRequestList) => {

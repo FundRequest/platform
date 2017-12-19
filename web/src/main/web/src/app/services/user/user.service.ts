@@ -32,8 +32,6 @@ export class UserService {
 
   private async initUser(): Promise<void> {
     this.user = createUser();
-
-    console.log(this._as.isAuthenticated());
     if (this._as.isAuthenticated()) {
       let newUser: IUserRecord = await this.http.get(`/api/private/user/info`).toPromise() as IUserRecord;
       this.user = createUser(newUser);
