@@ -31,9 +31,9 @@ export class RequestService {
           requests.map((request: IRequestRecord) => {
             this._cs.getRequestBalance(request).then(
               (balance) => {
-                let existingRequest: IRequestRecord = createRequest(request);
-                let newRequest: IRequestRecord = existingRequest.set('balance', balance);
-                this.editRequestInStore(existingRequest, newRequest);
+                let newRequest = request;
+                newRequest.balance = balance; //createRequest();
+                this.editRequestInStore(request, newRequest);
               }
             );
           });
