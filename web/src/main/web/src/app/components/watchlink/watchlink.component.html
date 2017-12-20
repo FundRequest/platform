@@ -4,7 +4,8 @@
 </ng-template>
 <a *ngIf="(request && request?.watchers)"
    (click)="toggleIsWatcher()" class="watch-link"
-   [tooltip]="watchersTemplate">
+   [tooltip]="watchersTemplate"
+   [isDisabled]="request.watchers.length <= 0">
   <i [ngClass]="{'fa fa-lg': true, 'fa-star': isWatcher(), 'fa-star-o': !isWatcher()}"></i>
   <small>
     <strong>{{request.watchers.length}}</strong>

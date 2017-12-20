@@ -66,7 +66,7 @@ class FundServiceImpl implements FundService {
         fund = fundRepository.saveAndFlush(fund);
         if (request.getStatus() == RequestStatus.OPEN) {
             request.setStatus(RequestStatus.FUNDED);
-            requestRepository.saveAndFlush(request);
+            request = requestRepository.saveAndFlush(request);
         }
         eventPublisher.publishEvent(
                 new RequestFundedEvent(

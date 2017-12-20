@@ -48,7 +48,7 @@
           <mfDefaultSorter by="status">Status</mfDefaultSorter>
         </th>
         <th>
-          <mfDefaultSorter by="issueInformation.source">Source</mfDefaultSorter>
+          <mfDefaultSorter by="issueInformation.platform">Platform</mfDefaultSorter>
         </th>
         <th>
           <mfDefaultSorter by="type">Type</mfDefaultSorter>
@@ -77,7 +77,7 @@
         <td>{{request.status}}</td>
         <td>
           <a target="_blank" href="{{request.issueInformation?.link}}">
-            <i [ngClass]="['fa fa-2x fa-' + request.issueInformation?.source | lowercase]"></i>
+            <i [ngClass]="['fa fa-2x fa-' + request.issueInformation?.platform | lowercase]"></i>
           </a>
         </td>
         <td>{{request.type}}</td>

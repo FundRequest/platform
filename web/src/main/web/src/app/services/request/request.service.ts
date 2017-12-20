@@ -127,6 +127,23 @@ export class RequestService {
     this.store.dispatch(new EditRequest(oldRequest, modifiedRequest));
   }
 
+  public editOrAddRequestInStore(newOrModifiedRequest: IRequestRecord) {
+    let existingRequest: IRequestRecord;
+
+    this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
+      requests.filter((request: IRequestRecord) => request.id == newOrModifiedRequest.id)
+        .map((request: IRequestRecord) => {
+          existingRequest = request;
+        });
+    });
+
+    if (existingRequest == null) {
+      this.addRequestInStore(newOrModifiedRequest);
+    } else {
+      this.editRequestInStore(existingRequest, newOrModifiedRequest);
+    }
+  }
+
   private handleError(error: any): void {
     console.error('An error occurred', error);
   }
