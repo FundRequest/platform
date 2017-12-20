@@ -115,10 +115,22 @@ export class RequestService {
   }
 
   public addRequestInStore(newRequest: IRequestRecord) {
+    console.log('adding request!');
     this.store.dispatch(new AddRequest(newRequest));
-    this._cs.getRequestBalance(newRequest).then(
+    this.updateRequestBalance(newRequest);
+  }
+
+  private updateRequestBalance(request: IRequestRecord) {
+    this._cs.getRequestBalance(request).then(
       (balance) => {
-        this.editRequestInStore(newRequest, newRequest.set('balance', balance));
+        if(request.set) {
+          this.editRequestInStore(request, request.set('balance', balance));
+        } else {
+          let newRequest = request;
+          newRequest.balance = balance;
+          this.editRequestInStore(request, newRequest);
+        }
+
       }
     );
   }
@@ -140,7 +152,7 @@ export class RequestService {
     if (existingRequest == null) {
       this.addRequestInStore(newOrModifiedRequest);
     } else {
-      this.editRequestInStore(existingRequest, newOrModifiedRequest);
+      this.updateRequestBalance(existingRequest);
     }
   }
 
