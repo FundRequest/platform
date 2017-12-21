@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 
-import {IRequestRecord} from '../../redux/requests.models';
+import {FundRequestCommand, IRequestRecord} from '../../redux/requests.models';
 import {IUserRecord} from '../../redux/user.models';
 import {RequestService} from '../../services/request/request.service';
 import {UserService} from '../../services/user/user.service';
@@ -8,9 +8,9 @@ import {Utils} from '../../shared/utils';
 import {BsModalRef} from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
-  selector   : 'fund-modal-content',
+  selector: 'fund-modal-content',
   templateUrl: './fund-modal.component.html',
-  styleUrls  : ['./fund-modal.component.scss']
+  styleUrls: ['./fund-modal.component.scss']
 })
 export class FundModalComponent implements OnInit {
 
@@ -34,7 +34,13 @@ export class FundModalComponent implements OnInit {
   }
 
   public fund() {
-    this.requestService.fundRequest(this.request, this.fundAmount);
+    this.requestService.fundRequest(
+      new FundRequestCommand(
+        this.request.issueInformation.platform,
+        this.request.issueInformation.platformId,
+        this.request.issueInformation.link,
+        this.fundAmount)
+    );
     this.bsModalRef.hide();
   }
 }

@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {HttpClient} from '@angular/common/http';
 import {RequestsStats} from '../../core/requests/RequestsStats';
 import {IState} from '../../redux/store';
-import {createRequest, IRequestList, IRequestRecord} from '../../redux/requests.models';
+import {createRequest, FundRequestCommand, IRequestList, IRequestRecord} from '../../redux/requests.models';
 import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
 import {IUserRecord} from '../../redux/user.models';
 import {ContractsService} from '../contracts/contracts.service';
@@ -60,9 +60,9 @@ export class RequestService {
 
   }
 
-  public async fundRequest(request: IRequestRecord, funding: number): Promise<string> {
+  public async fundRequest(command:FundRequestCommand): Promise<string> {
     //let balance = await this.contractService.getRequestBalance(request) as string;
-    return this._cs.fundRequest(request.issueInformation.platform, request.issueInformation.platformId, request.issueInformation.link, funding);
+    return this._cs.fundRequest(command.platform, command.platformId, command.link, command.amount);
     // only edit request when funding is processed
     //this.editRequestInStore(request, createRequest(newRequest));
   }

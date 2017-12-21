@@ -47,3 +47,9 @@ export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
 });
 
 export type IRequestList = List<IRequestRecord>;
+
+export class FundRequestCommand {
+  constructor(public platform: string, public platformId: string, public link: string, public amount: number) {
+  }
+}
+
