@@ -17,8 +17,8 @@ const swal = require('sweetalert');
 export class FundComponent implements OnInit {
 
   public user: IUserRecord;
-  private requestDetails: any;
-  private fundAmount: number;
+  public requestDetails: any;
+  public fundAmount: number;
   public allowance: number;
   public balance: number;
   public fundingInProgress: boolean = false;

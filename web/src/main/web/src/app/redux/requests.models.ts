@@ -20,6 +20,8 @@ interface IRequest {
   watchers: string[];
   loggedInUserIsWatcher: boolean;
   balance: string;
+  funderBalance: string;
+  numberOfFunders: string;
   issueInformation: IRequestIssueInformation;
 }
 
@@ -35,6 +37,8 @@ export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
   watchers             : [],
   loggedInUserIsWatcher: false,
   balance              : '0',
+  funderBalance              : '0',
+  numberOfFunders: '0',
   issueInformation     : {
     link  : '',
     owner : '',
@@ -53,3 +57,7 @@ export class FundRequestCommand {
   }
 }
 
+export class FundInfo {
+  constructor(public numberOfFunders: string, public balance: string, public funderBalance: string) {
+  }
+}

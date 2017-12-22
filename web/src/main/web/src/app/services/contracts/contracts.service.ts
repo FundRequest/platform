@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
-import {IRequestRecord} from '../../redux/requests.models';
+import {FundInfo, IRequestRecord} from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
 
 
@@ -23,7 +23,7 @@ export class ContractsService {
   private _init: boolean = false;
 
   private _tokenContractAddress: string = '0x38ae2ab8d80941d517b025923f7307a56d960037';
-  private _fundRequestContractAddress: string = '0x8315bb2f738cc4e3e68ad943beedb081b0c32f6c';
+  private _fundRequestContractAddress: string = '0x90b9d2a4eebaf1ea30c5dd3bb0fe4f5643e0540f';
 
   constructor(private _ns: NotificationService) {
   }
@@ -203,20 +203,23 @@ export class ContractsService {
 
   }
 
-  public async getRequestBalance(request: IRequestRecord): Promise<string> {
+  public async getRequestFundInfo(request: IRequestRecord): Promise<FundInfo> {
     if (!this._init) {
       await this.init();
     }
-
     return new Promise((resolve, reject) => {
-      return this._fundRequestContract.balance.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), function (err, result) {
+      console.log(this._account);
+      return this._fundRequestContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), function (err, result) {
         if (err) {
           reject(err);
         } else {
-          resolve(result);
+          if(result) {
+            console.log(result);
+            resolve(new FundInfo(result[0], result[1], result[2]));
+          }
         }
       });
-    }) as Promise<string>;
+    }) as Promise<FundInfo>;
   }
 
   private _getTransactionLink(tx: string): string {

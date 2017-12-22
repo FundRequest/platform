@@ -29,11 +29,9 @@ export class RequestService {
         this.store.dispatch(new ReplaceRequestList(requests));
         this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
           requests.map((request: IRequestRecord) => {
-            this._cs.getRequestBalance(request).then(
-              (balance) => {
-                let newRequest = request;
-                newRequest.balance = balance; //createRequest();
-                this.editRequestInStore(request, newRequest);
+            this._cs.getRequestFundInfo(request).then(
+              (fundInfo) => {
+                this.updateRequestWithNewFundInfo(request, fundInfo);
               }
             );
           });
@@ -121,18 +119,28 @@ export class RequestService {
   }
 
   private updateRequestBalance(request: IRequestRecord) {
-    this._cs.getRequestBalance(request).then(
-      (balance) => {
-        if(request.set) {
-          this.editRequestInStore(request, request.set('balance', balance));
-        } else {
-          let newRequest = request;
-          newRequest.balance = balance;
-          this.editRequestInStore(request, newRequest);
-        }
+    this._cs.getRequestFundInfo(request).then(
+      (fundInfo) => {
+        this.updateRequestWithNewFundInfo(request, fundInfo);
 
       }
     );
+  }
+
+  private updateRequestWithNewFundInfo(request: IRequestRecord, fundInfo) {
+    if (request.set) {
+      let newRequest =
+        request.set('balance', fundInfo.balance)
+          .set('funderBalance', fundInfo.funderBalance)
+          .set('numberOfFunders', fundInfo.numberOfFunders);
+      this.editRequestInStore(request, newRequest);
+    } else {
+      let newRequest = request;
+      newRequest.balance = fundInfo.balance;
+      newRequest.funderBalance = fundInfo.funderBalance;
+      newRequest.numberOfFunders = fundInfo.numberOfFunders;
+      this.editRequestInStore(request, newRequest);
+    }
   }
 
   public editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {
