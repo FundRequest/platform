@@ -4,6 +4,9 @@ import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.dto.FundDtoMapperImpl;
 
+import java.time.LocalDateTime;
+import java.time.Month;
+
 public final class FundDtoMother {
 
     private final static FundDtoMapperImpl mapper;
@@ -13,7 +16,10 @@ public final class FundDtoMother {
     }
 
     public static FundDto aFundDto() {
-        return mapper.map(FundMother.aFund().withId(234L).build());
+        return mapper.map(FundMother.aFund()
+                .withId(234L)
+                .withTimestamp(LocalDateTime.of(2017, Month.DECEMBER, 27, 0, 0))
+                .build());
     }
 
 }

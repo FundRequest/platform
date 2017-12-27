@@ -22,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Component
 public class AzraelMessageReceiver {
@@ -49,9 +52,16 @@ public class AzraelMessageReceiver {
             createRequestCommand.setPlatformId(result.getPlatformId());
             createRequestCommand.setFunds(new BigDecimal(result.getAmount()));
             createRequestCommand.setIssueLink(result.getUrl());
+            createRequestCommand.setTimestamp(getTimeStamp(result.getTimestamp()));
             requestService.createRequest(createRequestCommand);
             processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
         }
+    }
+
+    private LocalDateTime getTimeStamp(Long time) {
+        return time == null ? null : Instant.ofEpochMilli(time)
+                .atZone(ZoneOffset.UTC)
+                .toLocalDateTime();
     }
 
     private boolean isNewFunding(FundedEthDto result) {

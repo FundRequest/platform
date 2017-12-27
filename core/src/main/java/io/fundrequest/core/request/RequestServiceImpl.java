@@ -77,6 +77,7 @@ class RequestServiceImpl implements RequestService {
         AddFundsCommand fundsCommand = new AddFundsCommand();
         fundsCommand.setRequestId(r.getId());
         fundsCommand.setAmountInWei(command.getFunds());
+        fundsCommand.setTimestamp(command.getTimestamp());
         fundService.addFunds(fundsCommand);
     }
 

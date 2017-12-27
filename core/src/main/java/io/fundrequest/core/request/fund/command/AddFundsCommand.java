@@ -3,6 +3,7 @@ package io.fundrequest.core.request.fund.command;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class AddFundsCommand {
 
@@ -12,6 +13,8 @@ public class AddFundsCommand {
     @NotNull
     @DecimalMin(value = "0")
     private BigDecimal amountInWei;
+
+    private LocalDateTime timestamp;
 
     public Long getRequestId() {
         return requestId;
@@ -27,5 +30,13 @@ public class AddFundsCommand {
 
     public void setAmountInWei(BigDecimal amountInWei) {
         this.amountInWei = amountInWei;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

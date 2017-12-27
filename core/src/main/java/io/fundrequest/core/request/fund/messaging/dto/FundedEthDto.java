@@ -7,6 +7,7 @@ public class FundedEthDto {
     private String platformId;
     private String amount;
     private String url;
+    private long timestamp;
 
     public String getFrom() {
         return from;
@@ -54,5 +55,13 @@ public class FundedEthDto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

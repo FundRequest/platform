@@ -62,6 +62,7 @@ class FundServiceImpl implements FundService {
         Fund fund = FundBuilder.aFund()
                 .withAmountInWei(command.getAmountInWei())
                 .withRequestId(command.getRequestId())
+                .withTimestamp(command.getTimestamp())
                 .build();
         fund = fundRepository.saveAndFlush(fund);
         if (request.getStatus() == RequestStatus.OPEN) {
