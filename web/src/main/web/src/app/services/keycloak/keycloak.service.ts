@@ -15,7 +15,7 @@ export class KeycloakService {
     KeycloakService.auth.loggedIn = false;
 
     return new Promise((resolve, reject) => {
-      keycloakAuth.init({checkLoginIframe: false, onLoad: 'check-sso', flow: 'implicit'})
+      keycloakAuth.init({checkLoginIframe: false, flow: 'implicit'})
         .success((authenticated) => {
           KeycloakService.auth.authz = keycloakAuth;
           if (keycloakAuth.token) {

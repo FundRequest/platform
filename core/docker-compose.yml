@@ -13,11 +13,23 @@ services:
       - MYSQL_DATABASE=fr
       - MYSQL_USER=fr
       - MYSQL_PASSWORD=fr
-  konijn:
+  fr-rabbitmq:
     image: rabbitmq:3.6.8-management
     ports :
       -  "5672:5672"
       -  "9191:15672"
+    volumes:
+      - ./docker_data/konijn/data:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_PASS=default_pass
+  azrael:
+    depends_on:
+      - "fr-rabbitmq"
+    links:
+      - fr-rabbitmq:fr-rabbitmq
+    image: fundrequestio/azrael:dev
+    ports :
+      -  "8001:8001"
     volumes:
       - ./docker_data/konijn/data:/var/lib/rabbitmq
     environment:
