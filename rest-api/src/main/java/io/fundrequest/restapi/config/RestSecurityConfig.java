@@ -73,6 +73,7 @@ public class RestSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .antMatchers("/api/private/**").authenticated()
                 .antMatchers("/**").permitAll()
                 .anyRequest().permitAll();
+        http.headers().frameOptions().disable();
     }
 
     @Bean

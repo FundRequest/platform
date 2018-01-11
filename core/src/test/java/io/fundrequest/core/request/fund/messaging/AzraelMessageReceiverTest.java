@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.fund.FundService;
-import io.fundrequest.core.request.fund.command.AddFundsCommand;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
 import io.fundrequest.core.request.fund.infrastructure.ProcessedBlockchainEventRepository;
 import io.fundrequest.core.request.fund.messaging.dto.FundedEthDto;
@@ -13,7 +12,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.StringWriter;
-import java.security.Principal;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
