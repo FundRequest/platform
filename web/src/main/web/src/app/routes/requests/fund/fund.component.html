@@ -78,12 +78,6 @@
             <div class="col-xs-6 col-xs-push-6 col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > balance">
               <label class="text-danger">Balance to low to fund {{fundAmount}} FND.</label>
             </div>
-            <div class="col-xs-6 col-xs-push-6 col-md-push-4 col-md-8 form-control-static"
-                 *ngIf="fundAmount > allowance">
-              <label class="text-warning">You approved {{allowance}} FND, when trying to fund there will be an extra
-                request
-                to first approve {{fundAmount - allowance}} FND.</label>
-            </div>
           </div>
         </div>
         <div>

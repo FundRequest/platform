@@ -39,14 +39,11 @@ export class UserService {
 
     }
     let balance;
-    let allowance;
     await Promise.all([
       this._cs.getUserBalance().then(result => balance = result),
-      this._cs.getUserAllowance().then(result => allowance = result)
     ]).catch(error => this.handleError(error));
 
     this.user = this.user.set('balance', balance);
-    this.user = this.user.set('allowance', allowance);
     this.store.dispatch(new ReplaceUser(this.user));
   }
 
@@ -56,13 +53,6 @@ export class UserService {
     }
 
     return this.store.select(state => state.user);
-  }
-
-  public async setAllowance(value: number) {
-    let allowance = await this._cs.setUserAllowance(value);
-    this.user = this.user.set('allowance', allowance);
-    this.store.dispatch(new ReplaceUser(this.user));
-    this._cs.setUserAllowance(value);
   }
 
   private handleError(error: any): void {

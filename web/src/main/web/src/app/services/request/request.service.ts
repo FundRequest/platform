@@ -75,7 +75,7 @@ export class RequestService {
       platformId: command.platformId,
       address: '0x7031dA35E02917250e9115E25Db5797f93443bDa'
     };
-    await this.http.post('/api/private/requests/' + command.id + '/claimsignature', body).subscribe((signedClaim: SignedClaim) => {
+    await this.http.post('/api/private/requests/' + command.id + '/claim', body).subscribe((signedClaim: SignedClaim) => {
       console.log(signedClaim);
       return this._cs.claimRequest(signedClaim);
 
@@ -133,7 +133,6 @@ export class RequestService {
   }
 
   public addRequestInStore(newRequest: IRequestRecord) {
-    console.log('adding request!');
     this.store.dispatch(new AddRequest(newRequest));
     this.updateRequestBalance(newRequest);
   }

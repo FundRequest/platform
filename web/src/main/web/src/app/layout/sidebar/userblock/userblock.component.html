@@ -12,10 +12,6 @@
     <span class="user-block-role">
         <span>Balance: </span><span>{{_user?.balance | wei}}</span><span> FND</span>
     </span>
-    <span class="user-block-role">
-      <div><span>Approved for use: </span><span>{{_user?.allowance | wei}}</span><span> FND</span></div>
-        <button (click)="approveModal($event)" class="btn btn-xs btn-default">Approve FNDs</button>
-    </span>
   </div>
 
   <div class="user-block-info" *ngIf="!(_user?.email)">

@@ -22,8 +22,8 @@ export class ContractsService {
 
   private _init: boolean = false;
 
-  private _tokenContractAddress: string = '0xc5ed4a9b614b38153db6be21864d58570d81d6d0';
-  private _fundRequestContractAddress: string = '0x34837bbcf5cd28530e6d759caac53a4aec7cbb2f';
+  private _tokenContractAddress: string = '0xdc883f96ef4c3b40ed6968d5ada28a0e459e5b66';
+  private _fundRequestContractAddress: string = '0x246c5552a01f2bbd86dbfcdb3237a90cbf5685ac';
 
   constructor(private _ns: NotificationService) {
   }
@@ -45,10 +45,10 @@ export class ContractsService {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
       if (await this.getNetwork() !== '4') {
-        this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io'));
+        this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/'));
       }
     } else {
-      this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io'));
+      this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/'));
     }
   };
 
@@ -116,47 +116,6 @@ export class ContractsService {
     }
   }
 
-  public async getUserAllowance(): Promise<string> {
-    if (!this._init) {
-      await this.init();
-    }
-
-    if (this._account != null) {
-      return new Promise((resolve, reject) => {
-        this._tokenContract.allowance.call(this._account, this._fundRequestContractAddress, function (err, result) {
-          err ? reject(err) : resolve(result);
-        });
-      }) as Promise<string>;
-    } else {
-      return new Promise((resolve, reject) => {
-        resolve('0');
-      }) as Promise<string>;
-    }
-  }
-
-  public async setUserAllowance(value: number): Promise<string> {
-    if (!this._init) {
-      await this.init();
-    }
-
-    if (this._account != null) {
-      let currentAllowance: string = await this.getUserAllowance();
-      let total = this._web3.toWei(value, 'ether');
-
-      let tx = await new Promise((resolve, reject) => {
-        this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(this._account), function (err, tx) {
-          err ? reject(err) : resolve(tx);
-        });
-      }) as string;
-
-      this._ns.success('Transaction \'set allowance\' sent.', this._getTransactionLink(tx));
-      return Promise.resolve(total);
-    } else {
-      this.showLimitedFunctionalityAlert();
-      return Promise.resolve('0');
-    }
-  }
-
   private showLimitedFunctionalityAlert() {
     swal('Limited functionality',
       'You cannot execute transactions since you are not using a Dapp browser like Mist or have MetaMask enabled', 'error'
@@ -169,30 +128,17 @@ export class ContractsService {
     }
 
     if (!!this._account) {
-      let currentAllowance: string = await this.getUserAllowance();
       let total = this._web3.toWei(value, 'ether');
+      let tx = await new Promise((resolve, reject) => {
+        console.log(this._fundRequestContractAddress);
+        console.log(total);
+        console.log(platform + "|" + String(platformId) + "|" + url);
+        this._tokenContract.approveAndCall(this._fundRequestContractAddress, total, this._web3.fromAscii(platform + "|" + String(platformId) + "|" + url), this._getTransactionOptions(this._account), function (err, tx) {
+          err ? reject(err) : resolve(tx);
+        });
+      }) as string;
 
-      if (+total > +currentAllowance) {
-        let tx1 = await new Promise((resolve, reject) => {
-          this._tokenContract.safeApprove.sendTransaction(this._fundRequestContractAddress, currentAllowance, total, this._getTransactionOptions(this._account), function (err, tx) {
-            err ? reject(err) : resolve(tx);
-          });
-        }) as string;
-        let tx2 = await new Promise((resolve, reject) => {
-          this._fundRequestContract.fund.sendTransaction(this._web3.fromAscii(platform), this._web3.fromAscii(String(platformId)), url, total, this._getTransactionOptions(this._account), function (err, tx) {
-            err ? reject(err) : resolve(tx);
-          });
-        }) as string;
-      }
-      else {
-        let tx = await new Promise((resolve, reject) => {
-          this._fundRequestContract.fund.sendTransaction(this._web3.fromAscii(platform), this._web3.fromAscii(String(platformId)), url, total, this._getTransactionOptions(this._account), function (err, tx) {
-            err ? reject(err) : resolve(tx);
-          });
-        }) as string;
-
-        this._ns.success('Transaction \'fund request\' sent.', this._getTransactionLink(tx));
-      }
+      this._ns.success('Transaction \'fund request\' sent.', this._getTransactionLink(tx));
 
       return Promise.resolve(total);
     } else {
@@ -222,13 +168,11 @@ export class ContractsService {
       await this.init();
     }
     return new Promise((resolve, reject) => {
-      console.log(this._account);
       return this._fundRequestContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), function (err, result) {
         if (err) {
           reject(err);
         } else {
           if (result) {
-            console.log(result);
             resolve(new FundInfo(result[0], result[1], result[2]));
           }
         }
@@ -251,7 +195,7 @@ export class ContractsService {
   private _getTransactionOptions(account: string): any {
     return {
       from: account,
-      gas: 300000
+      gas: 350000
     };
   }
 }

@@ -3,8 +3,7 @@ import {Component, OnInit} from '@angular/core';
 import {UserblockService} from './userblock.service';
 import {UserService} from '../../../services/user/user.service';
 import {IUserRecord} from '../../../redux/user.models';
-import {BsModalRef, BsModalService} from 'ngx-bootstrap';
-import {ApproveModalComponent} from '../../../components/approve-modal/approve-modal.component';
+import {BsModalRef} from 'ngx-bootstrap';
 
 @Component({
   selector   : 'app-userblock',
@@ -16,18 +15,13 @@ export class UserblockComponent implements OnInit {
   private _user: IUserRecord;
 
   constructor(public userService: UserService,
-              public userblockService: UserblockService,
-              private modalService: BsModalService) {
+              public userblockService: UserblockService) {
   }
 
   ngOnInit() {
     this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
       this._user = user;
     });
-  }
-
-  approveModal(): void {
-    this._bsModalRef = this.modalService.show(ApproveModalComponent);
   }
 
   login(): void {

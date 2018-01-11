@@ -18,7 +18,6 @@ export class KeycloakService {
       keycloakAuth.init({checkLoginIframe: false, flow: 'implicit'})
         .success((authenticated) => {
           KeycloakService.auth.authz = keycloakAuth;
-          console.log(keycloakAuth.token);
           if (keycloakAuth.token) {
             KeycloakService.auth.loggedIn = true;
           }
