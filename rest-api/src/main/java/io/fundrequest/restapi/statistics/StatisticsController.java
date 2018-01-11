@@ -49,9 +49,9 @@ public class StatisticsController extends AbstractRestController {
             result.setAverageFundingPerRequest(BigDecimal.ZERO);
         }
         Map<LocalDate, BigDecimal> fundsPerDay = funds.stream().collect(
-                Collectors.groupingBy(f -> f.getCreationDate().toLocalDate(), Collectors.mapping(FundDto::getAmountInWei, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
+                Collectors.groupingBy(f -> f.getTimestamp().toLocalDate(), Collectors.mapping(FundDto::getAmountInWei, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
         result.setFundsPerDay(fundsPerDay);
-        Map<LocalDate, Long> requestsAddedPerDay = funds.stream().collect(Collectors.groupingBy(f -> f.getCreationDate().toLocalDate(), Collectors.counting()));
+        Map<LocalDate, Long> requestsAddedPerDay = funds.stream().collect(Collectors.groupingBy(f -> f.getTimestamp().toLocalDate(), Collectors.counting()));
         result.setRequestsAddedPerDay(requestsAddedPerDay);
         return result;
     }

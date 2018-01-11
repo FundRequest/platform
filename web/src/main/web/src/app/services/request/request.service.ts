@@ -4,7 +4,10 @@ import {Store} from '@ngrx/store';
 import {HttpClient} from '@angular/common/http';
 import {RequestsStats} from '../../core/requests/RequestsStats';
 import {IState} from '../../redux/store';
-import {createRequest, FundRequestCommand, IRequestList, IRequestRecord} from '../../redux/requests.models';
+import {
+  ClaimRequestCommand, createRequest, FundRequestCommand, IRequestList, IRequestRecord,
+  SignedClaim
+} from '../../redux/requests.models';
 import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
 import {IUserRecord} from '../../redux/user.models';
 import {ContractsService} from '../contracts/contracts.service';
@@ -58,11 +61,28 @@ export class RequestService {
 
   }
 
-  public async fundRequest(command:FundRequestCommand): Promise<string> {
+  public async fundRequest(command: FundRequestCommand): Promise<string> {
     //let balance = await this.contractService.getRequestBalance(request) as string;
     return this._cs.fundRequest(command.platform, command.platformId, command.link, command.amount);
     // only edit request when funding is processed
     //this.editRequestInStore(request, createRequest(newRequest));
+  }
+
+  public async claimRequest(command: ClaimRequestCommand): Promise<string> {
+    // this._cs.claimRequest(command.platform, command.platformId, command.link, command.amount);
+    let body = {
+      platform: command.platform,
+      platformId: command.platformId,
+      address: '0x7031dA35E02917250e9115E25Db5797f93443bDa'
+    };
+    await this.http.post('/api/private/requests/' + command.id + '/claimsignature', body).subscribe((signedClaim: SignedClaim) => {
+      console.log(signedClaim);
+      return this._cs.claimRequest(signedClaim);
+
+    });
+
+    return null;
+
   }
 
   public setUserAsWatcher(request: IRequestRecord, user: IUserRecord): void {

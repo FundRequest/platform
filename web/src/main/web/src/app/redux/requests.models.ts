@@ -57,6 +57,16 @@ export class FundRequestCommand {
   }
 }
 
+export class ClaimRequestCommand {
+  constructor(public id:number, public platform: string, public platformId: string, public solverAddress: string) {
+  }
+}
+
+export class SignedClaim {
+  constructor(public platform: string, public platformId: string, public solverAddress: string, public solver: string, public r: string, public s: string, public v: number) {
+  }
+}
+
 export class FundInfo {
   constructor(public numberOfFunders: string, public balance: string, public funderBalance: string) {
   }

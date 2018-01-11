@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
-import {FundInfo, IRequestRecord} from '../../redux/requests.models';
+import {FundInfo, IRequestRecord, SignedClaim} from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
 
 
@@ -22,8 +22,8 @@ export class ContractsService {
 
   private _init: boolean = false;
 
-  private _tokenContractAddress: string = '0x38ae2ab8d80941d517b025923f7307a56d960037';
-  private _fundRequestContractAddress: string = '0x90b9d2a4eebaf1ea30c5dd3bb0fe4f5643e0540f';
+  private _tokenContractAddress: string = '0xc5ed4a9b614b38153db6be21864d58570d81d6d0';
+  private _fundRequestContractAddress: string = '0x34837bbcf5cd28530e6d759caac53a4aec7cbb2f';
 
   constructor(private _ns: NotificationService) {
   }
@@ -178,7 +178,6 @@ export class ContractsService {
             err ? reject(err) : resolve(tx);
           });
         }) as string;
-
         let tx2 = await new Promise((resolve, reject) => {
           this._fundRequestContract.fund.sendTransaction(this._web3.fromAscii(platform), this._web3.fromAscii(String(platformId)), url, total, this._getTransactionOptions(this._account), function (err, tx) {
             err ? reject(err) : resolve(tx);
@@ -203,6 +202,21 @@ export class ContractsService {
 
   }
 
+  public async claimRequest(signedClaim: SignedClaim): Promise<string> {
+    return await new Promise((resolve, reject) => {
+      this._fundRequestContract.claim.sendTransaction(
+        this._web3.fromAscii(signedClaim.platform),
+        this._web3.fromAscii(signedClaim.platformId),
+        signedClaim.solver,
+        signedClaim.solverAddress,
+        signedClaim.r,
+        signedClaim.s,
+        signedClaim.v, this._getTransactionOptions(this._account), function (err, tx) {
+          err ? reject(err) : resolve(tx);
+        });
+    }) as string;
+  }
+
   public async getRequestFundInfo(request: IRequestRecord): Promise<FundInfo> {
     if (!this._init) {
       await this.init();
@@ -213,7 +227,7 @@ export class ContractsService {
         if (err) {
           reject(err);
         } else {
-          if(result) {
+          if (result) {
             console.log(result);
             resolve(new FundInfo(result[0], result[1], result[2]));
           }

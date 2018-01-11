@@ -1,6 +1,9 @@
 package io.fundrequest.core.request;
 
+import io.fundrequest.core.request.claim.ClaimRequest;
+import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.view.RequestDto;
 
 import java.security.Principal;
@@ -15,7 +18,11 @@ public interface RequestService {
 
     RequestDto findRequest(Long id);
 
+    RequestDto findRequest(Platform platform, String platformId);
+
     RequestDto createRequest(CreateRequestCommand command);
+
+    SignedClaim claimRequest(Principal principal, ClaimRequest claimRequest);
 
     void addWatcherToRequest(Principal principal, Long requestId);
 

@@ -1,6 +1,7 @@
 package io.fundrequest.core.request;
 
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.IssueInformationMother;
@@ -42,6 +43,7 @@ public class RequestServiceImplTest {
     private GithubParser githubLinkParser;
     private FundService fundService;
     private GithubClient githubClient;
+    private GithubClaimResolver githubClaimResolver;
 
     @Before
     public void setUp() throws Exception {
@@ -55,7 +57,7 @@ public class RequestServiceImplTest {
                 mappers,
                 githubLinkParser,
                 fundService,
-                githubClient);
+                githubClient, githubClaimResolver);
     }
 
     @Test

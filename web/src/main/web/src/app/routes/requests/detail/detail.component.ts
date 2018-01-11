@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
-import { IRequestRecord } from '../../../redux/requests.models';
-import { RequestService } from '../../../services/request/request.service';
-import { ContractsService } from '../../../services/contracts/contracts.service';
-import { UserService } from '../../../services/user/user.service';
-import { IUserRecord } from '../../../redux/user.models';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {ClaimRequestCommand, IRequestRecord} from '../../../redux/requests.models';
+import {RequestService} from '../../../services/request/request.service';
+import {UserService} from '../../../services/user/user.service';
+import {IUserRecord} from '../../../redux/user.models';
 
 @Component({
   selector   : 'fnd-request-detail',
@@ -32,5 +30,10 @@ export class DetailComponent implements OnInit {
           this.request = request;
         });
     });
+  }
+
+  claim(): void {
+    let info = this.request.issueInformation;
+    this.requestService.claimRequest(new ClaimRequestCommand(this.request.id, info.platform, info.platformId, ''));
   }
 }

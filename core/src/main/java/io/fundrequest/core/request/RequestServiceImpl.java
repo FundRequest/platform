@@ -2,8 +2,12 @@ package io.fundrequest.core.request;
 
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.claim.ClaimRequest;
+import io.fundrequest.core.request.claim.SignedClaim;
+import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.IssueInformation;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.fund.FundService;
@@ -30,13 +34,15 @@ class RequestServiceImpl implements RequestService {
     private GithubParser githubLinkParser;
     private FundService fundService;
     private GithubClient githubClient;
+    private GithubClaimResolver githubClaimResolver;
 
-    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser, FundService fundService, GithubClient githubClient) {
+    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser, FundService fundService, GithubClient githubClient, GithubClaimResolver githubClaimResolver) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
         this.fundService = fundService;
         this.githubClient = githubClient;
+        this.githubClaimResolver = githubClaimResolver;
     }
 
     @Override
@@ -65,12 +71,27 @@ class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public RequestDto findRequest(Platform platform, String platformId) {
+        Request request = requestRepository.findByPlatformAndPlatformId(platform, platformId)
+                .orElseThrow(ResourceNotFoundException::new);
+        return mappers.map(Request.class, RequestDto.class, request);
+    }
+
+    @Override
     @Transactional
     public RequestDto createRequest(CreateRequestCommand command) {
         Optional<Request> request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId());
         Request r = request.orElseGet(() -> createNewRequest(command));
         fundRequest(command, r);
         return mappers.map(Request.class, RequestDto.class, r);
+    }
+
+    @Override
+    @Transactional
+    public SignedClaim claimRequest(Principal user, ClaimRequest claimRequest) {
+        return githubClaimResolver.getSignedClaim(user, claimRequest, findRequest(claimRequest.getPlatform(), claimRequest.getPlatformId()));
+
     }
 
     private void fundRequest(CreateRequestCommand command, Request r) {

@@ -124,6 +124,12 @@ A `POST` request is used to the endpoint to add a watcher to a request, the user
 
 operation::requests-remove-watcher-example[snippets='request-fields,curl-request,http-response']
 
+=== Claim a request
+
+A `POST` request is used to the endpoint to claim a request
+
+operation::requests-claim-example[snippets='request-fields,curl-request,http-response']
+
 
 [[resources-iser]]
 == User

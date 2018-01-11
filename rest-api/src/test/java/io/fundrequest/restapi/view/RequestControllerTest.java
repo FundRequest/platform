@@ -3,7 +3,9 @@ package io.fundrequest.restapi.view;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.fundrequest.core.request.RequestService;
-import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.claim.ClaimRequest;
+import io.fundrequest.core.request.claim.SignedClaim;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.restapi.request.RequestController;
@@ -16,13 +18,15 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.Principal;
 import java.util.Collections;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 public class RequestControllerTest {
 
@@ -42,40 +46,40 @@ public class RequestControllerTest {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         converter.setObjectMapper(objectMapper);
         principal = Mockito.mock(Principal.class);
-        Mockito.when(principal.getName()).thenReturn("davyvanroy@fundrequest.io");
+        when(principal.getName()).thenReturn("davyvanroy@fundrequest.io");
         mockMvc = MockMvcBuilders.standaloneSetup(new RequestController(requestService))
-                                 .setMessageConverters(converter)
-                                 .apply(MockMvcRestDocumentation.documentationConfiguration(this.restDocumentation))
-                                 .build();
+                .setMessageConverters(converter)
+                .apply(MockMvcRestDocumentation.documentationConfiguration(this.restDocumentation))
+                .build();
     }
 
     @Test
     public void findAll() throws Exception {
 
-        Mockito.when(requestService.findAll()).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
+        when(requestService.findAll()).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/public/requests").accept(MediaType.APPLICATION_JSON))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andDo(MockMvcRestDocumentation.document("requests-list-example"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcRestDocumentation.document("requests-list-example"));
     }
 
     @Test
     public void findById() throws Exception {
         RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
-        Mockito.when(requestService.findRequest(request.getId())).thenReturn(request);
+        when(requestService.findRequest(request.getId())).thenReturn(request);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/public/requests/{id}", request.getId()).accept(MediaType.APPLICATION_JSON))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andDo(MockMvcRestDocumentation.document("request-get-example"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcRestDocumentation.document("request-get-example"));
     }
 
     @Test
     public void findRequestsForUser() throws Exception {
-        Mockito.when(requestService.findRequestsForUser(principal)).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
+        when(requestService.findRequestsForUser(principal)).thenReturn(Collections.singletonList(RequestDtoMother.freeCodeCampNoUserStories()));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/public/user/requests").accept(MediaType.APPLICATION_JSON).principal(principal))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andDo(MockMvcRestDocumentation.document("requests-user-list-example"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcRestDocumentation.document("requests-user-list-example"));
     }
 
 
@@ -84,10 +88,10 @@ public class RequestControllerTest {
 
         this.mockMvc.perform(
                 RestDocumentationRequestBuilders.put("/api/private/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
-                                                .principal(principal))
-                    .andExpect(
-                            MockMvcResultMatchers.status().isCreated())
-                    .andDo(MockMvcRestDocumentation.document("requests-add-watcher-example"));
+                        .principal(principal))
+                .andExpect(
+                        MockMvcResultMatchers.status().isCreated())
+                .andDo(MockMvcRestDocumentation.document("requests-add-watcher-example"));
     }
 
     @Test
@@ -95,10 +99,27 @@ public class RequestControllerTest {
 
         this.mockMvc.perform(
                 RestDocumentationRequestBuilders.delete("/api/private/requests/123/watchers").contentType(MediaType.APPLICATION_JSON)
-                                                .principal(principal))
-                    .andExpect(
-                            MockMvcResultMatchers.status().isOk())
-                    .andDo(MockMvcRestDocumentation.document("requests-remove-watcher-example"));
+                        .principal(principal))
+                .andExpect(
+                        MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcRestDocumentation.document("requests-remove-watcher-example"));
+    }
+
+    @Test
+    public void claim() throws Exception {
+        ClaimRequest claimRequest = new ClaimRequest();
+        claimRequest.setPlatformId("1");
+        claimRequest.setAddress("0x0");
+        claimRequest.setPlatform(Platform.GITHUB);
+        SignedClaim expected = new SignedClaim("davyvanroy", "0x0", Platform.GITHUB, "1", "r", "s", 1);
+        when(requestService.claimRequest(principal, claimRequest)).thenReturn(expected);
+        this.mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/private/requests/123/claim").accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(objectMapper.writeValueAsString(claimRequest))
+                        .principal(principal))
+                .andExpect(content().string(objectMapper.writeValueAsString(expected)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcRestDocumentation.document("requests-claim-example"));
     }
 
 }

@@ -1,10 +1,12 @@
 package io.fundrequest.restapi.request;
 
 import io.fundrequest.core.request.RequestService;
-import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.claim.ClaimRequest;
+import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.restapi.infrastructure.AbstractRestController;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +46,14 @@ public class RequestController extends AbstractRestController {
     @GetMapping({PUBLIC_PATH + "/requests/{id}/watchers", "/requests/{id}/watchlink"})
     public RequestDto findWatchers(@PathVariable("id") Long id) {
         return requestService.findRequest(id);
+    }
+
+    @PostMapping({PRIVATE_PATH + "/requests/{id}/claim"})
+    public SignedClaim claimRequest(Principal principal, @RequestBody @Valid ClaimRequest claimRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new RuntimeException("Your claim contains errors");
+        }
+        return requestService.claimRequest(principal, claimRequest);
     }
 
     @PutMapping(PRIVATE_PATH + "/requests/{id}/watchers")
