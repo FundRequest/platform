@@ -2,14 +2,17 @@ package io.fundrequest.core.request;
 
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
-import io.fundrequest.core.request.claim.ClaimRequest;
+import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.command.RequestClaimedCommand;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestBuilder;
+import io.fundrequest.core.request.domain.RequestStatus;
+import io.fundrequest.core.request.event.RequestClaimedEvent;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.command.AddFundsCommand;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
@@ -17,6 +20,7 @@ import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubParser;
 import io.fundrequest.core.request.view.RequestDto;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,14 +39,16 @@ class RequestServiceImpl implements RequestService {
     private FundService fundService;
     private GithubClient githubClient;
     private GithubClaimResolver githubClaimResolver;
+    private ApplicationEventPublisher eventPublisher;
 
-    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser, FundService fundService, GithubClient githubClient, GithubClaimResolver githubClaimResolver) {
+    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser, FundService fundService, GithubClient githubClient, GithubClaimResolver githubClaimResolver, ApplicationEventPublisher eventPublisher) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
         this.fundService = fundService;
         this.githubClient = githubClient;
         this.githubClaimResolver = githubClaimResolver;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -89,9 +95,19 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public SignedClaim claimRequest(Principal user, ClaimRequest claimRequest) {
-        return githubClaimResolver.getSignedClaim(user, claimRequest, findRequest(claimRequest.getPlatform(), claimRequest.getPlatformId()));
+    public void requestClaimed(RequestClaimedCommand command) {
+        Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
+                .orElseThrow(ResourceNotFoundException::new);
+        request.setStatus(RequestStatus.CLAIMED);
+        request = requestRepository.save(request);
+        eventPublisher.publishEvent(new RequestClaimedEvent(mappers.map(Request.class, RequestDto.class, request), command.getSolver(), command.getTimestamp()));
+    }
 
+
+    @Override
+    @Transactional
+    public SignedClaim signClaimRequest(Principal user, SignClaimRequest signClaimRequest) {
+        return githubClaimResolver.getSignedClaim(user, signClaimRequest, findRequest(signClaimRequest.getPlatform(), signClaimRequest.getPlatformId()));
     }
 
     private void fundRequest(CreateRequestCommand command, Request r) {

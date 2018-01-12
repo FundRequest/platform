@@ -2,7 +2,7 @@ package io.fundrequest.core.infrastructure;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundrequest.core.request.claim.ClaimRequest;
+import io.fundrequest.core.request.claim.SignClaimRequest;
 import org.junit.Test;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -28,8 +28,8 @@ public class KeycloakClientTest {
         List<FederatedIdentityRepresentation> fundrequest = keycloak.realm("fundrequest").users().get(ur.getId()).getFederatedIdentity();
         System.out.println(ur);
 
-        ClaimRequest claimRequest = new ClaimRequest();
-        claimRequest.setAddress("");
-        System.out.println(new ObjectMapper().writeValueAsString(claimRequest));
+        SignClaimRequest signClaimRequest = new SignClaimRequest();
+        signClaimRequest.setAddress("");
+        System.out.println(new ObjectMapper().writeValueAsString(signClaimRequest));
     }
 }

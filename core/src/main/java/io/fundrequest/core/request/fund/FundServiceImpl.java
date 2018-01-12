@@ -72,8 +72,8 @@ class FundServiceImpl implements FundService {
         eventPublisher.publishEvent(
                 new RequestFundedEvent(
                         mappers.map(Fund.class, FundDto.class, fund),
-                        mappers.map(Request.class, RequestDto.class, request)
-                )
+                        mappers.map(Request.class, RequestDto.class, request),
+                        command.getTimestamp())
         );
 
     }

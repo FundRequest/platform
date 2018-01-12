@@ -1,7 +1,7 @@
 package io.fundrequest.restapi.request;
 
 import io.fundrequest.core.request.RequestService;
-import io.fundrequest.core.request.claim.ClaimRequest;
+import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.restapi.infrastructure.AbstractRestController;
@@ -49,11 +49,11 @@ public class RequestController extends AbstractRestController {
     }
 
     @PostMapping({PRIVATE_PATH + "/requests/{id}/claim"})
-    public SignedClaim claimRequest(Principal principal, @RequestBody @Valid ClaimRequest claimRequest, BindingResult bindingResult) {
+    public SignedClaim claimRequest(Principal principal, @RequestBody @Valid SignClaimRequest signClaimRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new RuntimeException("Your claim contains errors");
         }
-        return requestService.claimRequest(principal, claimRequest);
+        return requestService.signClaimRequest(principal, signClaimRequest);
     }
 
     @PutMapping(PRIVATE_PATH + "/requests/{id}/watchers")

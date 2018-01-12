@@ -2,16 +2,16 @@ package io.fundrequest.core.notification;
 
 import io.fundrequest.core.notification.domain.Notification;
 import io.fundrequest.core.notification.domain.NotificationType;
-import io.fundrequest.core.notification.domain.RequestCreatedNotification;
-import io.fundrequest.core.notification.domain.RequestCreatedNotificationMother;
+import io.fundrequest.core.notification.domain.RequestClaimedNotification;
+import io.fundrequest.core.notification.domain.RequestClaimedNotificationMother;
 import io.fundrequest.core.notification.domain.RequestFundedNotification;
 import io.fundrequest.core.notification.domain.RequestFundedNotificationMother;
 import io.fundrequest.core.notification.dto.NotificationDto;
-import io.fundrequest.core.notification.dto.RequestCreatedNotificationDto;
+import io.fundrequest.core.notification.dto.RequestClaimedNotificationDto;
 import io.fundrequest.core.notification.dto.RequestFundedNotificationDto;
 import io.fundrequest.core.notification.infrastructure.NotificationRepository;
 import io.fundrequest.core.request.RequestService;
-import io.fundrequest.core.request.event.RequestCreatedEvent;
+import io.fundrequest.core.request.event.RequestClaimedEvent;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
@@ -60,37 +60,36 @@ public class NotificationServiceImplTest {
     }
 
     @Test
-    public void onRequestCreatedCreatesNotification() throws Exception {
+    public void onRequestCreatedClaimedNotification() throws Exception {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
-        notificationService.onRequestCreated(new RequestCreatedEvent(requestDto));
+        notificationService.onClaimed(new RequestClaimedEvent(requestDto, "davyvanroy", LocalDateTime.now()));
 
-        assertRequestCreatedNotificationSaved(requestDto);
+        assertRequestClaimedNotificationSaved(requestDto);
     }
 
-    private void assertRequestCreatedNotificationSaved(RequestDto requestDto) {
-        ArgumentCaptor<RequestCreatedNotification> requestCreatedNotificationArgumentCaptor = ArgumentCaptor.forClass(RequestCreatedNotification.class);
-        verify(notificationRepository).save(requestCreatedNotificationArgumentCaptor.capture());
-        assertThat(requestCreatedNotificationArgumentCaptor.getValue().getRequestId()).isEqualTo(requestDto.getId());
-        assertThat(requestCreatedNotificationArgumentCaptor.getValue().getDate()).isEqualToIgnoringSeconds(LocalDateTime.now());
-        assertThat(requestCreatedNotificationArgumentCaptor.getValue().getType()).isEqualTo(NotificationType.REQUEST_CREATED);
+    private void assertRequestClaimedNotificationSaved(RequestDto requestDto) {
+        ArgumentCaptor<RequestClaimedNotification> requestClaimedNotificationArgumentCaptor = ArgumentCaptor.forClass(RequestClaimedNotification.class);
+        verify(notificationRepository).saveAndFlush(requestClaimedNotificationArgumentCaptor.capture());
+        assertThat(requestClaimedNotificationArgumentCaptor.getValue().getRequestId()).isEqualTo(requestDto.getId());
+        assertThat(requestClaimedNotificationArgumentCaptor.getValue().getDate()).isEqualToIgnoringSeconds(LocalDateTime.now());
+        assertThat(requestClaimedNotificationArgumentCaptor.getValue().getType()).isEqualTo(NotificationType.REQUEST_CLAIMED);
     }
 
     @Test
-    public void onRequestCreatedPublishesNotification() throws Exception {
+    public void onRequestClaimedPublishesNotification() throws Exception {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
-        notificationService.onRequestCreated(new RequestCreatedEvent(requestDto));
+        notificationService.onClaimed(new RequestClaimedEvent(requestDto, "davyvanroy", LocalDateTime.now()));
 
-        assertRequestCreatedNotificationPublished(requestDto);
+        assertRequestClaimedNotificationPublished();
     }
 
-    private void assertRequestCreatedNotificationPublished(RequestDto requestDto) {
-        ArgumentCaptor<RequestCreatedNotificationDto> captor = ArgumentCaptor.forClass(RequestCreatedNotificationDto.class);
+    private void assertRequestClaimedNotificationPublished() {
+        ArgumentCaptor<RequestClaimedNotificationDto> captor = ArgumentCaptor.forClass(RequestClaimedNotificationDto.class);
         verify(eventPublisher).publishEvent(captor.capture());
-        assertThat(captor.getValue().getRequestDto()).isEqualTo(requestDto);
         assertThat(captor.getValue().getDate()).isEqualToIgnoringSeconds(LocalDateTime.now());
-        assertThat(captor.getValue().getType()).isEqualTo(NotificationType.REQUEST_CREATED);
+        assertThat(captor.getValue().getType()).isEqualTo(NotificationType.REQUEST_CLAIMED);
     }
 
     @Test
@@ -98,7 +97,7 @@ public class NotificationServiceImplTest {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
         FundDto fundDto = FundDtoMother.aFundDto();
 
-        notificationService.onFunded(new RequestFundedEvent(fundDto, requestDto));
+        notificationService.onFunded(new RequestFundedEvent(fundDto, requestDto, LocalDateTime.now()));
 
         assertRequestFundedNotificationSaved(fundDto);
     }
@@ -116,7 +115,7 @@ public class NotificationServiceImplTest {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
         FundDto fundDto = FundDtoMother.aFundDto();
 
-        notificationService.onFunded(new RequestFundedEvent(fundDto, requestDto));
+        notificationService.onFunded(new RequestFundedEvent(fundDto, requestDto, LocalDateTime.now()));
 
         assertRequestFundedNotificationPublished(fundDto, requestDto);
     }
@@ -132,7 +131,7 @@ public class NotificationServiceImplTest {
 
     @Test
     public void getLast() throws Exception {
-        RequestCreatedNotification requestCreatedNotification = RequestCreatedNotificationMother.aRequestCreatedNotification();
+        RequestClaimedNotification requestCreatedNotification = RequestClaimedNotificationMother.aRequestClaimedNotification();
         RequestDto requestDtoForFund = RequestDtoMother.freeCodeCampNoUserStories();
         FundDto fundDto = FundDtoMother.aFundDto();
         RequestFundedNotification requestFundedNotification = RequestFundedNotificationMother.aRequestFundedNotification();

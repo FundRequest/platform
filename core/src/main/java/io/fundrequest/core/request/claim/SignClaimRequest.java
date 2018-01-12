@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
-public class ClaimRequest {
+public class SignClaimRequest {
     @NotEmpty
     private String address;
     @NotNull
@@ -42,7 +42,7 @@ public class ClaimRequest {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClaimRequest that = (ClaimRequest) o;
+        SignClaimRequest that = (SignClaimRequest) o;
         return Objects.equals(address, that.address) &&
                 platform == that.platform &&
                 Objects.equals(platformId, that.platformId);

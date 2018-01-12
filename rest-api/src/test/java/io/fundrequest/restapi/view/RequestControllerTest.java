@@ -3,7 +3,7 @@ package io.fundrequest.restapi.view;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.fundrequest.core.request.RequestService;
-import io.fundrequest.core.request.claim.ClaimRequest;
+import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.view.RequestDto;
@@ -107,15 +107,15 @@ public class RequestControllerTest {
 
     @Test
     public void claim() throws Exception {
-        ClaimRequest claimRequest = new ClaimRequest();
-        claimRequest.setPlatformId("1");
-        claimRequest.setAddress("0x0");
-        claimRequest.setPlatform(Platform.GITHUB);
+        SignClaimRequest signClaimRequest = new SignClaimRequest();
+        signClaimRequest.setPlatformId("1");
+        signClaimRequest.setAddress("0x0");
+        signClaimRequest.setPlatform(Platform.GITHUB);
         SignedClaim expected = new SignedClaim("davyvanroy", "0x0", Platform.GITHUB, "1", "r", "s", 1);
-        when(requestService.claimRequest(principal, claimRequest)).thenReturn(expected);
+        when(requestService.signClaimRequest(principal, signClaimRequest)).thenReturn(expected);
         this.mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/private/requests/123/claim").accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .content(objectMapper.writeValueAsString(claimRequest))
+                        .content(objectMapper.writeValueAsString(signClaimRequest))
                         .principal(principal))
                 .andExpect(content().string(objectMapper.writeValueAsString(expected)))
                 .andExpect(MockMvcResultMatchers.status().isOk())

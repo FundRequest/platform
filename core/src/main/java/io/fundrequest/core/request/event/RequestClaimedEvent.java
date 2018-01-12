@@ -1,27 +1,26 @@
-package io.fundrequest.core.request.fund.event;
+package io.fundrequest.core.request.event;
 
-import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.view.RequestDto;
 
 import java.time.LocalDateTime;
 
-public class RequestFundedEvent {
-    private FundDto fundDto;
+public class RequestClaimedEvent {
     private RequestDto requestDto;
+    private String solver;
     private LocalDateTime timestamp;
 
-    public RequestFundedEvent(FundDto fundDto, RequestDto requestDto, LocalDateTime timestamp) {
-        this.fundDto = fundDto;
+    public RequestClaimedEvent(RequestDto requestDto, String solver, LocalDateTime timestamp) {
         this.requestDto = requestDto;
+        this.solver = solver;
         this.timestamp = timestamp;
-    }
-
-    public FundDto getFundDto() {
-        return fundDto;
     }
 
     public RequestDto getRequestDto() {
         return requestDto;
+    }
+
+    public String getSolver() {
+        return solver;
     }
 
     public LocalDateTime getTimestamp() {
