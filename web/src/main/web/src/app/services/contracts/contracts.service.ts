@@ -14,7 +14,7 @@ let fundRequestAbi = require('./fundRequestContract.json');
 
 @Injectable()
 export class ContractsService {
-  private _account: string = null;
+  public _account: string = null;
   private _web3: any;
 
   private _tokenContract: any;
@@ -168,7 +168,7 @@ export class ContractsService {
       await this.init();
     }
     return new Promise((resolve, reject) => {
-      return this._fundRequestContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), function (err, result) {
+      return this._fundRequestContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), this._account, function (err, result) {
         if (err) {
           reject(err);
         } else {

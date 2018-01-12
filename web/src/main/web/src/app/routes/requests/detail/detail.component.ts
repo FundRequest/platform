@@ -4,6 +4,10 @@ import {ClaimRequestCommand, IRequestRecord} from '../../../redux/requests.model
 import {RequestService} from '../../../services/request/request.service';
 import {UserService} from '../../../services/user/user.service';
 import {IUserRecord} from '../../../redux/user.models';
+import {AuthService} from "../../../core/auth/auth.service";
+
+
+const swal = require('sweetalert');
 
 @Component({
   selector   : 'fnd-request-detail',
@@ -17,7 +21,8 @@ export class DetailComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private requestService: RequestService,
-              private userService: UserService) {
+              private userService: UserService,
+              private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -33,7 +38,13 @@ export class DetailComponent implements OnInit {
   }
 
   claim(): void {
-    let info = this.request.issueInformation;
-    this.requestService.claimRequest(new ClaimRequestCommand(this.request.id, info.platform, info.platformId, ''));
+    if(this.authService.isAuthenticated()) {
+      let info = this.request.issueInformation;
+      this.requestService.claimRequest(new ClaimRequestCommand(this.request.id, info.platform, info.platformId, ''));
+    } else {
+      swal('Not authenticated',
+        'For claiming a request you need to be logged in with an account that is linked to Github.', 'error'
+      );
+    }
   }
 }
