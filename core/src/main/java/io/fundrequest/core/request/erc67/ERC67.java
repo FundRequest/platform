@@ -15,7 +15,7 @@ public class ERC67 {
 
         final StringBuilder builder = new StringBuilder(network);
         builder.append(":").append(address);
-        if (parameters.size() > 0) {
+        if (!parameters.isEmpty()) {
             builder.append("?");
             parameters
                     .forEach((key, value) -> builder.append(key).append("=").append(value).append("&"));
