@@ -7,12 +7,10 @@ import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.command.RequestClaimedCommand;
-import io.fundrequest.core.request.domain.IssueInformation;
-import io.fundrequest.core.request.domain.Platform;
-import io.fundrequest.core.request.domain.Request;
-import io.fundrequest.core.request.domain.RequestBuilder;
-import io.fundrequest.core.request.domain.RequestStatus;
+import io.fundrequest.core.request.domain.*;
+import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.event.RequestClaimedEvent;
+import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.command.AddFundsCommand;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
@@ -128,6 +126,16 @@ class RequestServiceImpl implements RequestService {
     @Transactional
     public void removeWatcherFromRequest(Principal principal, Long requestId) {
         removeWatcherFromRequest(principal.getName(), findOne(requestId));
+    }
+
+    @Override
+    public String generateERC67(final CreateERC67FundRequest createERC67FundRequest) {
+        return new ERC67.Builder()
+                .withAddress(createERC67FundRequest.getTokenAddress())
+                .withNetwork("ethereum")
+                .withParameter("function", createERC67FundRequest.toFunction())
+                .build()
+                .visualize();
     }
 
     private Request findOne(Long requestId) {
