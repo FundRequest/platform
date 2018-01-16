@@ -74,7 +74,7 @@
             <label class="col-xs-4 col-md-3 control-label">Total Funding</label>
             <div class="col-xs-8 col-md-9 form-control-static">
               <label>
-                <span>{{request.balance | wei}}</span>
+                <span>{{request.fundInfo.balance | wei}}</span>
                 <span>FND</span> <span></span>
               </label>
             </div>
@@ -83,7 +83,7 @@
             <label class="col-xs-4 col-md-3 control-label">#Funders</label>
             <div class="col-xs-8 col-md-9 form-control-static">
               <label>
-                <span>{{request.numberOfFunders}}</span>
+                <span>{{request.fundInfo.numberOfFunders}}</span>
               </label>
             </div>
           </div>
@@ -91,7 +91,7 @@
             <label class="col-xs-4 col-md-3 control-label">My Funding</label>
             <div class="col-xs-8 col-md-9 form-control-static">
               <label>
-                <span>{{request.funderBalance | wei}}</span>
+                <span>{{request.fundInfo.funderBalance | wei}}</span>
                 <span>FND</span> <span></span>
               </label>
             </div>

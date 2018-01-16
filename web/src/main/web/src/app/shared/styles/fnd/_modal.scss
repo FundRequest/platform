@@ -1,0 +1,13 @@
+.modal-body {
+  .form-group {
+    margin-bottom: 5px;
+  }
+}
+
+
+.img-responsive {
+  > img {
+    max-width: 100%;
+    height: auto;
+  }
+}
