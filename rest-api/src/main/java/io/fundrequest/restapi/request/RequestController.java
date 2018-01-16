@@ -3,17 +3,12 @@ package io.fundrequest.restapi.request;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
+import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.restapi.infrastructure.AbstractRestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -54,6 +49,11 @@ public class RequestController extends AbstractRestController {
             throw new RuntimeException("Your claim contains errors");
         }
         return requestService.signClaimRequest(principal, signClaimRequest);
+    }
+
+    @PostMapping({PRIVATE_PATH + "/requests/{id}/erc67/fund"})
+    public String generateERC67ForFunding(@RequestBody @Valid CreateERC67FundRequest createERC67FundRequest) {
+        return requestService.generateERC67(createERC67FundRequest);
     }
 
     @PutMapping(PRIVATE_PATH + "/requests/{id}/watchers")

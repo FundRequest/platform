@@ -5,6 +5,7 @@ import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.command.RequestClaimedCommand;
 import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.view.RequestDto;
 
 import java.security.Principal;
@@ -30,4 +31,6 @@ public interface RequestService {
     void addWatcherToRequest(Principal principal, Long requestId);
 
     void removeWatcherFromRequest(Principal principal, Long requestId);
+
+    String generateERC67(CreateERC67FundRequest createERC67FundRequest);
 }

@@ -28,8 +28,8 @@ public class GithubClaimResolver {
 
     public SignedClaim getSignedClaim(Principal user, SignClaimRequest signClaimRequest, RequestDto request) {
         try {
-            String solver = getSolver(user, signClaimRequest, request);
-            ClaimSignature signature = getSignature(signClaimRequest, solver);
+            final String solver = getSolver(user, signClaimRequest, request);
+            final ClaimSignature signature = getSignature(signClaimRequest, solver);
             return new SignedClaim(
                     solver,
                     signature.getAddress(),
