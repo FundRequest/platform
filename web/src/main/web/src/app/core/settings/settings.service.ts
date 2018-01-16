@@ -7,6 +7,7 @@ export class SettingsService {
 
   public app: any;
   public layout: any;
+  public status: any;
 
   constructor() {
 
@@ -16,6 +17,10 @@ export class SettingsService {
       name       : 'FundRequest',
       description: 'Funding and rewarding open source development',
       year       : ((new Date()).getFullYear())
+    };
+
+    this.status = {
+      openedFromChrome: false
     };
 
     // Layout Settings

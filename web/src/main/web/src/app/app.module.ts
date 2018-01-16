@@ -25,6 +25,8 @@ import { REDUCER_MAP } from './redux/store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { MomentModule } from 'angular2-moment';
+import { ContractsService } from './services/contracts/contracts.service';
+import { AppFactory } from './app.factory';
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: HttpClient) {
@@ -60,7 +62,7 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     StoreModule.forRoot(REDUCER_MAP),
   ],
-  providers   : [
+  providers   : [AppFactory, ContractsService,
     {
       provide : HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
@@ -71,14 +73,15 @@ export function createTranslateLoader(http: HttpClient) {
       useClass: EmptyResponseBodyErrorInterceptor,
       multi   : true
     },
-    /*{ // Function that is called before the app loads
-     provide: APP_INITIALIZER,
-     useFactory: (cs: ContractsService) => function() {return cs.init()},
-     deps: [ContractsService],
-     multi: true
-     }*/
+    {
+      provide   : APP_INITIALIZER,
+      useFactory: (x: AppFactory) => () => x.load(),
+      deps      : [AppFactory, ContractsService],
+      multi     : true
+    }
   ],
   bootstrap   : [AppComponent]
 })
+
 export class AppModule {
 }

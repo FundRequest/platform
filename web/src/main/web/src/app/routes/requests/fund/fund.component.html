@@ -9,7 +9,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-lg-offset-2 col-lg-6">
+  <div class="col-lg-offset-3 col-lg-6">
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="row">
@@ -66,16 +66,16 @@
           </div>
           <div class="form-group">
             <label for="fund-amount" class="col-xs-4 col-md-3 control-label">Fund Amount</label>
-            <div class="col-xs-3 col-md-4 form-control-static">
-              <div class="input-group">
+            <div class="col-xs-8 col-md-9 form-control-static">
+              <div class="input-group col-xs-6">
                 <input [(ngModel)]="fundAmount" id="fund-amount" type="number" class="form-control">
                 <span class="input-group-addon">FND</span>
               </div>
             </div>
-            <div class="col-xs-6 col-xs-push-6 col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount <= 0">
+            <div class="col-xs-8 col-xs-push-4 col-md-push-3 col-md-9 form-control-static" *ngIf="fundAmount <= 0">
               <label class="text-danger">Funding amount needs to be bigger then 0.</label>
             </div>
-            <div class="col-xs-6 col-xs-push-6 col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > balance">
+            <div class="col-xs-8 col-xs-push-4 col-md-push-3 col-md-9 form-control-static" *ngIf="fundAmount > balance">
               <label class="text-danger">Balance to low to fund {{fundAmount}} FND.</label>
             </div>
           </div>

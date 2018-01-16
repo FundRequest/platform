@@ -4,10 +4,8 @@ import {Store} from '@ngrx/store';
 import {HttpClient} from '@angular/common/http';
 import {RequestsStats} from '../../core/requests/RequestsStats';
 import {IState} from '../../redux/store';
-import {
-  ClaimRequestCommand, createRequest, FundRequestCommand, IRequestList, IRequestRecord,
-  SignedClaim
-} from '../../redux/requests.models';
+import {ClaimRequestCommand,createRequest, FundRequestCommand, IRequestList, IRequestRecord,
+  SignedClaim} from '../../redux/requests.models';
 import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
 import {IUserRecord} from '../../redux/user.models';
 import {ContractsService} from '../contracts/contracts.service';
@@ -28,9 +26,9 @@ export class RequestService {
     if (!this._requestInitialized) {
       this._requestInitialized = true;
 
-      this.http.get(`/api/public/requests`).take(1).subscribe((requests: IRequestList) => {
+      this.http.get(`/api/public/requests`).subscribe((requests: IRequestList) => {
         this.store.dispatch(new ReplaceRequestList(requests));
-        this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
+        this.store.select(state => state.requests).subscribe((requests: IRequestList) => {
           requests.map((request: IRequestRecord) => {
             this._cs.getRequestFundInfo(request).then(
               (fundInfo) => {
@@ -56,9 +54,8 @@ export class RequestService {
     let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
     let url = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/issues/' + matches[3];
     this.http.get(url).subscribe(data => {
-      this._cs.fundRequest("GITHUB", data['id'], issueLink, fundAmount);
+      this._cs.fundRequest('GITHUB', data['id'], issueLink, fundAmount);
     });
-
   }
 
   public async fundRequest(command: FundRequestCommand): Promise<string> {
@@ -73,7 +70,7 @@ export class RequestService {
     let body = {
       platform: command.platform,
       platformId: command.platformId,
-      address: this._cs._account
+      address: await this._cs.getAccount()
     };
     await this.http.post('/api/private/requests/' + command.id + '/claim', body).subscribe((signedClaim: SignedClaim) => {
       return this._cs.claimRequest(signedClaim);
@@ -118,7 +115,7 @@ export class RequestService {
       httpCall = this.http.delete(httpUrl);
     }
 
-    httpCall.take(1).subscribe(null,
+    httpCall.subscribe(null,
       error => {
         this.editRequestInStore(newRequest, request); // if something when wrong, update it back to the old value
         this.handleError(error);
@@ -126,16 +123,16 @@ export class RequestService {
     );
   }
 
-  public removeRequestInStore(request: IRequestRecord) {
+  public removeRequestInStore(request: IRequestRecord): void {
     this.store.dispatch(new RemoveRequest(request));
   }
 
-  public addRequestInStore(newRequest: IRequestRecord) {
+  public addRequestInStore(newRequest: IRequestRecord): void {
     this.store.dispatch(new AddRequest(newRequest));
     this.updateRequestBalance(newRequest);
   }
 
-  private updateRequestBalance(request: IRequestRecord) {
+  private updateRequestBalance(request: IRequestRecord): void {
     this._cs.getRequestFundInfo(request).then(
       (fundInfo) => {
         this.updateRequestWithNewFundInfo(request, fundInfo);
@@ -144,12 +141,12 @@ export class RequestService {
     );
   }
 
-  private updateRequestWithNewFundInfo(request: IRequestRecord, fundInfo) {
-    if (request.set) {
+  private updateRequestWithNewFundInfo(request: IRequestRecord, fundInfo)  {
+    if(request.set) {
       let newRequest =
-        request.set('balance', fundInfo.balance)
-          .set('funderBalance', fundInfo.funderBalance)
-          .set('numberOfFunders', fundInfo.numberOfFunders);
+            request.set('balance', fundInfo.balance)
+              .set('funderBalance', fundInfo.funderBalance)
+              .set('numberOfFunders', fundInfo.numberOfFunders);
       this.editRequestInStore(request, newRequest);
     } else {
       let newRequest = request;
@@ -174,7 +171,7 @@ export class RequestService {
         });
     });
 
-    if (existingRequest == null) {
+    if (typeof existingRequest == 'undefined') {
       this.addRequestInStore(newOrModifiedRequest);
     } else {
       this.updateRequestBalance(existingRequest);
