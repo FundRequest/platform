@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
 import {FundInfo, IRequestRecord, SignedClaim} from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
+import { SettingsService } from '../../core/settings/settings.service';
+import { NotificationType } from '../notification/notificationType';
 
 
 const swal = require('sweetalert');
@@ -14,7 +16,7 @@ let fundRequestAbi = require('./fundRequestContract.json');
 
 @Injectable()
 export class ContractsService {
-  public _account: string = null;
+  private _account: string = null;
   private _web3: any;
 
   private _tokenContract: any;
@@ -25,18 +27,22 @@ export class ContractsService {
   private _tokenContractAddress: string = '0xfd1de38dc456112c55c3e6bc6134b2f545b91386';
   private _fundRequestContractAddress: string = '0x797b33d3bb0c74a7860cd2ca80bf063809dced80';
 
-  constructor(private _ns: NotificationService) {
+  private _limited: boolean = true;
+  private _providerApi = 'https://ropsten.infura.io/';
+
+  constructor(private _settings: SettingsService, private _ns: NotificationService) {
   }
 
   public async init() {
-    if (!this._init) {
-      await this.checkAndInstantiateWeb3();
-      if (this._web3) {
-        this.setContracts();
-        await this.getAccount();
-      }
-      this._init = true;
+    await this.checkAndInstantiateWeb3();
+    if (this._web3) {
+      this.setContracts();
+      await this.getAccount();
     }
+  }
+
+  public get limited(): boolean {
+    return this._limited;
   }
 
   private async checkAndInstantiateWeb3() {
@@ -45,10 +51,10 @@ export class ContractsService {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
       if (await this.getNetwork() !== '3') {
-        this._web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/'));
+        this._web3 = new Web3(new Web3.providers.HttpProvider(this._providerApi));
       }
     } else {
-      this._web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/'));
+      this._web3 = new Web3(new Web3.providers.HttpProvider(this._providerApi));
     }
   };
 
@@ -61,7 +67,6 @@ export class ContractsService {
     return await new Promise((resolve, reject) => {
       this._web3.version.getNetwork((err, netId) => {
         if (err != null) {
-          // alert('There was an error fetching your accounts.');
           resolve(null);
           return;
         }
@@ -70,20 +75,17 @@ export class ContractsService {
     }) as string;
   }
 
-  private async getAccount(): Promise<string> {
+  public async getAccount(): Promise<string> {
     if (this._account == null) {
       this._account = await new Promise((resolve, reject) => {
         this._web3.eth.getAccounts((err, accs) => {
-          if (err != null) {
-            // alert('There was an error fetching your accounts.');
+          if (err != null || accs.length === 0) {
+            this.showLimitedFunctionalityAlert();
             resolve(null);
             return;
           }
 
-          if (accs.length === 0) {
-            resolve(null);
-            return;
-          }
+          this._limited = false;
           resolve(accs[0]);
         });
       }) as string;
@@ -95,10 +97,6 @@ export class ContractsService {
   }
 
   public async getUserBalance(): Promise<number> {
-    if (!this._init) {
-      await this.init();
-    }
-
     if (this._account != null) {
       return new Promise((resolve, reject) => {
         this._tokenContract.balanceOf.call(this._account, function (err, result) {
@@ -123,10 +121,6 @@ export class ContractsService {
   }
 
   public async fundRequest(platform: string, platformId: string, url: string, value: number): Promise<string> {
-    if (!this._init) {
-      await this.init();
-    }
-
     if (!!this._account) {
       let total = this._web3.toWei(value, 'ether');
       let tx = await new Promise((resolve, reject) => {
@@ -138,12 +132,12 @@ export class ContractsService {
         });
       }) as string;
 
-      this._ns.success('Transaction \'fund request\' sent.', this._getTransactionLink(tx));
+      this._ns.message(NotificationType.FUND_SUCCESS, this._getTransactionLink(tx));
 
       return Promise.resolve(total);
     } else {
       this.showLimitedFunctionalityAlert();
-      return Promise.resolve('0');
+      return Promise.resolve('-');
     }
 
   }
@@ -164,18 +158,10 @@ export class ContractsService {
   }
 
   public async getRequestFundInfo(request: IRequestRecord): Promise<FundInfo> {
-    if (!this._init) {
-      await this.init();
-    }
     return new Promise((resolve, reject) => {
       return this._fundRequestContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), this._account, function (err, result) {
-        if (err) {
-          reject(err);
-        } else {
-          if (result) {
-            resolve(new FundInfo(result[0], result[1], result[2]));
-          }
-        }
+        console.log('get request fund info', request.issueInformation.platformId, result[0], result[1], result[2]);
+        err ? reject(err) : resolve(new FundInfo(result[0], result[1], result[2]));
       });
     }) as Promise<FundInfo>;
   }

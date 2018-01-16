@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
 import {UserService} from '../../../services/user/user.service';
 import {IUserRecord} from '../../../redux/user.models';
-import {HttpClient} from "@angular/common/http";
 import {RequestService} from "../../../services/request/request.service";
 import {Utils} from "../../../shared/utils";
 import {FundRequestCommand} from "../../../redux/requests.models";
@@ -45,6 +45,7 @@ export class FundComponent implements OnInit {
           this.requestDetails.repo = matches[1];
           this.requestDetails.owner = matches[2];
           let technologiesUrl = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/languages';
+
           this.http.get(technologiesUrl).subscribe(data => {
             this.requestDetails.technologies = Object.keys(data);
 

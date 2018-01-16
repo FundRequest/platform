@@ -19,7 +19,7 @@ interface Message {
   fundDto: FundDto,
 }
 
-export enum NotificationType {
+export enum NotificationStreamType {
   REQUEST_CREATED = 'REQUEST_CREATED',
   REQUEST_FUNDED = 'REQUEST_FUNDED'
 }
@@ -49,17 +49,17 @@ export class NotificationStreamMessage {
   }
 
   private _initRequest(): void {
-    switch (NotificationType[this._notification.type]) {
-      case NotificationType.REQUEST_CREATED:
-      case NotificationType.REQUEST_FUNDED:
+    switch (NotificationStreamType[this._notification.type]) {
+      case NotificationStreamType.REQUEST_CREATED:
+      case NotificationStreamType.REQUEST_FUNDED:
         this._request = createRequest(this._message.requestDto);
         this._notification = this._notification.set('link', `/requests/${this._request.id}`);
         this._notification = this._notification.set('linkMessage', 'Go to request.');
         break;
     }
 
-    switch (NotificationType[this._notification.type]) {
-      case NotificationType.REQUEST_CREATED:
+    switch (NotificationStreamType[this._notification.type]) {
+      case NotificationStreamType.REQUEST_CREATED:
         let desc = `Request for "${this._request.issueInformation.title}" created.`;
         this._notification = this._notification.set('description', desc);
         break;
@@ -68,8 +68,8 @@ export class NotificationStreamMessage {
   }
 
   private _initFund(): void {
-    switch (NotificationType[this._notification.type]) {
-      case NotificationType.REQUEST_FUNDED:
+    switch (NotificationStreamType[this._notification.type]) {
+      case NotificationStreamType.REQUEST_FUNDED:
         this._fund = {
           id: this._message.fundDto.id,
           funder: this._message.fundDto.funder,
