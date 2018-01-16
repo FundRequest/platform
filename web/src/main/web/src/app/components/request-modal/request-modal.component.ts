@@ -23,7 +23,6 @@ export class RequestModalComponent implements OnInit, OnDestroy {
   public requestForm: FormGroup;
   public user: IUserRecord;
   public fundAmount: number;
-  public allowance: number;
   public balance: number;
 
 
@@ -37,7 +36,6 @@ export class RequestModalComponent implements OnInit, OnDestroy {
     this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
       this.user = user;
       this.balance = Utils.fromWeiRounded(user.balance);
-      this.allowance = Utils.fromWeiRounded(user.allowance);
     });
     this._subscription = this._rs.requests$.subscribe(result => this._requests = result);
 

@@ -3,6 +3,63 @@
     "constant": false,
     "inputs": [
       {
+        "name": "platform",
+        "type": "bytes32"
+      },
+      {
+        "name": "platformId",
+        "type": "bytes32"
+      },
+      {
+        "name": "solver",
+        "type": "string"
+      },
+      {
+        "name": "solverAddress",
+        "type": "address"
+      },
+      {
+        "name": "r",
+        "type": "bytes32"
+      },
+      {
+        "name": "s",
+        "type": "bytes32"
+      },
+      {
+        "name": "v",
+        "type": "uint8"
+      }
+    ],
+    "name": "claim",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "claimSignerAddress",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "name": "_platform",
         "type": "bytes32"
       },
@@ -27,6 +84,7 @@
       }
     ],
     "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -40,6 +98,7 @@
     "name": "setTokenAddress",
     "outputs": [],
     "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -62,6 +121,7 @@
       }
     ],
     "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -75,6 +135,33 @@
       }
     ],
     "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_from",
+        "type": "address"
+      },
+      {
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "name": "_data",
+        "type": "bytes"
+      }
+    ],
+    "name": "receiveApproval",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -88,19 +175,7 @@
       }
     ],
     "payable": false,
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "changeOwner",
-    "outputs": [],
-    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -113,6 +188,10 @@
       {
         "name": "_platformId",
         "type": "bytes32"
+      },
+      {
+        "name": "_funder",
+        "type": "address"
       }
     ],
     "name": "getFundInfo",
@@ -135,6 +214,21 @@
       }
     ],
     "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "changeOwner",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -148,6 +242,7 @@
       }
     ],
     "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -161,6 +256,21 @@
       }
     ],
     "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_claimSignerAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setClaimSignerAddress",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -174,6 +284,7 @@
       }
     ],
     "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -187,6 +298,7 @@
       }
     ],
     "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -197,6 +309,7 @@
       }
     ],
     "payable": false,
+    "stateMutability": "nonpayable",
     "type": "constructor"
   },
   {
@@ -229,6 +342,50 @@
       }
     ],
     "name": "Funded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "logdata",
+        "type": "string"
+      }
+    ],
+    "name": "LOG",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "solver",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "platform",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "platformId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "url",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "Claimed",
     "type": "event"
   }
 ]

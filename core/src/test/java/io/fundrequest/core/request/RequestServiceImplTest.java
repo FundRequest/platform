@@ -1,7 +1,11 @@
 package io.fundrequest.core.request;
 
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.claim.SignClaimRequest;
+import io.fundrequest.core.request.claim.SignedClaim;
+import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.command.RequestClaimedCommand;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.IssueInformationMother;
 import io.fundrequest.core.request.domain.Platform;
@@ -9,6 +13,7 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
+import io.fundrequest.core.request.event.RequestClaimedEvent;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.GithubClient;
@@ -18,8 +23,10 @@ import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -42,6 +49,8 @@ public class RequestServiceImplTest {
     private GithubParser githubLinkParser;
     private FundService fundService;
     private GithubClient githubClient;
+    private GithubClaimResolver githubClaimResolver;
+    private ApplicationEventPublisher eventPublisher;
 
     @Before
     public void setUp() throws Exception {
@@ -50,12 +59,14 @@ public class RequestServiceImplTest {
         githubLinkParser = mock(GithubParser.class);
         fundService = mock(FundService.class);
         githubClient = mock(GithubClient.class);
+        githubClaimResolver = mock(GithubClaimResolver.class);
+        eventPublisher = mock(ApplicationEventPublisher.class);
         requestService = new RequestServiceImpl(
                 requestRepository,
                 mappers,
                 githubLinkParser,
                 fundService,
-                githubClient);
+                githubClient, githubClaimResolver, eventPublisher);
     }
 
     @Test
@@ -171,5 +182,46 @@ public class RequestServiceImplTest {
         requestService.removeWatcherFromRequest(user, request.get().getId());
 
         assertThat(request.get().getWatchers()).isEmpty();
+    }
+
+    @Test
+    public void signClaimRequest() {
+        SignClaimRequest command = new SignClaimRequest();
+        command.setPlatform(Platform.GITHUB);
+        command.setPlatformId("1");
+        Principal principal = () -> "davyvanroy";
+        Request request = RequestMother.freeCodeCampNoUserStories().build();
+        RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
+        when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.of(request));
+        when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
+        SignedClaim expected = new SignedClaim("", "", Platform.GITHUB, "1", "r", "s", 27);
+        when(githubClaimResolver.getSignedClaim(principal, command, requestDto))
+                .thenReturn(expected);
+
+        SignedClaim result = requestService.signClaimRequest(principal, command);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void requestClaimed() {
+        RequestClaimedCommand command = new RequestClaimedCommand();
+        command.setTimestamp(LocalDateTime.now());
+        command.setSolver("davyvanroy");
+        command.setPlatform(Platform.GITHUB);
+        command.setPlatformId("1");
+        Request request = RequestMother.freeCodeCampNoUserStories().build();
+        RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
+        when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.of(request));
+        when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
+        when(requestRepository.save(any(Request.class))).then(returnsFirstArg());
+
+        requestService.requestClaimed(command);
+
+        ArgumentCaptor<RequestClaimedEvent> captor = ArgumentCaptor.forClass(RequestClaimedEvent.class);
+        verify(eventPublisher).publishEvent(captor.capture());
+        assertThat(captor.getValue().getSolver()).isEqualTo(command.getSolver());
+        assertThat(captor.getValue().getRequestDto()).isEqualTo(requestDto);
+        assertThat(captor.getValue().getTimestamp()).isEqualTo(command.getTimestamp());
     }
 }

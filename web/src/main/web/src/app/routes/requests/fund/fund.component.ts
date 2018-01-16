@@ -19,7 +19,6 @@ export class FundComponent implements OnInit {
   public user: IUserRecord;
   public requestDetails: any;
   public fundAmount: number;
-  public allowance: number;
   public balance: number;
   public fundingInProgress: boolean = false;
 
@@ -58,7 +57,6 @@ export class FundComponent implements OnInit {
     this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
       this.user = user;
       this.balance = Utils.fromWeiRounded(user.balance);
-      this.allowance = Utils.fromWeiRounded(user.allowance);
     });
   }
 

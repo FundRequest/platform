@@ -17,7 +17,6 @@ export class FundModalComponent implements OnInit {
   public request: IRequestRecord;
   public user: IUserRecord;
   public fundAmount: number;
-  public allowance: number;
   public balance: number;
 
   constructor(public bsModalRef: BsModalRef,
@@ -29,7 +28,6 @@ export class FundModalComponent implements OnInit {
     this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
       this.user = user;
       this.balance = Utils.fromWeiRounded(user.balance);
-      this.allowance = Utils.fromWeiRounded(user.allowance);
     });
   }
 
