@@ -361,7 +361,7 @@
     "inputs": [
       {
         "indexed": true,
-        "name": "solver",
+        "name": "solverAddress",
         "type": "address"
       },
       {
@@ -376,7 +376,7 @@
       },
       {
         "indexed": false,
-        "name": "url",
+        "name": "solver",
         "type": "string"
       },
       {

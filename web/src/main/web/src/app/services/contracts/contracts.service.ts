@@ -22,8 +22,8 @@ export class ContractsService {
 
   private _init: boolean = false;
 
-  private _tokenContractAddress: string = '0xdc883f96ef4c3b40ed6968d5ada28a0e459e5b66';
-  private _fundRequestContractAddress: string = '0x246c5552a01f2bbd86dbfcdb3237a90cbf5685ac';
+  private _tokenContractAddress: string = '0xfd1de38dc456112c55c3e6bc6134b2f545b91386';
+  private _fundRequestContractAddress: string = '0x797b33d3bb0c74a7860cd2ca80bf063809dced80';
 
   constructor(private _ns: NotificationService) {
   }
@@ -44,11 +44,11 @@ export class ContractsService {
     if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
-      if (await this.getNetwork() !== '4') {
-        this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/'));
+      if (await this.getNetwork() !== '3') {
+        this._web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/'));
       }
     } else {
-      this._web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/'));
+      this._web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/'));
     }
   };
 
