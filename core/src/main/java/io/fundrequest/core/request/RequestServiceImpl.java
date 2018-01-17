@@ -133,7 +133,7 @@ class RequestServiceImpl implements RequestService {
         return new ERC67.Builder()
                 .withAddress(createERC67FundRequest.getTokenAddress())
                 .withNetwork("ethereum")
-                .withParameter("function", createERC67FundRequest.toFunction())
+                .withParameter("data", createERC67FundRequest.toByteData())
                 .build()
                 .visualize();
     }
