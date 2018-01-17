@@ -76,12 +76,12 @@ export class ContractsService {
     }) as string;
   }
 
-  public async getTokenContractAddress(): Promise<string> {
-    return Promise.resolve(this._tokenContractAddress);
+  public getTokenContractAddress(): string {
+    return this._tokenContractAddress;
   }
 
-  public async getFundRequestContractAddress(): Promise<string> {
-    return Promise.resolve(this._fundRequestContractAddress);
+  public getFundRequestContractAddress(): string {
+    return this._fundRequestContractAddress;
   }
 
   public async getAccount(): Promise<string> {

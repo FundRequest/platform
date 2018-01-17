@@ -18,6 +18,8 @@ export class FundModalComponent implements OnInit {
   public user: IUserRecord;
   public fundAmount: number;
   public balance: number;
+  public qrValue: string = '';
+
 
   constructor(public bsModalRef: BsModalRef,
               private _rs: RequestService,
@@ -31,14 +33,22 @@ export class FundModalComponent implements OnInit {
     });
   }
 
-  public get qrValue() {
-    return this._rs.requestQRValue(
-      new FundRequestCommand(
-        this.request.issueInformation.platform,
-        this.request.issueInformation.platformId,
-        this.request.issueInformation.link,
-        this.fundAmount
-      )
+  public canFund(): boolean {
+    return this.balance >= this.fundAmount && this.fundAmount > 0;
+  }
+
+  public updateQr() {
+    this._rs.requestQRValue(new FundRequestCommand(
+      this.request.issueInformation.platform,
+      this.request.issueInformation.platformId,
+      this.request.issueInformation.link,
+      this.fundAmount
+    )).then(
+      res => { // Success
+        this.qrValue = res;
+      },
+      msg => { // Error
+      }
     );
   }
 
