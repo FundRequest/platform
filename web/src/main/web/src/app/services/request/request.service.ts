@@ -5,8 +5,13 @@ import {HttpClient} from '@angular/common/http';
 import {RequestsStats} from '../../core/requests/RequestsStats';
 import {IState} from '../../redux/store';
 import {
-  ClaimRequestCommand, createRequest, FundRequestCommand, IRequest, IRequestList,
-  IRequestRecord, RequestIssueFundInformation,
+  ClaimRequestCommand,
+  createRequest,
+  FundRequestCommand,
+  IRequest,
+  IRequestList,
+  IRequestRecord,
+  RequestIssueFundInformation,
   SignedClaim
 } from '../../redux/requests.models';
 import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
@@ -15,7 +20,6 @@ import {ContractsService} from '../contracts/contracts.service';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
-import { List } from 'immutable';
 
 @Injectable()
 export class RequestService {
@@ -67,6 +71,19 @@ export class RequestService {
     return this._cs.fundRequest(command.platform, command.platformId, command.link, command.amount);
     // only edit request when funding is processed
     //this.editRequestInStore(request, createRequest(newRequest));
+  }
+
+  public async requestQRValue(command: FundRequestCommand): Promise<string> {
+    let body = {
+      platform: command.platform,
+      platformId: command.platformId,
+      amount: command.amount,
+      url: command.link,
+      fundrequestAddress: await this._cs.getFundRequestContractAddress(),
+      tokenAddress: await this._cs.getTokenContractAddress()
+    };
+
+    return await this.http.post('/api/private/requests/0/erc67/fund', body).toPromise() as string;
   }
 
   public async claimRequest(command: ClaimRequestCommand): Promise<string> {
@@ -167,7 +184,7 @@ export class RequestService {
     });
   }
 
-  private updateRequestWithNewFundInfo(request: IRequestRecord, fundInfo: RequestIssueFundInformation)  {
+  private updateRequestWithNewFundInfo(request: IRequestRecord, fundInfo: RequestIssueFundInformation) {
     let newRequest: IRequestRecord;
 
     if (!request.set) {

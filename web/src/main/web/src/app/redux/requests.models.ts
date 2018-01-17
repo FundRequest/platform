@@ -33,22 +33,22 @@ export interface IRequestRecord extends TypedRecord<IRequestRecord>, IRequest {
 }
 
 export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
-  id                   : 0,
-  status               : '',
-  type                 : '',
-  technologies         : [],
-  watchers             : [],
+  id: 0,
+  status: '',
+  type: '',
+  technologies: [],
+  watchers: [],
   loggedInUserIsWatcher: false,
-  issueInformation     : {
-    link  : '',
-    owner : '',
-    repo  : '',
+  issueInformation: {
+    link: '',
+    owner: '',
+    repo: '',
     number: 0,
-    title : '',
+    title: '',
     platform: '',
-    platformId  : ''
+    platformId: ''
   },
-  fundInfo : {
+  fundInfo: {
     numberOfFunders: '0',
     balance: '0',
     funderBalance: '0'
@@ -63,7 +63,7 @@ export class FundRequestCommand {
 }
 
 export class ClaimRequestCommand {
-  constructor(public id:number, public platform: string, public platformId: string, public solverAddress: string) {
+  constructor(public id: number, public platform: string, public platformId: string, public solverAddress: string) {
   }
 }
 

@@ -32,11 +32,14 @@ export class FundModalComponent implements OnInit {
   }
 
   public get qrValue() {
-    return this.canFund() ? 'url to something with fundAmount: ' + this.fundAmount : '';
-  }
-
-  public canFund(): boolean {
-    return this.balance >= this.fundAmount && this.fundAmount > 0;
+    return this._rs.requestQRValue(
+      new FundRequestCommand(
+        this.request.issueInformation.platform,
+        this.request.issueInformation.platformId,
+        this.request.issueInformation.link,
+        this.fundAmount
+      )
+    );
   }
 
   public fund() {

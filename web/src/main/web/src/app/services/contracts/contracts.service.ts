@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
-import { IRequestRecord, RequestIssueFundInformation, SignedClaim } from '../../redux/requests.models';
+import {IRequestRecord, RequestIssueFundInformation, SignedClaim} from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
-import { SettingsService } from '../../core/settings/settings.service';
-import { NotificationType } from '../notification/notificationType';
+import {SettingsService} from '../../core/settings/settings.service';
+import {NotificationType} from '../notification/notificationType';
 
 
 const swal = require('sweetalert');
@@ -74,6 +74,14 @@ export class ContractsService {
         resolve(netId);
       });
     }) as string;
+  }
+
+  public async getTokenContractAddress(): Promise<string> {
+    return Promise.resolve(this._tokenContractAddress);
+  }
+
+  public async getFundRequestContractAddress(): Promise<string> {
+    return Promise.resolve(this._fundRequestContractAddress);
   }
 
   public async getAccount(): Promise<string> {
@@ -161,7 +169,7 @@ export class ContractsService {
   public async getRequestFundInfo(request: IRequestRecord): Promise<RequestIssueFundInformation> {
     return new Promise((resolve, reject) => {
       return this._fundRequestContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), this._account, function (err, result) {
-        err ? reject(err) : resolve({ numberOfFunders: result[0], balance: result[1], funderBalance: result[2]});
+        err ? reject(err) : resolve({numberOfFunders: result[0], balance: result[1], funderBalance: result[2]});
       });
     }) as Promise<RequestIssueFundInformation>;
   }
