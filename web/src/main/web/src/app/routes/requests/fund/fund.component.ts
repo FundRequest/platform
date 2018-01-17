@@ -78,7 +78,6 @@ export class FundComponent implements OnInit {
   }
 
   public updateQr() {
-    console.log('updating qr');
     this.requestService.requestQRValue(new FundRequestCommand(
       this.requestDetails.platform,
       this.requestDetails.platformId,
