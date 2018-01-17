@@ -61,6 +61,14 @@ export class FundComponent implements OnInit {
     });
   }
 
+  public canFund() {
+    return this.fundAmount &&  this.balance >= this.fundAmount && this.fundAmount > 0 && !this.fundingInProgress;
+  }
+
+  public get qrValue() {
+    return this.canFund() ? 'url to something with fundAmount: ' + this.fundAmount : '';
+  }
+
   public fund() {
     this.fundingInProgress = true;
     this.requestService.fundRequest(

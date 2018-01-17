@@ -1,7 +1,7 @@
 import {makeTypedFactory, TypedRecord} from 'typed-immutable-record';
 import {List} from 'immutable';
 
-interface IRequestIssueInformation {
+interface RequestIssueInformation {
   link: string;
   owner: string;
   repo: string;
@@ -12,19 +12,22 @@ interface IRequestIssueInformation {
   platformId: string;
 }
 
-interface IRequest {
+export interface RequestIssueFundInformation {
+  numberOfFunders: string;
+  balance: string;
+  funderBalance: string;
+}
+
+export interface IRequest {
   id: number;
   status: string;
   type: string;
   technologies: string[];
   watchers: string[];
   loggedInUserIsWatcher: boolean;
-  balance: string;
-  funderBalance: string;
-  numberOfFunders: string;
-  issueInformation: IRequestIssueInformation;
+  issueInformation: RequestIssueInformation;
+  fundInfo: RequestIssueFundInformation
 }
-
 
 export interface IRequestRecord extends TypedRecord<IRequestRecord>, IRequest {
 }
@@ -36,9 +39,6 @@ export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
   technologies         : [],
   watchers             : [],
   loggedInUserIsWatcher: false,
-  balance              : '0',
-  funderBalance              : '0',
-  numberOfFunders: '0',
   issueInformation     : {
     link  : '',
     owner : '',
@@ -47,6 +47,11 @@ export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
     title : '',
     platform: '',
     platformId  : ''
+  },
+  fundInfo : {
+    numberOfFunders: '0',
+    balance: '0',
+    funderBalance: '0'
   }
 });
 
@@ -64,10 +69,5 @@ export class ClaimRequestCommand {
 
 export class SignedClaim {
   constructor(public platform: string, public platformId: string, public solverAddress: string, public solver: string, public r: string, public s: string, public v: number) {
-  }
-}
-
-export class FundInfo {
-  constructor(public numberOfFunders: string, public balance: string, public funderBalance: string) {
   }
 }

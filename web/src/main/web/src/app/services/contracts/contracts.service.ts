@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
-import {FundInfo, IRequestRecord, SignedClaim} from '../../redux/requests.models';
+import { IRequestRecord, RequestIssueFundInformation, SignedClaim } from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
 import { SettingsService } from '../../core/settings/settings.service';
 import { NotificationType } from '../notification/notificationType';
@@ -29,6 +29,7 @@ export class ContractsService {
 
   private _limited: boolean = true;
   private _providerApi = 'https://ropsten.infura.io/';
+  private _etherscan = 'https://ropsten.etherscan.io/';
 
   constructor(private _settings: SettingsService, private _ns: NotificationService) {
   }
@@ -157,18 +158,17 @@ export class ContractsService {
     }) as string;
   }
 
-  public async getRequestFundInfo(request: IRequestRecord): Promise<FundInfo> {
+  public async getRequestFundInfo(request: IRequestRecord): Promise<RequestIssueFundInformation> {
     return new Promise((resolve, reject) => {
       return this._fundRequestContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), this._account, function (err, result) {
-        console.log('get request fund info', request.issueInformation.platformId, result[0], result[1], result[2]);
-        err ? reject(err) : resolve(new FundInfo(result[0], result[1], result[2]));
+        err ? reject(err) : resolve({ numberOfFunders: result[0], balance: result[1], funderBalance: result[2]});
       });
-    }) as Promise<FundInfo>;
+    }) as Promise<RequestIssueFundInformation>;
   }
 
   private _getTransactionLink(tx: string): string {
     // TODO: Parametrize link
-    return `<a target="_blank" href="https://rinkeby.etherscan.io/tx/${tx}">Go to transaction.</a>`;
+    return `<a target="_blank" href="${this._etherscan}${tx}">Go to transaction.</a>`;
   }
 
   private _getTransactionOptionsForBatch(account: string): any {

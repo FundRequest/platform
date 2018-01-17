@@ -8,6 +8,7 @@ import {DetailComponent} from './detail/detail.component';
 import {FundComponent} from "./fund/fund.component";
 import {ComponentsModule} from '../../components/components.module';
 import {DataTableModule} from 'angular2-datatable';
+import {QRCodeModule} from 'angular2-qrcode';
 
 const routes: Routes = [
   {path: '', component: OverviewComponent},
@@ -21,7 +22,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     Ng2TableModule,
     ComponentsModule,
-    DataTableModule
+    DataTableModule,
+    QRCodeModule,
   ],
   declarations: [
     DetailComponent,

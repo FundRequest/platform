@@ -20,19 +20,27 @@ export class FundModalComponent implements OnInit {
   public balance: number;
 
   constructor(public bsModalRef: BsModalRef,
-              private requestService: RequestService,
-              private userService: UserService) {
+              private _rs: RequestService,
+              private _us: UserService) {
   }
 
   ngOnInit() {
-    this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
+    this._us.getCurrentUser().subscribe((user: IUserRecord) => {
       this.user = user;
       this.balance = Utils.fromWeiRounded(user.balance);
     });
   }
 
+  public get qrValue() {
+    return this.canFund() ? 'url to something with fundAmount: ' + this.fundAmount : '';
+  }
+
+  public canFund(): boolean {
+    return this.balance >= this.fundAmount && this.fundAmount > 0;
+  }
+
   public fund() {
-    this.requestService.fundRequest(
+    this._rs.fundRequest(
       new FundRequestCommand(
         this.request.issueInformation.platform,
         this.request.issueInformation.platformId,

@@ -10,6 +10,7 @@ import {RequestModalComponent} from './request-modal/request-modal.component';
 import {TagInputModule} from 'ngx-chips';
 import {NotificationStreamComponent} from './notification-stream/notification-stream.component';
 import {MomentModule} from 'angular2-moment';
+import {QRCodeModule} from 'angular2-qrcode';
 
 @NgModule({
   imports        : [
@@ -17,7 +18,8 @@ import {MomentModule} from 'angular2-moment';
     CommonModule,
     SharedModule,
     TagInputModule,
-    MomentModule
+    MomentModule,
+    QRCodeModule
 ],
   providers      : [],
   declarations   : [

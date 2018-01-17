@@ -1,0 +1,46 @@
+{
+  "name": "FundRequest",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Extension to fund github issues using the fundrequest platform.",
+  "homepage_url": "https://fundrequest.io/",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "default_locale": "en",
+  "background": {
+    "scripts": ["src/bg/script.js"],
+    "persistent": true
+  },
+  "options_page": "src/options_custom/index.html",
+  "page_action": {
+    "default_icon": "icons/icon19.png",
+    "default_title": "Fund Request"
+  },
+  "permissions": [
+    "tabs",
+    "notifications",
+    "https://github.com/FundRequest/*",
+    "https://alpha.fundrequest.io/*",
+    "http://localhost:4200/*",
+    "https://ropsten.infura.io/"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/FundRequest/*"
+      ],
+      "js": [
+        "src/vendors/web3/web3.min.js",
+        "src/inject/github/script.js",
+        "src/inject/github/tingle.min.js"
+      ],
+      "css": [
+        "src/inject/github/github.fnd.css",
+        "src/inject/github/tingle.min.css"
+      ]
+    }
+  ]
+}
