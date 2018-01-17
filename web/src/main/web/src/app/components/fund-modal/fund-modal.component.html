@@ -67,15 +67,8 @@
       </div>
     </div>
     <div class="col-xs-4">
-      <qr-code *ngIf="canFund()" class="img-responsive" [value]="qrValue" [size]="350"></qr-code>
-      <div class="text-center"><label *ngIf="canFund()">Scan to fund</label></div>
-
-      <img *ngIf="!canFund()" class="img-responsive" src="assets/img/qrdummy.png" alt="qr dummy"/>
-      <div class="text-center">
-        <label *ngIf="!canFund()" [ngClass]="{'text-danger': fundAmount <= 0 || fundAmount > balance}">
-          Enter valid Fund Amount
-        </label>
-      </div>
+      <qr-code class="img-responsive" [value]="qrValue" [size]="350"></qr-code>
+      <div class="text-center"><label>Scan to fund</label></div>
     </div>
   </div>
   <div class="modal-footer">
