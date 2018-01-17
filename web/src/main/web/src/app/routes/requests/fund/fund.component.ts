@@ -21,12 +21,12 @@ export class FundComponent implements OnInit {
   public fundAmount: number;
   public balance: number;
   public fundingInProgress: boolean = false;
+  public qrValue: string = '';
 
   constructor(private route: ActivatedRoute,
               private userService: UserService,
               private http: HttpClient,
-              private requestService: RequestService
-              ) {
+              private requestService: RequestService) {
   }
 
   ngOnInit(): void {
@@ -45,10 +45,8 @@ export class FundComponent implements OnInit {
           this.requestDetails.repo = matches[1];
           this.requestDetails.owner = matches[2];
           let technologiesUrl = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/languages';
-
           this.http.get(technologiesUrl).subscribe(data => {
             this.requestDetails.technologies = Object.keys(data);
-
           });
         });
       } else {
@@ -61,10 +59,6 @@ export class FundComponent implements OnInit {
     });
   }
 
-  public get qrValue() {
-    return 'url to something with fundAmount: ';
-  }
-
   public fund() {
     this.fundingInProgress = true;
     this.requestService.fundRequest(
@@ -75,12 +69,28 @@ export class FundComponent implements OnInit {
         this.fundAmount)
     ).then(() => {
       swal('Funded!', 'Funds have been committed, once the transaction is confirmed the are transferred to the request. Window will close in 5 seconds...', 'success');
-      setTimeout (self.close, 5000);
+      setTimeout(self.close, 5000);
     })
       .catch((e) => {
         swal('Error when funding', 'An error ocurred wile funding: ' + e.message, 'error');
         this.fundingInProgress = false;
       });
+  }
+
+  public updateQr() {
+    console.log('updating qr');
+    this.requestService.requestQRValue(new FundRequestCommand(
+      this.requestDetails.platform,
+      this.requestDetails.platformId,
+      this.requestDetails.link,
+      this.fundAmount
+    )).then(
+      res => { // Success
+        this.qrValue = res;
+      },
+      msg => { // Error
+      }
+    );
   }
 
 }
