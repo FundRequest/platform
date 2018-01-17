@@ -53,7 +53,7 @@
           <label for="fund-amount" class="col-xs-6 col-md-4 control-label">Fund Amount</label>
           <div class="col-xs-6 col-md-8">
             <div class="input-group">
-              <input [(ngModel)]="fundAmount" id="fund-amount" type="number" class="form-control">
+              <input [(ngModel)]="fundAmount" (ngModelChange)="updateQr()" id="fund-amount" type="number" class="form-control">
               <span class="input-group-addon">FND</span>
             </div>
           </div>
@@ -67,7 +67,8 @@
       </div>
     </div>
     <div class="col-xs-4">
-      <qr-code class="img-responsive" [value]="qrValue" [size]="350"></qr-code>
+      <qr-code *ngIf="canFund()" class="img-responsive" [value]="qrValue" [size]="350"></qr-code>
+      <img *ngIf="fundAmount == undefined || fundAmount == 0" class="img-responsive" src="/assets/img/qr-code.svg"  />
       <div class="text-center"><label>Scan to fund</label></div>
     </div>
   </div>

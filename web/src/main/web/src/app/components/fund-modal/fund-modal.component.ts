@@ -31,7 +31,6 @@ export class FundModalComponent implements OnInit {
       this.user = user;
       this.balance = Utils.fromWeiRounded(user.balance);
     });
-    this.updateQr();
   }
 
   public canFund(): boolean {
@@ -39,7 +38,6 @@ export class FundModalComponent implements OnInit {
   }
 
   public updateQr() {
-    console.log('updating qr');
     this._rs.requestQRValue(new FundRequestCommand(
       this.request.issueInformation.platform,
       this.request.issueInformation.platformId,
