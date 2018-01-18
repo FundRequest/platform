@@ -5,8 +5,14 @@ import {HttpClient} from '@angular/common/http';
 import {RequestsStats} from '../../core/requests/RequestsStats';
 import {IState} from '../../redux/store';
 import {
-  ClaimRequestCommand, createRequest, FundRequestCommand, IRequest, IRequestList, IRequestRecord,
-  RequestIssueFundInformation, SignedClaim
+  ClaimRequestCommand,
+  createRequest,
+  FundRequestCommand,
+  IRequest,
+  IRequestList,
+  IRequestRecord,
+  RequestIssueFundInformation,
+  SignedClaim
 } from '../../redux/requests.models';
 import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
 import {IUserRecord} from '../../redux/user.models';
@@ -48,8 +54,6 @@ export class RequestService {
   public async getStatistics(): Promise<RequestsStats> {
     return await this.http.get('/api/public/requests/statistics')
       .toPromise() as RequestsStats;
-    //.then(response => response as RequestsStats)
-    //.catch(this.handleError);
   }
 
   public addRequest(issueLink: string, fundAmount: number): void {
@@ -61,10 +65,7 @@ export class RequestService {
   }
 
   public async fundRequest(command: FundRequestCommand): Promise<string> {
-    //let balance = await this.contractService.getRequestBalance(request) as string;
     return this._cs.fundRequest(command.platform, command.platformId, command.link, command.amount);
-    // only edit request when funding is processed
-    //this.editRequestInStore(request, createRequest(newRequest));
   }
 
   public async requestQRValue(command: FundRequestCommand) {
@@ -102,13 +103,9 @@ export class RequestService {
   private updateWatcher(request: IRequestRecord, userId: string, add: boolean): void {
     let newWatchers: string[] = JSON.parse(JSON.stringify(request.watchers));
 
-    if (add) {
-      newWatchers.push(userId);
-    } else {
-      newWatchers = newWatchers.filter(function (watcher) {
-        return watcher != userId;
-      });
-    }
+    add ? newWatchers.push(userId) : newWatchers.filter(function (watcher) {
+      return watcher != userId;
+    });
 
     let newRequest: IRequestRecord = createRequest(JSON.parse(JSON.stringify(request)));
     newRequest = newRequest.set('watchers', newWatchers);
@@ -117,14 +114,10 @@ export class RequestService {
     let httpUrl = `/api/private/requests/${request.id}/watchers`;
     let httpCall: Observable<Object>;
 
-    if (add) {
-      httpCall = this.http.put(httpUrl, {
-        responseType: 'text',
-        requestId: request.id
-      });
-    } else {
-      httpCall = this.http.delete(httpUrl);
-    }
+    add ? httpCall = this.http.put(httpUrl, {
+      responseType: 'text',
+      requestId: request.id
+    }) : httpCall = this.http.delete(httpUrl);
 
     httpCall.take(1).subscribe(null,
       error => {
