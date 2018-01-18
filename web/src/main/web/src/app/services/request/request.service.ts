@@ -68,29 +68,26 @@ export class RequestService {
   }
 
   public async requestQRValue(command: FundRequestCommand) {
-    // let body = {
-    //   platform: command.platform,
-    //   platformId: command.platformId,
-    //   amount: '' + command.amount,
-    //   url: command.link,
-    //   fundrequestAddress: this._cs.getFundRequestContractAddress(),
-    //   tokenAddress: this._cs.getTokenContractAddress()
-    // };
-    // return await this.http.post('/api/public/requests/0/erc67/fund', body, {responseType: 'text'}).toPromise();
-    return null;
+    let body = {
+      platform: command.platform,
+      platformId: command.platformId,
+      amount: '' + command.amount,
+      url: command.link,
+      fundrequestAddress: this._cs.getFundRequestContractAddress(),
+      tokenAddress: this._cs.getTokenContractAddress()
+    };
+    return await this.http.post('/api/public/requests/0/erc67/fund', body, {responseType: 'text'}).toPromise();
   }
 
   public async claimRequest(command: ClaimRequestCommand): Promise<string> {
-    // this._cs.claimRequest(command.platform, command.platformId, command.link, command.amount);
-    // let body = {
-    //   platform: command.platform,
-    //   platformId: command.platformId,
-    //   address: await this._cs.getAccount()
-    // };
-    // await this.http.post('/api/private/requests/' + command.id + '/claim', body).take(1).subscribe((signedClaim: SignedClaim) => {
-    //   return this._cs.claimRequest(signedClaim);
-    // });
-
+    let body = {
+      platform: command.platform,
+      platformId: command.platformId,
+      address: await this._cs.getAccount()
+    };
+    await this.http.post('/api/private/requests/' + command.id + '/claim', body).take(1).subscribe((signedClaim: SignedClaim) => {
+      return this._cs.claimRequest(signedClaim);
+    });
     return null;
   }
 
