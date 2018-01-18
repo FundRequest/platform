@@ -28,7 +28,7 @@ export class ContractsService {
   private _fundRequestContractAddress: string = '0x797b33d3bb0c74a7860cd2ca80bf063809dced80';
 
   private _limited: boolean = true;
-  private _providerApi = 'https://ropsten.infura.io/';
+  private _providerApi = 'https://ropsten.davyvanroy.be/';
   private _etherscan = 'https://ropsten.etherscan.io/';
 
   constructor(private _settings: SettingsService, private _ns: NotificationService) {
