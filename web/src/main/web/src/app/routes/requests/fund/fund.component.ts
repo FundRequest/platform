@@ -89,7 +89,7 @@ export class FundComponent implements OnInit {
       },
       msg => { // Error
       }
-    );
+    ).catch();
   }
 
 }

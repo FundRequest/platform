@@ -37,7 +37,7 @@
             removePreloader();
             // retore scrollbar
             body.style.overflow = '';
-            let event = new CustomEvent('fnd.loaded');
+            var event = new CustomEvent('fnd.loaded');
             document.dispatchEvent(event);
         }, 300);
     }
