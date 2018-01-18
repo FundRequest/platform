@@ -35,20 +35,7 @@ export class FundComponent implements OnInit {
       let issueLink = params['url'];
       let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
       if (matches && matches.length >= 4) {
-        let url = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/issues/' + matches[3];
-        this.http.get(url).subscribe(data => {
-          this.requestDetails = data;
-          this.requestDetails.platform = 'GITHUB';
-          this.requestDetails.platformId = data['id'];
-          this.requestDetails.issueNumber = data['number'];
-          this.requestDetails.link = data['html_url'];
-          this.requestDetails.repo = matches[1];
-          this.requestDetails.owner = matches[2];
-          let technologiesUrl = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/languages';
-          this.http.get(technologiesUrl).subscribe(data => {
-            this.requestDetails.technologies = Object.keys(data);
-          });
-        });
+        this.fillRequestDetails(matches);
       } else {
         console.log("no url match");
       }
@@ -56,6 +43,23 @@ export class FundComponent implements OnInit {
     this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
       this.user = user;
       this.balance = Utils.fromWeiRounded(user.balance);
+    });
+  }
+
+  private fillRequestDetails(matches: RegExpExecArray) {
+    let url = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/issues/' + matches[3];
+    this.http.get(url).subscribe(data => {
+      this.requestDetails = data;
+      this.requestDetails.platform = 'GITHUB';
+      this.requestDetails.platformId = data['id'];
+      this.requestDetails.issueNumber = data['number'];
+      this.requestDetails.link = data['html_url'];
+      this.requestDetails.repo = matches[1];
+      this.requestDetails.owner = matches[2];
+      let technologiesUrl = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/languages';
+      this.http.get(technologiesUrl).subscribe(data => {
+        this.requestDetails.technologies = Object.keys(data);
+      });
     });
   }
 
