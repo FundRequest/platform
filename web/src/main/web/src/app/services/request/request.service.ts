@@ -164,7 +164,6 @@ export class RequestService {
 
   private updateRequestBalance(request: IRequestRecord): void {
     this._cs.getRequestFundInfo(request).then((fundInfo) => {
-      console.log(request, fundInfo);
       this.updateRequestWithNewFundInfo(request, fundInfo);
     }).catch(error => {
       console.log(error);
