@@ -46,7 +46,7 @@ public class GithubClaimResolver {
 
     private String getSolver(Principal user, SignClaimRequest signClaimRequest, RequestDto request) throws IOException {
         String solver = githubSolverResolver.solveResolver(request);
-        if (!solver.equals(getUserPlatformUsername(user, signClaimRequest.getPlatform()))) {
+        if (!solver.equalsIgnoreCase(getUserPlatformUsername(user, signClaimRequest.getPlatform()))) {
             throw new RuntimeException("Claim executed by wrong user");
         }
         return solver;

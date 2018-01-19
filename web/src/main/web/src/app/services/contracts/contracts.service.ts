@@ -28,7 +28,7 @@ export class ContractsService {
   private _fundRequestContractAddress: string = '0x797b33d3bb0c74a7860cd2ca80bf063809dced80';
 
   private _limited: boolean = true;
-  private _providerApi = 'https://ropsten.infura.io/';
+  private _providerApi = 'https://ropsten.davyvanroy.be/';
   private _etherscan = 'https://ropsten.etherscan.io/';
 
   constructor(private _settings: SettingsService, private _ns: NotificationService) {
@@ -133,22 +133,17 @@ export class ContractsService {
     if (!!this._account) {
       let total = this._web3.toWei(value, 'ether');
       let tx = await new Promise((resolve, reject) => {
-        console.log(this._fundRequestContractAddress);
-        console.log(total);
-        console.log(platform + "|" + String(platformId) + "|" + url);
         this._tokenContract.approveAndCall(this._fundRequestContractAddress, total, this._web3.fromAscii(platform + "|" + String(platformId) + "|" + url), this._getTransactionOptions(this._account), function (err, tx) {
           err ? reject(err) : resolve(tx);
         });
       }) as string;
 
       this._ns.message(NotificationType.FUND_SUCCESS, this._getTransactionLink(tx));
-
       return Promise.resolve(total);
     } else {
       this.showLimitedFunctionalityAlert();
       return Promise.resolve('-');
     }
-
   }
 
   public async claimRequest(signedClaim: SignedClaim): Promise<string> {
@@ -175,15 +170,7 @@ export class ContractsService {
   }
 
   private _getTransactionLink(tx: string): string {
-    // TODO: Parametrize link
     return `<a target="_blank" href="${this._etherscan}${tx}">Go to transaction.</a>`;
-  }
-
-  private _getTransactionOptionsForBatch(account: string): any {
-    return {
-      from: account,
-      gas: 1
-    };
   }
 
   private _getTransactionOptions(account: string): any {

@@ -1,14 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 const themeFundRequest = require('../../shared/styles/themes/theme-fund-request.scss');
-const themeA = require('../../shared/styles/themes/theme-a.scss');
-const themeB = require('../../shared/styles/themes/theme-b.scss');
-const themeC = require('../../shared/styles/themes/theme-c.scss');
-const themeD = require('../../shared/styles/themes/theme-d.scss');
-const themeE = require('../../shared/styles/themes/theme-e.scss');
-const themeF = require('../../shared/styles/themes/theme-f.scss');
-const themeG = require('../../shared/styles/themes/theme-g.scss');
-const themeH = require('../../shared/styles/themes/theme-h.scss');
 
 @Injectable()
 export class ThemesService {
@@ -18,7 +10,7 @@ export class ThemesService {
 
   constructor() {
     this.createStyle();
-    this.setTheme(this.defaultTheme);
+    this.setTheme();
   }
 
   private createStyle() {
@@ -29,36 +21,8 @@ export class ThemesService {
     head.appendChild(this.styleTag);
   }
 
-  setTheme(name) {
-    switch (name) {
-      case 'FundRequest':
-        this.injectStylesheet(themeFundRequest);
-        break;
-      case 'A':
-        this.injectStylesheet(themeA);
-        break;
-      case 'B':
-        this.injectStylesheet(themeB);
-        break;
-      case 'C':
-        this.injectStylesheet(themeC);
-        break;
-      case 'D':
-        this.injectStylesheet(themeD);
-        break;
-      case 'E':
-        this.injectStylesheet(themeE);
-        break;
-      case 'F':
-        this.injectStylesheet(themeF);
-        break;
-      case 'G':
-        this.injectStylesheet(themeG);
-        break;
-      case 'H':
-        this.injectStylesheet(themeH);
-        break;
-    }
+  setTheme() {
+    this.injectStylesheet(themeFundRequest);
   }
 
   injectStylesheet(css) {
@@ -68,5 +32,4 @@ export class ThemesService {
   getDefaultTheme() {
     return this.defaultTheme;
   }
-
 }

@@ -33,8 +33,13 @@ export class FundModalComponent implements OnInit {
     });
   }
 
+  public hasEnoughFunds() {
+    return this.balance >= this.fundAmount;
+  }
+
+
   public canFund(): boolean {
-    return this.balance >= this.fundAmount && this.fundAmount > 0;
+    return this.fundAmount > 0;
   }
 
   public updateQr() {

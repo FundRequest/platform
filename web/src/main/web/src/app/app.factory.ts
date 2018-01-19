@@ -8,6 +8,6 @@ export class AppFactory {
   }
 
   public load(): Promise<boolean> {
-    return this._cs.init().then(() => true);
+    return this._cs.init().then(() => true).catch(() =>  false);
   }
 }

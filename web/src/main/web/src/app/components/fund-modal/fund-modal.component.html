@@ -74,7 +74,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>
-    <button [disabled]="!canFund()" type="button" class="btn btn-primary" (click)="fund()">
+    <button [disabled]="!canFund() || !hasEnoughFunds()" type="button" class="btn btn-primary" (click)="fund()">
       Fund
     </button>
   </div>

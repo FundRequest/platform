@@ -9,15 +9,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KeycloakConfig {
 
+    @Value("${io.fundrequest.keycloak-custom.server-url}")
+    private String serverUrl;
+    @Value("${io.fundrequest.keycloak-custom.realm}")
+    private String realm;
+    @Value("${io.fundrequest.keycloak-custom.username}")
+    private String username;
+    @Value("${io.fundrequest.keycloak-custom.password}")
+    private String password;
+    @Value("${io.fundrequest.keycloak-custom.client-id}")
+    private String clientId;
+    @Value("${io.fundrequest.keycloak-custom.client-secret}")
+    private String clientSecret;
 
     @Bean
-    public RealmResource keycloak(@Value("${io.fundrequest.keycloak-custom.server-url}") String serverUrl,
-                                  @Value("${io.fundrequest.keycloak-custom.realm}") String realm,
-                                  @Value("${io.fundrequest.keycloak-custom.username}") String username,
-                                  @Value("${io.fundrequest.keycloak-custom.password}") String password,
-                                  @Value("${io.fundrequest.keycloak-custom.client-id}") String clientId,
-                                  @Value("${io.fundrequest.keycloak-custom.client-secret}") String clientSecret) {
-        Keycloak keycloak = Keycloak.getInstance(
+    public RealmResource keycloak() {
+        final Keycloak keycloak = Keycloak.getInstance(
                 serverUrl,
                 realm,
                 username,
