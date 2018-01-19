@@ -1,36 +1,24 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RequestsStats } from '../../core/requests/RequestsStats';
+import { RequestService } from '../../services/request/request.service';
 
 @Component({
   selector   : 'fnd-statistics',
   templateUrl: './statistics.component.html',
   styleUrls  : ['./statistics.component.scss']
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent {
 
-  @Input() statistics: RequestsStats;
+  private _statistics: Promise<RequestsStats>;
 
-  pieOptions = {
-    animate   : {
-      duration: 800,
-      enabled : true
-    },
-    barColor  : '#fff',
-    trackColor: 'rgba(93,156,236,0.4)',
-    scaleColor: false,
-    lineWidth : 5,
-    lineCap   : 'round',
-    size      : 55
-  };
-
-  constructor() {
+  constructor(private requestService: RequestService) {
   }
 
-  ngOnInit() {
-  }
-
-  public get percentageFunded(): number {
-    return this.statistics.requestsFunded == 0 ? 0 : (this.statistics.requestsFunded / this.statistics.numberOfRequests) * 100;
+  get statistics(): Promise<RequestsStats> {
+    if (!this._statistics) {
+      this._statistics = (async () => await this.requestService.getStatistics())();
+    }
+    return this._statistics;
   }
 }
 

@@ -4,6 +4,8 @@ import {IRequestRecord, RequestIssueFundInformation, SignedClaim} from '../../re
 import {NotificationService} from '../notification/notification.service';
 import {SettingsService} from '../../core/settings/settings.service';
 import {NotificationType} from '../notification/notificationType';
+import { RequestsStats } from '../../core/requests/RequestsStats';
+import { Utils } from '../../shared/utils';
 
 
 const swal = require('sweetalert');
@@ -21,8 +23,6 @@ export class ContractsService {
 
   private _tokenContract: any;
   private _fundRequestContract: any;
-
-  private _init: boolean = false;
 
   private _tokenContractAddress: string = '0xfd1de38dc456112c55c3e6bc6134b2f545b91386';
   private _fundRequestContractAddress: string = '0x797b33d3bb0c74a7860cd2ca80bf063809dced80';
@@ -121,6 +121,48 @@ export class ContractsService {
         resolve(0);
       }) as Promise<number>;
     }
+  }
+
+  public async getTotalBalanceInWei(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this._fundRequestContract.totalBalance.call(function (err, result) {
+        err ? reject(err) : resolve(result);
+      });
+    }) as Promise<number>;
+  }
+
+  public async getTotalFundedInWei(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this._fundRequestContract.totalFunded.call(function (err, result) {
+        err ? reject(err) : resolve(result);
+      });
+    }) as Promise<number>;
+  }
+
+  public async getTotalNumberOfFunders(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this._fundRequestContract.totalNumberOfFunders.call(function (err, result) {
+        err ? reject(err) : resolve(result);
+      });
+    }) as Promise<number>;
+  }
+
+  public async getRequestsFunded(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this._fundRequestContract.requestsFunded.call(function (err, result) {
+        err ? reject(err) : resolve(result);
+      });
+    }) as Promise<number>;
+  }
+
+  public async getStatistics(): Promise<RequestsStats> {
+    let stats: RequestsStats = new RequestsStats();
+    stats.requestsFunded = await this.getRequestsFunded();
+    stats.numberOfFunders = await this.getTotalNumberOfFunders();
+    stats.totalAmountFunded = await this.getTotalFundedInWei();
+    stats.totalBalance = await this.getTotalBalanceInWei();
+
+    return stats;
   }
 
   private showLimitedFunctionalityAlert() {

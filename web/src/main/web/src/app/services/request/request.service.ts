@@ -52,8 +52,7 @@ export class RequestService {
   }
 
   public async getStatistics(): Promise<RequestsStats> {
-    return await this.http.get('/api/public/requests/statistics')
-      .toPromise() as RequestsStats;
+    return this._cs.getStatistics();
   }
 
   public addRequest(issueLink: string, fundAmount: number): void {
