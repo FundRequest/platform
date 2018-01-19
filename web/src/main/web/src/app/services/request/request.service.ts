@@ -5,8 +5,14 @@ import {HttpClient} from '@angular/common/http';
 import {RequestsStats} from '../../core/requests/RequestsStats';
 import {IState} from '../../redux/store';
 import {
-  ClaimRequestCommand, createRequest, FundRequestCommand, IRequest, IRequestList, IRequestRecord,
-  RequestIssueFundInformation, SignedClaim
+  ClaimRequestCommand,
+  createRequest,
+  FundRequestCommand,
+  IRequest,
+  IRequestList,
+  IRequestRecord,
+  RequestIssueFundInformation,
+  SignedClaim
 } from '../../redux/requests.models';
 import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
 import {IUserRecord} from '../../redux/user.models';
@@ -172,7 +178,6 @@ export class RequestService {
 
   private updateRequestBalance(request: IRequestRecord): void {
     this._cs.getRequestFundInfo(request).then((fundInfo) => {
-      console.log(request, fundInfo);
       this.updateRequestWithNewFundInfo(request, fundInfo);
     });
   }
