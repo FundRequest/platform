@@ -3,6 +3,6 @@ jdk:
 - oraclejdk8
 
 after_success:
-  - docker build -t fundrequestio/platform:"$TRAVIS_BRANCH" core
+  - docker build -t fundrequestio/platform:"$TRAVIS_BRANCH" rest-api
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - docker push fundrequestio/platform:"$TRAVIS_BRANCH"
