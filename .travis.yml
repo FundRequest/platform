@@ -4,6 +4,7 @@ jdk:
 cache:
   directories:
     - $HOME/.m2
+    - web/src/main/web/node_modules
 node_js: "8.7.0"
 
 after_success:
