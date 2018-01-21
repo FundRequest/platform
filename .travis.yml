@@ -1,6 +1,9 @@
 language: java
 jdk:
 - oraclejdk8
+cache:
+  directories:
+    - $HOME/.m2
 node_js: "8.7.0"
 
 after_success:
