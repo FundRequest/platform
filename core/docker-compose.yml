@@ -29,7 +29,7 @@ services:
       - "fr-rabbitmq"
     links:
       - fr-rabbitmq:fr-rabbitmq
-    image: fundrequestio/azrael:dev
+    image: fundrequestio/azrael:develop
     ports :
       -  "8001:8001"
     networks:

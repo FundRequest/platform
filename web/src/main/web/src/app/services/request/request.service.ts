@@ -148,7 +148,6 @@ export class RequestService {
           existingRequest = request;
         });
     });
-
     typeof existingRequest == 'undefined' ? this.addRequestInStore(newOrModifiedRequest) : this.updateRequestBalance(existingRequest);
   }
 

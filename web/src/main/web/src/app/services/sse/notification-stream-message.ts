@@ -21,7 +21,8 @@ interface Message {
 
 export enum NotificationStreamType {
   REQUEST_CREATED = 'REQUEST_CREATED',
-  REQUEST_FUNDED = 'REQUEST_FUNDED'
+  REQUEST_FUNDED = 'REQUEST_FUNDED',
+  REQUEST_CLAIMED = 'REQUEST_CLAIMED',
 }
 
 export class NotificationStreamMessage {
