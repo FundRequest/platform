@@ -23,7 +23,7 @@ export class NotificationService {
     if (this._settings.status.openedFromChrome) {
       let nativeEvent = new CustomEvent(`chrome.to.extension.fnd.${type}`, {
         detail: {
-          body: 'x'
+          body: body
         }
       });
       document.dispatchEvent(nativeEvent);

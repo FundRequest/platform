@@ -11,7 +11,10 @@
   },
   "default_locale": "en",
   "background": {
-    "scripts": ["src/bg/script.js"],
+    "scripts": [
+      "src/options_custom/lib/store.js",
+      "src/bg/script.js"
+    ],
     "persistent": true
   },
   "options_page": "src/options_custom/index.html",
@@ -22,10 +25,12 @@
   "permissions": [
     "tabs",
     "notifications",
+    "contentSettings",
+    "management",
     "https://github.com/FundRequest/*",
     "https://alpha.fundrequest.io/*",
     "http://localhost:4200/*",
-    "https://ropsten.infura.io/"
+    "https://ropsten.fundrequest.io/"
   ],
   "content_scripts": [
     {
@@ -35,11 +40,20 @@
       "js": [
         "src/vendors/web3/web3.min.js",
         "src/inject/github/script.js",
-        "src/inject/github/tingle.min.js"
+        "src/vendors/iziToast/js/iziToast.min.js"
       ],
       "css": [
         "src/inject/github/github.fnd.css",
-        "src/inject/github/tingle.min.css"
+        "src/vendors/iziToast/css/iziToast.min.css"
+      ]
+    },
+    {
+      "matches": [
+        "https://alpha.fundrequest.io/*",
+        "http://localhost:4200/*"
+      ],
+      "js": [
+        "src/vendors/sweetalert/sweetalert.min.js"
       ]
     }
   ]

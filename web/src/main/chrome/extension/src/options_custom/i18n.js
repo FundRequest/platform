@@ -67,5 +67,25 @@ this.i18n = {
     "disconnect": {
         "en": "Disconnect:",
         "de": "Trennen:"
-    }
+    },
+    "userDetails": {
+        "en": "User Details",
+        "de": "User Details"
+    },
+    "developer": {
+        "en": "Developer",
+        "de": "Developer"
+    },
+    "accountAddress": {
+        "en": "Your Ethereum Account Address",
+        "de": ""
+    },
+    "accountAddress-characters": {
+        "en": "0x0000000000000000000000000000000000000000",
+        "de": "0x0000000000000000000000000000000000000000"
+    },
+    "accountAddressDescription": {
+        "en": "Add your ethereum address, this will be used to show your fundings and balance",
+        "de": ""
+    },
 };

@@ -71,14 +71,10 @@ export class FundComponent implements OnInit {
         this.requestDetails.platformId,
         this.requestDetails.link,
         this.fundAmount)
-    ).then(() => {
-      swal('Funded!', 'Funds have been committed, once the transaction is confirmed the are transferred to the request. Window will close in 5 seconds...', 'success');
-      setTimeout(self.close, 5000);
-    })
-      .catch((e) => {
-        swal('Error when funding', 'An error ocurred wile funding: ' + e.message, 'error');
-        this.fundingInProgress = false;
-      });
+    ).catch((e) => {
+      swal('Error when funding', 'An error ocurred wile funding: ' + e.message, 'error');
+      this.fundingInProgress = false;
+    });
   }
 
   public updateQr() {

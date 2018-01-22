@@ -86,7 +86,7 @@
           <div class="col-xs-4">
             <div>
               <qr-code *ngIf="fundAmount > 0" class="img-responsive" [value]="qrValue" [size]="350"></qr-code>
-              <img *ngIf="fundAmount == undefined || fundAmount == 0" class="img-responsive" src="/assets/img/qr-code.svg"  />
+              <img *ngIf="fundAmount == undefined || fundAmount == 0" class="img-responsive" [src]="'assets/img/qr-code.svg'"  />
               <div class="text-center"><label>Scan to fund</label></div>
             </div>
 
@@ -100,6 +100,7 @@
       </div>
       <div class="panel-footer clearfix">
         <button type="button"
+                [disabled]="fundAmount == undefined || fundAmount == 0"
                 class="btn btn-primary pull-right"
                 (click)="fund()">Fund</button>
       </div>

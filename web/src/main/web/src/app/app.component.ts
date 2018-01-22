@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
 
   @HostListener('document:chrome.from.extension.fnd.opened')
   public openedFromChromeExtension() {
-    this.settings.status.openedFromChrome = true; console.log('document:chrome.from.extension.fnd.opened')
+    this.settings.status.openedFromChrome = true;
   }
 
   constructor(public settings: SettingsService, private _nss: NotificationStreamService, private _cs: ContractsService, private _ns: NotificationService) { }

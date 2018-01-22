@@ -11,14 +11,13 @@
             });
 
             // event send from app when tab is closed after funding
-            document.addEventListener('chrome.to.extension.fnd.FUND_SUCCESS', function(event){
-                console.log('FUND_SUCCESS', event);
-                sendResponse(event);
-                //sendResponse({id: message.id, success: true, message: event.data.body});
+            document.addEventListener('chrome.to.extension.fnd.FUND_SUCCESS', function(event) {
+                sweetAlert('Funded!', 'Funds have been committed, once the transaction is confirmed the are transferred to the request. Click OK to go back to Github.', 'success').then(() => {
+                    sendResponse({id: message.id, success: true, message: event.detail.body})
+                });
             });
             // event send from app when tab is closed after funding
-            document.addEventListener('chrome.to.extension.fnd.FUND_FAILED', function(event){
-                console.log('FUND_FAILED', event);
+            document.addEventListener('chrome.to.extension.fnd.FUND_FAILED', function(event) {
                 sendResponse({id: message.id, success: false, message: event.data.body});
             });
             // // check if page is loaded

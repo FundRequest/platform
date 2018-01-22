@@ -3,15 +3,39 @@
 }
 
 .fnd-loader {
-    border: 10px solid #f3f3f3;
+    position: relative;
+    display: inline-block;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-    border-top: 10px solid #3498db;
-    width: 30px;
-    height: 30px;
-    animation: spin 1s linear infinite;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #000000 transparent #000000 transparent;
+    -webkit-animation: lds-dual-ring 1s linear infinite;
+    animation: lds-dual-ring 1s linear infinite;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.label-color .fnd-loader {
+    border-color: #ffffff transparent #ffffff transparent;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+        -webkit-transform: rotate(0);
+        transform: rotate(0);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes lds-dual-ring {
+    0% {
+        -webkit-transform: rotate(0);
+        transform: rotate(0);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
