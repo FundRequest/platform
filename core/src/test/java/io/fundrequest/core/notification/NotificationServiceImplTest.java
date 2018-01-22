@@ -11,7 +11,8 @@ import io.fundrequest.core.notification.dto.RequestClaimedNotificationDto;
 import io.fundrequest.core.notification.dto.RequestFundedNotificationDto;
 import io.fundrequest.core.notification.infrastructure.NotificationRepository;
 import io.fundrequest.core.request.RequestService;
-import io.fundrequest.core.request.event.RequestClaimedEvent;
+import io.fundrequest.core.request.claim.dto.ClaimDto;
+import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
@@ -63,7 +64,8 @@ public class NotificationServiceImplTest {
     public void onRequestCreatedClaimedNotification() throws Exception {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
-        notificationService.onClaimed(new RequestClaimedEvent(requestDto, "davyvanroy", LocalDateTime.now()));
+
+        notificationService.onClaimed(new RequestClaimedEvent(requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
 
         assertRequestClaimedNotificationSaved(requestDto);
     }
@@ -80,7 +82,7 @@ public class NotificationServiceImplTest {
     public void onRequestClaimedPublishesNotification() throws Exception {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
-        notificationService.onClaimed(new RequestClaimedEvent(requestDto, "davyvanroy", LocalDateTime.now()));
+        notificationService.onClaimed(new RequestClaimedEvent(requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
 
         assertRequestClaimedNotificationPublished();
     }

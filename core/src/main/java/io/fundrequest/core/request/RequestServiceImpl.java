@@ -4,12 +4,20 @@ import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
+import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
+import io.fundrequest.core.request.claim.domain.Claim;
+import io.fundrequest.core.request.claim.domain.ClaimBuilder;
+import io.fundrequest.core.request.claim.dto.ClaimDto;
+import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
+import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.command.CreateRequestCommand;
-import io.fundrequest.core.request.command.RequestClaimedCommand;
-import io.fundrequest.core.request.domain.*;
+import io.fundrequest.core.request.domain.IssueInformation;
+import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.domain.Request;
+import io.fundrequest.core.request.domain.RequestBuilder;
+import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.erc67.ERC67;
-import io.fundrequest.core.request.event.RequestClaimedEvent;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.command.AddFundsCommand;
@@ -35,15 +43,17 @@ class RequestServiceImpl implements RequestService {
     private Mappers mappers;
     private GithubParser githubLinkParser;
     private FundService fundService;
+    private ClaimRepository claimRepository;
     private GithubClient githubClient;
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
 
-    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser, FundService fundService, GithubClient githubClient, GithubClaimResolver githubClaimResolver, ApplicationEventPublisher eventPublisher) {
+    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser, FundService fundService, ClaimRepository claimRepository, GithubClient githubClient, GithubClaimResolver githubClaimResolver, ApplicationEventPublisher eventPublisher) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
         this.fundService = fundService;
+        this.claimRepository = claimRepository;
         this.githubClient = githubClient;
         this.githubClaimResolver = githubClaimResolver;
         this.eventPublisher = eventPublisher;
@@ -98,7 +108,16 @@ class RequestServiceImpl implements RequestService {
                 .orElseThrow(ResourceNotFoundException::new);
         request.setStatus(RequestStatus.CLAIMED);
         request = requestRepository.save(request);
-        eventPublisher.publishEvent(new RequestClaimedEvent(mappers.map(Request.class, RequestDto.class, request), command.getSolver(), command.getTimestamp()));
+        Claim claim = claimRepository.save(ClaimBuilder.aClaim()
+                .withRequestId(request.getId())
+                .withSolver(command.getSolver())
+                .withTimestamp(command.getTimestamp())
+                .withAmountInWei(command.getAmountInWei())
+                .build());
+        eventPublisher.publishEvent(new RequestClaimedEvent(
+                mappers.map(Request.class, RequestDto.class, request),
+                mappers.map(Claim.class, ClaimDto.class, claim),
+                command.getSolver(), command.getTimestamp()));
     }
 
 

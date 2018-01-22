@@ -9,7 +9,7 @@ import io.fundrequest.core.notification.dto.RequestClaimedNotificationDto;
 import io.fundrequest.core.notification.dto.RequestFundedNotificationDto;
 import io.fundrequest.core.notification.infrastructure.NotificationRepository;
 import io.fundrequest.core.request.RequestService;
-import io.fundrequest.core.request.event.RequestClaimedEvent;
+import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;

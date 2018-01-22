@@ -2,8 +2,8 @@ package io.fundrequest.core.request.fund.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
-import io.fundrequest.core.request.command.RequestClaimedCommand;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -75,6 +76,7 @@ public class AzraelMessageReceiverTest {
         command.setPlatform(Platform.valueOf(dto.getPlatform()));
         command.setPlatformId(dto.getPlatformId());
         command.setSolver(dto.getSolver());
+        command.setAmountInWei(new BigDecimal(dto.getAmount()));
         command.setTimestamp(getTimeStamp(dto.getTimestamp()));
         verify(requestService).requestClaimed(command);
     }

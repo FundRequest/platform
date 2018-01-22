@@ -2,8 +2,8 @@ package io.fundrequest.core.request.fund.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
-import io.fundrequest.core.request.command.RequestClaimedCommand;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
 import io.fundrequest.core.request.fund.infrastructure.ProcessedBlockchainEventRepository;
@@ -66,8 +66,8 @@ public class AzraelMessageReceiver {
                 getPlatform(result.getPlatform()),
                 result.getPlatformId(),
                 result.getSolver(),
-                getTimeStamp(result.getTimestamp())
-        ));
+                getTimeStamp(result.getTimestamp()),
+                new BigDecimal(result.getAmount())));
         processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
     }
 

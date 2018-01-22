@@ -1,7 +1,8 @@
-package io.fundrequest.core.request.command;
+package io.fundrequest.core.request.claim.command;
 
 import io.fundrequest.core.request.domain.Platform;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -10,15 +11,17 @@ public class RequestClaimedCommand {
     private String platformId;
     private String solver;
     private LocalDateTime timestamp;
+    private BigDecimal amountInWei;
 
     public RequestClaimedCommand() {
     }
 
-    public RequestClaimedCommand(Platform platform, String platformId, String solver, LocalDateTime timestamp) {
+    public RequestClaimedCommand(Platform platform, String platformId, String solver, LocalDateTime timestamp, BigDecimal amountInWei) {
         this.platform = platform;
         this.platformId = platformId;
         this.solver = solver;
         this.timestamp = timestamp;
+        this.amountInWei = amountInWei;
     }
 
     public Platform getPlatform() {
@@ -53,6 +56,14 @@ public class RequestClaimedCommand {
         this.timestamp = timestamp;
     }
 
+    public BigDecimal getAmountInWei() {
+        return amountInWei;
+    }
+
+    public void setAmountInWei(BigDecimal amountInWei) {
+        this.amountInWei = amountInWei;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,12 +72,13 @@ public class RequestClaimedCommand {
         return platform == that.platform &&
                 Objects.equals(platformId, that.platformId) &&
                 Objects.equals(solver, that.solver) &&
-                Objects.equals(timestamp, that.timestamp);
+                Objects.equals(timestamp, that.timestamp) &&
+                Objects.equals(amountInWei, that.amountInWei);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(platform, platformId, solver, timestamp);
+        return Objects.hash(platform, platformId, solver, timestamp, amountInWei);
     }
 }

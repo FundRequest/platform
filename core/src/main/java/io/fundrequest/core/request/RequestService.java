@@ -2,8 +2,8 @@ package io.fundrequest.core.request;
 
 import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
+import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
-import io.fundrequest.core.request.command.RequestClaimedCommand;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.view.RequestDto;
