@@ -45,7 +45,7 @@
                     });
                     break;
                 case 'fund':
-                    /*
+                    /***
                      * - Create a new tab with funding page
                      * -- Inject script to funding page
                      * -- Send message to new tab
