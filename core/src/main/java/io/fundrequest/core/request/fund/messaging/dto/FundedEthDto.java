@@ -6,7 +6,6 @@ public class FundedEthDto {
     private String platform;
     private String platformId;
     private String amount;
-    private String url;
     private long timestamp;
 
     public String getFrom() {
@@ -47,14 +46,6 @@ public class FundedEthDto {
 
     public void setTransactionHash(String transactionHash) {
         this.transactionHash = transactionHash;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public long getTimestamp() {
