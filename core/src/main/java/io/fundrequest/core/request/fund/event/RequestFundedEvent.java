@@ -6,11 +6,13 @@ import io.fundrequest.core.request.view.RequestDto;
 import java.time.LocalDateTime;
 
 public class RequestFundedEvent {
+    private String transactionId;
     private FundDto fundDto;
     private RequestDto requestDto;
     private LocalDateTime timestamp;
 
-    public RequestFundedEvent(FundDto fundDto, RequestDto requestDto, LocalDateTime timestamp) {
+    public RequestFundedEvent(String transactionId, FundDto fundDto, RequestDto requestDto, LocalDateTime timestamp) {
+        this.transactionId = transactionId;
         this.fundDto = fundDto;
         this.requestDto = requestDto;
         this.timestamp = timestamp;
@@ -26,5 +28,9 @@ public class RequestFundedEvent {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
     }
 }

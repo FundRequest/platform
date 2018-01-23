@@ -18,8 +18,8 @@ public class RequestClaimedNotification extends Notification {
     protected RequestClaimedNotification() {
     }
 
-    public RequestClaimedNotification(NotificationType type, LocalDateTime date, Long requestId, String solver) {
-        super(type, date);
+    public RequestClaimedNotification(NotificationType type, LocalDateTime date, String transactionId, Long requestId, String solver) {
+        super(type, date, transactionId);
         this.requestId = requestId;
         this.solver = solver;
     }

@@ -54,6 +54,6 @@ public class CreateGithubCommentOnFundHandlerTest {
     }
 
     private RequestFundedEvent createEvent() {
-        return new RequestFundedEvent(FundDtoMother.aFundDto(), RequestDtoMother.freeCodeCampNoUserStories(), LocalDateTime.now());
+        return new RequestFundedEvent("0xd009f45e5d999ba5c3c5ffc2551a9749919d6c8aa915106c2c21e76ab552c200", FundDtoMother.aFundDto(), RequestDtoMother.freeCodeCampNoUserStories(), LocalDateTime.now());
     }
 }
