@@ -5,10 +5,8 @@ import {NotificationService} from '../notification/notification.service';
 import {SettingsService} from '../../core/settings/settings.service';
 import {NotificationType} from '../notification/notificationType';
 import { RequestsStats } from '../../core/requests/RequestsStats';
-import { Utils } from '../../shared/utils';
 
-
-const swal = require('sweetalert');
+import * as swal from 'sweetalert';
 
 declare let require: any;
 declare let window: any;

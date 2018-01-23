@@ -41,10 +41,10 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="col-xs-6 col-md-4 control-label">Funded</label>
+          <label class="col-xs-6 col-md-4 control-label">Total Funding</label>
           <div class="col-xs-6 col-md-8 form-control-static">
             <label>
-              <span>{{request.balance || 0 | wei}} FND</span>
+              <span>{{request.fundInfo.balance | wei}} FND</span>
             </label>
           </div>
         </div>

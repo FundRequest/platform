@@ -35,4 +35,3 @@ export class NotificationStreamService {
     this._store.dispatch(new AddNotification(newNotification));
   }
 }
-

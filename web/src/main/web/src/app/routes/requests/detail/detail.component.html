@@ -1,6 +1,6 @@
 <div class="content-heading">
   <div class="pull-right">
-    <div class="btn-group">
+    <div class="btn-group" *ngIf="!claimed">
       <button fnd-fund [request]="request" title="Fund" class="btn btn-primary">Fund</button>
       <button title="Claim" class="btn btn-success" (click)="claim()">Claim</button>
     </div>
@@ -70,30 +70,32 @@
               </ng-container>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-xs-4 col-md-3 control-label">Total Funding</label>
-            <div class="col-xs-8 col-md-9 form-control-static">
-              <label>
-                <span>{{request.fundInfo.balance | wei}}</span>
-                <span>FND</span> <span></span>
-              </label>
+          <div *ngIf="!claimed">
+            <div class="form-group">
+              <label class="col-xs-4 col-md-3 control-label">Total Funding</label>
+              <div class="col-xs-8 col-md-9 form-control-static">
+                <label>
+                  <span>{{request.fundInfo.balance | wei}}</span>
+                  <span>FND</span> <span></span>
+                </label>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-xs-4 col-md-3 control-label">#Funders</label>
-            <div class="col-xs-8 col-md-9 form-control-static">
-              <label>
-                <span>{{request.fundInfo.numberOfFunders}}</span>
-              </label>
+            <div class="form-group">
+              <label class="col-xs-4 col-md-3 control-label">#Funders</label>
+              <div class="col-xs-8 col-md-9 form-control-static">
+                <label>
+                  <span>{{request.fundInfo.numberOfFunders}}</span>
+                </label>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-xs-4 col-md-3 control-label">My Funding</label>
-            <div class="col-xs-8 col-md-9 form-control-static">
-              <label>
-                <span>{{request.fundInfo.funderBalance | wei}}</span>
-                <span>FND</span> <span></span>
-              </label>
+            <div class="form-group">
+              <label class="col-xs-4 col-md-3 control-label">My Funding</label>
+              <div class="col-xs-8 col-md-9 form-control-static">
+                <label>
+                  <span>{{request.fundInfo.funderBalance | wei}}</span>
+                  <span>FND</span> <span></span>
+                </label>
+              </div>
             </div>
           </div>
         </div>

@@ -39,7 +39,11 @@ export class DetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  claim(): void {
+  public get claimed(): boolean {
+    return typeof this.request != 'undefined' && this.request.status == 'CLAIMED';
+  }
+
+  public claim(): void {
     if(this._as.isAuthenticated()) {
       let info = this.request.issueInformation;
       this._rs.claimRequest(new ClaimRequestCommand(this.request.id, info.platform, info.platformId, ''));
