@@ -1,48 +1,5 @@
 [
   {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "platform",
-        "type": "bytes32"
-      },
-      {
-        "name": "platformId",
-        "type": "bytes32"
-      },
-      {
-        "name": "solver",
-        "type": "string"
-      },
-      {
-        "name": "solverAddress",
-        "type": "address"
-      },
-      {
-        "name": "r",
-        "type": "bytes32"
-      },
-      {
-        "name": "s",
-        "type": "bytes32"
-      },
-      {
-        "name": "v",
-        "type": "uint8"
-      }
-    ],
-    "name": "claim",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "constant": true,
     "inputs": [],
     "name": "claimSignerAddress",
@@ -54,37 +11,6 @@
     ],
     "payable": false,
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_platform",
-        "type": "bytes32"
-      },
-      {
-        "name": "_platformId",
-        "type": "bytes32"
-      },
-      {
-        "name": "_url",
-        "type": "string"
-      },
-      {
-        "name": "_value",
-        "type": "uint256"
-      }
-    ],
-    "name": "fund",
-    "outputs": [
-      {
-        "name": "success",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -103,25 +29,44 @@
   },
   {
     "constant": true,
-    "inputs": [
-      {
-        "name": "_platform",
-        "type": "bytes32"
-      },
-      {
-        "name": "_platformId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "balance",
+    "inputs": [],
+    "name": "fundRepository",
     "outputs": [
       {
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_claimRepository",
+        "type": "address"
+      }
+    ],
+    "name": "setClaimRepository",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_repositoryAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setFundRepository",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -167,50 +112,11 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "requestsFunded",
+    "name": "claimRepository",
     "outputs": [
       {
         "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_platform",
-        "type": "bytes32"
-      },
-      {
-        "name": "_platformId",
-        "type": "bytes32"
-      },
-      {
-        "name": "_funder",
         "type": "address"
-      }
-    ],
-    "name": "getFundInfo",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "name": "",
-        "type": "string"
       }
     ],
     "payable": false,
@@ -232,34 +138,6 @@
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [],
-    "name": "totalFunded",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "totalBalance",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "constant": false,
     "inputs": [
       {
@@ -274,17 +152,73 @@
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [],
-    "name": "totalNumberOfFunders",
+    "constant": false,
+    "inputs": [
+      {
+        "name": "platform",
+        "type": "bytes32"
+      },
+      {
+        "name": "platformId",
+        "type": "string"
+      },
+      {
+        "name": "solver",
+        "type": "string"
+      },
+      {
+        "name": "solverAddress",
+        "type": "address"
+      },
+      {
+        "name": "r",
+        "type": "bytes32"
+      },
+      {
+        "name": "s",
+        "type": "bytes32"
+      },
+      {
+        "name": "v",
+        "type": "uint8"
+      }
+    ],
+    "name": "claim",
     "outputs": [
       {
         "name": "",
-        "type": "uint256"
+        "type": "bool"
       }
     ],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_platform",
+        "type": "bytes32"
+      },
+      {
+        "name": "_platformId",
+        "type": "string"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "fund",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -305,6 +239,14 @@
     "inputs": [
       {
         "name": "_tokenAddress",
+        "type": "address"
+      },
+      {
+        "name": "_fundRepository",
+        "type": "address"
+      },
+      {
+        "name": "_claimRepository",
         "type": "address"
       }
     ],
@@ -328,11 +270,6 @@
       {
         "indexed": false,
         "name": "platformId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "name": "url",
         "type": "string"
       },
       {
@@ -342,18 +279,6 @@
       }
     ],
     "name": "Funded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "logdata",
-        "type": "string"
-      }
-    ],
-    "name": "LOG",
     "type": "event"
   },
   {
@@ -372,7 +297,7 @@
       {
         "indexed": false,
         "name": "platformId",
-        "type": "bytes32"
+        "type": "string"
       },
       {
         "indexed": false,
@@ -386,6 +311,18 @@
       }
     ],
     "name": "Claimed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "i",
+        "type": "string"
+      }
+    ],
+    "name": "LOG",
     "type": "event"
   }
 ]

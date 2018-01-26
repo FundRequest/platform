@@ -4,8 +4,7 @@ import {IRequestRecord, RequestIssueFundInformation, SignedClaim} from '../../re
 import {NotificationService} from '../notification/notification.service';
 import {SettingsService} from '../../core/settings/settings.service';
 import {NotificationType} from '../notification/notificationType';
-import { RequestsStats } from '../../core/requests/RequestsStats';
-import { Utils } from '../../shared/utils';
+import {RequestsStats} from '../../core/requests/RequestsStats';
 
 
 const swal = require('sweetalert');
@@ -15,6 +14,8 @@ declare let window: any;
 
 let tokenAbi = require('./tokenContract.json');
 let fundRequestAbi = require('./fundRequestContract.json');
+let fundRepositoryAbi = require('./fundRepository.json');
+let claimRepositoryAbi = require('./claimRepository.json');
 
 @Injectable()
 export class ContractsService {
@@ -23,12 +24,16 @@ export class ContractsService {
 
   private _tokenContract: any;
   private _fundRequestContract: any;
+  private _fundRepositoryContract: any;
+  private _claimRepositoryContract: any;
 
   private _tokenContractAddress: string = '0xfd1de38dc456112c55c3e6bc6134b2f545b91386';
-  private _fundRequestContractAddress: string = '0x797b33d3bb0c74a7860cd2ca80bf063809dced80';
+  private _fundRequestContractAddress: string = '0x0c510c7542f158980c46b864cce01d5d83d9a01c';
+  private _fundRepositoryContractAddress: string = '';
+  private _claimRepositoryContractAddress: string = '';
 
   private _limited: boolean = true;
-  private _providerApi = 'https://ropsten.davyvanroy.be/';
+  private _providerApi = 'https://ropsten.fundrequest.io/';
   private _etherscan = 'https://ropsten.etherscan.io/';
 
   constructor(private _settings: SettingsService, private _ns: NotificationService) {
@@ -37,7 +42,7 @@ export class ContractsService {
   public async init() {
     await this.checkAndInstantiateWeb3();
     if (this._web3) {
-      this.setContracts();
+      await this.setContracts();
       await this.getAccount();
     }
   }
@@ -59,9 +64,14 @@ export class ContractsService {
     }
   };
 
-  private setContracts(): void {
+  private async setContracts() {
     this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
     this._fundRequestContract = this._web3.eth.contract(fundRequestAbi).at(this._fundRequestContractAddress);
+    this._fundRepositoryContractAddress = await this._fundRequestContract.fundRepository.call();
+    this._claimRepositoryContractAddress = await this._fundRequestContract.claimRepository.call();
+
+    this._fundRepositoryContract = this._web3.eth.contract(fundRepositoryAbi).at(this._fundRepositoryContractAddress);
+    this._claimRepositoryContract = this._web3.eth.contract(claimRepositoryAbi).at(this._claimRepositoryContractAddress);
   };
 
   private async getNetwork(): Promise<string> {
@@ -125,7 +135,7 @@ export class ContractsService {
 
   public async getTotalBalanceInWei(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this._fundRequestContract.totalBalance.call(function (err, result) {
+      this._fundRepositoryContract.totalBalance.call(function (err, result) {
         err ? reject(err) : resolve(result);
       });
     }) as Promise<number>;
@@ -133,7 +143,7 @@ export class ContractsService {
 
   public async getTotalFundedInWei(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this._fundRequestContract.totalFunded.call(function (err, result) {
+      this._fundRepositoryContract.totalFunded.call(function (err, result) {
         err ? reject(err) : resolve(result);
       });
     }) as Promise<number>;
@@ -141,7 +151,7 @@ export class ContractsService {
 
   public async getTotalNumberOfFunders(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this._fundRequestContract.totalNumberOfFunders.call(function (err, result) {
+      this._fundRepositoryContract.totalNumberOfFunders.call(function (err, result) {
         err ? reject(err) : resolve(result);
       });
     }) as Promise<number>;
@@ -149,7 +159,7 @@ export class ContractsService {
 
   public async getRequestsFunded(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this._fundRequestContract.requestsFunded.call(function (err, result) {
+      this._fundRepositoryContract.requestsFunded.call(function (err, result) {
         err ? reject(err) : resolve(result);
       });
     }) as Promise<number>;
@@ -171,11 +181,11 @@ export class ContractsService {
     );
   }
 
-  public async fundRequest(platform: string, platformId: string, url: string, value: number): Promise<string> {
+  public async fundRequest(platform: string, platformId: string, value: number): Promise<string> {
     if (!!this._account) {
       let total = this._web3.toWei(value, 'ether');
       let tx = await new Promise((resolve, reject) => {
-        this._tokenContract.approveAndCall(this._fundRequestContractAddress, total, this._web3.fromAscii(platform + "|" + String(platformId) + "|" + url), this._getTransactionOptions(this._account), function (err, tx) {
+        this._tokenContract.approveAndCall(this._fundRequestContractAddress, total, this._web3.fromAscii(platform + "|AAC|" + String(platformId)), this._getTransactionOptions(this._account), function (err, tx) {
           err ? reject(err) : resolve(tx);
         });
       }) as string;
@@ -205,7 +215,7 @@ export class ContractsService {
 
   public async getRequestFundInfo(request: IRequestRecord): Promise<RequestIssueFundInformation> {
     return new Promise((resolve, reject) => {
-      return this._fundRequestContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), this._account, function (err, result) {
+      return this._fundRepositoryContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), this._account, function (err, result) {
         err ? reject(err) : resolve({numberOfFunders: result[0], balance: result[1], funderBalance: result[2]});
       });
     }) as Promise<RequestIssueFundInformation>;
