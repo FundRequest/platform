@@ -27,8 +27,8 @@ export class ContractsService {
   private _fundRepositoryContract: any;
   private _claimRepositoryContract: any;
 
-  private _tokenContractAddress: string = '0xfd1de38dc456112c55c3e6bc6134b2f545b91386';
-  private _fundRequestContractAddress: string = '0x0c510c7542f158980c46b864cce01d5d83d9a01c';
+  private _tokenContractAddress: string = '0x51a94a55be52cab0b40317e67a399f6113259acb';
+  private _fundRequestContractAddress: string = '0x79746d067739945ec3332208e2b1b3ccada6584f';
   private _fundRepositoryContractAddress: string = '';
   private _claimRepositoryContractAddress: string = '';
 
