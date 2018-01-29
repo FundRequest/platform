@@ -3,8 +3,6 @@ import {Injectable, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Settings} from './settings.model';
 
-declare var $: any;
-
 @Injectable()
 export class SettingsService implements OnInit {
 
@@ -55,7 +53,9 @@ export class SettingsService implements OnInit {
   public async getSettings(): Promise<Settings> {
     if (this._settings == null) {
       let envSettings: any = await this._http.get('/env').toPromise();
-      let applicationConfig = envSettings[`applicationConfig: [classpath:/application${envSettings.profiles[0] == 'dev' ? '-dev' : ''}.properties]`];
+      let envProd = envSettings['applicationConfig: [classpath:/application.properties]'];
+      let envDev = envSettings['applicationConfig: [classpath:/application-dev.properties]'];
+      let applicationConfig = Object.assign(envDev, envProd);
       this._settings = new Settings();
       this._settings.fundRequestContractAddress = applicationConfig['io.fundrequest.contract.fund-request.address'];
       this._settings.tokenContractAddress = applicationConfig['io.fundrequest.contract.token.address'];

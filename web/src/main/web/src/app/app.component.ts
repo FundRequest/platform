@@ -1,15 +1,15 @@
-import { Component, HostBinding, HostListener, OnInit } from '@angular/core';
+import {Component, HostBinding, HostListener, OnInit} from '@angular/core';
 import {ContractsService} from './services/contracts/contracts.service';
 import {NotificationService} from './services/notification/notification.service';
 import {SettingsService} from './core/settings/settings.service';
 import {NotificationStreamService} from './services/sse/notification-stream.service';
 
-declare var $: any;
+declare let $: any;
 
 @Component({
-  selector   : 'app-root',
+  selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls  : ['./app.component.scss']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
 

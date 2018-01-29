@@ -7,8 +7,7 @@ import {IUserRecord} from '../../../redux/user.models';
 import {AuthService} from "../../../core/auth/auth.service";
 import { Subscription } from 'rxjs/Subscription';
 
-
-const swal = require('sweetalert');
+import * as swal from 'sweetalert';
 
 @Component({
   selector   : 'fnd-request-detail',
@@ -29,7 +28,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this._us.getCurrentUser().subscribe(user => this.user = user);
+    this._us.currentUser$.subscribe(user => this.user = user);
     this.route.params.subscribe(params => {
       let id = +params['id'];
       this.requestSubscription = this._rs.requests$.map(list => list.filter(request => request.id == id).first())

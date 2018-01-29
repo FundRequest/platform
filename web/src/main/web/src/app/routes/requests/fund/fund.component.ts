@@ -8,7 +8,7 @@ import {Utils} from "../../../shared/utils";
 import {FundRequestCommand} from "../../../redux/requests.models";
 import {PlatformIdResolverService} from "../../../services/request/platformIdResolver.service";
 
-const swal = require('sweetalert');
+import * as swal from 'sweetalert';
 
 @Component({
   selector: 'fnd-request-detail',

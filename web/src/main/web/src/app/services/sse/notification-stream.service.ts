@@ -15,8 +15,9 @@ export class NotificationStreamService {
   private _eventSource: EventSourcePolyfill;
 
   constructor(private _rs: RequestService, private _store: Store<IState>) {
-    this._eventSource = new EventSourcePolyfill(`${environment.restApiLocation}/api/public/notifications-stream`, {});
+    this._eventSource = new EventSourcePolyfill(`${environment.restApiLocation}/api/public/notifications-stream`, {heartbeatTimeout: 18000000});
     this._eventSource.onmessage = ((messageEvent: OnMessageEvent) => {
+      console.log(messageEvent.data);
       let notificationStreamMessage = new NotificationStreamMessage(JSON.parse(messageEvent.data));
       this._commit(notificationStreamMessage);
     });
