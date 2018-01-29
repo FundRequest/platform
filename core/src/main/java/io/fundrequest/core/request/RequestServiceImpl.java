@@ -2,6 +2,7 @@ package io.fundrequest.core.request;
 
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
@@ -122,9 +123,15 @@ class RequestServiceImpl implements RequestService {
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public SignedClaim signClaimRequest(Principal user, SignClaimRequest signClaimRequest) {
         return githubClaimResolver.getSignedClaim(user, signClaimRequest, findRequest(signClaimRequest.getPlatform(), signClaimRequest.getPlatformId()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean canClaim(Principal user, CanClaimRequest canClaimRequest) {
+        return githubClaimResolver.canClaim(user, findRequest(canClaimRequest.getPlatform(), canClaimRequest.getPlatformId()));
     }
 
     private void fundRequest(CreateRequestCommand command, Request r) {

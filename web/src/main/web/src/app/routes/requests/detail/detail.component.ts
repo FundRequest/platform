@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ClaimRequestCommand, IRequestRecord} from '../../../redux/requests.models';
 import {RequestService} from '../../../services/request/request.service';
 import {UserService} from '../../../services/user/user.service';
 import {IUserRecord} from '../../../redux/user.models';
 import {AuthService} from "../../../core/auth/auth.service";
-import { Subscription } from 'rxjs/Subscription';
+import {Subscription} from 'rxjs/Subscription';
 
 import * as swal from 'sweetalert';
 

@@ -1,6 +1,7 @@
 package io.fundrequest.restapi.request;
 
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
@@ -48,6 +49,14 @@ public class RequestController extends AbstractRestController {
     @GetMapping({PUBLIC_PATH + "/requests/{id}/watchers", "/requests/{id}/watchlink"})
     public RequestDto findWatchers(@PathVariable("id") Long id) {
         return requestService.findRequest(id);
+    }
+
+    @GetMapping({PRIVATE_PATH + "/requests/{id}/can-claim"})
+    public Boolean claimRequest(Principal principal, @RequestBody @Valid CanClaimRequest canClaimRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new RuntimeException("Your claim contains errors");
+        }
+        return requestService.canClaim(principal, canClaimRequest);
     }
 
     @PostMapping({PRIVATE_PATH + "/requests/{id}/claim"})
