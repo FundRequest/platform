@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ClaimRequestCommand, IRequestRecord} from '../../../redux/requests.models';
 import {RequestService} from '../../../services/request/request.service';
 import {UserService} from '../../../services/user/user.service';
 import {IUserRecord} from '../../../redux/user.models';
 import {AuthService} from "../../../core/auth/auth.service";
-import { Subscription } from 'rxjs/Subscription';
+import {Subscription} from 'rxjs/Subscription';
 
 
 const swal = require('sweetalert');
@@ -29,7 +29,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this._us.getCurrentUser().subscribe(user => this.user = user);
+    this._us.currentUser$.subscribe(user => this.user = user);
     this.route.params.subscribe(params => {
       let id = +params['id'];
       this.requestSubscription = this._rs.requests$.map(list => list.filter(request => request.id == id).first())
