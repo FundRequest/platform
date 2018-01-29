@@ -2,12 +2,12 @@ import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
 import {IRequestRecord, RequestIssueFundInformation, SignedClaim} from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
-import {SettingsService} from '../settings/settings.service';
 import {NotificationType} from '../notification/notificationType';
 import {RequestsStats} from '../../core/requests/RequestsStats';
 
 import * as swal from 'sweetalert';
-import {Settings} from '../settings/settings.model';
+import {Settings} from '../../core/settings/settings.model';
+import {SettingsService} from '../../core/settings/settings.service';
 
 declare let require: any;
 declare let window: any;
