@@ -28,8 +28,8 @@ export class ContractsService {
 
   private _tokenContractAddress: string = '0x51a94a55be52cab0b40317e67a399f6113259acb';
   private _fundRequestContractAddress: string = '0x79746d067739945ec3332208e2b1b3ccada6584f';
-  private _fundRepositoryContractAddress: string = '';
-  private _claimRepositoryContractAddress: string = '';
+  private _fundRepositoryContractAddress: string = null;
+  private _claimRepositoryContractAddress: string = null;
 
   private _limited: boolean = true;
   private _providerApi = 'https://ropsten.fundrequest.io/';
@@ -41,7 +41,7 @@ export class ContractsService {
   public async init() {
     await this.checkAndInstantiateWeb3();
     if (this._web3) {
-      this.setContracts();
+      await this.setContracts();
       await this.getAccount();
     }
   }
@@ -63,7 +63,6 @@ export class ContractsService {
     }
   };
 
-  // TODO: Check async calls
   private async setContracts() {
     this._tokenContract = this._web3.eth.contract(tokenAbi).at(this.getTokenContractAddress());
     this._fundRequestContract = this._web3.eth.contract(fundRequestAbi).at(this.getFundRequestContractAddress());
