@@ -25,7 +25,7 @@ public class GithubSolverResolverTest {
         request.getIssueInformation().setRepo("area51");
         request.getIssueInformation().setNumber("38");
 
-        String solver = githubSolverResolver.solveResolver(request);
+        String solver = githubSolverResolver.solveResolver(request).get();
 
         assertThat(solver).isEqualTo("davyvanroy");
     }

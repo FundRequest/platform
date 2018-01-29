@@ -3,6 +3,7 @@ package io.fundrequest.restapi.view;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.domain.Platform;
@@ -120,6 +121,21 @@ public class RequestControllerTest {
                 .andExpect(content().string(objectMapper.writeValueAsString(expected)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcRestDocumentation.document("requests-claim-example"));
+    }
+
+    @Test
+    public void canClaim() throws Exception {
+        CanClaimRequest canClaimRequest = new CanClaimRequest();
+        canClaimRequest.setPlatformId("1");
+        canClaimRequest.setPlatform(Platform.GITHUB);
+        when(requestService.canClaim(principal, canClaimRequest)).thenReturn(true);
+        this.mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/private/requests/123/can-claim").accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(objectMapper.writeValueAsString(canClaimRequest))
+                        .principal(principal))
+                .andExpect(content().string("true"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcRestDocumentation.document("requests-can-claim-example"));
     }
 
 }
