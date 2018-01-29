@@ -8,9 +8,6 @@ import javax.persistence.Enumerated;
 @Embeddable
 public class IssueInformation {
 
-    @Column(name = "issue_link")
-    private String link;
-
     @Column(name = "owner")
     private String owner;
 
@@ -34,10 +31,6 @@ public class IssueInformation {
         return platform;
     }
 
-    public String getLink() {
-        return link;
-    }
-
     public String getOwner() {
         return owner;
     }
@@ -52,10 +45,6 @@ public class IssueInformation {
 
     public String getTitle() {
         return title;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
     }
 
     public void setOwner(String owner) {

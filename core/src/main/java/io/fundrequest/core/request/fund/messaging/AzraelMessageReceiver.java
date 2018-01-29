@@ -47,7 +47,6 @@ public class AzraelMessageReceiver {
             createRequestCommand.setPlatform(getPlatform(result.getPlatform()));
             createRequestCommand.setPlatformId(result.getPlatformId());
             createRequestCommand.setFunds(new BigDecimal(result.getAmount()));
-            createRequestCommand.setIssueLink(result.getUrl());
             createRequestCommand.setTimestamp(getTimeStamp(result.getTimestamp()));
             requestService.createRequest(createRequestCommand);
             processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
@@ -65,7 +64,7 @@ public class AzraelMessageReceiver {
         requestService.requestClaimed(new RequestClaimedCommand(
                 getPlatform(result.getPlatform()),
                 result.getPlatformId(),
-                result.getSolver(),
+                result.getTransactionHash(), result.getSolver(),
                 getTimeStamp(result.getTimestamp()),
                 new BigDecimal(result.getAmount())));
         processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
@@ -79,7 +78,7 @@ public class AzraelMessageReceiver {
 
     private boolean isNewFunding(FundedEthDto result) {
         return !processedBlockchainEventRepository.findOne(result.getTransactionHash()).isPresent()
-                && StringUtils.isNumeric(result.getPlatformId());
+                && StringUtils.isNotBlank(result.getPlatformId());
     }
 
 }

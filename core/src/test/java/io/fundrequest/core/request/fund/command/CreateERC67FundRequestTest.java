@@ -16,11 +16,10 @@ public class CreateERC67FundRequestTest {
                 .setAmount(new BigInteger("100000000000000000000"))
                 .setFundrequestAddress("0x00000000000000000000000000000000deadbeef")
                 .setTokenAddress("0x0000000000000000000000000000000000000000")
-                .setUrl("https://fundrequest.io")
                 .setPlatform("github")
                 .setPlatformId("1");
 
         final String function = github.toFunction();
-        assertThat(function).isEqualTo("approveAndCall(address 0x00000000000000000000000000000000deadbeef, uint256 100000000000000000000, bytes 0x6769746875627c317c68747470733a2f2f66756e64726571756573742e696f)");
+        assertThat(function).isEqualTo("approveAndCall(address 0x00000000000000000000000000000000deadbeef, uint256 100000000000000000000, bytes 0x6769746875627c4141437c31)");
     }
 }

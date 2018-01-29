@@ -20,7 +20,7 @@ import io.fundrequest.core.request.domain.RequestType;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.GithubClient;
-import io.fundrequest.core.request.infrastructure.github.parser.GithubParser;
+import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.ClaimDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
@@ -51,7 +51,7 @@ public class RequestServiceImplTest {
     private RequestServiceImpl requestService;
     private RequestRepository requestRepository;
     private Mappers mappers;
-    private GithubParser githubLinkParser;
+    private GithubPlatformIdParser githubLinkParser;
     private FundService fundService;
     private ClaimRepository claimRepository;
     private GithubClient githubClient;
@@ -62,7 +62,7 @@ public class RequestServiceImplTest {
     public void setUp() throws Exception {
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
-        githubLinkParser = mock(GithubParser.class);
+        githubLinkParser = mock(GithubPlatformIdParser.class);
         fundService = mock(FundService.class);
         githubClient = mock(GithubClient.class);
         githubClaimResolver = mock(GithubClaimResolver.class);
@@ -135,7 +135,7 @@ public class RequestServiceImplTest {
         CreateRequestCommand command = createCommand();
         when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.empty());
         IssueInformation issueInformation = IssueInformationMother.kazuki43zooApiStub().build();
-        when(githubLinkParser.parseIssue(command.getIssueLink())).thenReturn(issueInformation);
+        when(githubLinkParser.parseIssue(command.getPlatformId())).thenReturn(issueInformation);
         when(requestRepository.save(any(Request.class))).then(returnsFirstArg());
 
         requestService.createRequest(command);
@@ -153,7 +153,7 @@ public class RequestServiceImplTest {
         Optional<Request> request = Optional.of(RequestMother.freeCodeCampNoUserStories().build());
         when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(request);
         IssueInformation issueInformation = IssueInformationMother.kazuki43zooApiStub().build();
-        when(githubLinkParser.parseIssue(command.getIssueLink())).thenReturn(issueInformation);
+        when(githubLinkParser.parseIssue(command.getPlatformId())).thenReturn(issueInformation);
         when(requestRepository.save(any(Request.class))).then(returnsFirstArg());
 
         requestService.createRequest(command);

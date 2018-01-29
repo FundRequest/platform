@@ -10,8 +10,8 @@ public class RequestClaimedNotificationDto extends NotificationDto {
     private RequestDto requestDto;
     private String solver;
 
-    public RequestClaimedNotificationDto(Long id, LocalDateTime date, RequestDto requestDto, String solver) {
-        super(id, NotificationType.REQUEST_CLAIMED, date);
+    public RequestClaimedNotificationDto(Long id, String transactionId, LocalDateTime date, RequestDto requestDto, String solver) {
+        super(id, NotificationType.REQUEST_CLAIMED, transactionId, date);
         this.requestDto = requestDto;
         this.solver = solver;
     }

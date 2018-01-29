@@ -4,21 +4,12 @@ import io.fundrequest.core.request.domain.Platform;
 
 public class IssueInformationDto {
 
-    private String link;
     private String owner;
     private String repo;
     private String number;
     private String title;
     private Platform platform;
     private String platformId;
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
 
     public String getOwner() {
         return owner;

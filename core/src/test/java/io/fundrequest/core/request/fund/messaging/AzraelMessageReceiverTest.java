@@ -78,6 +78,7 @@ public class AzraelMessageReceiverTest {
         command.setSolver(dto.getSolver());
         command.setAmountInWei(new BigDecimal(dto.getAmount()));
         command.setTimestamp(getTimeStamp(dto.getTimestamp()));
+        command.setTransactionId(dto.getTransactionHash());
         verify(requestService).requestClaimed(command);
     }
 
@@ -92,7 +93,6 @@ public class AzraelMessageReceiverTest {
     private void verifyRequestCreated(FundedEthDto dto) {
         ArgumentCaptor<CreateRequestCommand> captor = ArgumentCaptor.forClass(CreateRequestCommand.class);
         verify(requestService).createRequest(captor.capture());
-        assertThat(captor.getValue().getIssueLink()).isEqualTo(dto.getUrl());
         assertThat(captor.getValue().getPlatformId()).isEqualTo(dto.getPlatformId());
         assertThat(captor.getValue().getPlatform().toString()).isEqualTo(dto.getPlatform());
         assertThat(captor.getValue().getFunds()).isEqualTo(dto.getAmount());

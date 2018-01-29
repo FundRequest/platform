@@ -27,15 +27,20 @@ public class Notification {
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
+
+    @Column(name = "transaction_id")
+    private String transactionId;
+
     @Column(name = "notification_date")
     private LocalDateTime date;
 
     protected Notification() {
     }
 
-    public Notification(NotificationType type, LocalDateTime date) {
+    public Notification(NotificationType type, LocalDateTime date, String transactionId) {
         this.type = type;
         this.date = date;
+        this.transactionId = transactionId;
     }
 
     public Long getId() {
@@ -48,6 +53,10 @@ public class Notification {
 
     public LocalDateTime getDate() {
         return date;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
     }
 
     @Override
