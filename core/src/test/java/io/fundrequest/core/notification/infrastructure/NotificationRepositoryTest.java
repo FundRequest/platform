@@ -27,7 +27,7 @@ public class NotificationRepositoryTest extends AbstractRepositoryTest {
     }
 
     private RequestClaimedNotification createNotification(long requestId, LocalDateTime date) {
-        return new RequestClaimedNotification(NotificationType.REQUEST_CLAIMED, date, requestId, "davyvanroy");
+        return new RequestClaimedNotification(NotificationType.REQUEST_CLAIMED, date, "0x4edf0b5620439f1df4d39e2665d338a5a411bbe07f91bd19300568e5c30916e3", requestId, "davyvanroy");
     }
 
     @Test

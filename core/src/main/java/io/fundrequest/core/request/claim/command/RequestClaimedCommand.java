@@ -9,6 +9,7 @@ import java.util.Objects;
 public class RequestClaimedCommand {
     private Platform platform;
     private String platformId;
+    private String transactionId;
     private String solver;
     private LocalDateTime timestamp;
     private BigDecimal amountInWei;
@@ -16,9 +17,10 @@ public class RequestClaimedCommand {
     public RequestClaimedCommand() {
     }
 
-    public RequestClaimedCommand(Platform platform, String platformId, String solver, LocalDateTime timestamp, BigDecimal amountInWei) {
+    public RequestClaimedCommand(Platform platform, String platformId, String transactionId, String solver, LocalDateTime timestamp, BigDecimal amountInWei) {
         this.platform = platform;
         this.platformId = platformId;
+        this.transactionId = transactionId;
         this.solver = solver;
         this.timestamp = timestamp;
         this.amountInWei = amountInWei;
@@ -64,6 +66,14 @@ public class RequestClaimedCommand {
         this.amountInWei = amountInWei;
     }
 
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,6 +81,7 @@ public class RequestClaimedCommand {
         RequestClaimedCommand that = (RequestClaimedCommand) o;
         return platform == that.platform &&
                 Objects.equals(platformId, that.platformId) &&
+                Objects.equals(transactionId, that.transactionId) &&
                 Objects.equals(solver, that.solver) &&
                 Objects.equals(timestamp, that.timestamp) &&
                 Objects.equals(amountInWei, that.amountInWei);
@@ -79,6 +90,6 @@ public class RequestClaimedCommand {
     @Override
     public int hashCode() {
 
-        return Objects.hash(platform, platformId, solver, timestamp, amountInWei);
+        return Objects.hash(platform, platformId, transactionId, solver, timestamp, amountInWei);
     }
 }

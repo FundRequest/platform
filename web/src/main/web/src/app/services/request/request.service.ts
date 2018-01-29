@@ -20,6 +20,7 @@ import {ContractsService} from '../contracts/contracts.service';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
+import {PlatformIdResolverService} from "./platformIdResolver.service";
 
 @Injectable()
 export class RequestService {
@@ -27,7 +28,8 @@ export class RequestService {
 
   constructor(private store: Store<IState>,
               private http: HttpClient,
-              private _cs: ContractsService) {
+              private _cs: ContractsService,
+              private platformIdResolverService: PlatformIdResolverService) {
   }
 
   public get requests$(): Observable<IRequestList> {
@@ -56,15 +58,11 @@ export class RequestService {
   }
 
   public addRequest(issueLink: string, fundAmount: number): void {
-    let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
-    let url = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/issues/' + matches[3];
-    this.http.get(url).take(1).subscribe(data => {
-      this._cs.fundRequest('GITHUB', data['id'], issueLink, fundAmount);
-    });
+    this._cs.fundRequest('GITHUB', this.platformIdResolverService.resolve('GITHUB', issueLink), fundAmount);
   }
 
   public async fundRequest(command: FundRequestCommand): Promise<string> {
-    return this._cs.fundRequest(command.platform, command.platformId, command.link, command.amount);
+    return this._cs.fundRequest(command.platform, command.platformId, command.amount);
   }
 
   public async requestQRValue(command: FundRequestCommand) {

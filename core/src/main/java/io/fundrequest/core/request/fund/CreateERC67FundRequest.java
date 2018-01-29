@@ -6,6 +6,7 @@ import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.generated.Bytes32;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -15,12 +16,12 @@ import static java.util.Collections.emptyList;
 
 public class CreateERC67FundRequest {
 
+    public static final String DELIMETER_APPROVE_AND_CALL = "|AAC|";
     @NotEmpty
     private String platform;
     @NotEmpty
     private String platformId;
-    @NotEmpty
-    private String url;
+    @Min(0)
     private BigInteger amount;
     @NotNull
     private String fundrequestAddress;
@@ -35,16 +36,20 @@ public class CreateERC67FundRequest {
                 "approveAndCall",
                 asList(new org.web3j.abi.datatypes.Address(fundrequestAddress),
                         new org.web3j.abi.datatypes.generated.Uint256(amount),
-                        new Bytes32(toContractBytes32(platform + "|" + platformId + "|" + url))),
+                        new Bytes32(toContractBytes32(getData()))),
                 emptyList());
         return FunctionEncoder.encode(function);
+    }
+
+    private String getData() {
+        return platform + DELIMETER_APPROVE_AND_CALL + platformId;
     }
 
     public String toFunction() {
         final StringBuilder builder = new StringBuilder("approveAndCall").append("(");
         builder.append("address ").append(fundrequestAddress).append(", ");
         builder.append("uint256 ").append(amount.toString()).append(", ");
-        builder.append("bytes ").append("0x").append(Hex.encodeHexString((platform + "|" + platformId + "|" + url).getBytes()));
+        builder.append("bytes ").append("0x").append(Hex.encodeHexString((getData()).getBytes()));
         builder.append(")");
         return builder.toString();
     }
@@ -68,15 +73,6 @@ public class CreateERC67FundRequest {
 
     public CreateERC67FundRequest setPlatformId(final String platformId) {
         this.platformId = platformId;
-        return this;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public CreateERC67FundRequest setUrl(final String url) {
-        this.url = url;
         return this;
     }
 

@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class AddFundsCommand {
+public class FundsAddedCommand {
 
     @NotNull
     private Long requestId;
@@ -13,6 +13,16 @@ public class AddFundsCommand {
     @NotNull
     @DecimalMin(value = "0")
     private BigDecimal amountInWei;
+
+    private String transactionId;
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
 
     private LocalDateTime timestamp;
 

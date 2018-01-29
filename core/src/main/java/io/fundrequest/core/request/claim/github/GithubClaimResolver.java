@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Optional;
 
 @Component
 public class GithubClaimResolver {
@@ -44,8 +45,14 @@ public class GithubClaimResolver {
 
     }
 
+    public Boolean canClaim(Principal user, RequestDto request) {
+        Optional<String> solver = githubSolverResolver.solveResolver(request);
+        return solver.isPresent()
+                && solver.get().equalsIgnoreCase(getUserPlatformUsername(user, request.getIssueInformation().getPlatform()));
+    }
+
     private String getSolver(Principal user, SignClaimRequest signClaimRequest, RequestDto request) throws IOException {
-        String solver = githubSolverResolver.solveResolver(request);
+        String solver = githubSolverResolver.solveResolver(request).orElseThrow(() -> new RuntimeException("Unable to get solver"));
         if (!solver.equalsIgnoreCase(getUserPlatformUsername(user, signClaimRequest.getPlatform()))) {
             throw new RuntimeException("Claim executed by wrong user");
         }

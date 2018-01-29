@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  awi_mariadb:
+  fr_mariadb:
     image: mariadb:10.1
     ports:
       - "3309:3306"

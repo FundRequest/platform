@@ -2,6 +2,7 @@ package io.fundrequest.core.request;
 
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
@@ -20,10 +21,10 @@ import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.FundService;
-import io.fundrequest.core.request.fund.command.AddFundsCommand;
+import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.GithubClient;
-import io.fundrequest.core.request.infrastructure.github.parser.GithubParser;
+import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.RequestDto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
@@ -41,14 +42,14 @@ class RequestServiceImpl implements RequestService {
 
     private RequestRepository requestRepository;
     private Mappers mappers;
-    private GithubParser githubLinkParser;
+    private GithubPlatformIdParser githubLinkParser;
     private FundService fundService;
     private ClaimRepository claimRepository;
     private GithubClient githubClient;
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
 
-    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubParser githubLinkParser, FundService fundService, ClaimRepository claimRepository, GithubClient githubClient, GithubClaimResolver githubClaimResolver, ApplicationEventPublisher eventPublisher) {
+    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubPlatformIdParser githubLinkParser, FundService fundService, ClaimRepository claimRepository, GithubClient githubClient, GithubClaimResolver githubClaimResolver, ApplicationEventPublisher eventPublisher) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
@@ -115,20 +116,26 @@ class RequestServiceImpl implements RequestService {
                 .withAmountInWei(command.getAmountInWei())
                 .build());
         eventPublisher.publishEvent(new RequestClaimedEvent(
-                mappers.map(Request.class, RequestDto.class, request),
+                command.getTransactionId(), mappers.map(Request.class, RequestDto.class, request),
                 mappers.map(Claim.class, ClaimDto.class, claim),
                 command.getSolver(), command.getTimestamp()));
     }
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public SignedClaim signClaimRequest(Principal user, SignClaimRequest signClaimRequest) {
         return githubClaimResolver.getSignedClaim(user, signClaimRequest, findRequest(signClaimRequest.getPlatform(), signClaimRequest.getPlatformId()));
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean canClaim(Principal user, CanClaimRequest canClaimRequest) {
+        return githubClaimResolver.canClaim(user, findRequest(canClaimRequest.getPlatform(), canClaimRequest.getPlatformId()));
+    }
+
     private void fundRequest(CreateRequestCommand command, Request r) {
-        AddFundsCommand fundsCommand = new AddFundsCommand();
+        FundsAddedCommand fundsCommand = new FundsAddedCommand();
         fundsCommand.setRequestId(r.getId());
         fundsCommand.setAmountInWei(command.getFunds());
         fundsCommand.setTimestamp(command.getTimestamp());
@@ -174,7 +181,7 @@ class RequestServiceImpl implements RequestService {
     }
 
     private Request createNewRequest(CreateRequestCommand command) {
-        IssueInformation issueInformation = githubLinkParser.parseIssue(command.getIssueLink());
+        IssueInformation issueInformation = githubLinkParser.parseIssue(command.getPlatformId());
         Request request = RequestBuilder.aRequest()
                 .withIssueInformation(issueInformation)
                 .withTechnologies(getTechnologies(issueInformation))

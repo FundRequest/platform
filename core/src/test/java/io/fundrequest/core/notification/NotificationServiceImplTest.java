@@ -38,6 +38,7 @@ import static org.mockito.Mockito.when;
 
 public class NotificationServiceImplTest {
 
+    public static final String TRANSACTION_ID = "0x99be7620e58d38ac63267ead0e67d5d7023754e6f6fe0113017f41a610867e44";
     private NotificationServiceImpl notificationService;
     private NotificationRepository notificationRepository;
     private ApplicationEventPublisher eventPublisher;
@@ -65,7 +66,7 @@ public class NotificationServiceImplTest {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
 
-        notificationService.onClaimed(new RequestClaimedEvent(requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
+        notificationService.onClaimed(new RequestClaimedEvent(TRANSACTION_ID, requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
 
         assertRequestClaimedNotificationSaved(requestDto);
     }
@@ -82,7 +83,7 @@ public class NotificationServiceImplTest {
     public void onRequestClaimedPublishesNotification() throws Exception {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
-        notificationService.onClaimed(new RequestClaimedEvent(requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
+        notificationService.onClaimed(new RequestClaimedEvent(TRANSACTION_ID, requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
 
         assertRequestClaimedNotificationPublished();
     }
@@ -99,7 +100,7 @@ public class NotificationServiceImplTest {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
         FundDto fundDto = FundDtoMother.aFundDto();
 
-        notificationService.onFunded(new RequestFundedEvent(fundDto, requestDto, LocalDateTime.now()));
+        notificationService.onFunded(new RequestFundedEvent(TRANSACTION_ID, fundDto, requestDto, LocalDateTime.now()));
 
         assertRequestFundedNotificationSaved(fundDto);
     }
@@ -117,7 +118,7 @@ public class NotificationServiceImplTest {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
         FundDto fundDto = FundDtoMother.aFundDto();
 
-        notificationService.onFunded(new RequestFundedEvent(fundDto, requestDto, LocalDateTime.now()));
+        notificationService.onFunded(new RequestFundedEvent(TRANSACTION_ID, fundDto, requestDto, LocalDateTime.now()));
 
         assertRequestFundedNotificationPublished(fundDto, requestDto);
     }

@@ -75,7 +75,7 @@ export function createTranslateLoader(http: HttpClient) {
     },
     {
       provide   : APP_INITIALIZER,
-      useFactory: (x: AppFactory) => () => x.load(),
+      useFactory: (appInitializer: AppFactory) => () => appInitializer.load(),
       deps      : [AppFactory, ContractsService],
       multi     : true
     }

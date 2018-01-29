@@ -7,10 +7,9 @@ import 'rxjs/add/observable/fromPromise';
 export class AuthService {
 
   constructor(private _ks: KeycloakService) {
-
   }
 
-  public getToken(): Observable<string> {
+  public get token$(): Observable<string> {
     return Observable.fromPromise(this._ks.getToken());
   }
 

@@ -1,5 +1,6 @@
 package io.fundrequest.core.request;
 
+import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
@@ -27,6 +28,8 @@ public interface RequestService {
     void requestClaimed(RequestClaimedCommand command);
 
     SignedClaim signClaimRequest(Principal principal, SignClaimRequest signClaimRequest);
+
+    Boolean canClaim(Principal user, CanClaimRequest canClaimRequest);
 
     void addWatcherToRequest(Principal principal, Long requestId);
 

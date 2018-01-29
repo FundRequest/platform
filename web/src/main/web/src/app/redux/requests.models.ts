@@ -26,7 +26,7 @@ export interface IRequest {
   watchers: string[];
   loggedInUserIsWatcher: boolean;
   issueInformation: RequestIssueInformation;
-  fundInfo: RequestIssueFundInformation
+  fundInfo: RequestIssueFundInformation;
 }
 
 export interface IRequestRecord extends TypedRecord<IRequestRecord>, IRequest {
@@ -68,6 +68,11 @@ export class ClaimRequestCommand {
 }
 
 export class SignedClaim {
-  constructor(public platform: string, public platformId: string, public solverAddress: string, public solver: string, public r: string, public s: string, public v: number) {
-  }
+  platform: string;
+  platformId: string;
+  solverAddress: string;
+  solver: string;
+  r: string;
+  s: string;
+  v: string;
 }

@@ -2,19 +2,20 @@ import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
 import {IRequestRecord, RequestIssueFundInformation, SignedClaim} from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
-import {SettingsService} from '../../core/settings/settings.service';
 import {NotificationType} from '../notification/notificationType';
-import { RequestsStats } from '../../core/requests/RequestsStats';
-import { Utils } from '../../shared/utils';
+import {RequestsStats} from '../../core/requests/RequestsStats';
 
-
-const swal = require('sweetalert');
+import * as swal from 'sweetalert';
+import {Settings} from '../../core/settings/settings.model';
+import {SettingsService} from '../../core/settings/settings.service';
 
 declare let require: any;
 declare let window: any;
 
 let tokenAbi = require('./tokenContract.json');
 let fundRequestAbi = require('./fundRequestContract.json');
+let fundRepositoryAbi = require('./fundRepository.json');
+let claimRepositoryAbi = require('./claimRepository.json');
 
 @Injectable()
 export class ContractsService {
@@ -23,21 +24,25 @@ export class ContractsService {
 
   private _tokenContract: any;
   private _fundRequestContract: any;
+  private _fundRepositoryContract: any;
+  private _claimRepositoryContract: any;
 
-  private _tokenContractAddress: string = '0xfd1de38dc456112c55c3e6bc6134b2f545b91386';
-  private _fundRequestContractAddress: string = '0x797b33d3bb0c74a7860cd2ca80bf063809dced80';
+  private _fundRepositoryContractAddress: string = null;
+  private _claimRepositoryContractAddress: string = null;
 
   private _limited: boolean = true;
-  private _providerApi = 'https://ropsten.davyvanroy.be/';
+  private _providerApi = 'https://ropsten.fundrequest.io/';
   private _etherscan = 'https://ropsten.etherscan.io/';
+  private _settings: Settings = null;
 
-  constructor(private _settings: SettingsService, private _ns: NotificationService) {
+  constructor(private _ss: SettingsService, private _ns: NotificationService) {
   }
 
   public async init() {
+    this._settings = await this._ss.getSettings();
     await this.checkAndInstantiateWeb3();
     if (this._web3) {
-      this.setContracts();
+      await this.setContracts();
       await this.getAccount();
     }
   }
@@ -59,9 +64,12 @@ export class ContractsService {
     }
   };
 
-  private setContracts(): void {
-    this._tokenContract = this._web3.eth.contract(tokenAbi).at(this._tokenContractAddress);
-    this._fundRequestContract = this._web3.eth.contract(fundRequestAbi).at(this._fundRequestContractAddress);
+  private async setContracts() {
+    this._tokenContract = this._web3.eth.contract(tokenAbi).at(this.getTokenContractAddress());
+    this._fundRequestContract = this._web3.eth.contract(fundRequestAbi).at(this.getFundRequestContractAddress());
+
+    this._fundRepositoryContract = this._web3.eth.contract(fundRepositoryAbi).at(await this.getFundRepositoryContractAddress());
+    this._claimRepositoryContract = this._web3.eth.contract(claimRepositoryAbi).at(await this.getClaimRepositoryContractAddress());
   };
 
   private async getNetwork(): Promise<string> {
@@ -77,11 +85,35 @@ export class ContractsService {
   }
 
   public getTokenContractAddress(): string {
-    return this._tokenContractAddress;
+    return this._settings.tokenContractAddress;
   }
 
   public getFundRequestContractAddress(): string {
-    return this._fundRequestContractAddress;
+    return this._settings.fundRequestContractAddress;
+  }
+
+  public getFundRepositoryContractAddress(): Promise<string> {
+    if (this._fundRepositoryContractAddress == null) {
+      return new Promise((resolve, reject) => {
+        this._fundRequestContract.fundRepository.call(function (err, result) {
+          err ? reject(err) : resolve(result);
+        });
+      });
+    } else {
+      return Promise.resolve(this._fundRepositoryContractAddress);
+    }
+  }
+
+  public getClaimRepositoryContractAddress(): Promise<string> {
+    if (this._claimRepositoryContractAddress == null) {
+      return new Promise((resolve, reject) => {
+        this._fundRequestContract.claimRepository.call(function (err, result) {
+          err ? reject(err) : resolve(result);
+        });
+      });
+    } else {
+      return Promise.resolve(this._claimRepositoryContractAddress);
+    }
   }
 
   public async getAccount(): Promise<string> {
@@ -125,7 +157,7 @@ export class ContractsService {
 
   public async getTotalBalanceInWei(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this._fundRequestContract.totalBalance.call(function (err, result) {
+      this._fundRepositoryContract.totalBalance.call(function (err, result) {
         err ? reject(err) : resolve(result);
       });
     }) as Promise<number>;
@@ -133,7 +165,7 @@ export class ContractsService {
 
   public async getTotalFundedInWei(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this._fundRequestContract.totalFunded.call(function (err, result) {
+      this._fundRepositoryContract.totalFunded.call(function (err, result) {
         err ? reject(err) : resolve(result);
       });
     }) as Promise<number>;
@@ -141,7 +173,7 @@ export class ContractsService {
 
   public async getTotalNumberOfFunders(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this._fundRequestContract.totalNumberOfFunders.call(function (err, result) {
+      this._fundRepositoryContract.totalNumberOfFunders.call(function (err, result) {
         err ? reject(err) : resolve(result);
       });
     }) as Promise<number>;
@@ -149,7 +181,7 @@ export class ContractsService {
 
   public async getRequestsFunded(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this._fundRequestContract.requestsFunded.call(function (err, result) {
+      this._fundRepositoryContract.requestsFunded.call(function (err, result) {
         err ? reject(err) : resolve(result);
       });
     }) as Promise<number>;
@@ -171,11 +203,11 @@ export class ContractsService {
     );
   }
 
-  public async fundRequest(platform: string, platformId: string, url: string, value: number): Promise<string> {
+  public async fundRequest(platform: string, platformId: string, value: number): Promise<string> {
     if (!!this._account) {
       let total = this._web3.toWei(value, 'ether');
       let tx = await new Promise((resolve, reject) => {
-        this._tokenContract.approveAndCall(this._fundRequestContractAddress, total, this._web3.fromAscii(platform + "|" + String(platformId) + "|" + url), this._getTransactionOptions(this._account), function (err, tx) {
+        this._tokenContract.approveAndCall(this.getFundRequestContractAddress(), total, this._web3.fromAscii(platform + '|AAC|' + String(platformId)), this._getTransactionOptions(this._account), function (err, tx) {
           err ? reject(err) : resolve(tx);
         });
       }) as string;
@@ -205,7 +237,7 @@ export class ContractsService {
 
   public async getRequestFundInfo(request: IRequestRecord): Promise<RequestIssueFundInformation> {
     return new Promise((resolve, reject) => {
-      return this._fundRequestContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), this._account, function (err, result) {
+      return this._fundRepositoryContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), this._account, function (err, result) {
         err ? reject(err) : resolve({numberOfFunders: result[0], balance: result[1], funderBalance: result[2]});
       });
     }) as Promise<RequestIssueFundInformation>;

@@ -12,7 +12,6 @@ public class CreateRequestCommand {
 
     private Platform platform;
     private String platformId;
-    private String issueLink;
     private BigDecimal funds;
     private LocalDateTime timestamp;
 
@@ -40,14 +39,6 @@ public class CreateRequestCommand {
 
     public void setTechnologies(Set<String> technologies) {
         this.technologies = technologies;
-    }
-
-    public String getIssueLink() {
-        return issueLink;
-    }
-
-    public void setIssueLink(String issueLink) {
-        this.issueLink = issueLink;
     }
 
     public BigDecimal getFunds() {

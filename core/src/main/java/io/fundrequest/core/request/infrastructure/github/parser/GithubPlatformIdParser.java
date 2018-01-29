@@ -5,29 +5,26 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import org.springframework.stereotype.Component;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class GithubParser {
-
-    private final Pattern githubPattern;
+public class GithubPlatformIdParser {
     private GithubClient githubClient;
 
-    public GithubParser(GithubClient githubClient) {
+    public static final String PLATFORM_ID_GITHUB_DELIMTER = "|FR|";
+
+    public GithubPlatformIdParser(GithubClient githubClient) {
         this.githubClient = githubClient;
-        githubPattern = Pattern.compile("^https:\\/\\/github\\.com\\/(.+)\\/(.+)\\/issues\\/(\\d+)$");
 
     }
 
-    public IssueInformation parseIssue(String issueLink) {
+    public IssueInformation parseIssue(String platformId) {
         IssueInformation issueInformation = new IssueInformation();
-        issueInformation.setLink(issueLink);
-        Matcher matcher = githubPattern.matcher(issueLink);
-        matcher.matches();
-        issueInformation.setOwner(matcher.group(1));
-        issueInformation.setRepo(matcher.group(2));
-        issueInformation.setNumber(matcher.group(3));
+        String[] splitted = platformId.split(Pattern.quote(PLATFORM_ID_GITHUB_DELIMTER));
+
+        issueInformation.setOwner(splitted[0]);
+        issueInformation.setRepo(splitted[1]);
+        issueInformation.setNumber(splitted[2]);
         GithubResult githubResult = githubClient.getIssue(
                 issueInformation.getOwner(),
                 issueInformation.getRepo(),
@@ -35,8 +32,9 @@ public class GithubParser {
         );
         issueInformation.setTitle(githubResult.getTitle());
         issueInformation.setPlatform(Platform.GITHUB);
-        issueInformation.setPlatformId("" + githubResult.getId());
+        issueInformation.setPlatformId(platformId);
         return issueInformation;
     }
+
 
 }

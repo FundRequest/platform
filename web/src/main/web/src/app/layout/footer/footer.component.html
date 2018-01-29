@@ -1,1 +1,4 @@
-<span>&copy; {{settings.app.year}} - {{ settings.app.name }}</span>
+<span>&copy;
+  <span>{{ss.app.year}}</span>
+  <span *ngIf="ss.app.name"> - {{ ss.app.name }}</span>
+  <span *ngIf="appVersion$ | async"> - {{ appVersion$ | async }}</span></span>

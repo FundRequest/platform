@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +42,7 @@ public class GithubClaimResolverTest {
         SignClaimRequest signClaimRequest = createClaimRequest(request);
 
         when(keycloakRepository.getUserIdentities("davyvanroy")).thenReturn(Stream.of(new UserIdentity("github", "davyvanroy")));
-        when(githubSolverResolver.solveResolver(request)).thenReturn("davyvanroy");
+        when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of("davyvanroy"));
         SignClaimCommand signClaimCommand = createSignClaimCommand(signClaimRequest, "davyvanroy");
         ClaimSignature claimSignature = createClaimSignature(signClaimCommand);
         when(azraelClient.getSignature(signClaimCommand)).thenReturn(claimSignature);
