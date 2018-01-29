@@ -47,7 +47,7 @@ export class UserService {
     this._store.dispatch(new ReplaceUser(this.user));
   }
 
-  public getCurrentUser(): Observable<IUserRecord> {
+  public get currentUser$(): Observable<IUserRecord> {
     if (this.user == null) {
       this.initUser();
     }

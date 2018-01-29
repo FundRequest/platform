@@ -19,7 +19,7 @@ export class UserblockComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
+    this.userService.currentUser$.subscribe((user: IUserRecord) => {
       this._user = user;
     });
   }

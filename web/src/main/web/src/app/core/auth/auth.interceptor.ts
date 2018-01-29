@@ -22,7 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
     let headers: any = {};
     if (request.url.indexOf('/api/private') > -1) {
       headers['Access-Control-Allow-Origin'] = '*';
-      return this._as.getToken()
+      return this._as.token$
         .mergeMap((token: string) => {
           headers.Authorization = `Bearer ${token}`;
           return next.handle(this.getRequest(request, headers));

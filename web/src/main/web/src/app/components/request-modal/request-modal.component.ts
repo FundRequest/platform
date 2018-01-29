@@ -33,7 +33,7 @@ export class RequestModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
+    this.userService.currentUser$.subscribe((user: IUserRecord) => {
       this.user = user;
       this.balance = Utils.fromWeiRounded(user.balance);
     });

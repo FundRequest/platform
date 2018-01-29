@@ -32,7 +32,7 @@ export class FundComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe(user => this.user = user);
+    this.userService.currentUser$.subscribe(user => this.user = user);
     this.route.queryParams.subscribe(params => {
       let issueLink = params['url'];
       let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
@@ -42,7 +42,7 @@ export class FundComponent implements OnInit {
         console.log("no url match");
       }
     });
-    this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
+    this.userService.currentUser$.subscribe((user: IUserRecord) => {
       this.user = user;
       this.balance = Utils.fromWeiRounded(user.balance);
     });

@@ -27,7 +27,7 @@ export class FundModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._us.getCurrentUser().subscribe((user: IUserRecord) => {
+    this._us.currentUser$.subscribe((user: IUserRecord) => {
       this.user = user;
       this.balance = Utils.fromWeiRounded(user.balance);
     });
@@ -36,8 +36,7 @@ export class FundModalComponent implements OnInit {
   public hasEnoughFunds() {
     return this.balance >= this.fundAmount;
   }
-
-
+  
   public canFund(): boolean {
     return this.fundAmount > 0;
   }

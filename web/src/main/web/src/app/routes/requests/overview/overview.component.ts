@@ -31,7 +31,7 @@ export class OverviewComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this._us.getCurrentUser().subscribe(user => this.user = user);
+    this._us.currentUser$.subscribe(user => this.user = user);
     this.requests$ = this._rs.requests$;
     this.subscription = this.requests$.subscribe(
       requests => {
