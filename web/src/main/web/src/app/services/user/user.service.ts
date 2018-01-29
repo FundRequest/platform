@@ -15,8 +15,8 @@ export class UserService {
 
   private user: IUserRecord = null;
 
-  constructor(private store: Store<IState>,
-              private http: HttpClient,
+  constructor(private _store: Store<IState>,
+              private _http: HttpClient,
               private _as: AuthService,
               private _cs: ContractsService) {
   }
@@ -26,16 +26,16 @@ export class UserService {
   }
 
   public logout(): void {
-    this.store.dispatch(new ClearUser());
+    this._store.dispatch(new ClearUser());
     this._as.logout();
   }
 
   private async initUser(): Promise<void> {
     this.user = createUser();
     if (this._as.isAuthenticated()) {
-      let newUser: IUserRecord = await this.http.get(`/api/private/user/info`).toPromise() as IUserRecord;
+      let newUser: IUserRecord = await this._http.get(`/api/private/user/info`).toPromise() as IUserRecord;
       this.user = createUser(newUser);
-      this.store.dispatch(new ReplaceUser(this.user));
+      this._store.dispatch(new ReplaceUser(this.user));
 
     }
     let balance;
@@ -44,7 +44,7 @@ export class UserService {
     ]).catch(error => this.handleError(error));
 
     this.user = this.user.set('balance', balance);
-    this.store.dispatch(new ReplaceUser(this.user));
+    this._store.dispatch(new ReplaceUser(this.user));
   }
 
   public getCurrentUser(): Observable<IUserRecord> {
@@ -52,7 +52,7 @@ export class UserService {
       this.initUser();
     }
 
-    return this.store.select(state => state.user);
+    return this._store.select(state => state.user);
   }
 
   private handleError(error: any): void {

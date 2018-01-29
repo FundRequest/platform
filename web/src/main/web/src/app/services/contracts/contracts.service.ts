@@ -2,11 +2,12 @@ import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
 import {IRequestRecord, RequestIssueFundInformation, SignedClaim} from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
-import {SettingsService} from '../../core/settings/settings.service';
+import {SettingsService} from '../settings/settings.service';
 import {NotificationType} from '../notification/notificationType';
 import {RequestsStats} from '../../core/requests/RequestsStats';
 
 import * as swal from 'sweetalert';
+import {Settings} from '../settings/settings.model';
 
 declare let require: any;
 declare let window: any;
@@ -26,19 +27,19 @@ export class ContractsService {
   private _fundRepositoryContract: any;
   private _claimRepositoryContract: any;
 
-  private _tokenContractAddress: string = '0x51a94a55be52cab0b40317e67a399f6113259acb';
-  private _fundRequestContractAddress: string = '0x79746d067739945ec3332208e2b1b3ccada6584f';
   private _fundRepositoryContractAddress: string = null;
   private _claimRepositoryContractAddress: string = null;
 
   private _limited: boolean = true;
   private _providerApi = 'https://ropsten.fundrequest.io/';
   private _etherscan = 'https://ropsten.etherscan.io/';
+  private _settings: Settings = null;
 
-  constructor(private _settings: SettingsService, private _ns: NotificationService) {
+  constructor(private _ss: SettingsService, private _ns: NotificationService) {
   }
 
   public async init() {
+    this._settings = await this._ss.getSettings();
     await this.checkAndInstantiateWeb3();
     if (this._web3) {
       await this.setContracts();
@@ -84,11 +85,11 @@ export class ContractsService {
   }
 
   public getTokenContractAddress(): string {
-    return this._tokenContractAddress;
+    return this._settings.tokenContractAddress;
   }
 
   public getFundRequestContractAddress(): string {
-    return this._fundRequestContractAddress;
+    return this._settings.fundRequestContractAddress;
   }
 
   public getFundRepositoryContractAddress(): Promise<string> {
@@ -206,7 +207,7 @@ export class ContractsService {
     if (!!this._account) {
       let total = this._web3.toWei(value, 'ether');
       let tx = await new Promise((resolve, reject) => {
-        this._tokenContract.approveAndCall(this._fundRequestContractAddress, total, this._web3.fromAscii(platform + '|AAC|' + String(platformId)), this._getTransactionOptions(this._account), function (err, tx) {
+        this._tokenContract.approveAndCall(this.getFundRequestContractAddress(), total, this._web3.fromAscii(platform + '|AAC|' + String(platformId)), this._getTransactionOptions(this._account), function (err, tx) {
           err ? reject(err) : resolve(tx);
         });
       }) as string;

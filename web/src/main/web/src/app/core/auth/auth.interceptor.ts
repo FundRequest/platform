@@ -14,7 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return request.clone({
       setHeaders: headers,
-      url       : request.url.startsWith('/api/') ? restApiLocation + request.url : request.url
+      url: /*request.url.startsWith('/api/') ||*/ request.url.startsWith('/') ? restApiLocation + request.url : request.url
     });
   }
 

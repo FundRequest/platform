@@ -10,6 +10,7 @@ import {ToasterService} from 'angular2-toaster';
 import {UserService} from './user/user.service';
 import {NotificationStreamService} from './sse/notification-stream.service';
 import {PlatformIdResolverService} from "./request/platformIdResolver.service";
+import {SettingsService} from './settings/settings.service';
 
 @NgModule({
   imports     : [
@@ -22,6 +23,7 @@ import {PlatformIdResolverService} from "./request/platformIdResolver.service";
     PlatformIdResolverService,
     ToasterService,
     UserService,
+    SettingsService,
     KeycloakService,
     NotificationStreamService
   ],
