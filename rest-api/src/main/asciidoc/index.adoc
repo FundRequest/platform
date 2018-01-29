@@ -128,7 +128,7 @@ operation::requests-remove-watcher-example[snippets='request-fields,curl-request
 
 A `GET` request is used to the endpoint to see that the logged in user can claim the request or not (true: user can claim)
 
-operation::requests-can-claim-example[snippets='request-fields,curl-request,http-response']
+operation::requests-can-claim-example[snippets='curl-request,http-response']
 
 
 
@@ -136,7 +136,7 @@ operation::requests-can-claim-example[snippets='request-fields,curl-request,http
 
 A `POST` request is used to the endpoint to claim a request
 
-operation::requests-claim-example[snippets='request-fields,curl-request,http-response']
+operation::requests-claim-example[snippets='curl-request,http-response']
 
 
 [[resources-iser]]
