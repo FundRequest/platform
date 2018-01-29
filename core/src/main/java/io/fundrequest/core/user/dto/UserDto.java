@@ -1,8 +1,13 @@
 package io.fundrequest.core.user.dto;
 
+import io.fundrequest.core.keycloak.UserIdentity;
+
+import java.util.List;
+
 public class UserDto {
     private String userId;
     private String email;
+    private List<UserIdentity> userIdentities;
 
     public String getUserId() {
         return userId;
@@ -18,6 +23,14 @@ public class UserDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<UserIdentity> getUserIdentities() {
+        return userIdentities;
+    }
+
+    public void setUserIdentities(List<UserIdentity> userIdentities) {
+        this.userIdentities = userIdentities;
     }
 
     public String getPicture() {
