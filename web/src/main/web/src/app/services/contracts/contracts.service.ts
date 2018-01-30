@@ -20,7 +20,7 @@ let claimRepositoryAbi = require('./claimRepository.json');
 @Injectable()
 export class ContractsService {
   private _account: string = null;
-  private _web3: any;
+  public _web3: any;
 
   private _tokenContract: any;
   private _fundRequestContract: any;

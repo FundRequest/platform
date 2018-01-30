@@ -69,7 +69,7 @@ export class RequestService {
     let body = {
       platform: command.platform,
       platformId: command.platformId,
-      amount: '' + command.amount,
+      amount: '' + this._cs._web3.toWei(command.amount, 'ether'),
       url: command.link,
       fundrequestAddress: this._cs.getFundRequestContractAddress(),
       tokenAddress: this._cs.getTokenContractAddress()
