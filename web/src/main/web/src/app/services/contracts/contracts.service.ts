@@ -1,4 +1,5 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
+
 import * as Web3 from 'web3';
 import * as swal from 'sweetalert';
 
@@ -8,7 +9,10 @@ import {NotificationType} from '../notification/notificationType';
 import {RequestsStats} from '../../core/requests/RequestsStats';
 import {Settings} from '../../core/settings/settings.model';
 import {SettingsService} from '../../core/settings/settings.service';
-import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
+import {Observable} from 'rxjs';
+
+
 
 declare let require: any;
 declare let window: any;
@@ -19,7 +23,7 @@ let fundRepositoryAbi = require('./fundRepository.json');
 let claimRepositoryAbi = require('./claimRepository.json');
 
 @Injectable()
-export class ContractsService {
+export class ContractsService implements OnDestroy {
   private _nullAccount: string = '0x0000000000000000000000000000000000000000';
   private _account: string = this._nullAccount;
   private _web3: any;
@@ -38,6 +42,7 @@ export class ContractsService {
   private _providerApi = 'https://ropsten.fundrequest.io/';
   private _etherscan = 'https://ropsten.etherscan.io/';
   private _settings: Settings = null;
+  private _subscription: Subscription = null;
 
   constructor(private _ss: SettingsService, private _ns: NotificationService) {
   }
@@ -47,9 +52,22 @@ export class ContractsService {
     await this.checkAndInstantiateWeb3();
     if (this._web3) {
       await this.setContracts();
-      this._account = await this.getAccount();
-      this._web3.eth.defaultAccount = this._account;
+      await this.getAccount();
+
+      this._subscription = Observable.timer(0, 1000).subscribe((t) => {
+        if (typeof this._web3.eth.accounts[0] != 'undefined') {
+          console.log(this._web3.eth.accounts[0]);
+          this._account = this._web3.eth.accounts[0];
+          this._locked = false;
+        } else {
+          this._locked = true;
+        }
+      });
     }
+  }
+
+  public ngOnDestroy() {
+    this._subscription.unsubscribe();
   }
 
   public get locked$(): Observable<boolean> {
