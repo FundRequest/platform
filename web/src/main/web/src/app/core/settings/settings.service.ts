@@ -55,7 +55,7 @@ export class SettingsService implements OnInit {
   public async getSettings(): Promise<Settings> {
     if (this._settings == null) {
       let envSettings: any = await this._http.get('/env').toPromise();
-      let applicationConfig = envSettings[`applicationConfig: [classpath:/application${envSettings.profiles[0] == 'dev' ? '-dev' : ''}.properties]`];
+      let applicationConfig = this.buildApplicationConfig(envSettings);
       this._settings = new Settings();
       this._settings.fundRequestContractAddress = applicationConfig['io.fundrequest.contract.fund-request.address'];
       this._settings.tokenContractAddress = applicationConfig['io.fundrequest.contract.token.address'];
@@ -63,5 +63,25 @@ export class SettingsService implements OnInit {
     }
 
     return this._settings;
+  }
+
+  private buildApplicationConfig(envSettings: any) {
+    let applicationConfig = {};
+    for (let key in envSettings) {
+      if (envSettings.hasOwnProperty(key)) {
+        if (key.startsWith('applicationConfig')) {
+          this.copyAppConfig(envSettings[key], applicationConfig);
+        }
+      }
+    }
+    return applicationConfig;
+  }
+
+  private copyAppConfig(foundAppConfig: any, applicationConfig: {}) {
+    for (let prop in foundAppConfig) {
+      if (foundAppConfig.hasOwnProperty(prop)) {
+        applicationConfig[prop] = foundAppConfig[prop];
+      }
+    }
   }
 }
