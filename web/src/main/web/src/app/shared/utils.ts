@@ -5,6 +5,40 @@ export class Utils {
   }
 
   public static dateTimeFromArray(date: Array<number>): Date {
-    return new Date(Date.UTC(date[0],date[1]-1,date[2],date[3],date[4],date[5]));
+    return new Date(Date.UTC(date[0], date[1] - 1, date[2], date[3], date[4], date[5]));
+  }
+
+  public static getUrlFromId(platform: string, id: string): string {
+    let idParts = id.split('|FR|');
+    let repo = idParts[0];
+    let project = idParts[1];
+    let issue = idParts[2];
+    let url = null;
+
+    switch(platform) {
+      // TODO: check others platforms as well
+      case 'GITHUB':
+        url = `https://github.com/${repo}/${project}/issues/${issue}`;
+        break;
+    }
+    return url;
+  }
+
+  public static getPlatformIdFromUrl(issueLink: string): string {
+    let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
+    if (matches && matches.length >= 4) {
+      return matches[1] + '|FR|' + matches[2] + '|FR|' + matches[3]
+    } else {
+      return null;
+    }
+  }
+
+  public static getPlatformFromUrl(issueLink: string): string {
+    let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
+    if (matches && matches.length >= 4) {
+      return 'GITHUB';
+    } else {
+      return null;
+    }
   }
 }

@@ -19,7 +19,8 @@ let claimRepositoryAbi = require('./claimRepository.json');
 
 @Injectable()
 export class ContractsService {
-  private _account: string = null;
+  private _nullAccount: string = '0x0000000000000000000000000000000000000000';
+  private _account: string = this._nullAccount;
   private _web3: any;
 
   private _tokenContract: any;
@@ -92,37 +93,35 @@ export class ContractsService {
     return this._settings.fundRequestContractAddress;
   }
 
-  public getFundRepositoryContractAddress(): Promise<string> {
+  public async getFundRepositoryContractAddress(): Promise<string> {
     if (this._fundRepositoryContractAddress == null) {
-      return new Promise((resolve, reject) => {
+      this._fundRepositoryContractAddress = await new Promise((resolve, reject) => {
         this._fundRequestContract.fundRepository.call(function (err, result) {
           err ? reject(err) : resolve(result);
         });
-      });
-    } else {
-      return Promise.resolve(this._fundRepositoryContractAddress);
+      }) as string;
     }
+    return this._fundRepositoryContractAddress;
   }
 
-  public getClaimRepositoryContractAddress(): Promise<string> {
+  public async getClaimRepositoryContractAddress(): Promise<string> {
     if (this._claimRepositoryContractAddress == null) {
-      return new Promise((resolve, reject) => {
+      this._claimRepositoryContractAddress = await new Promise((resolve, reject) => {
         this._fundRequestContract.claimRepository.call(function (err, result) {
           err ? reject(err) : resolve(result);
         });
-      });
-    } else {
-      return Promise.resolve(this._claimRepositoryContractAddress);
+      }) as string;
     }
+    return this._claimRepositoryContractAddress;
   }
 
   public async getAccount(): Promise<string> {
-    if (this._account == null) {
+    if (this._account == this._nullAccount) {
       this._account = await new Promise((resolve, reject) => {
         this._web3.eth.getAccounts((err, accs) => {
           if (err != null || accs.length === 0) {
             this.showLimitedFunctionalityAlert();
-            resolve(null);
+            resolve(this._nullAccount);
             return;
           }
 
@@ -138,7 +137,7 @@ export class ContractsService {
   }
 
   public async getUserBalance(): Promise<number> {
-    if (this._account != null) {
+    if (this._account != this._nullAccount) {
       return new Promise((resolve, reject) => {
         this._tokenContract.balanceOf.call(this._account, function (err, result) {
           if (err) {
@@ -204,7 +203,7 @@ export class ContractsService {
   }
 
   public async fundRequest(platform: string, platformId: string, value: number): Promise<string> {
-    if (!!this._account) {
+    if (this._account != this._nullAccount) {
       let total = this._web3.toWei(value, 'ether');
       let tx = await new Promise((resolve, reject) => {
         this._tokenContract.approveAndCall(this.getFundRequestContractAddress(), total, this._web3.fromAscii(platform + '|AAC|' + String(platformId)), this._getTransactionOptions(this._account), function (err, tx) {
@@ -237,7 +236,6 @@ export class ContractsService {
 
   public async getRequestFundInfo(request: IRequestRecord): Promise<RequestIssueFundInformation> {
     return new Promise((resolve, reject) => {
-      debugger;
       return this._fundRepositoryContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), String(request.issueInformation.platformId), this._account, function (err, result) {
         err ? reject(err) : resolve({numberOfFunders: result[0], balance: result[1], funderBalance: result[2]});
       });

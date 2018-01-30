@@ -56,11 +56,11 @@ export function createTranslateLoader(http: HttpClient) {
       }
     }),
     ServiceModule,
+    StoreModule.forRoot(REDUCER_MAP),
     // Note that you must instrument after importing StoreModule
     StoreDevtoolsModule.instrument({
       maxAge: 25 //  Retains last 25 states
-    }),
-    StoreModule.forRoot(REDUCER_MAP),
+    })
   ],
   providers   : [AppFactory, ContractsService,
     {

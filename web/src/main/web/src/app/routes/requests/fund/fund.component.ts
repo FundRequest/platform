@@ -6,7 +6,6 @@ import {IUserRecord} from '../../../redux/user.models';
 import {RequestService} from "../../../services/request/request.service";
 import {Utils} from "../../../shared/utils";
 import {FundRequestCommand} from "../../../redux/requests.models";
-import {PlatformIdResolverService} from "../../../services/request/platformIdResolver.service";
 
 import * as swal from 'sweetalert';
 
@@ -27,8 +26,7 @@ export class FundComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private userService: UserService,
               private http: HttpClient,
-              private requestService: RequestService,
-              private platformIdResolverService: PlatformIdResolverService) {
+              private requestService: RequestService) {
   }
 
   ngOnInit(): void {
@@ -49,16 +47,16 @@ export class FundComponent implements OnInit {
   }
 
   private fillRequestDetails(matches: RegExpExecArray, issueLink: string) {
-    let url = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/issues/' + matches[3];
+    let url = `https://api.github.com/repos/${matches[1]}/${matches[2]}/issues/${matches[3]}`;
     this.http.get(url).subscribe(data => {
       this.requestDetails = data;
       this.requestDetails.platform = 'GITHUB';
-      this.requestDetails.platformId = this.platformIdResolverService.resolve('GITHUB', issueLink);
+      this.requestDetails.platformId = Utils.getPlatformIdFromUrl(issueLink);
       this.requestDetails.issueNumber = matches[3];
       this.requestDetails.link = issueLink;
       this.requestDetails.repo = matches[1];
       this.requestDetails.owner = matches[2];
-      let technologiesUrl = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/languages';
+      let technologiesUrl = `https://api.github.com/repos/${matches[1]}/${matches[2]}/languages`;
       this.http.get(technologiesUrl).subscribe(data => {
         this.requestDetails.technologies = Object.keys(data);
       });
@@ -71,10 +69,9 @@ export class FundComponent implements OnInit {
       new FundRequestCommand(
         this.requestDetails.platform,
         this.requestDetails.platformId,
-        this.requestDetails.link,
         this.fundAmount)
     ).catch((e) => {
-      swal('Error when funding', 'An error ocurred wile funding: ' + e.message, 'error');
+      swal('Error when funding', `An error ocurred wile funding: ${e.message}`, 'error');
       this.fundingInProgress = false;
     });
   }
@@ -83,7 +80,6 @@ export class FundComponent implements OnInit {
     this.requestService.requestQRValue(new FundRequestCommand(
       this.requestDetails.platform,
       this.requestDetails.platformId,
-      this.requestDetails.link,
       this.fundAmount
     )).then(
       res => { // Success

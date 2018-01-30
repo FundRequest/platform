@@ -9,7 +9,6 @@ import {throwIfAlreadyLoaded} from '../core/module-import-guard';
 import {ToasterService} from 'angular2-toaster';
 import {UserService} from './user/user.service';
 import {NotificationStreamService} from './sse/notification-stream.service';
-import {PlatformIdResolverService} from "./request/platformIdResolver.service";
 
 @NgModule({
   imports     : [
@@ -19,7 +18,6 @@ import {PlatformIdResolverService} from "./request/platformIdResolver.service";
     ContractsService,
     NotificationService,
     RequestService,
-    PlatformIdResolverService,
     ToasterService,
     UserService,
     KeycloakService,

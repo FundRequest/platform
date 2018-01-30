@@ -20,7 +20,7 @@ import {ContractsService} from '../contracts/contracts.service';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
-import {PlatformIdResolverService} from "./platformIdResolver.service";
+import {Utils} from '../../shared/utils';
 
 @Injectable()
 export class RequestService {
@@ -28,8 +28,7 @@ export class RequestService {
 
   constructor(private store: Store<IState>,
               private http: HttpClient,
-              private _cs: ContractsService,
-              private platformIdResolverService: PlatformIdResolverService) {
+              private _cs: ContractsService) {
   }
 
   public get requests$(): Observable<IRequestList> {
@@ -58,7 +57,7 @@ export class RequestService {
   }
 
   public addRequest(issueLink: string, fundAmount: number): void {
-    this._cs.fundRequest('GITHUB', this.platformIdResolverService.resolve('GITHUB', issueLink), fundAmount);
+    this._cs.fundRequest('GITHUB', Utils.getPlatformIdFromUrl(issueLink), fundAmount);
   }
 
   public async fundRequest(command: FundRequestCommand): Promise<string> {
@@ -70,7 +69,6 @@ export class RequestService {
       platform: command.platform,
       platformId: command.platformId,
       amount: '' + command.amount,
-      url: command.link,
       fundrequestAddress: this._cs.getFundRequestContractAddress(),
       tokenAddress: this._cs.getTokenContractAddress()
     };
@@ -83,7 +81,7 @@ export class RequestService {
       platformId: command.platformId,
       address: await this._cs.getAccount()
     };
-    await this.http.post('/api/private/requests/' + command.id + '/claim', body).take(1).subscribe((signedClaim: SignedClaim) => {
+    await this.http.post(`/api/private/requests/${command.id}/claim`, body).take(1).subscribe((signedClaim: SignedClaim) => {
       return this._cs.claimRequest(signedClaim);
     });
     return null;

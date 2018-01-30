@@ -8,6 +8,7 @@ import {AuthService} from "../../../core/auth/auth.service";
 import {Subscription} from 'rxjs/Subscription';
 
 import * as swal from 'sweetalert';
+import {Utils} from '../../../shared/utils';
 
 @Component({
   selector   : 'fnd-request-detail',
@@ -36,6 +37,10 @@ export class DetailComponent implements OnInit, OnDestroy {
           this.request = request;
         });
     });
+  }
+
+  public getLink(request: IRequestRecord): string {
+    return Utils.getUrlFromId(request.issueInformation.platform, request.issueInformation.platformId);
   }
 
   public get claimed(): boolean {

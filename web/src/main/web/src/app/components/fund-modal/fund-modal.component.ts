@@ -22,8 +22,8 @@ export class FundModalComponent implements OnInit {
 
 
   constructor(public bsModalRef: BsModalRef,
-              private _rs: RequestService,
-              private _us: UserService) {
+    private _rs: RequestService,
+    private _us: UserService) {
   }
 
   ngOnInit() {
@@ -36,7 +36,7 @@ export class FundModalComponent implements OnInit {
   public hasEnoughFunds() {
     return this.balance >= this.fundAmount;
   }
-  
+
   public canFund(): boolean {
     return this.fundAmount > 0;
   }
@@ -45,7 +45,6 @@ export class FundModalComponent implements OnInit {
     this._rs.requestQRValue(new FundRequestCommand(
       this.request.issueInformation.platform,
       this.request.issueInformation.platformId,
-      this.request.issueInformation.link,
       this.fundAmount
     )).then(
       res => { // Success
@@ -61,7 +60,6 @@ export class FundModalComponent implements OnInit {
       new FundRequestCommand(
         this.request.issueInformation.platform,
         this.request.issueInformation.platformId,
-        this.request.issueInformation.link,
         this.fundAmount)
     );
     this.bsModalRef.hide();

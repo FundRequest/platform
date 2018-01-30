@@ -2,7 +2,6 @@ import {makeTypedFactory, TypedRecord} from 'typed-immutable-record';
 import {List} from 'immutable';
 
 interface RequestIssueInformation {
-  link: string;
   owner: string;
   repo: string;
   number: Number;
@@ -40,7 +39,6 @@ export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
   watchers: [],
   loggedInUserIsWatcher: false,
   issueInformation: {
-    link: '',
     owner: '',
     repo: '',
     number: 0,
@@ -58,7 +56,7 @@ export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
 export type IRequestList = List<IRequestRecord>;
 
 export class FundRequestCommand {
-  constructor(public platform: string, public platformId: string, public link: string, public amount: number) {
+  constructor(public platform: string, public platformId: string, public amount: number) {
   }
 }
 
