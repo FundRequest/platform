@@ -3,10 +3,14 @@ import { UserblockService } from '../sidebar/userblock/userblock.service';
 import { SettingsService } from '../../core/settings/settings.service';
 import { MenuService } from '../../core/menu/menu.service';
 import { UserService } from '../../services/user/user.service';
+import {Observable} from 'rxjs/Observable';
+import {ContractsService} from '../../services/contracts/contracts.service';
+
+declare let require: any;
+declare let $: any;
 
 const screenfull = require('screenfull');
 const browser = require('jquery.browser');
-declare var $: any;
 
 @Component({
   selector   : 'app-header',
@@ -24,7 +28,8 @@ export class HeaderComponent implements OnInit {
   constructor(public menu: MenuService,
               public userblockService: UserblockService,
               public settings: SettingsService,
-              public userService: UserService) {
+              public userService: UserService,
+              private _cs: ContractsService) {
     this.menuItems = menu.getMenu().slice(0, 4); // for horizontal layout
   }
 
@@ -33,6 +38,18 @@ export class HeaderComponent implements OnInit {
     if (browser.msie) { // Not supported under IE
       this.fsbutton.nativeElement.style.display = 'none';
     }
+  }
+
+  public get locked$(): Observable<boolean> {
+      return this._cs.locked$;
+  }
+
+  public get supported$(): Observable<boolean> {
+      return this._cs.supported$;
+  }
+
+  public get network$(): Observable<string> {
+    return this._cs.network$;
   }
 
   logout($event) {

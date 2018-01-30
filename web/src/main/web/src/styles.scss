@@ -36,3 +36,21 @@
     text-decoration: underline;
   }
 }
+
+.bg-primary-dark,
+.bg-success-dark,
+.bg-warning-dark,
+.bg-danger-dark {
+  > .navbar-text {
+    cursor: default;
+  }
+
+  > a, a > .fa, > .fa, a > .icon, > .icon,
+  > .navbar-text,
+  > .navbar-text > a {
+    color: white !important;
+  }
+  > .navbar-text > a {
+    text-decoration: underline;
+  }
+}

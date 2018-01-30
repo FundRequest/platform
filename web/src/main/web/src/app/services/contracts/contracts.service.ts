@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import * as Web3 from 'web3';
+import * as swal from 'sweetalert';
+
 import {IRequestRecord, RequestIssueFundInformation, SignedClaim} from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
 import {NotificationType} from '../notification/notificationType';
 import {RequestsStats} from '../../core/requests/RequestsStats';
-
-import * as swal from 'sweetalert';
 import {Settings} from '../../core/settings/settings.model';
 import {SettingsService} from '../../core/settings/settings.service';
+import {Observable} from 'rxjs/Observable';
 
 declare let require: any;
 declare let window: any;
@@ -31,7 +32,9 @@ export class ContractsService {
   private _fundRepositoryContractAddress: string = null;
   private _claimRepositoryContractAddress: string = null;
 
-  private _limited: boolean = true;
+  private _locked: boolean = true;
+  private _supported: boolean = false;
+  private _network: string = '';
   private _providerApi = 'https://ropsten.fundrequest.io/';
   private _etherscan = 'https://ropsten.etherscan.io/';
   private _settings: Settings = null;
@@ -44,12 +47,21 @@ export class ContractsService {
     await this.checkAndInstantiateWeb3();
     if (this._web3) {
       await this.setContracts();
-      await this.getAccount();
+      this._account = await this.getAccount();
+      this._web3.eth.defaultAccount = this._account;
     }
   }
 
-  public get limited(): boolean {
-    return this._limited;
+  public get locked$(): Observable<boolean> {
+    return Observable.of(this._locked);
+  }
+
+  public get supported$(): Observable<boolean> {
+    return Observable.of(this._supported);
+  }
+
+  public get network$(): Observable<string> {
+    return Observable.of(this._network);
   }
 
   private async checkAndInstantiateWeb3() {
@@ -57,7 +69,32 @@ export class ContractsService {
     if (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider
       this._web3 = new Web3(window.web3.currentProvider);
-      if (await this.getNetwork() !== '3') {
+      let network = await this.getNetwork();
+      switch (network) {
+        case '1':
+          this._network = 'mainnet';
+          this._supported = false; // TODO: make available for main net ==> this._supported = true;
+          break;
+        case '42':
+          this._network = 'kovan';
+          this._supported = false;
+          break;
+        case '3':
+          this._network = 'ropsten';
+          this._supported = true;
+          break;
+        case '4':
+          this._network = 'rinkeby';
+          this._supported = false;
+          break;
+        default:
+          this._supported = false;
+      }
+
+      let account = await this.getAccount();
+      this._locked = account == this._nullAccount;
+
+      if (network !== '3') {
         this._web3 = new Web3(new Web3.providers.HttpProvider(this._providerApi));
       }
     } else {
@@ -117,20 +154,16 @@ export class ContractsService {
 
   public async getAccount(): Promise<string> {
     if (this._account == this._nullAccount) {
-      this._account = await new Promise((resolve, reject) => {
+      return await new Promise((resolve, reject) => {
         this._web3.eth.getAccounts((err, accs) => {
           if (err != null || accs.length === 0) {
-            this.showLimitedFunctionalityAlert();
+            //this.showLimitedFunctionalityAlert();
             resolve(this._nullAccount);
             return;
           }
-
-          this._limited = false;
           resolve(accs[0]);
         });
       }) as string;
-
-      this._web3.eth.defaultAccount = this._account;
     }
 
     return Promise.resolve(this._account);
