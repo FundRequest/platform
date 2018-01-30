@@ -3,6 +3,8 @@ import {Injectable, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Settings} from './settings.model';
 
+declare var $: any;
+
 @Injectable()
 export class SettingsService implements OnInit {
 
@@ -53,9 +55,12 @@ export class SettingsService implements OnInit {
   public async getSettings(): Promise<Settings> {
     if (this._settings == null) {
       let envSettings: any = await this._http.get('/env').toPromise();
-      let envProd = envSettings['applicationConfig: [classpath:/application.properties]'];
-      let envDev = envSettings['applicationConfig: [classpath:/application-dev.properties]'];
-      let applicationConfig = Object.assign(envDev, envProd);
+      let applicationConfig = this.buildApplicationConfig(envSettings);
+      /*
+       let envProd = envSettings['applicationConfig: [classpath:/application.properties]'];
+       let envDev = envSettings['applicationConfig: [classpath:/application-dev.properties]'];
+       let applicationConfig = Object.assign(envDev, envProd);
+       */
       this._settings = new Settings();
       this._settings.fundRequestContractAddress = applicationConfig['io.fundrequest.contract.fund-request.address'];
       this._settings.tokenContractAddress = applicationConfig['io.fundrequest.contract.token.address'];
@@ -63,5 +68,25 @@ export class SettingsService implements OnInit {
     }
 
     return this._settings;
+  }
+
+  private buildApplicationConfig(envSettings: any) {
+    let applicationConfig = {};
+    for (let key in envSettings) {
+      if (envSettings.hasOwnProperty(key)) {
+        if (key.startsWith('applicationConfig')) {
+          this.copyAppConfig(envSettings[key], applicationConfig);
+        }
+      }
+    }
+    return applicationConfig;
+  }
+
+  private copyAppConfig(foundAppConfig: any, applicationConfig: {}) {
+    for (let prop in foundAppConfig) {
+      if (foundAppConfig.hasOwnProperty(prop)) {
+        applicationConfig[prop] = foundAppConfig[prop];
+      }
+    }
   }
 }

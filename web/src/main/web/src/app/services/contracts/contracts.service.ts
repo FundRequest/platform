@@ -237,7 +237,8 @@ export class ContractsService {
 
   public async getRequestFundInfo(request: IRequestRecord): Promise<RequestIssueFundInformation> {
     return new Promise((resolve, reject) => {
-      return this._fundRepositoryContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), this._web3.fromAscii(String(request.issueInformation.platformId)), this._account, function (err, result) {
+      debugger;
+      return this._fundRepositoryContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), String(request.issueInformation.platformId), this._account, function (err, result) {
         err ? reject(err) : resolve({numberOfFunders: result[0], balance: result[1], funderBalance: result[2]});
       });
     }) as Promise<RequestIssueFundInformation>;
