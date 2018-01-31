@@ -3,13 +3,12 @@ package io.fundrequest.core.request.fund;
 import org.apache.commons.codec.binary.Hex;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.datatypes.DynamicBytes;
 import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.generated.Bytes32;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
-import java.util.Arrays;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -36,7 +35,7 @@ public class CreateERC67FundRequest {
                 "approveAndCall",
                 asList(new org.web3j.abi.datatypes.Address(fundrequestAddress),
                         new org.web3j.abi.datatypes.generated.Uint256(amount),
-                        new Bytes32(toContractBytes32(getData()))),
+                        new DynamicBytes(getData().getBytes())),
                 emptyList());
         return FunctionEncoder.encode(function);
     }
@@ -52,10 +51,6 @@ public class CreateERC67FundRequest {
         builder.append("bytes ").append("0x").append(Hex.encodeHexString((getData()).getBytes()));
         builder.append(")");
         return builder.toString();
-    }
-
-    private byte[] toContractBytes32(final String data) {
-        return Arrays.copyOf(data.getBytes(), 32);
     }
 
     public String getPlatform() {

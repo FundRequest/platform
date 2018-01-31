@@ -30,6 +30,7 @@ export class RequestService implements OnInit, OnDestroy {
   private _requestInitialized: boolean = false;
   private _accountWeb3: IAccountWeb3Record;
   private _subscription: Subscription;
+  private _web3: any;
 
   constructor(private store: Store<IState>,
     private _http: HttpClient,
@@ -40,6 +41,7 @@ export class RequestService implements OnInit, OnDestroy {
   public async ngOnInit() {
     this._subscription = this._aw3s.currentAccountWeb3$.subscribe((accountWeb3: IAccountWeb3Record) => {
       this._accountWeb3 = accountWeb3;
+      this._web3 = this._aw3s.getWeb3(this._accountWeb3);
     });
   }
 
@@ -80,7 +82,7 @@ export class RequestService implements OnInit, OnDestroy {
     let body = {
       platform: command.platform,
       platformId: command.platformId,
-      amount: '' + command.amount,
+      amount: '' + this._web3.toWei(command.amount, 'ether'),
       fundrequestAddress: this._cs.getFundRequestContractAddress(),
       tokenAddress: this._cs.getTokenContractAddress()
     };
