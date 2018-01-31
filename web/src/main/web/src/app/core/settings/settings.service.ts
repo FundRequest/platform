@@ -65,6 +65,8 @@ export class SettingsService implements OnInit {
       this._settings.fundRequestContractAddress = applicationConfig['io.fundrequest.contract.fund-request.address'];
       this._settings.tokenContractAddress = applicationConfig['io.fundrequest.contract.token.address'];
       this._settings.appVersion = applicationConfig['io.fundrequest.app-version'];
+      this._settings.providerApi = 'https://ropsten.fundrequest.io/';
+      this._settings.etherscan = 'https://ropsten.etherscan.io/';
     }
 
     return this._settings;

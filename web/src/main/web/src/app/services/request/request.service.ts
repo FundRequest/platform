@@ -1,5 +1,6 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
 import {Store} from '@ngrx/store';
 import {HttpClient} from '@angular/common/http';
 import {RequestsStats} from '../../core/requests/RequestsStats';
@@ -21,21 +22,32 @@ import {ContractsService} from '../contracts/contracts.service';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
 import {Utils} from '../../shared/utils';
+import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
+import {AccountWeb3Service} from '../accountWeb3/account-web3.service';
 
 @Injectable()
-export class RequestService {
+export class RequestService implements OnInit, OnDestroy {
   private _requestInitialized: boolean = false;
+  private _accountWeb3: IAccountWeb3Record;
+  private _subscription: Subscription;
 
   constructor(private store: Store<IState>,
-              private http: HttpClient,
-              private _cs: ContractsService) {
+    private _http: HttpClient,
+    private _aw3s: AccountWeb3Service,
+    private _cs: ContractsService) {
+  }
+
+  public async ngOnInit() {
+    this._subscription = this._aw3s.currentAccountWeb3$.subscribe((accountWeb3: IAccountWeb3Record) => {
+      this._accountWeb3 = accountWeb3;
+    });
   }
 
   public get requests$(): Observable<IRequestList> {
     if (!this._requestInitialized) {
       this._requestInitialized = true;
 
-      this.http.get(`/api/public/requests`).take(1).subscribe((requests: Array<IRequest>) => {
+      this._http.get(`/api/public/requests`).take(1).subscribe((requests: Array<IRequest>) => {
         let requestsList: Array<IRequestRecord> = [];
         requests.forEach((request) => {
           requestsList.push(createRequest(request));
@@ -72,16 +84,16 @@ export class RequestService {
       fundrequestAddress: this._cs.getFundRequestContractAddress(),
       tokenAddress: this._cs.getTokenContractAddress()
     };
-    return await this.http.post('/api/public/requests/0/erc67/fund', body, {responseType: 'text'}).toPromise();
+    return await this._http.post('/api/public/requests/0/erc67/fund', body, {responseType: 'text'}).toPromise();
   }
 
   public async claimRequest(command: ClaimRequestCommand): Promise<string> {
     let body = {
       platform: command.platform,
       platformId: command.platformId,
-      address: await this._cs.getAccount()
+      address: this._accountWeb3.currentAccount
     };
-    await this.http.post(`/api/private/requests/${command.id}/claim`, body).take(1).subscribe((signedClaim: SignedClaim) => {
+    await this._http.post(`/api/private/requests/${command.id}/claim`, body).take(1).subscribe((signedClaim: SignedClaim) => {
       return this._cs.claimRequest(signedClaim);
     });
     return null;
@@ -109,10 +121,10 @@ export class RequestService {
     let httpUrl = `/api/private/requests/${request.id}/watchers`;
     let httpCall: Observable<Object>;
 
-    add ? httpCall = this.http.put(httpUrl, {
+    add ? httpCall = this._http.put(httpUrl, {
       responseType: 'text',
       requestId: request.id
-    }) : httpCall = this.http.delete(httpUrl);
+    }) : httpCall = this._http.delete(httpUrl);
 
     httpCall.take(1).subscribe(null,
       error => {
@@ -148,8 +160,7 @@ export class RequestService {
   }
 
   private updateRequestWithNewFundInfoFromContract(request: IRequestRecord): void {
-    this._cs.getRequestFundInfo(request).then(
-      (fundInfo) => {
+    this._cs.getRequestFundInfo(request).then((fundInfo) => {
         this.updateRequestWithNewFundInfo(request, fundInfo);
       }
     ).catch(error => {
@@ -180,5 +191,9 @@ export class RequestService {
 
   private handleError(error: any): void {
     console.error('An error occurred', error);
+  }
+
+  public ngOnDestroy() {
+    this._subscription.unsubscribe();
   }
 }

@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 
 import {FundRequestCommand, IRequestRecord} from '../../redux/requests.models';
-import {IUserRecord} from '../../redux/user.models';
 import {RequestService} from '../../services/request/request.service';
-import {UserService} from '../../services/user/user.service';
 import {Utils} from '../../shared/utils';
 import {BsModalRef} from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import {AccountWeb3Service} from '../../services/accountWeb3/account-web3.service';
+import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
 
 @Component({
   selector: 'fund-modal-content',
@@ -15,7 +15,7 @@ import {BsModalRef} from 'ngx-bootstrap/modal/bs-modal-ref.service';
 export class FundModalComponent implements OnInit {
 
   public request: IRequestRecord;
-  public user: IUserRecord;
+  public accountWeb3: IAccountWeb3Record;
   public fundAmount: number;
   public balance: number;
   public qrValue: string = '';
@@ -23,13 +23,13 @@ export class FundModalComponent implements OnInit {
 
   constructor(public bsModalRef: BsModalRef,
     private _rs: RequestService,
-    private _us: UserService) {
+    private _aw3s: AccountWeb3Service) {
   }
 
   ngOnInit() {
-    this._us.currentUser$.subscribe((user: IUserRecord) => {
-      this.user = user;
-      this.balance = Utils.fromWeiRounded(user.balance);
+    this._aw3s.currentAccountWeb3$.subscribe((accountWeb3: IAccountWeb3Record) => {
+      this.accountWeb3 = accountWeb3;
+      this.balance = Utils.fromWeiRounded(accountWeb3.balance);
     });
   }
 

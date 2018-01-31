@@ -4,17 +4,15 @@ interface IUser {
   userId: string,
   phoneNumber: string,
   email: string,
-  picture: string,
-  balance: string
+  picture: string
 }
 
 export interface IUserRecord extends TypedRecord<IUserRecord>, IUser {
 }
 
 export const createUser = makeTypedFactory<IUser, IUserRecord>({
-  userId     : '',
+  userId: '',
   phoneNumber: '',
-  email      : '',
-  picture    : '',
-  balance    : '0'
+  email: '',
+  picture: ''
 });

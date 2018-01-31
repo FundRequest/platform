@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
-import {UserService} from '../../../services/user/user.service';
-import {IUserRecord} from '../../../redux/user.models';
-import {RequestService} from "../../../services/request/request.service";
-import {Utils} from "../../../shared/utils";
-import {FundRequestCommand} from "../../../redux/requests.models";
+import {RequestService} from '../../../services/request/request.service';
+import {Utils} from '../../../shared/utils';
+import {FundRequestCommand} from '../../../redux/requests.models';
 
 import * as swal from 'sweetalert';
+import {AccountWeb3Service} from '../../../services/accountWeb3/account-web3.service';
+import {IAccountWeb3Record} from '../../../redux/accountWeb3.models';
 
 @Component({
   selector: 'fnd-request-detail',
@@ -16,7 +16,7 @@ import * as swal from 'sweetalert';
 })
 export class FundComponent implements OnInit {
 
-  public user: IUserRecord;
+  private _accountWeb3: IAccountWeb3Record;
   public requestDetails: any;
   public fundAmount: number;
   public balance: number;
@@ -24,25 +24,24 @@ export class FundComponent implements OnInit {
   public qrValue: string = '';
 
   constructor(private route: ActivatedRoute,
-              private userService: UserService,
-              private http: HttpClient,
-              private requestService: RequestService) {
+    private _aw3s: AccountWeb3Service,
+    private http: HttpClient,
+    private requestService: RequestService) {
   }
 
   ngOnInit(): void {
-    this.userService.currentUser$.subscribe(user => this.user = user);
     this.route.queryParams.subscribe(params => {
       let issueLink = params['url'];
       let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
       if (matches && matches.length >= 4) {
         this.fillRequestDetails(matches, issueLink);
       } else {
-        console.log("no url match");
+        console.log('no url match');
       }
     });
-    this.userService.currentUser$.subscribe((user: IUserRecord) => {
-      this.user = user;
-      this.balance = Utils.fromWeiRounded(user.balance);
+    this._aw3s.currentAccountWeb3$.subscribe((accountWeb3: IAccountWeb3Record) => {
+      this._accountWeb3 = accountWeb3;
+      this.balance = Utils.fromWeiRounded(this._accountWeb3.balance);
     });
   }
 

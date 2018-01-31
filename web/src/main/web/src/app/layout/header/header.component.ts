@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { UserblockService } from '../sidebar/userblock/userblock.service';
-import { SettingsService } from '../../core/settings/settings.service';
-import { MenuService } from '../../core/menu/menu.service';
-import { UserService } from '../../services/user/user.service';
-import {Observable} from 'rxjs/Observable';
-import {ContractsService} from '../../services/contracts/contracts.service';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {UserblockService} from '../sidebar/userblock/userblock.service';
+import {SettingsService} from '../../core/settings/settings.service';
+import {MenuService} from '../../core/menu/menu.service';
+import {UserService} from '../../services/user/user.service';
+import {Subscription} from 'rxjs/Subscription';
+import {AccountWeb3Service} from '../../services/accountWeb3/account-web3.service';
+import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
 
 declare let require: any;
 declare let $: any;
@@ -13,11 +14,11 @@ const screenfull = require('screenfull');
 const browser = require('jquery.browser');
 
 @Component({
-  selector   : 'app-header',
+  selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls  : ['./header.component.scss']
+  styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
 
   navCollapsed = true; // for horizontal layout
   menuItems = []; // for horizontal layout
@@ -25,11 +26,14 @@ export class HeaderComponent implements OnInit {
   isNavSearchVisible: boolean;
   @ViewChild('fsbutton') fsbutton;  // the fullscreen button
 
+  private _subscriptionAccountWeb3: Subscription;
+  private _accountWeb3: IAccountWeb3Record;
+
   constructor(public menu: MenuService,
-              public userblockService: UserblockService,
-              public settings: SettingsService,
-              public userService: UserService,
-              private _cs: ContractsService) {
+    public userblockService: UserblockService,
+    public settings: SettingsService,
+    public userService: UserService,
+    private _aw3s: AccountWeb3Service) {
     this.menuItems = menu.getMenu().slice(0, 4); // for horizontal layout
   }
 
@@ -38,18 +42,14 @@ export class HeaderComponent implements OnInit {
     if (browser.msie) { // Not supported under IE
       this.fsbutton.nativeElement.style.display = 'none';
     }
+
+    this._subscriptionAccountWeb3 = this._aw3s.currentAccountWeb3$.subscribe((accountWeb3: IAccountWeb3Record) => {
+      this._accountWeb3 = accountWeb3;
+    });
   }
 
-  public get locked$(): Observable<boolean> {
-      return this._cs.locked$;
-  }
-
-  public get supported$(): Observable<boolean> {
-      return this._cs.supported$;
-  }
-
-  public get network$(): Observable<string> {
-    return this._cs.network$;
+  public get accountWeb3(): IAccountWeb3Record {
+    return this._accountWeb3;
   }
 
   logout($event) {
@@ -101,5 +101,9 @@ export class HeaderComponent implements OnInit {
     else {
       el.children('em').removeClass('fa-compress').addClass('fa-expand');
     }
+  }
+
+  public ngOnDestroy() {
+    this._subscriptionAccountWeb3.unsubscribe();
   }
 }

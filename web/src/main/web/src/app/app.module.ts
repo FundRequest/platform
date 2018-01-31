@@ -27,6 +27,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { MomentModule } from 'angular2-moment';
 import { ContractsService } from './services/contracts/contracts.service';
 import { AppFactory } from './app.factory';
+import {AccountWeb3Service} from './services/accountWeb3/account-web3.service';
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: HttpClient) {
@@ -62,7 +63,7 @@ export function createTranslateLoader(http: HttpClient) {
       maxAge: 25 //  Retains last 25 states
     })
   ],
-  providers   : [AppFactory, ContractsService,
+  providers   : [AppFactory, ContractsService, AccountWeb3Service,
     {
       provide : HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
@@ -76,7 +77,7 @@ export function createTranslateLoader(http: HttpClient) {
     {
       provide   : APP_INITIALIZER,
       useFactory: (appInitializer: AppFactory) => () => appInitializer.load(),
-      deps      : [AppFactory, ContractsService],
+      deps      : [AppFactory, ContractsService, AccountWeb3Service],
       multi     : true
     }
   ],

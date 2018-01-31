@@ -16,9 +16,9 @@ export class UserService {
   private user: IUserRecord = null;
 
   constructor(private _store: Store<IState>,
-              private _http: HttpClient,
-              private _as: AuthService,
-              private _cs: ContractsService) {
+    private _http: HttpClient,
+    private _as: AuthService,
+    private _cs: ContractsService) {
   }
 
   public login(returnUri?: string) {
@@ -36,15 +36,7 @@ export class UserService {
       let newUser: IUserRecord = await this._http.get(`/api/private/user/info`).toPromise() as IUserRecord;
       this.user = createUser(newUser);
       this._store.dispatch(new ReplaceUser(this.user));
-
     }
-    let balance;
-    await Promise.all([
-      this._cs.getUserBalance().then(result => balance = result),
-    ]).catch(error => this.handleError(error));
-
-    this.user = this.user.set('balance', balance);
-    this._store.dispatch(new ReplaceUser(this.user));
   }
 
   public get currentUser$(): Observable<IUserRecord> {
