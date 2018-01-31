@@ -3,18 +3,14 @@
   <div class="user-block-picture">
     <div class="user-block-status">
       <img class="img-thumbnail img-circle" [src]="_user?.picture || 'https://api.adorable.io/avatars/face/eyes5/nose4/mouth9/fecf41'" alt="Avatar"/>
-      <div class="circle circle-lg" [ngClass]="[userService.userIsLoggedIn() ? 'circle-success' : 'circle-danger']"></div>
+      <div class="circle circle-lg" [ngClass]="[userIsLoggedIn() ? 'circle-success' : 'circle-danger']"></div>
     </div>
   </div>
 
   <div class="user-block-info">
     <span class="user-block-name" *ngIf="_user?.email">{{_user?.email}}</span>
     <span class="user-block-role">
-        <span>Balance: </span><span>{{_user?.balance | wei}}</span><span> FND</span>
-    </span>
-    <span class="user-block-role">
-      <div><span>Approved for use: </span><span>{{_user?.allowance | wei}}</span><span> FND</span></div>
-        <button (click)="approveModal($event)" class="btn btn-xs btn-default">Approve FNDs</button>
+        <span>Balance: </span><span>{{accountWeb3.balance | wei}}</span><span> FND</span>
     </span>
   </div>
 

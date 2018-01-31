@@ -35,7 +35,6 @@
 @import "app/offsidebar";
 
 // Components
-// @import "app/preloader";
 @import "app/breadcrumbs";
 @import "app/loading-bar";
 @import "app/animate";
@@ -91,3 +90,7 @@
 @import "others/spacing";
 @import "others/others";
 @import "others/whirl";
+
+
+// Custom
+@import "fnd/modal";

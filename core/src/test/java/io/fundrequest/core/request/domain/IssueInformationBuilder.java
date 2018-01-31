@@ -57,7 +57,6 @@ public final class IssueInformationBuilder {
 
     public IssueInformation build() {
         IssueInformation issueInformation = new IssueInformation();
-        issueInformation.setLink(link);
         issueInformation.setOwner(owner);
         issueInformation.setRepo(repo);
         issueInformation.setNumber(number);

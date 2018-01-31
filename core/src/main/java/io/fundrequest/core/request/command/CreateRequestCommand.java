@@ -3,6 +3,7 @@ package io.fundrequest.core.request.command;
 import io.fundrequest.core.request.domain.Platform;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -11,8 +12,8 @@ public class CreateRequestCommand {
 
     private Platform platform;
     private String platformId;
-    private String issueLink;
     private BigDecimal funds;
+    private LocalDateTime timestamp;
 
     private Set<String> technologies = new HashSet<>();
 
@@ -40,20 +41,20 @@ public class CreateRequestCommand {
         this.technologies = technologies;
     }
 
-    public String getIssueLink() {
-        return issueLink;
-    }
-
-    public void setIssueLink(String issueLink) {
-        this.issueLink = issueLink;
-    }
-
     public BigDecimal getFunds() {
         return funds;
     }
 
     public void setFunds(BigDecimal funds) {
         this.funds = funds;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override

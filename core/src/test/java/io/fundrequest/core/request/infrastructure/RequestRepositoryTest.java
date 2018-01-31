@@ -29,18 +29,6 @@ public class RequestRepositoryTest extends AbstractRepositoryTest {
     }
 
     @Test
-    public void findByLink() throws Exception {
-        Request request = RequestMother
-                .freeCodeCampNoUserStories()
-                .build();
-        requestRepository.saveAndFlush(request);
-
-        assertThat(
-                requestRepository.findByIssueLink(request.getIssueInformation().getLink())
-        ).isPresent().contains(request);
-    }
-
-    @Test
     public void findByPlatformAndPlatformId() throws Exception {
         Request request = RequestMother
                 .freeCodeCampNoUserStories()

@@ -14,7 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return request.clone({
       setHeaders: headers,
-      url       : request.url.startsWith('/api/') ? restApiLocation + request.url : request.url
+      url: /*request.url.startsWith('/api/') ||*/ request.url.startsWith('/') ? restApiLocation + request.url : request.url
     });
   }
 
@@ -22,7 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
     let headers: any = {};
     if (request.url.indexOf('/api/private') > -1) {
       headers['Access-Control-Allow-Origin'] = '*';
-      return this._as.getToken()
+      return this._as.token$
         .mergeMap((token: string) => {
           headers.Authorization = `Bearer ${token}`;
           return next.handle(this.getRequest(request, headers));

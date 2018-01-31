@@ -5,7 +5,7 @@ import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
-import io.fundrequest.core.request.fund.command.AddFundsCommand;
+import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.domain.Fund;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
@@ -85,7 +85,7 @@ public class FundServiceTest {
     public void findOne() throws Exception {
         Request request = RequestMother.freeCodeCampNoUserStories().build();
 
-        AddFundsCommand command = new AddFundsCommand();
+        FundsAddedCommand command = new FundsAddedCommand();
         command.setRequestId(request.getId());
         command.setAmountInWei(BigDecimal.TEN);
 
@@ -115,7 +115,7 @@ public class FundServiceTest {
         assertThat(requestFundedEventArgumentCaptor.getValue().getRequestDto()).isEqualTo(requestDto);
     }
 
-    private void verifyFundsSaved(AddFundsCommand command, Principal funder) {
+    private void verifyFundsSaved(FundsAddedCommand command, Principal funder) {
         ArgumentCaptor<Fund> fundArgumentCaptor = ArgumentCaptor.forClass(Fund.class);
         verify(fundRepository).saveAndFlush(fundArgumentCaptor.capture());
         assertThat(fundArgumentCaptor.getValue().getRequestId()).isEqualTo(command.getRequestId());

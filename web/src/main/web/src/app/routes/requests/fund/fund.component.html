@@ -1,0 +1,109 @@
+<div class="content-heading">
+  <div class="pull-right">
+    <div class="btn-group">
+    </div>
+  </div>
+  <div>
+    Fund a request
+    <small></small>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-offset-2 col-lg-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-11">
+            <h4>{{requestDetails?.title}}</h4>
+          </div>
+          <div class="col-xs-1">
+            <div class="pull-right"><span class="label label-success">{{requestDetails?.state}}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-xs-8">
+            <div class="form-horizontal">
+              <div class="form-group">
+                <label class="col-xs-4 col-md-3 control-label">Source</label>
+                <div class="col-xs-8 col-md-9 form-control-static">
+                  <a target="_blank" href="{{requestDetails?.link}}">
+                    <i [ngClass]="['fa fa-2x fa-github']"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-4 col-md-3 control-label">Owner</label>
+                <div class="col-xs-8 col-md-9 form-control-static">
+                  <label>
+                    <span>{{requestDetails?.owner}}</span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-4 col-md-3 control-label">Repo</label>
+                <div class="col-xs-8 col-md-9 form-control-static">
+                  <label>
+                    <span>{{requestDetails?.repo}}</span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-4 col-md-3 control-label">Issue</label>
+                <div class="col-xs-8 col-md-9 form-control-static">
+                  <label>
+                    <span>{{requestDetails?.issueNumber}}</span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-4 col-md-3 control-label">Technologies</label>
+                <div class="col-xs-8 col-md-9 form-control-static">
+                  <ng-container *ngFor="let t of requestDetails?.technologies">
+                    <span class="label label-primary">{{t}}</span>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="fund-amount" class="col-xs-4 col-md-3 control-label">Fund Amount</label>
+                <div class="col-xs-8 col-md-9 form-control-static">
+                  <div class="input-group col-xs-8">
+                    <input [(ngModel)]="fundAmount" (ngModelChange)="updateQr()" id="fund-amount" type="number" class="form-control">
+                    <span class="input-group-addon">FND</span>
+                  </div>
+                </div>
+                <div class="col-xs-8 col-xs-push-4 col-md-push-3 col-md-9 form-control-static" *ngIf="fundAmount <= 0">
+                  <label class="text-danger">Funding amount needs to be bigger then 0.</label>
+                </div>
+                <div class="col-xs-8 col-xs-push-4 col-md-push-3 col-md-9 form-control-static"
+                     *ngIf="fundAmount > balance">
+                  <label class="text-danger">Balance to low to fund {{fundAmount}} FND.</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-4">
+            <div>
+              <qr-code *ngIf="fundAmount > 0" class="img-responsive" [value]="qrValue" [size]="350"></qr-code>
+              <img *ngIf="fundAmount == undefined || fundAmount == 0" class="img-responsive" [src]="'assets/img/qr-code.svg'"  />
+              <div class="text-center"><label>Scan to fund</label></div>
+            </div>
+
+            <div class="text-center" [hidden]="fundAmount > 0">
+              <label [ngClass]="{'text-danger': fundAmount <= 0}">
+                Enter valid Fund Amount
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer clearfix">
+        <button type="button"
+                [disabled]="fundAmount == undefined || fundAmount == 0"
+                class="btn btn-primary pull-right"
+                (click)="fund()">Fund</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -51,7 +51,7 @@ public class UserInfoControllerTest {
     public void findAll() throws Exception {
         UserDto user = UserDtoMother.davy();
 
-        Mockito.when(userService.getUser(user.getEmail())).thenReturn(user);
+        Mockito.when(userService.getUser(user.getUserId())).thenReturn(user);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/private/user/info").accept(MediaType.APPLICATION_JSON).principal(principal))
                 .andExpect(MockMvcResultMatchers.status().isOk())

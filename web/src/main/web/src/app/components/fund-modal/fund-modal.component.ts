@@ -1,40 +1,67 @@
 import {Component, OnInit} from '@angular/core';
 
-import {IRequestRecord} from '../../redux/requests.models';
-import {IUserRecord} from '../../redux/user.models';
+import {FundRequestCommand, IRequestRecord} from '../../redux/requests.models';
 import {RequestService} from '../../services/request/request.service';
-import {UserService} from '../../services/user/user.service';
 import {Utils} from '../../shared/utils';
 import {BsModalRef} from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import {AccountWeb3Service} from '../../services/accountWeb3/account-web3.service';
+import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
 
 @Component({
-  selector   : 'fund-modal-content',
+  selector: 'fund-modal-content',
   templateUrl: './fund-modal.component.html',
-  styleUrls  : ['./fund-modal.component.scss']
+  styleUrls: ['./fund-modal.component.scss']
 })
 export class FundModalComponent implements OnInit {
 
   public request: IRequestRecord;
-  public user: IUserRecord;
+  public accountWeb3: IAccountWeb3Record;
   public fundAmount: number;
-  public allowance: number;
   public balance: number;
+  public qrValue: string = '';
+
 
   constructor(public bsModalRef: BsModalRef,
-              private requestService: RequestService,
-              private userService: UserService) {
+    private _rs: RequestService,
+    private _aw3s: AccountWeb3Service) {
   }
 
   ngOnInit() {
-    this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
-      this.user = user;
-      this.balance = Utils.fromWeiRounded(user.balance);
-      this.allowance = Utils.fromWeiRounded(user.allowance);
+    this._aw3s.currentAccountWeb3$.subscribe((accountWeb3: IAccountWeb3Record) => {
+      this.accountWeb3 = accountWeb3;
+      this.balance = Utils.fromWeiRounded(accountWeb3.balance);
     });
   }
 
+  public hasEnoughFunds() {
+    return this.balance >= this.fundAmount;
+  }
+
+  public canFund(): boolean {
+    return this.fundAmount > 0;
+  }
+
+  public updateQr() {
+    this._rs.requestQRValue(new FundRequestCommand(
+      this.request.issueInformation.platform,
+      this.request.issueInformation.platformId,
+      this.fundAmount
+    )).then(
+      res => { // Success
+        this.qrValue = res;
+      },
+      msg => { // Error
+      }
+    );
+  }
+
   public fund() {
-    this.requestService.fundRequest(this.request, this.fundAmount);
+    this._rs.fundRequest(
+      new FundRequestCommand(
+        this.request.issueInformation.platform,
+        this.request.issueInformation.platformId,
+        this.fundAmount)
+    );
     this.bsModalRef.hide();
   }
 }

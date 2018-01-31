@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BodyOutputType, Toast, ToasterConfig, ToasterService } from 'angular2-toaster';
+import { BodyOutputType, Toast, ToasterService } from 'angular2-toaster';
+import { NotificationType } from './notificationType';
+import { SettingsService } from '../../core/settings/settings.service';
 
 @Injectable()
 export class NotificationService {
@@ -14,7 +16,27 @@ export class NotificationService {
     bodyOutputType: BodyOutputType.TrustedHtml,
   };
 
-  constructor(private _ts: ToasterService) {
+  constructor(private _ts: ToasterService, private _settings: SettingsService) {
+  }
+
+  public message(type: NotificationType, body: string = ''): void {
+    if (this._settings.status.openedFromChrome) {
+      let nativeEvent = new CustomEvent(`chrome.to.extension.fnd.${type}`, {
+        detail: {
+          body: body
+        }
+      });
+      document.dispatchEvent(nativeEvent);
+    } else {
+      switch (type) {
+        case NotificationType.FUND_SUCCESS:
+          this.success('Transaction \'fund request\' sent.', body);
+          break;
+        case NotificationType.FUND_FAILED:
+          this.error('Transaction \'fund request\' failed.', body);
+          break;
+      }
+    }
   }
 
   public success(title: string = '', body: string = ''): void {

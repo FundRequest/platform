@@ -1,8 +1,7 @@
 import {makeTypedFactory, TypedRecord} from 'typed-immutable-record';
 import {List} from 'immutable';
 
-interface IRequestIssueInformation {
-  link: string;
+interface RequestIssueInformation {
   owner: string;
   repo: string;
   number: Number;
@@ -12,38 +11,66 @@ interface IRequestIssueInformation {
   platformId: string;
 }
 
-interface IRequest {
+export interface RequestIssueFundInformation {
+  numberOfFunders: string;
+  balance: string;
+  funderBalance: string;
+}
+
+export interface IRequest {
   id: number;
   status: string;
   type: string;
   technologies: string[];
   watchers: string[];
   loggedInUserIsWatcher: boolean;
-  balance: string;
-  issueInformation: IRequestIssueInformation;
+  issueInformation: RequestIssueInformation;
+  fundInfo: RequestIssueFundInformation;
 }
-
 
 export interface IRequestRecord extends TypedRecord<IRequestRecord>, IRequest {
 }
 
 export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
-  id                   : 0,
-  status               : '',
-  type                 : '',
-  technologies         : [],
-  watchers             : [],
+  id: 0,
+  status: '',
+  type: '',
+  technologies: [],
+  watchers: [],
   loggedInUserIsWatcher: false,
-  balance              : '0',
-  issueInformation     : {
-    link  : '',
-    owner : '',
-    repo  : '',
+  issueInformation: {
+    owner: '',
+    repo: '',
     number: 0,
-    title : '',
+    title: '',
     platform: '',
-    platformId  : ''
+    platformId: ''
+  },
+  fundInfo: {
+    numberOfFunders: '0',
+    balance: '0',
+    funderBalance: '0'
   }
 });
 
 export type IRequestList = List<IRequestRecord>;
+
+export class FundRequestCommand {
+  constructor(public platform: string, public platformId: string, public amount: number) {
+  }
+}
+
+export class ClaimRequestCommand {
+  constructor(public id: number, public platform: string, public platformId: string, public solverAddress: string) {
+  }
+}
+
+export class SignedClaim {
+  platform: string;
+  platformId: string;
+  solverAddress: string;
+  solver: string;
+  r: string;
+  s: string;
+  v: string;
+}

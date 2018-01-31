@@ -8,7 +8,7 @@ public class FundDto {
     private String funder;
     private BigDecimal amountInWei;
     private Long requestId;
-    private LocalDateTime creationDate;
+    private LocalDateTime timestamp;
 
     public Long getId() {
         return id;
@@ -42,11 +42,11 @@ public class FundDto {
         this.requestId = requestId;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

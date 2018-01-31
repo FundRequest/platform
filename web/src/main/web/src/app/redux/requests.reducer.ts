@@ -45,7 +45,7 @@ export class EditRequest extends RequestAction {
 }
 
 export class ReplaceRequestList extends RequestAction {
-  constructor(private requestList: IRequestList) {
+  constructor(private requestList: Array<IRequestRecord>) {
     super('REPLACE_REQUEST_LIST');
   }
 

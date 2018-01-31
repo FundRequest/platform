@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
-    @Query("SELECT r FROM Request r where r.issueInformation.link = ?1")
-    Optional<Request> findByIssueLink(String link);
-
     @Query("SELECT r FROM Request r where r.issueInformation.platform = ?1 and r.issueInformation.platformId = ?2")
     Optional<Request> findByPlatformAndPlatformId(Platform platform, String platformId);
 

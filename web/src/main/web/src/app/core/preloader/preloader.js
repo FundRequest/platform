@@ -28,7 +28,6 @@
     }
 
     function endCounter() {
-
         clearTimeout(timeout);
 
         if (progressBar) progressBar.style.width = '100%';
@@ -38,6 +37,8 @@
             removePreloader();
             // retore scrollbar
             body.style.overflow = '';
+            var event = new CustomEvent('fnd.loaded');
+            document.dispatchEvent(event);
         }, 300);
     }
 

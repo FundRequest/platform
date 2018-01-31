@@ -1,12 +1,14 @@
 package io.fundrequest.core.request.fund.domain;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public final class FundBuilder {
     private String funder;
     private BigDecimal amountInWei;
     private Long requestId;
     private Long id;
+    private LocalDateTime timestamp;
 
     private FundBuilder() {
     }
@@ -36,8 +38,13 @@ public final class FundBuilder {
     }
 
     public Fund build() {
-        Fund fund = new Fund(funder, amountInWei, requestId);
+        Fund fund = new Fund(funder, amountInWei, requestId, timestamp);
         fund.setId(this.id);
         return fund;
+    }
+
+    public FundBuilder withTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+        return this;
     }
 }

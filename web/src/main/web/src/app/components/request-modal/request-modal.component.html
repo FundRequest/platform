@@ -38,10 +38,6 @@
       <div class="text-danger" *ngIf="fundAmount > balance">
         Balance to low to fund {{fundAmount}} FND.
       </div>
-      <div class="text-warning" *ngIf="fundAmount > allowance">
-        You approved {{allowance}} FND, when trying to fund there will be an extra request
-          to first approve {{fundAmount - allowance}} FND.
-      </div>
       <div class="text-warning" *ngIf="link.valid && requestExists()">
         This request already exists, amount will be added to this request.
       </div>

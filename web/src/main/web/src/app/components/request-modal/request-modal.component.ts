@@ -7,44 +7,44 @@ import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Issue} from './issue';
 import {Utils} from '../../shared/utils';
-import {UserService} from "../../services/user/user.service";
-import {IUserRecord} from "../../redux/user.models";
+import {AccountWeb3Service} from '../../services/accountWeb3/account-web3.service';
+import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
 
 @Component({
-  selector   : 'fnd-request-modal',
+  selector: 'fnd-request-modal',
   templateUrl: './request-modal.component.html',
-  styleUrls  : ['./request-modal.component.scss']
+  styleUrls: ['./request-modal.component.scss']
 })
 export class RequestModalComponent implements OnInit, OnDestroy {
   private _requests: IRequestList;
-  private _subscription: Subscription;
+  private _subscriptionAccountWeb3: Subscription;
+  private _subscriptionRequests: Subscription;
 
   public title: string = 'Fund other request';
   public requestForm: FormGroup;
-  public user: IUserRecord;
+  public acountWeb3: IAccountWeb3Record;
   public fundAmount: number;
-  public allowance: number;
   public balance: number;
-
 
   public issue: Issue = new Issue;
 
-  constructor(public bsModalRef: BsModalRef, private _router: Router, private _rs: RequestService, private userService: UserService) {
-
+  constructor(public bsModalRef: BsModalRef,
+    private _router: Router,
+    private _rs: RequestService,
+    private _aw3s: AccountWeb3Service) {
   }
 
   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe((user: IUserRecord) => {
-      this.user = user;
-      this.balance = Utils.fromWeiRounded(user.balance);
-      this.allowance = Utils.fromWeiRounded(user.allowance);
+    this._subscriptionAccountWeb3 = this._aw3s.currentAccountWeb3$.subscribe((acountWeb3: IAccountWeb3Record) => {
+      this.acountWeb3 = acountWeb3;
+      this.balance = Utils.fromWeiRounded(acountWeb3.balance);
     });
-    this._subscription = this._rs.requests$.subscribe(result => this._requests = result);
+    this._subscriptionRequests = this._rs.requests$.subscribe(result => this._requests = result);
 
     this.requestForm = new FormGroup({
-      link        : new FormControl(this.issue.link, [
+      link: new FormControl(this.issue.link, [
         Validators.required,
-        Validators.pattern(/^https:\/\/github.com\/FundRequest\/area51\/issues\/[0-9]+$/),
+        Validators.pattern(/^https:\/\/github.com\/FundRequest\/area51\/issues\/[0-9]+$/)
       ]),
       'fund-amount': new FormControl(this.fundAmount)
     });
@@ -56,19 +56,30 @@ export class RequestModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this._subscription.unsubscribe();
+    this._subscriptionAccountWeb3.unsubscribe();
+    this._subscriptionRequests.unsubscribe();
   }
 
   public addRequest() {
     let technologies = [];
-    this._rs.addRequest(this.link.value.trim(), this.fundAmount);
+    this._rs.addRequest(this.link, this.fundAmount);
     this.bsModalRef.hide();
   }
 
-  get link() { return this.requestForm.get('link'); }
+  get link() { return this.requestForm.get('link').value.trim(); }
 
-  public requestExists():boolean {
-    let checkRequests = this._requests.filter((request: IRequestRecord) => request.issueInformation.link == this.link.value.trim());
+  get platform() {
+    return Utils.getPlatformFromUrl(this.link);
+  }
+
+  get platformId() {
+    return Utils.getPlatformIdFromUrl(this.link);
+  }
+
+  public requestExists(): boolean {
+    let checkRequests = this._requests.filter((request: IRequestRecord) =>
+      (request.issueInformation.platform == this.platform && request.issueInformation.platformId == this.platformId)
+    );
     return checkRequests.count() > 0;
   }
 

@@ -43,6 +43,7 @@
     "angular2-datatable": "0.6.0",
     "angular2-jwt": "^0.2.3",
     "angular2-moment": "^1.7.0",
+    "angular2-qrcode": "^2.0.1",
     "angular2-text-mask": "8.0.4",
     "angular2-toaster": "4.0.1",
     "bn.js": "^4.11.8",

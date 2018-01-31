@@ -1,6 +1,7 @@
 import { Component, OnInit, Injector, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-declare var $: any;
+
+declare let $: any;
 
 import { MenuService } from '../../core/menu/menu.service';
 import { SettingsService } from '../../core/settings/settings.service';
@@ -18,9 +19,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   $doc: any = null;
 
   constructor(public menu: MenuService, public settings: SettingsService, public injector: Injector) {
-
     this.menuItems = menu.getMenu();
-
   }
 
   ngOnInit() {

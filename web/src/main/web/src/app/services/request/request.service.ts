@@ -1,41 +1,63 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
 import {Store} from '@ngrx/store';
 import {HttpClient} from '@angular/common/http';
 import {RequestsStats} from '../../core/requests/RequestsStats';
 import {IState} from '../../redux/store';
-import {createRequest, IRequestList, IRequestRecord} from '../../redux/requests.models';
+import {
+  ClaimRequestCommand,
+  createRequest,
+  FundRequestCommand,
+  IRequest,
+  IRequestList,
+  IRequestRecord,
+  RequestIssueFundInformation,
+  SignedClaim
+} from '../../redux/requests.models';
 import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
 import {IUserRecord} from '../../redux/user.models';
 import {ContractsService} from '../contracts/contracts.service';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
+import {Utils} from '../../shared/utils';
+import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
+import {AccountWeb3Service} from '../accountWeb3/account-web3.service';
 
 @Injectable()
-export class RequestService {
+export class RequestService implements OnInit, OnDestroy {
   private _requestInitialized: boolean = false;
+  private _accountWeb3: IAccountWeb3Record;
+  private _subscription: Subscription;
+  private _web3: any;
 
   constructor(private store: Store<IState>,
-              private http: HttpClient,
-              private _cs: ContractsService) {
+    private _http: HttpClient,
+    private _aw3s: AccountWeb3Service,
+    private _cs: ContractsService) {
+  }
+
+  public async ngOnInit() {
+    this._subscription = this._aw3s.currentAccountWeb3$.subscribe((accountWeb3: IAccountWeb3Record) => {
+      this._accountWeb3 = accountWeb3;
+      this._web3 = this._aw3s.getWeb3(this._accountWeb3);
+    });
   }
 
   public get requests$(): Observable<IRequestList> {
     if (!this._requestInitialized) {
       this._requestInitialized = true;
 
-      this.http.get(`/api/public/requests`).take(1).subscribe((requests: IRequestList) => {
-        this.store.dispatch(new ReplaceRequestList(requests));
+      this._http.get(`/api/public/requests`).take(1).subscribe((requests: Array<IRequest>) => {
+        let requestsList: Array<IRequestRecord> = [];
+        requests.forEach((request) => {
+          requestsList.push(createRequest(request));
+        });
+        this.store.dispatch(new ReplaceRequestList(requestsList));
         this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
           requests.map((request: IRequestRecord) => {
-            this._cs.getRequestBalance(request).then(
-              (balance) => {
-                let newRequest = request;
-                newRequest.balance = balance; //createRequest();
-                this.editRequestInStore(request, newRequest);
-              }
-            );
+            this.updateRequestWithNewFundInfoFromContract(request);
           });
         });
       });
@@ -45,26 +67,38 @@ export class RequestService {
   }
 
   public async getStatistics(): Promise<RequestsStats> {
-    return await this.http.get('/api/public/requests/statistics')
-      .toPromise() as RequestsStats;
-    //.then(response => response as RequestsStats)
-    //.catch(this.handleError);
+    return this._cs.getStatistics();
   }
 
   public addRequest(issueLink: string, fundAmount: number): void {
-    let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(issueLink);
-    let url = 'https://api.github.com/repos/' + matches[1] + '/' + matches[2] + '/issues/' + matches[3];
-    this.http.get(url).subscribe(data => {
-      this._cs.fundRequest("GITHUB", data['id'], issueLink, fundAmount);
-    });
-
+    this._cs.fundRequest('GITHUB', Utils.getPlatformIdFromUrl(issueLink), fundAmount);
   }
 
-  public async fundRequest(request: IRequestRecord, funding: number): Promise<string> {
-    //let balance = await this.contractService.getRequestBalance(request) as string;
-    return this._cs.fundRequest(request.issueInformation.platform, request.issueInformation.platformId, request.issueInformation.link, funding);
-    // only edit request when funding is processed
-    //this.editRequestInStore(request, createRequest(newRequest));
+  public async fundRequest(command: FundRequestCommand): Promise<string> {
+    return this._cs.fundRequest(command.platform, command.platformId, command.amount);
+  }
+
+  public async requestQRValue(command: FundRequestCommand) {
+    let body = {
+      platform: command.platform,
+      platformId: command.platformId,
+      amount: '' + this._web3.toWei(command.amount, 'ether'),
+      fundrequestAddress: this._cs.getFundRequestContractAddress(),
+      tokenAddress: this._cs.getTokenContractAddress()
+    };
+    return await this._http.post('/api/public/requests/0/erc67/fund', body, {responseType: 'text'}).toPromise();
+  }
+
+  public async claimRequest(command: ClaimRequestCommand): Promise<string> {
+    let body = {
+      platform: command.platform,
+      platformId: command.platformId,
+      address: this._accountWeb3.currentAccount
+    };
+    await this._http.post(`/api/private/requests/${command.id}/claim`, body).take(1).subscribe((signedClaim: SignedClaim) => {
+      return this._cs.claimRequest(signedClaim);
+    });
+    return null;
   }
 
   public setUserAsWatcher(request: IRequestRecord, user: IUserRecord): void {
@@ -78,13 +112,9 @@ export class RequestService {
   private updateWatcher(request: IRequestRecord, userId: string, add: boolean): void {
     let newWatchers: string[] = JSON.parse(JSON.stringify(request.watchers));
 
-    if (add) {
-      newWatchers.push(userId);
-    } else {
-      newWatchers = newWatchers.filter(function (watcher) {
-        return watcher != userId;
-      });
-    }
+    add ? newWatchers.push(userId) : newWatchers.filter(function (watcher) {
+      return watcher != userId;
+    });
 
     let newRequest: IRequestRecord = createRequest(JSON.parse(JSON.stringify(request)));
     newRequest = newRequest.set('watchers', newWatchers);
@@ -93,14 +123,10 @@ export class RequestService {
     let httpUrl = `/api/private/requests/${request.id}/watchers`;
     let httpCall: Observable<Object>;
 
-    if (add) {
-      httpCall = this.http.put(httpUrl, {
-        responseType: 'text',
-        requestId: request.id
-      });
-    } else {
-      httpCall = this.http.delete(httpUrl);
-    }
+    add ? httpCall = this._http.put(httpUrl, {
+      responseType: 'text',
+      requestId: request.id
+    }) : httpCall = this._http.delete(httpUrl);
 
     httpCall.take(1).subscribe(null,
       error => {
@@ -110,29 +136,13 @@ export class RequestService {
     );
   }
 
-  public removeRequestInStore(request: IRequestRecord) {
+  public removeRequestInStore(request: IRequestRecord): void {
     this.store.dispatch(new RemoveRequest(request));
   }
 
-  public addRequestInStore(newRequest: IRequestRecord) {
-    console.log('adding request!');
+  public addRequestInStore(newRequest: IRequestRecord): void {
     this.store.dispatch(new AddRequest(newRequest));
     this.updateRequestBalance(newRequest);
-  }
-
-  private updateRequestBalance(request: IRequestRecord) {
-    this._cs.getRequestBalance(request).then(
-      (balance) => {
-        if(request.set) {
-          this.editRequestInStore(request, request.set('balance', balance));
-        } else {
-          let newRequest = request;
-          newRequest.balance = balance;
-          this.editRequestInStore(request, newRequest);
-        }
-
-      }
-    );
   }
 
   public editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {
@@ -148,15 +158,44 @@ export class RequestService {
           existingRequest = request;
         });
     });
+    typeof existingRequest == 'undefined' ? this.addRequestInStore(newOrModifiedRequest) : this.updateRequestBalance(existingRequest);
+  }
 
-    if (existingRequest == null) {
-      this.addRequestInStore(newOrModifiedRequest);
+  private updateRequestWithNewFundInfoFromContract(request: IRequestRecord): void {
+    this._cs.getRequestFundInfo(request).then((fundInfo) => {
+        this.updateRequestWithNewFundInfo(request, fundInfo);
+      }
+    ).catch(error => {
+      console.log(error);
+    });
+  }
+
+  private updateRequestBalance(request: IRequestRecord): void {
+    this._cs.getRequestFundInfo(request).then((fundInfo) => {
+      this.updateRequestWithNewFundInfo(request, fundInfo);
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
+  private updateRequestWithNewFundInfo(request: IRequestRecord, fundInfo: RequestIssueFundInformation) {
+    let newRequest: IRequestRecord;
+
+    if (!request.set) {
+      newRequest = createRequest(request);
     } else {
-      this.updateRequestBalance(existingRequest);
+      newRequest = request;
     }
+
+    newRequest = newRequest.set('fundInfo', fundInfo);
+    this.editRequestInStore(request, newRequest);
   }
 
   private handleError(error: any): void {
     console.error('An error occurred', error);
+  }
+
+  public ngOnDestroy() {
+    this._subscription.unsubscribe();
   }
 }

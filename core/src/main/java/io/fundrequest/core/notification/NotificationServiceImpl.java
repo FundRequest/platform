@@ -2,14 +2,14 @@ package io.fundrequest.core.notification;
 
 import io.fundrequest.core.notification.domain.Notification;
 import io.fundrequest.core.notification.domain.NotificationType;
-import io.fundrequest.core.notification.domain.RequestCreatedNotification;
+import io.fundrequest.core.notification.domain.RequestClaimedNotification;
 import io.fundrequest.core.notification.domain.RequestFundedNotification;
 import io.fundrequest.core.notification.dto.NotificationDto;
-import io.fundrequest.core.notification.dto.RequestCreatedNotificationDto;
+import io.fundrequest.core.notification.dto.RequestClaimedNotificationDto;
 import io.fundrequest.core.notification.dto.RequestFundedNotificationDto;
 import io.fundrequest.core.notification.infrastructure.NotificationRepository;
 import io.fundrequest.core.request.RequestService;
-import io.fundrequest.core.request.event.RequestCreatedEvent;
+import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
@@ -19,7 +19,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,25 +45,25 @@ class NotificationServiceImpl implements NotificationService {
     public List<NotificationDto> getLastNotifications() {
         List<Notification> notifications = notificationRepository.findFirst10ByOrderByDateDesc();
         List<NotificationDto> result = new ArrayList<>();
-        result.addAll(getRequestCreatedNotifications(notifications));
         result.addAll(getRequestFundedNotifications(notifications));
+        result.addAll(getRequestClaimedNotifications(notifications));
         result.sort((o1, o2) -> o2.getDate().compareTo(o1.getDate()));
         return result;
     }
 
-    private List<NotificationDto> getRequestCreatedNotifications(List<Notification> notifications) {
-        List<RequestCreatedNotification> requestCreatedNotifications = notifications
+    private List<NotificationDto> getRequestClaimedNotifications(List<Notification> notifications) {
+        List<RequestClaimedNotification> requestCreatedNotifications = notifications
                 .stream()
-                .filter(n -> n.getType() == NotificationType.REQUEST_CREATED)
-                .map(n -> (RequestCreatedNotification) n)
+                .filter(n -> n.getType() == NotificationType.REQUEST_CLAIMED)
+                .map(n -> (RequestClaimedNotification) n)
                 .collect(Collectors.toList());
 
         Map<Long, RequestDto> requestMap =
-                requestService.findAll(requestCreatedNotifications.stream().map(RequestCreatedNotification::getRequestId).collect(Collectors.toSet()))
+                requestService.findAll(requestCreatedNotifications.stream().map(RequestClaimedNotification::getRequestId).collect(Collectors.toSet()))
                         .stream().collect(Collectors.toMap(RequestDto::getId, n -> n));
 
         return requestCreatedNotifications.stream()
-                .map(n -> new RequestCreatedNotificationDto(n.getId(), NotificationType.REQUEST_CREATED, n.getDate(), requestMap.get(n.getRequestId())))
+                .map(n -> new RequestClaimedNotificationDto(n.getId(), n.getTransactionId(), n.getDate(), requestMap.get(n.getRequestId()), n.getSolver()))
                 .collect(Collectors.toList());
     }
 
@@ -87,31 +86,18 @@ class NotificationServiceImpl implements NotificationService {
         return requestFundedNotifications.stream()
                 .map(n -> new RequestFundedNotificationDto(
                         n.getId(),
-                        NotificationType.REQUEST_FUNDED,
+                        n.getTransactionId(),
                         n.getDate(),
                         requestMap.get(fundedMap.get(n.getFundId()).getRequestId()),
                         fundedMap.get(n.getFundId())))
                 .collect(Collectors.toList());
     }
 
-    @EventListener
-    @Transactional
-    public void onRequestCreated(RequestCreatedEvent requestCreatedEvent) {
-        RequestCreatedNotification notification = new RequestCreatedNotification(NotificationType.REQUEST_CREATED, LocalDateTime.now(), requestCreatedEvent.getRequestDto().getId());
-        notification = notificationRepository.save(notification);
-        publishNotification(
-                createRequestCreatedNotification(notification.getId(), requestCreatedEvent.getRequestDto())
-        );
-    }
-
-    private RequestCreatedNotificationDto createRequestCreatedNotification(Long id, RequestDto requestDto) {
-        return new RequestCreatedNotificationDto(id, NotificationType.REQUEST_CREATED, LocalDateTime.now(), requestDto);
-    }
 
     @EventListener
     @Transactional
     public void onFunded(RequestFundedEvent fundedEvent) {
-        RequestFundedNotification notification = new RequestFundedNotification(NotificationType.REQUEST_FUNDED, LocalDateTime.now(), fundedEvent.getFundDto().getId());
+        RequestFundedNotification notification = new RequestFundedNotification(NotificationType.REQUEST_FUNDED, fundedEvent.getTimestamp(), fundedEvent.getTransactionId(), fundedEvent.getFundDto().getId());
         notification = notificationRepository.saveAndFlush(notification);
         publishNotification(createRequestFundedNotification(notification, fundedEvent.getRequestDto(), fundedEvent.getFundDto()));
     }
@@ -119,11 +105,25 @@ class NotificationServiceImpl implements NotificationService {
     private RequestFundedNotificationDto createRequestFundedNotification(RequestFundedNotification notification, RequestDto requestDto, FundDto fundDto) {
         return new RequestFundedNotificationDto(
                 notification.getId(),
-                NotificationType.REQUEST_FUNDED,
+                notification.getTransactionId(),
                 notification.getDate(),
                 requestDto,
                 fundDto
         );
+    }
+
+    @EventListener
+    @Transactional
+    public void onClaimed(RequestClaimedEvent claimedEvent) {
+        RequestClaimedNotification notification = new RequestClaimedNotification(NotificationType.REQUEST_CLAIMED, claimedEvent.getTimestamp(), claimedEvent.getTransactionId(), claimedEvent.getRequestDto().getId(), claimedEvent.getSolver());
+        notification = notificationRepository.saveAndFlush(notification);
+        publishNotification(
+                createRequestClaimedNotification(notification.getId(), claimedEvent)
+        );
+    }
+
+    private RequestClaimedNotificationDto createRequestClaimedNotification(Long id, RequestClaimedEvent claimedEvent) {
+        return new RequestClaimedNotificationDto(id, claimedEvent.getTransactionId(), claimedEvent.getTimestamp(), claimedEvent.getRequestDto(), claimedEvent.getSolver());
     }
 
     private void publishNotification(NotificationDto notification) {

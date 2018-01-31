@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -24,12 +26,12 @@ public class CreateGithubCommentOnFundHandlerTest {
     @Before
     public void setUp() throws Exception {
         githubClient = mock(GithubClient.class);
-        handler = new CreateGithubCommentOnFundHandler(githubClient, true);
+        handler = new CreateGithubCommentOnFundHandler(githubClient, true, "fundrequest-notifier");
     }
 
     @Test
     public void ignoresGithubComment() throws Exception {
-        handler = new CreateGithubCommentOnFundHandler(githubClient, false);
+        handler = new CreateGithubCommentOnFundHandler(githubClient, false, "fundrequest-notifier");
 
         handler.createGithubCommentOnRequestFunded(createEvent());
 
@@ -45,11 +47,13 @@ public class CreateGithubCommentOnFundHandlerTest {
         ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
         IssueInformationDto issueInformation = event.getRequestDto().getIssueInformation();
         verify(githubClient).createCommentOnIssue(eq(issueInformation.getOwner()), eq(issueInformation.getRepo()), eq(issueInformation.getNumber()), createGithubCommentArgumentCaptor.capture());
-        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo("Great! 50.33 FND was added to this issue. For more information, go to https://alpha.fundrequest.io.");
+        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo("Great, this issue is now funded on FundRequest: https://alpha.fundrequest.io!  \n" +
+                "\n" +
+                "50.33 FND was funded on 2017-12-27");
 
     }
 
     private RequestFundedEvent createEvent() {
-        return new RequestFundedEvent(FundDtoMother.aFundDto(), RequestDtoMother.freeCodeCampNoUserStories());
+        return new RequestFundedEvent("0xd009f45e5d999ba5c3c5ffc2551a9749919d6c8aa915106c2c21e76ab552c200", FundDtoMother.aFundDto(), RequestDtoMother.freeCodeCampNoUserStories(), LocalDateTime.now());
     }
 }

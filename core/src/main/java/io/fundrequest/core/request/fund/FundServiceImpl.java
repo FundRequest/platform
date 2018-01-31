@@ -4,7 +4,7 @@ import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestStatus;
-import io.fundrequest.core.request.fund.command.AddFundsCommand;
+import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.domain.Fund;
 import io.fundrequest.core.request.fund.domain.FundBuilder;
 import io.fundrequest.core.request.fund.dto.FundDto;
@@ -56,12 +56,13 @@ class FundServiceImpl implements FundService {
 
     @Transactional
     @Override
-    public void addFunds(AddFundsCommand command) {
+    public void addFunds(FundsAddedCommand command) {
         Request request = requestRepository.findOne(command.getRequestId())
                 .orElseThrow(() -> new RuntimeException("Unable to find request"));
         Fund fund = FundBuilder.aFund()
                 .withAmountInWei(command.getAmountInWei())
                 .withRequestId(command.getRequestId())
+                .withTimestamp(command.getTimestamp())
                 .build();
         fund = fundRepository.saveAndFlush(fund);
         if (request.getStatus() == RequestStatus.OPEN) {
@@ -70,9 +71,9 @@ class FundServiceImpl implements FundService {
         }
         eventPublisher.publishEvent(
                 new RequestFundedEvent(
-                        mappers.map(Fund.class, FundDto.class, fund),
-                        mappers.map(Request.class, RequestDto.class, request)
-                )
+                        command.getTransactionId(), mappers.map(Fund.class, FundDto.class, fund),
+                        mappers.map(Request.class, RequestDto.class, request),
+                        command.getTimestamp())
         );
 
     }

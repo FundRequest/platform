@@ -1,10 +1,10 @@
-<div class="row" *ngIf="statistics">
+<div class="row" *ngIf="statistics | async">
   <div class="col-sm-6 col-lg-6">
     <div class="panel widget bg-primary">
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x fa fa-magic"></em></div>
         <div class="col-xs-8 pv-lg">
-          <div class="h2 mt0">{{statistics.requestsFunded}}</div>
+          <div class="h2 mt0">{{(statistics | async)?.requestsFunded}}</div>
           <div class="text-uppercase"># Requests funded</div>
         </div>
       </div>
@@ -15,7 +15,7 @@
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-people"></em></div>
         <div class="col-xs-8 pv-lg">
-          <div class="h2 mt0">{{statistics.numberOfFunders}}</div>
+          <div class="h2 mt0">{{(statistics | async)?.numberOfFunders}}</div>
           <div class="text-uppercase"># Funders</div>
         </div>
       </div>
@@ -26,7 +26,7 @@
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-chart"></em></div>
         <div class="col-xs-8 pv-lg">
-          <div class="h2 mt0">{{statistics.averageFundingPerRequest | wei}} FND</div>
+          <div class="h2 mt0">{{(statistics | async)?.averageFundingPerRequest | wei}} FND</div>
           <div class="text-uppercase">Average funding</div>
         </div>
       </div>
@@ -37,7 +37,7 @@
       <div class="row row-table">
         <div class="col-xs-4 text-center pv-lg bg-primary-dark"><em class="fa-3x icon-fire"></em></div>
         <div class="col-xs-8 pv-lg">
-          <div class="h2 mt0">{{statistics.totalAmountFunded | wei}} FND</div>
+          <div class="h2 mt0">{{(statistics | async)?.totalAmountFunded | wei}} FND</div>
           <div class="text-uppercase">Total funded</div>
         </div>
       </div>

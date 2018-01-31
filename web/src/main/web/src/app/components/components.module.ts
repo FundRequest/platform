@@ -1,16 +1,16 @@
-import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { WatchlinkComponent } from './watchlink/watchlink.component';
-import { CommonModule } from '@angular/common';
-import { StatisticsComponent } from './statistics/statistics.component';
-import { EasypiechartDirective } from '../shared/directives/easypiechart/easypiechart.directive';
-import { SharedModule } from '../shared/shared.module';
-import { FundModalComponent } from './fund-modal/fund-modal.component';
-import { RequestModalComponent } from './request-modal/request-modal.component';
-import { ApproveModalComponent } from './approve-modal/approve-modal.component';
-import { TagInputModule } from 'ngx-chips';
-import { NotificationStreamComponent } from './notification-stream/notification-stream.component';
-import { MomentModule } from 'angular2-moment';
+import {NgModule} from '@angular/core';
+import {HttpClientModule} from '@angular/common/http';
+import {WatchlinkComponent} from './watchlink/watchlink.component';
+import {CommonModule} from '@angular/common';
+import {StatisticsComponent} from './statistics/statistics.component';
+import {EasypiechartDirective} from '../shared/directives/easypiechart/easypiechart.directive';
+import {SharedModule} from '../shared/shared.module';
+import {FundModalComponent} from './fund-modal/fund-modal.component';
+import {RequestModalComponent} from './request-modal/request-modal.component';
+import {TagInputModule} from 'ngx-chips';
+import {NotificationStreamComponent} from './notification-stream/notification-stream.component';
+import {MomentModule} from 'angular2-moment';
+import {QRCodeModule} from 'angular2-qrcode';
 
 @NgModule({
   imports        : [
@@ -18,14 +18,14 @@ import { MomentModule } from 'angular2-moment';
     CommonModule,
     SharedModule,
     TagInputModule,
-    MomentModule
+    MomentModule,
+    QRCodeModule
 ],
   providers      : [],
   declarations   : [
     WatchlinkComponent,
     StatisticsComponent,
     FundModalComponent,
-    ApproveModalComponent,
     RequestModalComponent,
     NotificationStreamComponent
   ],
@@ -33,14 +33,12 @@ import { MomentModule } from 'angular2-moment';
     WatchlinkComponent,
     StatisticsComponent,
     FundModalComponent,
-    ApproveModalComponent,
     RequestModalComponent,
     EasypiechartDirective,
     NotificationStreamComponent
   ],
   entryComponents: [
     FundModalComponent,
-    ApproveModalComponent,
     RequestModalComponent
   ]
 })
