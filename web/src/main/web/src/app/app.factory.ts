@@ -23,6 +23,7 @@ export class AppFactory {
       this._accountWeb3 = accountWeb3;
       this._setAccountRefreshInterval();
     });
+
     return true;
   }
 

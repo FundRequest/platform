@@ -1,10 +1,10 @@
 import {Injectable, OnDestroy, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {Subscription} from 'rxjs/Subscription';
 import {Store} from '@ngrx/store';
 import {HttpClient} from '@angular/common/http';
+
 import {RequestsStats} from '../../core/requests/RequestsStats';
 import {IState} from '../../redux/store';
+import {Utils} from '../../shared/utils';
 import {
   ClaimRequestCommand,
   createRequest,
@@ -13,17 +13,20 @@ import {
   IRequestList,
   IRequestRecord,
   RequestIssueFundInformation,
+  RequestStatus,
   SignedClaim
 } from '../../redux/requests.models';
-import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
 import {IUserRecord} from '../../redux/user.models';
+import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
+import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
 import {ContractsService} from '../contracts/contracts.service';
+import {AccountWeb3Service} from '../accountWeb3/account-web3.service';
 
+import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
-import {Utils} from '../../shared/utils';
-import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
-import {AccountWeb3Service} from '../accountWeb3/account-web3.service';
+import {ApiUrls} from '../../api/api.urls';
 
 @Injectable()
 export class RequestService implements OnInit, OnDestroy {
@@ -45,11 +48,22 @@ export class RequestService implements OnInit, OnDestroy {
     });
   }
 
+  public async canClaim(request: IRequestRecord): Promise<boolean> {
+    console.log('start can claim');
+    if (typeof request == 'undefined' || request.status == RequestStatus.CLAIMED) {
+      return Promise.resolve(false);
+    } else {
+      console.log('can claim', request);
+      let canClaim: boolean = await this._http.get(ApiUrls.canClaim(request.id)).toPromise() as boolean;
+      return canClaim;
+    }
+  }
+
   public get requests$(): Observable<IRequestList> {
     if (!this._requestInitialized) {
       this._requestInitialized = true;
 
-      this._http.get(`/api/public/requests`).take(1).subscribe((requests: Array<IRequest>) => {
+      this._http.get(ApiUrls.requests).take(1).subscribe((requests: Array<IRequest>) => {
         let requestsList: Array<IRequestRecord> = [];
         requests.forEach((request) => {
           requestsList.push(createRequest(request));
@@ -86,7 +100,7 @@ export class RequestService implements OnInit, OnDestroy {
       fundrequestAddress: this._cs.getFundRequestContractAddress(),
       tokenAddress: this._cs.getTokenContractAddress()
     };
-    return await this._http.post('/api/public/requests/0/erc67/fund', body, {responseType: 'text'}).toPromise();
+    return await this._http.post(ApiUrls.qrFund, body, {responseType: 'text'}).toPromise();
   }
 
   public async claimRequest(command: ClaimRequestCommand): Promise<string> {
@@ -95,10 +109,19 @@ export class RequestService implements OnInit, OnDestroy {
       platformId: command.platformId,
       address: this._accountWeb3.currentAccount
     };
-    await this._http.post(`/api/private/requests/${command.id}/claim`, body).take(1).subscribe((signedClaim: SignedClaim) => {
+    await this._http.post(ApiUrls.claim(command.id), body).take(1).subscribe((signedClaim: SignedClaim) => {
       return this._cs.claimRequest(signedClaim);
     });
     return null;
+  }
+
+  public async hasPullRequestMerged(request: IRequestRecord): Promise<boolean> {
+    console.log('has pull request', request, Utils.getUrlFromRequest(request));
+    this._http.get(Utils.getUrlFromRequest(request), {responseType: 'text'}).take(1).subscribe((res) => {
+      console.log(res);
+    });
+
+    return true;
   }
 
   public setUserAsWatcher(request: IRequestRecord, user: IUserRecord): void {
@@ -120,7 +143,7 @@ export class RequestService implements OnInit, OnDestroy {
     newRequest = newRequest.set('watchers', newWatchers);
     this.editRequestInStore(request, newRequest);
 
-    let httpUrl = `/api/private/requests/${request.id}/watchers`;
+    let httpUrl = ApiUrls.watchers(request.id);
     let httpCall: Observable<Object>;
 
     add ? httpCall = this._http.put(httpUrl, {
@@ -181,12 +204,7 @@ export class RequestService implements OnInit, OnDestroy {
   private updateRequestWithNewFundInfo(request: IRequestRecord, fundInfo: RequestIssueFundInformation) {
     let newRequest: IRequestRecord;
 
-    if (!request.set) {
-      newRequest = createRequest(request);
-    } else {
-      newRequest = request;
-    }
-
+    newRequest = !request.set ? createRequest(request) : request;
     newRequest = newRequest.set('fundInfo', fundInfo);
     this.editRequestInStore(request, newRequest);
   }

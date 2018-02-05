@@ -17,9 +17,15 @@ export interface RequestIssueFundInformation {
   funderBalance: string;
 }
 
+export enum RequestStatus {
+  NONE = '',
+  CLAIMED = 'CLAIMED',
+  FUNDED = 'FUNDED'
+}
+
 export interface IRequest {
   id: number;
-  status: string;
+  status: RequestStatus;
   type: string;
   technologies: string[];
   watchers: string[];
@@ -33,7 +39,7 @@ export interface IRequestRecord extends TypedRecord<IRequestRecord>, IRequest {
 
 export const createRequest = makeTypedFactory<IRequest, IRequestRecord>({
   id: 0,
-  status: '',
+  status: RequestStatus.NONE,
   type: '',
   technologies: [],
   watchers: [],

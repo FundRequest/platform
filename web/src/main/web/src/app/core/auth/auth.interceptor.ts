@@ -20,6 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let headers: any = {};
+    console.log(request.url, request.url.indexOf('https://github.com/'));
     if (request.url.indexOf('/api/private') > -1) {
       headers['Access-Control-Allow-Origin'] = '*';
       return this._as.token$
@@ -28,8 +29,10 @@ export class AuthInterceptor implements HttpInterceptor {
           return next.handle(this.getRequest(request, headers));
         })
         .catch((e: any) => Observable.throw(console.log(e)));
-    } else {
-      return next.handle(this.getRequest(request, headers));
+    } else if (request.url.indexOf('https://github.com/') == 0) {
+      headers['Access-Control-Allow-Origin'] = '*';
     }
+
+    return next.handle(this.getRequest(request, headers));
   }
 }

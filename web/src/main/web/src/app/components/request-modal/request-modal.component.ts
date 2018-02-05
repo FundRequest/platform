@@ -16,6 +16,7 @@ import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
   styleUrls: ['./request-modal.component.scss']
 })
 export class RequestModalComponent implements OnInit, OnDestroy {
+
   private _requests: IRequestList;
   private _subscriptionAccountWeb3: Subscription;
   private _subscriptionRequests: Subscription;
@@ -55,24 +56,23 @@ export class RequestModalComponent implements OnInit, OnDestroy {
     this.bsModalRef.hide();
   }
 
-  ngOnDestroy() {
-    this._subscriptionAccountWeb3.unsubscribe();
-    this._subscriptionRequests.unsubscribe();
-  }
-
   public addRequest() {
     let technologies = [];
     this._rs.addRequest(this.link, this.fundAmount);
     this.bsModalRef.hide();
+    this.requestForm.reset();
   }
 
-  get link() { return this.requestForm.get('link').value.trim(); }
+  public get link(): string {
+    let linkValue = this.requestForm.get('link').value;
+    return linkValue ? linkValue.trim() : '';
+  }
 
-  get platform() {
+  public get platform(): string {
     return Utils.getPlatformFromUrl(this.link);
   }
 
-  get platformId() {
+  public get platformId(): string {
     return Utils.getPlatformIdFromUrl(this.link);
   }
 
@@ -81,6 +81,11 @@ export class RequestModalComponent implements OnInit, OnDestroy {
       (request.issueInformation.platform == this.platform && request.issueInformation.platformId == this.platformId)
     );
     return checkRequests.count() > 0;
+  }
+
+  ngOnDestroy() {
+    this._subscriptionAccountWeb3.unsubscribe();
+    this._subscriptionRequests.unsubscribe();
   }
 
 }
