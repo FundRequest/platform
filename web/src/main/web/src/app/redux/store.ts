@@ -8,15 +8,15 @@ import {accountWeb3Reducer} from './accountWeb3.reducer';
 import {IAccountWeb3Record} from './accountWeb3.models';
 
 export interface IState {
+  accountWeb3: IAccountWeb3Record;
+  notifications: INotificationList;
   requests: IRequestList;
   user: IUserRecord;
-  notifications: INotificationList;
-  accountWeb3: IAccountWeb3Record;
 }
 
 export const REDUCER_MAP = {
-  requests: requestReducer,
-  user: userReducer,
-  notifications: notificationReducer,
   accountWeb3: accountWeb3Reducer,
+  notifications: notificationReducer,
+  requests: requestReducer,
+  user: userReducer
 };

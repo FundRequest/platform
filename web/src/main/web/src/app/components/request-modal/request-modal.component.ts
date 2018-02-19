@@ -43,7 +43,7 @@ export class RequestModalComponent implements OnInit, OnDestroy {
     this._subscriptionRequests = this._rs.requests$.subscribe(result => this._requests = result);
 
     this.requestForm = new FormGroup({
-      link: new FormControl(this.issue.link, [
+      linkInput: new FormControl(this.issue.link, [
         Validators.required,
         Validators.pattern(/^https:\/\/github.com\/FundRequest\/area51\/issues\/[0-9]+$/)
       ]),
@@ -58,22 +58,26 @@ export class RequestModalComponent implements OnInit, OnDestroy {
 
   public addRequest() {
     let technologies = [];
-    this._rs.addRequest(this.link, this.fundAmount);
+    this._rs.addRequest(this.linkValue, this.fundAmount);
     this.bsModalRef.hide();
     this.requestForm.reset();
   }
 
-  public get link(): string {
-    let linkValue = this.requestForm.get('link').value;
+  public get link(): FormControl {
+    return this.requestForm.get('link') as FormControl;
+  }
+
+  public get linkValue(): string {
+    let linkValue: string = this.link.value;
     return linkValue ? linkValue.trim() : '';
   }
 
   public get platform(): string {
-    return Utils.getPlatformFromUrl(this.link);
+    return Utils.getPlatformFromUrl(this.linkValue);
   }
 
   public get platformId(): string {
-    return Utils.getPlatformIdFromUrl(this.link);
+    return Utils.getPlatformIdFromUrl(this.linkValue);
   }
 
   public requestExists(): boolean {

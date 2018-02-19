@@ -1,7 +1,7 @@
 ### make sure no application properties are pushed ###
 application-*.properties
-
 core/.env
+web/src/main/web/technical-doc
 
 # node
 **/node_modules/

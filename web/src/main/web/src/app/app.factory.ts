@@ -35,7 +35,7 @@ export class AppFactory {
         if (
           !this._asyncBusy && (this._accountWeb3.currentAccount != account || this._firstTime)
         ) {
-          if (account != '0x0000000000000000000000000000000000000000') {
+          if (typeof account != 'undefined' && account != '0x0000000000000000000000000000000000000000') {
             this._accountWeb3 = this._accountWeb3.set('currentAccount', account);
             this._accountWeb3 = this._accountWeb3.set('locked', false);
 

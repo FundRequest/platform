@@ -4,11 +4,9 @@ import {ClaimRequestCommand, IRequestRecord, RequestStatus} from '../../../redux
 import {RequestService} from '../../../services/request/request.service';
 import {UserService} from '../../../services/user/user.service';
 import {IUserRecord} from '../../../redux/user.models';
+import {Utils} from '../../../shared/utils';
 import {AuthService} from "../../../core/auth/auth.service";
 import {Subscription} from 'rxjs/Subscription';
-
-import * as swal from 'sweetalert';
-import {Utils} from '../../../shared/utils';
 
 @Component({
   selector   : 'fnd-request-detail',
@@ -26,7 +24,6 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   private _canClaim: boolean = null;
   private _showClaim: boolean = null;
-  private _hasPullRequestMerged: boolean = null;
 
   constructor(private route: ActivatedRoute,
               private _rs: RequestService,
@@ -41,12 +38,6 @@ export class DetailComponent implements OnInit, OnDestroy {
       this._requestSubscription = this._rs.requests$.map(list => list.filter(request => request.id == id).first())
         .subscribe(request => {
           this.request = request;
-          if(this._hasPullRequestMerged == null) {
-            this._hasPullRequestMerged = false;
-            this._rs.hasPullRequestMerged(this.request).then((result: boolean) => {
-              this._hasPullRequestMerged = result;
-            });
-          }
         });
     });
   }
@@ -60,7 +51,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   public get showClaimButton(): boolean {
-    return !this.claimed && this._hasPullRequestMerged;
+    return !this.claimed;
   }
 
   public async canClaim(): Promise<boolean> {
