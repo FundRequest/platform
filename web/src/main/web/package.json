@@ -12,7 +12,10 @@
     "lint": "ng lint",
     "modernizr": "modernizr -c modernizr-config.json -d src/modernizr.js",
     "postinstall": "node ./node_modules/protractor/bin/webdriver-manager update",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "doc:build": "compodoc -p tsconfig.json --disablePrivate --disableInternal --output technical-doc",
+    "doc:serve": "compodoc -s --port 4201",
+    "doc:buildandserve": "compodoc -p tsconfig.json --disablePrivate --disableInternal --output technical-doc -s --port 4201"
   },
   "private": false,
   "napa": {
@@ -94,12 +97,13 @@
     "typed-immutable-record": "0.0.6",
     "weather-icons": "github:erikflowers/weather-icons",
     "web-animations-js": "2.3.1",
-    "web3": "^0.18.4",
+    "web3": "^0.20.0",
     "zone.js": "0.8.18"
   },
   "devDependencies": {
     "@angular/cli": "^1.5.3",
     "@angular/compiler-cli": "^5.0.2",
+    "@compodoc/compodoc": "^1.0.7",
     "@types/codemirror": "0.0.51",
     "@types/jasmine": "2.8.2",
     "@types/jasminewd2": "2.0.3",

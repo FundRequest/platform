@@ -1,3 +1,4 @@
+import {IRequestRecord} from '../redux/requests.models';
 export class Utils {
   public static fromWeiRounded(amountInWei: number | string): number {
     let number = +amountInWei / 1000000000000000000;
@@ -22,6 +23,10 @@ export class Utils {
         break;
     }
     return url;
+  }
+
+  public static getUrlFromRequest(request: IRequestRecord): string {
+    return this.getUrlFromId(request.issueInformation.platform, request.issueInformation.platformId);
   }
 
   public static getPlatformIdFromUrl(issueLink: string): string {

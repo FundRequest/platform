@@ -7,7 +7,10 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
-
+/**
+ * Intercepter to catch dummy errors. In some calls there is an error response between 200 and 300 that are not really errors.
+ * @implements HttpInterceptor
+ */
 @Injectable()
 export class EmptyResponseBodyErrorInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

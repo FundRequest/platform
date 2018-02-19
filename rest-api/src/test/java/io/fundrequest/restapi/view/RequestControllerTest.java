@@ -131,7 +131,8 @@ public class RequestControllerTest {
         when(requestService.canClaim(principal, canClaimRequest)).thenReturn(true);
         this.mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/private/requests/123/can-claim").accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .content(objectMapper.writeValueAsString(canClaimRequest))
+                        .param("platform", Platform.GITHUB.toString())
+                        .param("platformId", "1")
                         .principal(principal))
                 .andExpect(content().string("true"))
                 .andExpect(MockMvcResultMatchers.status().isOk())

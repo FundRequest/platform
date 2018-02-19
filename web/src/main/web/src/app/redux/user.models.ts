@@ -1,9 +1,14 @@
 import {makeTypedFactory, TypedRecord} from 'typed-immutable-record';
 
+interface UserIdentity {
+  provider: string;
+  username: string;
+}
+
 interface IUser {
   userId: string,
-  phoneNumber: string,
-  email: string,
+  email: string
+  userIdentities: UserIdentity[],
   picture: string
 }
 
@@ -12,7 +17,7 @@ export interface IUserRecord extends TypedRecord<IUserRecord>, IUser {
 
 export const createUser = makeTypedFactory<IUser, IUserRecord>({
   userId: '',
-  phoneNumber: '',
   email: '',
+  userIdentities: null,
   picture: ''
 });

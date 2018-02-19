@@ -4,23 +4,20 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.restapi.infrastructure.AbstractRestController;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class RequestController extends AbstractRestController {
@@ -52,10 +49,11 @@ public class RequestController extends AbstractRestController {
     }
 
     @GetMapping({PRIVATE_PATH + "/requests/{id}/can-claim"})
-    public Boolean claimRequest(Principal principal, @RequestBody @Valid CanClaimRequest canClaimRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new RuntimeException("Your claim contains errors");
-        }
+    public Boolean claimRequest(Principal principal, @PathVariable("id") Long id, @RequestParam("platform") String platform, @RequestParam("platformId") String platformId) {
+        CanClaimRequest canClaimRequest = new CanClaimRequest();
+        canClaimRequest.setPlatform(Platform.getPlatform(platform).get());
+        canClaimRequest.setPlatformId(platformId);
+
         return requestService.canClaim(principal, canClaimRequest);
     }
 

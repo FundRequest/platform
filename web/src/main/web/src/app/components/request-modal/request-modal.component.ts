@@ -16,6 +16,7 @@ import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
   styleUrls: ['./request-modal.component.scss']
 })
 export class RequestModalComponent implements OnInit, OnDestroy {
+
   private _requests: IRequestList;
   private _subscriptionAccountWeb3: Subscription;
   private _subscriptionRequests: Subscription;
@@ -42,7 +43,7 @@ export class RequestModalComponent implements OnInit, OnDestroy {
     this._subscriptionRequests = this._rs.requests$.subscribe(result => this._requests = result);
 
     this.requestForm = new FormGroup({
-      link: new FormControl(this.issue.link, [
+      linkInput: new FormControl(this.issue.link, [
         Validators.required,
         Validators.pattern(/^https:\/\/github.com\/FundRequest\/area51\/issues\/[0-9]+$/)
       ]),
@@ -55,25 +56,28 @@ export class RequestModalComponent implements OnInit, OnDestroy {
     this.bsModalRef.hide();
   }
 
-  ngOnDestroy() {
-    this._subscriptionAccountWeb3.unsubscribe();
-    this._subscriptionRequests.unsubscribe();
-  }
-
   public addRequest() {
     let technologies = [];
-    this._rs.addRequest(this.link, this.fundAmount);
+    this._rs.addRequest(this.linkValue, this.fundAmount);
     this.bsModalRef.hide();
+    this.requestForm.reset();
   }
 
-  get link() { return this.requestForm.get('link').value.trim(); }
-
-  get platform() {
-    return Utils.getPlatformFromUrl(this.link);
+  public get link(): FormControl {
+    return this.requestForm.get('link') as FormControl;
   }
 
-  get platformId() {
-    return Utils.getPlatformIdFromUrl(this.link);
+  public get linkValue(): string {
+    let linkValue: string = this.link.value;
+    return linkValue ? linkValue.trim() : '';
+  }
+
+  public get platform(): string {
+    return Utils.getPlatformFromUrl(this.linkValue);
+  }
+
+  public get platformId(): string {
+    return Utils.getPlatformIdFromUrl(this.linkValue);
   }
 
   public requestExists(): boolean {
@@ -81,6 +85,11 @@ export class RequestModalComponent implements OnInit, OnDestroy {
       (request.issueInformation.platform == this.platform && request.issueInformation.platformId == this.platformId)
     );
     return checkRequests.count() > 0;
+  }
+
+  ngOnDestroy() {
+    this._subscriptionAccountWeb3.unsubscribe();
+    this._subscriptionRequests.unsubscribe();
   }
 
 }

@@ -1,10 +1,10 @@
-import {Injectable, OnDestroy, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {Subscription} from 'rxjs/Subscription';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
+
 import {RequestsStats} from '../../core/requests/RequestsStats';
 import {IState} from '../../redux/store';
+import {Utils} from '../../shared/utils';
 import {
   ClaimRequestCommand,
   createRequest,
@@ -13,20 +13,25 @@ import {
   IRequestList,
   IRequestRecord,
   RequestIssueFundInformation,
+  RequestStatus,
   SignedClaim
 } from '../../redux/requests.models';
-import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
 import {IUserRecord} from '../../redux/user.models';
+import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
+import {AddRequest, EditRequest, RemoveRequest, ReplaceRequestList} from '../../redux/requests.reducer';
 import {ContractsService} from '../contracts/contracts.service';
+import {AccountWeb3Service} from '../accountWeb3/account-web3.service';
+import {ApiUrls} from '../../api/api.urls';
 
+import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
-import {Utils} from '../../shared/utils';
-import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
-import {AccountWeb3Service} from '../accountWeb3/account-web3.service';
+
+import * as swal from 'sweetalert';
 
 @Injectable()
-export class RequestService implements OnInit, OnDestroy {
+export class RequestService implements OnDestroy {
   private _requestInitialized: boolean = false;
   private _accountWeb3: IAccountWeb3Record;
   private _subscription: Subscription;
@@ -36,20 +41,29 @@ export class RequestService implements OnInit, OnDestroy {
     private _http: HttpClient,
     private _aw3s: AccountWeb3Service,
     private _cs: ContractsService) {
-  }
-
-  public async ngOnInit() {
     this._subscription = this._aw3s.currentAccountWeb3$.subscribe((accountWeb3: IAccountWeb3Record) => {
       this._accountWeb3 = accountWeb3;
       this._web3 = this._aw3s.getWeb3(this._accountWeb3);
     });
   }
 
+  public async canClaim(request: IRequestRecord): Promise<boolean> {
+    if (typeof request == 'undefined' || request.status == RequestStatus.CLAIMED) {
+      return Promise.resolve(false);
+    } else {
+      let params: HttpParams = new HttpParams();
+      params = params.set('platform', request.issueInformation.platform);
+      params = params.set('platformId', request.issueInformation.platformId);
+      let canClaim: string = await this._http.get(ApiUrls.canClaim(request.id), { params: params, responseType: 'text'}).toPromise() as string;
+      return canClaim == 'true';
+    }
+  }
+
   public get requests$(): Observable<IRequestList> {
     if (!this._requestInitialized) {
       this._requestInitialized = true;
 
-      this._http.get(`/api/public/requests`).take(1).subscribe((requests: Array<IRequest>) => {
+      this._http.get(ApiUrls.requests).take(1).subscribe((requests: Array<IRequest>) => {
         let requestsList: Array<IRequestRecord> = [];
         requests.forEach((request) => {
           requestsList.push(createRequest(request));
@@ -86,7 +100,7 @@ export class RequestService implements OnInit, OnDestroy {
       fundrequestAddress: this._cs.getFundRequestContractAddress(),
       tokenAddress: this._cs.getTokenContractAddress()
     };
-    return await this._http.post('/api/public/requests/0/erc67/fund', body, {responseType: 'text'}).toPromise();
+    return await this._http.post(ApiUrls.qrFund, body, {responseType: 'text'}).toPromise();
   }
 
   public async claimRequest(command: ClaimRequestCommand): Promise<string> {
@@ -95,9 +109,17 @@ export class RequestService implements OnInit, OnDestroy {
       platformId: command.platformId,
       address: this._accountWeb3.currentAccount
     };
-    await this._http.post(`/api/private/requests/${command.id}/claim`, body).take(1).subscribe((signedClaim: SignedClaim) => {
-      return this._cs.claimRequest(signedClaim);
-    });
+    // TODO: check if FundRequests needs to do a manual approve
+    await this._http.post(ApiUrls.claim(command.id), body).take(1).subscribe(
+      (signedClaim: SignedClaim) => {
+        return this._cs.claimRequest(signedClaim);
+      },
+      error => {
+        swal('Not implemented',
+          'You\'re logged into github and the issue is claimable, but claim functionality is not yet fully implemented is this application!', 'error'
+        );
+      }
+    );
     return null;
   }
 
@@ -120,7 +142,7 @@ export class RequestService implements OnInit, OnDestroy {
     newRequest = newRequest.set('watchers', newWatchers);
     this.editRequestInStore(request, newRequest);
 
-    let httpUrl = `/api/private/requests/${request.id}/watchers`;
+    let httpUrl = ApiUrls.watchers(request.id);
     let httpCall: Observable<Object>;
 
     add ? httpCall = this._http.put(httpUrl, {
@@ -166,7 +188,7 @@ export class RequestService implements OnInit, OnDestroy {
         this.updateRequestWithNewFundInfo(request, fundInfo);
       }
     ).catch(error => {
-      console.log(error);
+      this.handleError(error);
     });
   }
 
@@ -174,25 +196,20 @@ export class RequestService implements OnInit, OnDestroy {
     this._cs.getRequestFundInfo(request).then((fundInfo) => {
       this.updateRequestWithNewFundInfo(request, fundInfo);
     }).catch(error => {
-      console.log(error);
+      this.handleError(error);
     });
   }
 
   private updateRequestWithNewFundInfo(request: IRequestRecord, fundInfo: RequestIssueFundInformation) {
     let newRequest: IRequestRecord;
 
-    if (!request.set) {
-      newRequest = createRequest(request);
-    } else {
-      newRequest = request;
-    }
-
+    newRequest = !request.set ? createRequest(request) : request;
     newRequest = newRequest.set('fundInfo', fundInfo);
     this.editRequestInStore(request, newRequest);
   }
 
-  private handleError(error: any): void {
-    console.error('An error occurred', error);
+  private handleError(error: any, message?: string): void {
+    console.error(message ? message : 'An error occurred', error);
   }
 
   public ngOnDestroy() {

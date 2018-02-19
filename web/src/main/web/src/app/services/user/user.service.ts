@@ -7,8 +7,8 @@ import {Observable} from 'rxjs/Observable';
 import {ClearUser, ReplaceUser} from '../../redux/user.reducer';
 
 import {createUser, IUserRecord} from '../../redux/user.models';
-import {ContractsService} from '../contracts/contracts.service';
 import {AuthService} from '../../core/auth/auth.service';
+import {ApiUrls} from '../../api/api.urls';
 
 @Injectable()
 export class UserService {
@@ -17,8 +17,7 @@ export class UserService {
 
   constructor(private _store: Store<IState>,
     private _http: HttpClient,
-    private _as: AuthService,
-    private _cs: ContractsService) {
+    private _as: AuthService) {
   }
 
   public login(returnUri?: string) {
@@ -33,8 +32,9 @@ export class UserService {
   private async initUser(): Promise<void> {
     this.user = createUser();
     if (this._as.isAuthenticated()) {
-      let newUser: IUserRecord = await this._http.get(`/api/private/user/info`).toPromise() as IUserRecord;
+      let newUser: IUserRecord = await this._http.get(ApiUrls.userInfo).toPromise() as IUserRecord;
       this.user = createUser(newUser);
+      console.log(this.user);
       this._store.dispatch(new ReplaceUser(this.user));
     }
   }
