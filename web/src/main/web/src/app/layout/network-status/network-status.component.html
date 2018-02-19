@@ -1,0 +1,32 @@
+<li class="nav-heading bg-success-dark text-center" [ngClass]="{'nav-heading--small': isCollapsed}" *ngIf="!accountWeb3.disabled && !accountWeb3.locked && accountWeb3.supported">
+  <div>
+    <div>Web3 enabled</div>
+    <div><em class="icon-check text-lg"></em></div>
+    <div>Connected to {{accountWeb3.network}}.</div>
+  </div>
+</li>
+
+<li class="nav-heading bg-warning-dark text-center" [ngClass]="{'nav-heading--small': isCollapsed}" *ngIf="!accountWeb3.disabled && !accountWeb3.locked && !accountWeb3.supported">
+  <div>
+    <div>Unsupported network</div>
+    <div><em class="icon-exclamation text-lg"></em></div>
+    <div>Connected to {{accountWeb3.network}}.</div>
+      <div>Please connect to <!--mainnet or--> ropsten.</div>
+  </div>
+</li>
+
+<li class="nav-heading bg-warning-dark text-center" [ngClass]="{'nav-heading--small': isCollapsed}" (click)="goToMetamask()" *ngIf="accountWeb3.disabled">
+  <div>
+    <div>Web3 disabled</div>
+    <div><em class="icon-question text-lg"></em></div>
+    <div>Please download <a>Metamask</a>.</div>
+  </div>
+</li>
+
+<li class="nav-heading bg-danger-dark text-center" [ngClass]="{'nav-heading--small': isCollapsed}" *ngIf="!accountWeb3.disabled && accountWeb3.locked">
+  <div>
+    <div>Web3 Locked</div>
+    <div><em class="icon-lock text-lg"></em></div>
+    <div>Please unlock Metamask.</div>
+  </div>
+</li>

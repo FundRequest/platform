@@ -120,7 +120,7 @@ $tablet-landscape: 1025px;
 @media only screen and (min-width: $tablet-landscape) {
   .sidebar:not(.show-scrollbar) {
     margin-right: -$scrollbar-wd;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 }
 

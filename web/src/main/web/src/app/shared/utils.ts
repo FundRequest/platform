@@ -1,5 +1,15 @@
 import {IRequestRecord} from '../redux/requests.models';
+
+declare let window: any;
+
 export class Utils {
+  public static openExternalUrl(url: string): void {
+    console.log(url);
+    let myWindow = window.open();
+    myWindow.opener = null;
+    myWindow.location = url;
+  }
+
   public static fromWeiRounded(amountInWei: number | string): number {
     let number = +amountInWei / 1000000000000000000;
     return (Math.round(number * 100) / 100);

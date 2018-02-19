@@ -112,31 +112,8 @@
         </a>
       </li>
       -->
-      <li class="bg-success-dark" *ngIf="!accountWeb3.locked && accountWeb3.supported">
-        <span class="navbar-text">
-          Web3 enabled <em class="icon-check"></em>.
-          Connected to {{accountWeb3.network}}.
-        </span>
-      </li>
-      <li class="bg-warning-dark" *ngIf="!accountWeb3.locked && !accountWeb3.supported">
-        <span class="navbar-text">
-          Unsupported network <em class="icon-exclamation"></em>. Connected to {{accountWeb3.network}}.
-          Please connect <!--to mainnet or--> ropsten.
-        </span>
-      </li>
-      <li class="bg-danger-dark" *ngIf="accountWeb3.locked">
-        <span class="navbar-text">
-          Web3 Locked <em class="icon-lock"></em>.
-          Please unlock <a href="https://metamask.io" target="_blank">Metamask</a>.
-        </span>
-      </li>
-
-      <li *ngIf="userService.userIsLoggedIn()" class="bg-primary-dark">
-        <a (click)="logout($event)">
-          <em class="fa fa-sign-out"></em>
-        </a>
-      </li>
     </ul>
+    <app-userblock></app-userblock>
   </div>
 
   <!--app-navsearch [visible]="getNavSearchVisible()" (onclose)="setNavSearchVisible(false)"></app-navsearch-->

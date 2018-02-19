@@ -3,9 +3,7 @@
 
     <ul class="nav">
 
-      <li class="has-user-block">
-        <app-userblock></app-userblock>
-      </li>
+      <app-network-status></app-network-status>
 
       <li *ngFor='let item of menuItems' [ngClass]="{'nav-heading': item.heading}" [routerLinkActive]="['active']">
         <span *ngIf="item.heading">{{(item.translate | translate) || item.text}}</span>

@@ -1,0 +1,50 @@
+@import '../../shared/styles/app/variables.scss';
+
+.li--user-block {
+  list-style: none;
+}
+
+.user-block {
+  padding: 0 0 0 15px;
+}
+
+.user-block-info,
+.user-block-picture {
+  vertical-align: middle;
+  display: inline-block;
+  padding: 10px;
+}
+
+.user-block-picture {
+  width: 50px;
+  height: 55px;
+  padding-right: 5px;
+
+  + .pull-right {
+    margin-left: 0;
+    font-size: 70%;
+    color: $gray-dark;
+    line-height: 55px;
+  }
+}
+
+.bg-block-info {
+  background-color: #e5ffe0;
+}
+
+.nav {
+  margin-right: 0;
+}
+
+.dropdown > a {
+
+  padding: 0;
+}
+
+.navbar-nav > .open {
+  > a,
+  > a:hover,
+  > a:focus {
+    box-shadow: 0 -3px 0 $gray-light inset;
+  }
+}

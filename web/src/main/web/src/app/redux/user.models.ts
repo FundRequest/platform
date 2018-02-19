@@ -1,6 +1,6 @@
 import {makeTypedFactory, TypedRecord} from 'typed-immutable-record';
 
-interface UserIdentity {
+export interface UserIdentity {
   provider: string;
   username: string;
 }
