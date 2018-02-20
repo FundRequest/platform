@@ -164,7 +164,7 @@ export class RequestService implements OnDestroy {
 
   public addRequestInStore(newRequest: IRequestRecord): void {
     this.store.dispatch(new AddRequest(newRequest));
-    this.updateRequestBalance(newRequest);
+    this.updateRequestWithNewFundInfoFromContract(newRequest);
   }
 
   public editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {
@@ -172,15 +172,15 @@ export class RequestService implements OnDestroy {
   }
 
   public editOrAddRequestInStore(newOrModifiedRequest: IRequestRecord) {
-    let existingRequest: IRequestRecord;
+    let existingRequest: IRequestRecord = null;
 
     this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
       requests.filter((request: IRequestRecord) => request.id == newOrModifiedRequest.id)
         .map((request: IRequestRecord) => {
           existingRequest = request;
         });
+      existingRequest == null ? this.addRequestInStore(newOrModifiedRequest) : this.updateRequestWithNewFundInfoFromContract(existingRequest);
     });
-    typeof existingRequest == 'undefined' ? this.addRequestInStore(newOrModifiedRequest) : this.updateRequestBalance(existingRequest);
   }
 
   private updateRequestWithNewFundInfoFromContract(request: IRequestRecord): void {
@@ -188,14 +188,6 @@ export class RequestService implements OnDestroy {
         this.updateRequestWithNewFundInfo(request, fundInfo);
       }
     ).catch(error => {
-      this.handleError(error);
-    });
-  }
-
-  private updateRequestBalance(request: IRequestRecord): void {
-    this._cs.getRequestFundInfo(request).then((fundInfo) => {
-      this.updateRequestWithNewFundInfo(request, fundInfo);
-    }).catch(error => {
       this.handleError(error);
     });
   }

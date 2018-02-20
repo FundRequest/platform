@@ -15,7 +15,7 @@
     "e2e": "ng e2e",
     "doc:build": "compodoc -p tsconfig.json --disablePrivate --disableInternal --output technical-doc",
     "doc:serve": "compodoc -s --port 4201",
-    "doc:buildandserve": "compodoc -p tsconfig.json --disablePrivate --disableInternal --output technical-doc -s --port 4201"
+    "doc:buildandserve": "compodoc -p tsconfig.json --disablePrivate --disableInternal --output technical-docs -s --port 4201"
   },
   "private": false,
   "napa": {

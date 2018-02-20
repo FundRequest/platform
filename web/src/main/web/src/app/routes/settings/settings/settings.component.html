@@ -200,7 +200,7 @@
             <ul class="list-group">
               <li class="list-group-item clearfix" *ngFor="let account of accounts">
                 <div class="pull-left mr">
-                  <img class="img-responsive thumb48" src="assets/img/dummy.png" alt="App" />
+                  <img class="img-responsive thumb48" [src]="getThumbnail(account)" alt="App" />
                 </div>
                 <!--div class="pull-right">
                   <button class="btn btn-default" type="button">

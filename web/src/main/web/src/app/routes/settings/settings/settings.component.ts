@@ -22,6 +22,15 @@ export class SettingsComponent implements OnInit {
     });
   }
 
+  public getThumbnail(account: UserIdentity) {
+    switch (account.provider.toUpperCase()) {
+      case 'GITHUB':
+        return `https://avatars.githubusercontent.com/${account.username}`;
+      default:
+        return '';
+    }
+  }
+
   public get accounts(): UserIdentity[] {
     return this._user.userIdentities;
   }
