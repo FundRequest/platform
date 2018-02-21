@@ -1,81 +1,128 @@
-<div class="modal-header" *ngIf="request">
-  <h4 class="modal-title pull-left">{{request.issueInformation.title}}</h4>
-  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="modal-body" *ngIf="request">
-  <div class="row">
-    <div class="col-xs-8">
-      <div class="form-horizontal">
-        <div class="form-group">
-          <label class="col-xs-6 col-md-4 control-label">Source</label>
-          <div class="col-xs-6 col-md-8 form-control-static">
-            <a target="_blank" href="{{request.issueInformation.link}}">
-              <i class="fa fa-2x fa-{{request.issueInformation.platform | lowercase}}"></i>
-            </a>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-xs-6 col-md-4 control-label">Owner</label>
-          <div class="col-xs-6 col-md-8 form-control-static">
-            <label>{{request.issueInformation.owner}}</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-xs-6 col-md-4 control-label">Repo</label>
-          <div class="col-xs-6 col-md-8 form-control-static">
-            <label>{{request.issueInformation.repo}}</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-xs-6 col-md-4 control-label">Issue</label>
-          <div class="col-xs-6 col-md-8 form-control-static">
-            <label>{{request.issueInformation.number}}</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-xs-6 col-md-4 control-label">Type</label>
-          <div class="col-xs-6 col-md-8 form-control-static">
-            <label>{{request.type}}</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-xs-6 col-md-4 control-label">Total Funding</label>
-          <div class="col-xs-6 col-md-8 form-control-static">
-            <label>
-              <span>{{request.fundInfo.balance | wei}} FND</span>
-            </label>
-          </div>
-        </div>
+<div class="modal-multi media-box" *ngIf="request">
 
-        <div class="form-group">
-          <label for="fund-amount" class="col-xs-6 col-md-4 control-label">Fund Amount</label>
-          <div class="col-xs-6 col-md-8">
-            <div class="input-group">
-              <input [(ngModel)]="fundAmount" (ngModelChange)="updateQr()" id="fund-amount" type="number" class="form-control">
-              <span class="input-group-addon">FND</span>
+  <div class="modal-sidebar pull-left">
+    <div class="modal-select-tabs">
+      <div class="modal-sidebar__close">
+        <a aria-label="Close" (click)="bsModalRef.hide()">
+          <span aria-hidden="true">&times;</span>
+        </a>
+      </div>
+      <div class="modal-sidebar__options">
+        <a class="modal-tab-option" (click)="selectedTab = 1" [ngClass]="{'active': selectedTab == 1}">
+          <div class="modal-tab-option__image modal-tab-option__image--metamask"></div>
+          <div class="modal-tab-option__text">Metamask</div>
+        </a>
+        <a class="modal-tab-option modal-tab-option--trustwallet" (click)="selectedTab = 2"
+           [ngClass]="{'active': selectedTab == 2}">
+          <div class="modal-tab-option__image modal-tab-option__image--trustwallet"></div>
+          <div class="modal-tab-option__text">Trustwallet</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="media-box-body">
+    <div class="modal-header">
+      <h4 class="modal-title text-center">{{request.issueInformation.title}}</h4>
+    </div>
+
+    <div class="modal-tabs">
+      <div class="modal-tab" *ngIf="selectedTab == 1">
+        <div class="modal-body modal-body--form">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="form-horizontal form-horizontal--border">
+                <div class="form-group">
+                  <label class="col-xs-6 col-md-4 control-label">Source</label>
+                  <div class="col-xs-6 col-md-8 form-control-static">
+                    <a target="_blank" href="{{request.issueInformation.link}}">
+                      <i class="fa fa-2x fa-{{request.issueInformation.platform | lowercase}}"></i>
+                    </a>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-6 col-md-4 control-label">Owner</label>
+                  <div class="col-xs-6 col-md-8 form-control-static">
+                    <label>{{request.issueInformation.owner}}</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-6 col-md-4 control-label">Repo</label>
+                  <div class="col-xs-6 col-md-8 form-control-static">
+                    <label>{{request.issueInformation.repo}}</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-6 col-md-4 control-label">Issue</label>
+                  <div class="col-xs-6 col-md-8 form-control-static">
+                    <label>{{request.issueInformation.number}}</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-6 col-md-4 control-label">Type</label>
+                  <div class="col-xs-6 col-md-8 form-control-static">
+                    <label>{{request.type}}</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-6 col-md-4 control-label">Total Funding</label>
+                  <div class="col-xs-6 col-md-8 form-control-static">
+                    <label>
+                      <span>{{request.fundInfo.balance | wei}} FND</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="fund-amount" class="col-xs-6 col-md-4 control-label">Enter funding amount</label>
+                  <div class="col-xs-6 col-md-8 form-control-static form-control--fnd">
+                    <div class="input-group">
+                      <input [(ngModel)]="fundAmount" id="fund-amount" type="number"
+                             class="form-control" placeholder="ex: 15.00">
+                      <span class="input-group-addon">FND</span>
+                    </div>
+                  </div>
+                  <div class="col-xs-6 col-xs-push-6 col-md-push-4 col-md-8 form-control-static"
+                       *ngIf="fundAmount <= 0">
+                    <label class="text-danger">Funding amount needs to be bigger then 0.</label>
+                  </div>
+                  <div class="col-xs-6 col-xs-push-6 col-md-push-4 col-md-8 form-control-static"
+                       *ngIf="fundAmount > balance">
+                    <label class="text-danger">Balance to low to fund {{fundAmount}} FND.</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-6 col-md-4 control-label">Click</label>
+                  <div class="col-xs-6 col-md-8 form-control-static">
+                    <button [disabled]="!canFund() || !hasEnoughFunds()" type="button" class="btn btn-primary" (click)="fund()">
+                      Fund
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col-xs-6 col-xs-push-6 col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount <= 0">
-            <label class="text-danger">Funding amount needs to be bigger then 0.</label>
-          </div>
-          <div class="col-xs-6 col-xs-push-6 col-md-push-4 col-md-8 form-control-static" *ngIf="fundAmount > balance">
-            <label class="text-danger">Balance to low to fund {{fundAmount}} FND.</label>
+        </div>
+      </div>
+      <div class="modal-tab" *ngIf="selectedTab == 2">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="input-group">
+                <input [(ngModel)]="fundAmount" (ngModelChange)="updateQr()" type="number"
+                       class="form-control">
+                <span class="input-group-addon">FND</span>
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <qr-code *ngIf="canFund()" class="img-responsive" [value]="qrValue" [size]="350"></qr-code>
+              <img *ngIf="fundAmount == undefined || fundAmount == 0" class="img-responsive"
+                   src="/assets/img/qr-code.svg"/>
+              <div class="text-center"><label>Scan to fund</label></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-xs-4">
-      <qr-code *ngIf="canFund()" class="img-responsive" [value]="qrValue" [size]="350"></qr-code>
-      <img *ngIf="fundAmount == undefined || fundAmount == 0" class="img-responsive" src="/assets/img/qr-code.svg"  />
-      <div class="text-center"><label>Scan to fund</label></div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>
-    <button [disabled]="!canFund() || !hasEnoughFunds()" type="button" class="btn btn-primary" (click)="fund()">
-      Fund
-    </button>
   </div>
 </div>

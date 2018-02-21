@@ -20,7 +20,7 @@ export class FundButtonDirective {
   }
 
   public openFundModal() {
-    this.bsModalRef = this.modalService.show(FundModalComponent);
+    this.bsModalRef = this.modalService.show(FundModalComponent, {class: 'modal-dialog--with-tabs'});
     this.bsModalRef.content.request = this.request;
   }
 }

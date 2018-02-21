@@ -20,6 +20,7 @@ export class FundModalComponent implements OnInit {
   public balance: number;
   public qrValue: string = '';
 
+  private _selectedTab: number = null;
 
   constructor(public bsModalRef: BsModalRef,
     private _rs: RequestService,
@@ -27,10 +28,25 @@ export class FundModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    let localSelectedTab = localStorage.getItem('fnd.fundSelectedTab');
+    this._selectedTab = localSelectedTab != null ? Number.parseInt(localSelectedTab) : null;
     this._aw3s.currentAccountWeb3$.subscribe((accountWeb3: IAccountWeb3Record) => {
       this.accountWeb3 = accountWeb3;
       this.balance = Utils.fromWeiRounded(accountWeb3.balance);
     });
+  }
+
+  public get selectedTab() {
+    console.log('sel tab', this._selectedTab);
+    if (this._selectedTab == null) {
+      this._selectedTab = 1;
+    }
+    return this._selectedTab;
+  }
+
+  public set selectedTab(numberTab: number) {
+    localStorage.setItem('fnd.fundSelectedTab', `${numberTab}`);
+    this._selectedTab = numberTab;
   }
 
   public hasEnoughFunds() {
