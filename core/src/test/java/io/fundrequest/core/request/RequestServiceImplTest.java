@@ -1,8 +1,8 @@
 package io.fundrequest.core.request;
 
 import io.fundrequest.core.infrastructure.mapping.Mappers;
-import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
+import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.dto.ClaimDto;
@@ -193,9 +193,10 @@ public class RequestServiceImplTest {
 
     @Test
     public void signClaimRequest() {
-        SignClaimRequest command = new SignClaimRequest();
-        command.setPlatform(Platform.GITHUB);
-        command.setPlatformId("1");
+        UserClaimRequest command = UserClaimRequest.builder()
+                .platform(Platform.GITHUB)
+                .platformId("1")
+                .build();
         Principal principal = () -> "davyvanroy";
         Request request = RequestMother.freeCodeCampNoUserStories().build();
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();

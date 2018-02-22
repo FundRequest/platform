@@ -2,8 +2,8 @@ package io.fundrequest.core.request.claim.github;
 
 import io.fundrequest.core.keycloak.KeycloakRepository;
 import io.fundrequest.core.keycloak.UserIdentity;
-import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
+import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
 import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
@@ -39,15 +39,15 @@ public class GithubClaimResolverTest {
         claimResolver = new GithubClaimResolver(githubSolverResolver, azraelClient, keycloakRepository);
 
         RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
-        SignClaimRequest signClaimRequest = createClaimRequest(request);
+        UserClaimRequest userClaimRequest = createClaimRequest(request);
 
         when(keycloakRepository.getUserIdentities("davyvanroy")).thenReturn(Stream.of(new UserIdentity("github", "davyvanroy")));
         when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of("davyvanroy"));
-        SignClaimCommand signClaimCommand = createSignClaimCommand(signClaimRequest, "davyvanroy");
+        SignClaimCommand signClaimCommand = createSignClaimCommand(userClaimRequest, "davyvanroy");
         ClaimSignature claimSignature = createClaimSignature(signClaimCommand);
         when(azraelClient.getSignature(signClaimCommand)).thenReturn(claimSignature);
 
-        SignedClaim result = claimResolver.getSignedClaim(() -> "davyvanroy", signClaimRequest, request);
+        SignedClaim result = claimResolver.getSignedClaim(() -> "davyvanroy", userClaimRequest, request);
 
         assertThat(result.getPlatform().toString()).isEqualTo(claimSignature.getPlatform());
         assertThat(result.getPlatformId()).isEqualTo(claimSignature.getPlatformId());
@@ -70,20 +70,20 @@ public class GithubClaimResolverTest {
         return sig;
     }
 
-    private SignClaimRequest createClaimRequest(RequestDto request) {
-        SignClaimRequest signClaimRequest = new SignClaimRequest();
-        signClaimRequest.setAddress("0x0");
-        signClaimRequest.setPlatform(request.getIssueInformation().getPlatform());
-        signClaimRequest.setPlatformId(request.getIssueInformation().getPlatformId());
-        return signClaimRequest;
+    private UserClaimRequest createClaimRequest(RequestDto request) {
+        return UserClaimRequest.builder()
+                .address("0x0")
+                .platformId(request.getIssueInformation().getPlatformId())
+                .platform(request.getIssueInformation().getPlatform())
+                .build();
     }
 
-    private SignClaimCommand createSignClaimCommand(SignClaimRequest signClaimRequest, String solver) {
-        SignClaimCommand signClaimCommand = new SignClaimCommand();
-        signClaimCommand.setPlatform(signClaimRequest.getPlatform().toString());
-        signClaimCommand.setPlatformId(signClaimRequest.getPlatformId());
-        signClaimCommand.setAddress(signClaimRequest.getAddress());
-        signClaimCommand.setSolver(solver);
-        return signClaimCommand;
+    private SignClaimCommand createSignClaimCommand(UserClaimRequest userClaimRequest, String solver) {
+        return SignClaimCommand.builder()
+                .platform(userClaimRequest.getPlatform().toString())
+                .platformId(userClaimRequest.getPlatformId())
+                .address(userClaimRequest.getAddress())
+                .solver(solver)
+                .build();
     }
 }

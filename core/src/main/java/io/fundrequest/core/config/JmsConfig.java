@@ -6,19 +6,23 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 
 @Configuration
 public class JmsConfig {
 
     @Bean
     SimpleMessageListenerContainer fundedContainer(ConnectionFactory connectionFactory,
-                                             MessageListenerAdapter fundedListenerAdapter,
-                                             @Value("${io.fundrequest.azrael.queue.fund}") final String queueName) {
+                                                   MessageListenerAdapter fundedListenerAdapter,
+                                                   @Value("${io.fundrequest.azrael.queue.fund}") final String queueName) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(queueName);
@@ -28,8 +32,8 @@ public class JmsConfig {
 
     @Bean
     SimpleMessageListenerContainer claimedContainer(ConnectionFactory connectionFactory,
-                                             MessageListenerAdapter claimedListenerAdapter,
-                                             @Value("${io.fundrequest.azrael.queue.claim}") final String queueName) {
+                                                    MessageListenerAdapter claimedListenerAdapter,
+                                                    @Value("${io.fundrequest.azrael.queue.claim}") final String queueName) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(queueName);
@@ -71,6 +75,19 @@ public class JmsConfig {
     @Bean
     Binding claimBinding(Queue claimQueue, TopicExchange exchange, @Value("${io.fundrequest.azrael.queue.claim}") final String queueName) {
         return BindingBuilder.bind(claimQueue).to(exchange).with(queueName);
+    }
+
+    @Bean
+    RabbitTemplate approvedClaimRabbitTemplate(ConnectionFactory connectionFactory,
+                                      @Value("${io.fundrequest.azrael.queue.approved-claim}") final String queueName) {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setQueue(queueName);
+        rabbitTemplate.setExchange("azrael-exchange");
+        RetryTemplate retryTemplate = new RetryTemplate();
+        retryTemplate.setRetryPolicy(new SimpleRetryPolicy(5));
+        rabbitTemplate.setRetryTemplate(retryTemplate);
+        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+        return rabbitTemplate;
     }
 
 

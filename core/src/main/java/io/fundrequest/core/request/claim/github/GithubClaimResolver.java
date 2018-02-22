@@ -1,8 +1,8 @@
 package io.fundrequest.core.request.claim.github;
 
 import io.fundrequest.core.keycloak.KeycloakRepository;
-import io.fundrequest.core.request.claim.SignClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
+import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
@@ -27,14 +27,14 @@ public class GithubClaimResolver {
         this.keycloakRepository = keycloakRepository;
     }
 
-    public SignedClaim getSignedClaim(Principal user, SignClaimRequest signClaimRequest, RequestDto request) {
+    public SignedClaim getSignedClaim(Principal user, UserClaimRequest userClaimRequest, RequestDto request) {
         try {
-            final String solver = getSolver(user, signClaimRequest, request);
-            final ClaimSignature signature = getSignature(signClaimRequest, solver);
+            final String solver = getSolver(user, userClaimRequest, request);
+            final ClaimSignature signature = getSignature(userClaimRequest, solver);
             return new SignedClaim(
                     solver,
                     signature.getAddress(),
-                    signClaimRequest.getPlatform(),
+                    userClaimRequest.getPlatform(),
                     signature.getPlatformId(),
                     signature.getR(),
                     signature.getS(),
@@ -51,24 +51,25 @@ public class GithubClaimResolver {
                 && solver.get().equalsIgnoreCase(getUserPlatformUsername(user, request.getIssueInformation().getPlatform()));
     }
 
-    private String getSolver(Principal user, SignClaimRequest signClaimRequest, RequestDto request) throws IOException {
+    private String getSolver(Principal user, UserClaimRequest userClaimRequest, RequestDto request) throws IOException {
         String solver = githubSolverResolver.solveResolver(request).orElseThrow(() -> new RuntimeException("Unable to get solver"));
-        if (!solver.equalsIgnoreCase(getUserPlatformUsername(user, signClaimRequest.getPlatform()))) {
+        if (!solver.equalsIgnoreCase(getUserPlatformUsername(user, userClaimRequest.getPlatform()))) {
             throw new RuntimeException("Claim executed by wrong user");
         }
         return solver;
     }
 
-    private ClaimSignature getSignature(SignClaimRequest signClaimRequest, String solver) {
-        SignClaimCommand command = new SignClaimCommand();
-        command.setPlatform(signClaimRequest.getPlatform().toString());
-        command.setPlatformId(signClaimRequest.getPlatformId());
-        command.setSolver(solver);
-        command.setAddress(signClaimRequest.getAddress());
+    private ClaimSignature getSignature(UserClaimRequest userClaimRequest, String solver) {
+        SignClaimCommand command = SignClaimCommand.builder()
+                .platform(userClaimRequest.getPlatform().toString())
+                .platformId(userClaimRequest.getPlatformId())
+                .solver(solver)
+                .address(userClaimRequest.getAddress())
+                .build();
         return azraelClient.getSignature(command);
     }
 
-    private String getUserPlatformUsername(Principal user, Platform platform) {
+    public String getUserPlatformUsername(Principal user, Platform platform) {
         if (platform != Platform.GITHUB) {
             throw new RuntimeException("only github is supported for now");
         }
