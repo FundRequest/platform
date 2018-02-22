@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.claim.domain;
 
+import io.fundrequest.core.infrastructure.repository.AbstractEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import javax.persistence.Table;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestClaim {
+public class RequestClaim extends AbstractEntity {
     @Column(name = "id")
     @Id
     private Long id;

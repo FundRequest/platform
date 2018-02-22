@@ -3,6 +3,7 @@ package io.fundrequest.core.request.claim;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
+import io.fundrequest.core.request.claim.dto.RequestClaimDto;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.RequestClaimRepository;
 import io.fundrequest.core.request.domain.Request;
@@ -13,10 +14,12 @@ import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
 import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
 import io.fundrequest.core.request.view.RequestDto;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.List;
 
 @Service
 class ClaimServiceImpl implements ClaimService {
@@ -68,6 +71,13 @@ class ClaimServiceImpl implements ClaimService {
         requestClaim.setStatus(ClaimRequestStatus.APPROVED);
         requestRepository.save(request);
         requestClaimRepository.save(requestClaim);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<RequestClaimDto> listRequestClaims() {
+        return mappers.mapList(RequestClaim.class, RequestClaimDto.class, requestClaimRepository.findAll(new Sort("creationDate")));
+
     }
 
     private SignClaimCommand createSignClaimCommand(RequestClaim requestClaim, Request request) {
