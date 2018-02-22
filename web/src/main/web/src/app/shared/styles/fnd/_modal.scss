@@ -5,7 +5,6 @@
   }
 }
 
-
 .modal-dialog--with-tabs {
   .modal-content {
     box-shadow: none;
@@ -36,12 +35,11 @@
 
 .modal-tabs {
   background: rgba(255, 255, 255, 0.8);
-  padding: 15px;
   border-radius: 0 0 10px 10px;
+  padding: 15px;
 }
 
 .modal-tab {
-  background: #ffffff;
   padding: 0;
 }
 
@@ -81,10 +79,10 @@
 }
 
 .modal-sidebar__close {
-  height: 57px;
+  height: 47px;
   padding: 0;
   a > span {
-    font-size: 3em;
+    font-size: 2.5em;
     line-height: 1;
     display: block;
   }
@@ -131,23 +129,50 @@
 }
 
 .form-horizontal--border {
+  background: #ffffff;
+  border-radius: 5px;
   overflow: hidden;
+
+  + .form-horizontal--border {
+    margin-top: 10px;
+  }
+
+  label {
+    font-weight: normal;
+  }
 
   .form-group {
     margin: 0;
 
     + .form-group {
-      border-top: 1px solid $gray-light;
+      border-top: 1px solid $gray-lighter;
     }
 
     .form-control-static,
     .control-label {
-      padding: 0 20px;
-      line-height: 35px;
+      padding: 15px 20px;
+      line-height: 15px;
+    }
+
+    .form-control-static--qr {
+      .img-responsive {
+        width: 150px;
+        display: inline-block;
+      }
     }
 
     .control-label {
       text-align: left;
+    }
+
+    .control-label--image {
+      line-height: 30px;
+    }
+
+    .form-group__in-between {
+      font-size: 10px;
+      display: inline-block;
+      margin: 0 5px;
     }
 
     .form-control-static {
@@ -159,16 +184,16 @@
     }
 
     .form-control--fnd {
-      padding-right: 0;
-      padding-left: 0;
+      padding: 0;
 
       .form-control {
         text-align: right;
         border-radius: 0;
-      }
-
-      .input-group-addon {
-        border-radius: 0;
+        border: 0 none;
+        background-color: transparent;
+        padding-right: 8px;
+        height: 45px;
+        line-height: 45px;
       }
     }
 
@@ -180,4 +205,60 @@
       border-left: 1px solid $gray-light;
     }
   }
+}
+
+
+.form-heading {
+  position: relative;
+  line-height: 40px;
+  padding: 10px 15px;
+  color: $brand-primary;
+  border-bottom: 1px solid $gray-lighter;
+}
+
+.form-heading__number,
+.form-heading__text {
+  line-height: 40px;
+  display: inline-block;
+}
+
+.form-heading__info {
+  float: right;
+  display: table;
+}
+
+.form-heading__info-text {
+  color: $gray-dark;
+  display: table-cell;
+  padding-right: 10px;
+  vertical-align: middle;
+  font-size: 10px;
+  font-weight: bold;
+  width: 100px;
+  line-height: 10px;
+  text-align: right;
+}
+
+.form-heading__logo {
+  display: table-cell;
+  height: 40px;
+  width: 40px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.form-heading__logo--metamask {
+  background-image: url('assets/img/metamask.png');
+}
+
+.form-heading__logo--trustwallet {
+  background-image: url('assets/img/trustwallet.png');
+}
+
+.form-heading__number {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-right: 5px;
+  vertical-align: bottom;
 }
