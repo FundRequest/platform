@@ -1,0 +1,144 @@
+.navbar {
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1)
+}
+
+.navbar.headroom--top {
+    box-shadow: none
+}
+
+.header.section--blue {
+    padding-top: 50px;
+    padding-bottom: 75px
+}
+
+.header.section--blue a {
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 2px dashed #fff
+}
+
+.header.section--blue a:hover {
+    border-bottom-style: solid
+}
+
+.section {
+    position: relative;
+    padding: 290px 0
+}
+
+.section::before, .section::after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat
+}
+
+.section::before {
+    z-index: -2
+}
+
+.section::after {
+    z-index: -1
+}
+
+.section .container {
+    z-index: 0
+}
+
+.section--compact {
+    padding: 160px 0 170px 0
+}
+
+.section--white {
+    padding: 240px 0 220px 0
+}
+
+.section--white.section--compact {
+    padding: 45px 0 50px 0
+}
+
+.section--blue {
+    color: #fff
+}
+
+.section--blue::before {
+    background-image: url("../img/rect.png"), url("../img/bg-blue.png");
+    background-repeat: no-repeat, repeat-y;
+    background-size: contain, 100%;
+    background-position: right bottom
+}
+
+.section--blue::after {
+    background-image: url("../img/triangle-bottom.png");
+    background-position: right bottom;
+    background-size: contain
+}
+
+.section--gray::before {
+    z-index: -2;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: url("../img/section-5B.png") left bottom, url("../img/section-5A.png") right top;
+    background-repeat: no-repeat;
+    background-color: #f4f9fb;
+    background-size: contain
+}
+
+.section--gray::after {
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: url("../img/triangle-bottom.png") right bottom, url("../img/triangle-top.png") left top;
+    background-repeat: no-repeat;
+    background-size: contain
+}
+
+.section--top-squares::before {
+    background-image: url("../img/section-5A.png");
+    background-position: right top
+}
+
+.section--bottom-squares::before {
+    background-image: url("../img/section-5B.png");
+    background-position: left bottom
+}
+
+.section--no-squares::before {
+    background-image: none
+}
+
+.section--end::after {
+    background: url("../img/triangle-top.png") no-repeat right top;
+    background-size: contain
+}
+
+#result {
+    display: none
+}
+
+#result p {
+    font-size: 18px
+}
+
+a.etherscan {
+    font-size: 12px
+}
+
+a.info {
+    color: black
+}
+
+a.etherwallet-instructions {
+    font-size: 12px
+}

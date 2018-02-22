@@ -108,10 +108,7 @@ public class RequestControllerTest {
 
     @Test
     public void claim() throws Exception {
-        UserClaimRequest userClaimRequest = new UserClaimRequest();
-        userClaimRequest.setPlatformId("1");
-        userClaimRequest.setAddress("0x0");
-        userClaimRequest.setPlatform(Platform.GITHUB);
+        UserClaimRequest userClaimRequest = UserClaimRequest.builder().platform(Platform.GITHUB).platformId("1").address("0x0").build();
         SignedClaim expected = new SignedClaim("davyvanroy", "0x0", Platform.GITHUB, "1", "r", "s", 1);
         when(requestService.signClaimRequest(principal, userClaimRequest)).thenReturn(expected);
         this.mockMvc.perform(

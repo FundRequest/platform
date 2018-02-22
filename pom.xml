@@ -22,6 +22,7 @@
         <module>core</module>
         <module>rest-api</module>
         <module>web</module>
+        <module>admin-web</module>
     </modules>
 
     <properties>
