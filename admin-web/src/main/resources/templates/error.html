@@ -10,12 +10,15 @@
 <section layout:fragment="content">
     <h2>Oops, that's an error!</h2>
     <p th:text="${url}"></p>
-    <p th:text="${exception.getMessage()}"></p>
-    <div class="well well-sm">
+    <div th:if="${exception != null}">
+        <p th:text="${exception.getMessage()}"></p>
+        <div class="well well-sm">
         <span th:each="s : ${exception.getStackTrace()}" th:remove="tag">
             <span th:text="${s}" th:remove="tag"></span>
         </span>
+        </div>
     </div>
+
 
 </section>
 <div layout:fragment="scripts">
