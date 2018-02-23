@@ -10,7 +10,8 @@ public interface ClaimService {
 
     void approveClaim(Long requestClaimId);
 
-    List<RequestClaimDto> listRequestClaims();
+    List<RequestClaimDto> listPendingRequestClaims();
+    List<RequestClaimDto> listCompletedRequestClaims();
 
     void declineClaim(Long requestClaimId);
 }

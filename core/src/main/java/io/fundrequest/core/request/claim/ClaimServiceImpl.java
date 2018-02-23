@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -73,12 +75,28 @@ class ClaimServiceImpl implements ClaimService {
         requestClaimRepository.save(requestClaim);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public List<RequestClaimDto> listRequestClaims() {
-        return mappers.mapList(RequestClaim.class, RequestClaimDto.class, requestClaimRepository.findAll(new Sort("creationDate")));
-
+    @Transactional(readOnly = true)
+    public List<RequestClaimDto> listPendingRequestClaims() {
+        return mappers.mapList(
+                RequestClaim.class,
+                RequestClaimDto.class,
+                requestClaimRepository.findByStatusIn(Collections.singletonList(ClaimRequestStatus.PENDING), new Sort("creationDate"))
+        );
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RequestClaimDto> listCompletedRequestClaims() {
+        List<ClaimRequestStatus> statuses = Arrays.asList(ClaimRequestStatus.values());
+        statuses.remove(ClaimRequestStatus.PENDING);
+        return mappers.mapList(
+                RequestClaim.class,
+                RequestClaimDto.class,
+                requestClaimRepository.findByStatusIn(statuses, new Sort(new Sort.Order(Sort.Direction.DESC, "lastModifiedDate")))
+        );
+    }
+
 
     private SignClaimCommand createSignClaimCommand(RequestClaim requestClaim, Request request) {
         return SignClaimCommand.builder()

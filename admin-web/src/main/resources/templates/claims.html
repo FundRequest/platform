@@ -30,8 +30,8 @@
                 <td th:text="${c.getFlagged()}"></td>
                 <td>
                     <div class="btn-group" role="group" >
-                        <button type="button" class="btn btn-success btn-xs"><i class="fas fa-check"></i></button>
-                        <button type="button" class="btn btn-danger btn-xs"><i class="fas fa-times"></i></button>
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i></button>
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-danger btn-xs decline"><i class="fas fa-times"></i></button>
                     </div>
                 </td>
             </tr>
