@@ -7,7 +7,7 @@
     "install": "napa",
     "start": "ng serve",
     "build": "ng build",
-    "buildprod": "ng build --prod",
+    "buildprod": "ng build --prod --env=prod",
     "test": "ng test",
     "lint": "ng lint",
     "modernizr": "modernizr -c modernizr-config.json -d src/modernizr.js",
