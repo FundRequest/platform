@@ -1,7 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 
-import * as swal from 'sweetalert';
-
+import swal from 'sweetalert';
 import {IRequestRecord, RequestIssueFundInformation, SignedClaim} from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
 import {NotificationType} from '../notification/notificationType';
@@ -221,8 +220,6 @@ export class ContractsService implements OnDestroy {
     if (!this._accountWeb3.locked && this._accountWeb3.supported) {
       let total = this._web3.toWei(value, 'ether');
       let contractAddress = await this.getFundRequestContractAddress();
-      console.log(this.getTokenContractAddress());
-      console.log(contractAddress, total, this._web3.fromAscii(platform + '|AAC|' + String(platformId)));
       let tx = await new Promise((resolve, reject) => {
         this._tokenContract.approveAndCall(contractAddress, total, this._web3.fromAscii(platform + '|AAC|' + String(platformId)), this._getTransactionOptions(this._accountWeb3.currentAccount), function (err, tx) {
           err ? reject(err) : resolve(tx);
@@ -261,13 +258,9 @@ export class ContractsService implements OnDestroy {
    * @returns {Promise<RequestIssueFundInformation>} #funder, balance, current user's funding balance
    */
   public async getRequestFundInfo(request: IRequestRecord): Promise<RequestIssueFundInformation> {
-    console.log('fundrepo contract', await this.getFundRepositoryContractAddress());
-
     return new Promise((resolve, reject) => {
       let account = typeof this._accountWeb3.currentAccount != 'undefined' ? this._accountWeb3.currentAccount : null;
-      console.log('data needed', this._web3.fromAscii(request.issueInformation.platform), request.issueInformation.platformId, account);
       return this._fundRepositoryContract.getFundInfo.call(this._web3.fromAscii(request.issueInformation.platform), request.issueInformation.platformId, account, function (err, result) {
-        console.log({numberOfFunders: result[0], balance: result[1], funderBalance: result[2]});
         err ? reject(err) : resolve({numberOfFunders: result[0], balance: result[1], funderBalance: result[2]});
       });
     }) as Promise<RequestIssueFundInformation>;

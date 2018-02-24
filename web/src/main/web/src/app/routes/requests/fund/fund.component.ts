@@ -5,7 +5,7 @@ import {RequestService} from '../../../services/request/request.service';
 import {Utils} from '../../../shared/utils';
 import {FundRequestCommand} from '../../../redux/requests.models';
 
-import * as swal from 'sweetalert';
+import swal from 'sweetalert';
 import {AccountWeb3Service} from '../../../services/accountWeb3/account-web3.service';
 import {IAccountWeb3Record} from '../../../redux/accountWeb3.models';
 

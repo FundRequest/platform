@@ -29,7 +29,6 @@ export class NetworkStatusComponent implements OnInit, OnDestroy {
   }
 
   public goToMetamask() {
-    console.log('log gotometamask');
     Utils.openExternalUrl( 'https://metamask.io');
   }
 

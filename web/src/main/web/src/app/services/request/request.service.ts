@@ -28,7 +28,7 @@ import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
 
-import * as swal from 'sweetalert';
+import swal from 'sweetalert';
 
 @Injectable()
 export class RequestService implements OnDestroy {

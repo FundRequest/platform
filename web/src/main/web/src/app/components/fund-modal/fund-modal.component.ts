@@ -37,7 +37,6 @@ export class FundModalComponent implements OnInit {
   }
 
   public get selectedTab() {
-    console.log('sel tab', this._selectedTab);
     if (this._selectedTab == null) {
       this._selectedTab = 1;
     }

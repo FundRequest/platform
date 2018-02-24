@@ -34,7 +34,6 @@ export class UserService {
     if (this._as.isAuthenticated()) {
       let newUser: IUserRecord = await this._http.get(ApiUrls.userInfo).toPromise() as IUserRecord;
       this.user = createUser(newUser);
-      console.log(this.user);
       this._store.dispatch(new ReplaceUser(this.user));
     }
   }

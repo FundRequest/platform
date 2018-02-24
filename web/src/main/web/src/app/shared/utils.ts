@@ -4,7 +4,6 @@ declare let window: any;
 
 export class Utils {
   public static openExternalUrl(url: string): void {
-    console.log(url);
     let myWindow = window.open();
     myWindow.opener = null;
     myWindow.location = url;
