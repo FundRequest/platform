@@ -32,12 +32,13 @@ import {JqcloudDirective} from './directives/jqcloud/jqcloud.directive';
 import {LocalStorageModule} from 'angular-2-local-storage';
 import {FundButtonDirective} from './directives/fund-button/fund-button.directive';
 import {AddRequestDirective} from './directives/add-request/add-request.directive';
-import {WeiAsNumberPipe, WeiPipe} from './pipes/wei/wei.pipe';
+import {WeiAsNumberPipe, WeiPipe} from './pipes/wei.pipe';
 import {Ng2FilterPipeModule} from 'ng2-filter-pipe';
+import {UrlOfIssuePipe} from './pipes/url-of-issue.pipe';
 
 // https://angular.io/styleguide#!#04-10
 @NgModule({
-  imports     : [
+  imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -59,12 +60,12 @@ import {Ng2FilterPipeModule} from 'ng2-filter-pipe';
     TypeaheadModule.forRoot(),
     ToasterModule,
     LocalStorageModule.withConfig({
-      prefix     : 'FND',
+      prefix: 'FND',
       storageType: 'localStorage'
     })
   ],
-  providers   : [
-    ColorsService
+  providers: [
+    ColorsService,
   ],
   declarations: [
     AddRequestDirective,
@@ -79,8 +80,9 @@ import {Ng2FilterPipeModule} from 'ng2-filter-pipe';
     VectormapDirective,
     WeiAsNumberPipe,
     WeiPipe,
+    UrlOfIssuePipe
   ],
-  exports     : [
+  exports: [
     AccordionModule,
     AddRequestDirective,
     AlertModule,
@@ -114,6 +116,7 @@ import {Ng2FilterPipeModule} from 'ng2-filter-pipe';
     VectormapDirective,
     WeiAsNumberPipe,
     WeiPipe,
+    UrlOfIssuePipe
   ]
 })
 

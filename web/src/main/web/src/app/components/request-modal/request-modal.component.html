@@ -8,47 +8,45 @@
   <div class="modal-body">
     <div class="form-group">
       <label for="url" class="control-label">URL *</label>
-      <input formControlName="link" type="text" class="form-control" id="url" required>
+      <input formControlName="linkControl" type="text" class="form-control" id="url" required>
 
-      <div *ngIf="link.invalid && (link.dirty || link.touched)">
-        <div *ngIf="link.errors.requestExists">
-          <span class="text-danger">There already exists a request for this issue.</span>
-          <a (click)="gotoRequest(link.errors.requestExists)">Go to request.</a>
-        </div>
-        <div class="text-danger" *ngIf="link.errors.pattern">
+      <div *ngIf="linkControl.invalid && (linkControl.dirty || linkControl.touched)">
+        <div class="text-danger" *ngIf="linkControl.errors.pattern">
           For the alpha only issues from 'https://github.com/FundRequest/area51/issues/' can be added.
         </div>
-        <div class="text-danger" *ngIf="link.errors.linkExists">
-          Provided link is not valid
-        </div>
-        <div class="text-danger" *ngIf="link.errors.required">
+        <div class="text-danger" *ngIf="linkControl.errors.required">
           URL is required
         </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label for="fund-amount" class="col-xs-6 col-md-4 control-label">Fund Amount</label>
-      <div class="input-group">
-        <input [(ngModel)]="fundAmount" id="fund-amount" formControlName="fund-amount" type="number" class="form-control">
-        <span class="input-group-addon">FND</span>
-      </div>
-      <div class="text-danger" *ngIf="fundAmount <= 0">
-        Funding amount needs to be bigger then 0.
-      </div>
-      <div class="text-danger" *ngIf="fundAmount > balance">
-        Balance to low to fund {{fundAmount}} FND.
-      </div>
-      <div class="text-warning" *ngIf="link.valid && requestExists()">
+      <div class="text-warning" *ngIf="linkControl.valid && requestExists">
         This request already exists, amount will be added to this request.
       </div>
     </div>
-
-    <div class="modal-footer">
-      <div class="btn-group" role="group">
-        <button type="button" class="btn btn-default" (click)="bsModalRef.hide(); requestForm.reset()">Close</button>
-        <button type="submit" [disabled]="!requestForm.valid" class="btn btn-primary">Add</button>
+    <div class="form-group row">
+      <label for="fund-amount" class="col-xs-6 col-md-4 control-label">Fund Amount *</label>
+      <div class="col-xs-6 col-md-8 form-control-static">
+        <div class="input-group">
+          <input formControlName="fundAmountControl" type="number" class="form-control" id="fund-amount" required>
+          <span class="input-group-addon">FND</span>
+        </div>
+        <div *ngIf="fundAmountControl.invalid && (fundAmountControl.dirty || fundAmountControl.touched)">
+          <div class="text-danger" *ngIf="fundAmountControl.errors.min">
+            Funding amount needs to be bigger then 0.
+          </div>
+          <div class="text-danger" *ngIf="fundAmountControl.errors.required">
+            Funding amount is required.
+          </div>
+          <div class="text-danger" *ngIf="fundAmountControl.errors.max">
+            Balance to low to fund {{fundAmount}} FND.
+          </div>
+        </div>
       </div>
     </div>
-
+  </div>
+  <div class="modal-footer">
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-default" (click)="bsModalRef.hide(); requestForm.reset()">Close</button>
+      <button type="submit" [disabled]="!requestForm.valid" class="btn btn-primary">Add</button>
+    </div>
   </div>
 </form>

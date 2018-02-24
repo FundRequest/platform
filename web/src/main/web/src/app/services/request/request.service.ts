@@ -27,8 +27,7 @@ import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
-
-import swal from 'sweetalert';
+import swal from 'sweetalert2';
 
 @Injectable()
 export class RequestService implements OnDestroy {
@@ -54,7 +53,10 @@ export class RequestService implements OnDestroy {
       let params: HttpParams = new HttpParams();
       params = params.set('platform', request.issueInformation.platform);
       params = params.set('platformId', request.issueInformation.platformId);
-      let canClaim: string = await this._http.get(ApiUrls.canClaim(request.id), { params: params, responseType: 'text'}).toPromise() as string;
+      let canClaim: string = await this._http.get(ApiUrls.canClaim(request.id), {
+        params: params,
+        responseType: 'text'
+      }).toPromise() as string;
       return canClaim == 'true';
     }
   }
@@ -115,9 +117,11 @@ export class RequestService implements OnDestroy {
         return this._cs.claimRequest(signedClaim);
       },
       error => {
-        swal('Not implemented',
-          'You\'re logged into github and the issue is claimable, but claim functionality is not yet fully implemented is this application!', 'error'
-        );
+        swal({
+          title: 'Not implemented',
+          text: 'You\'re logged into github and the issue is claimable, but claim functionality is not yet fully implemented is this application!',
+          type: 'error'
+        });
       }
     );
     return null;

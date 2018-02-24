@@ -5,7 +5,6 @@ import {IRequestList, IRequestRecord} from '../../redux/requests.models';
 import {Subscription} from 'rxjs/Subscription';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Issue} from './issue';
 import {Utils} from '../../shared/utils';
 import {AccountWeb3Service} from '../../services/accountWeb3/account-web3.service';
 import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
@@ -24,12 +23,10 @@ export class RequestModalComponent implements OnInit, OnDestroy {
   public title: string = 'Fund other request';
   public requestForm: FormGroup;
   public acountWeb3: IAccountWeb3Record;
-  public fundAmount: number;
   public balance: number;
 
-  public issue: Issue = new Issue;
-
-  constructor(public bsModalRef: BsModalRef,
+  constructor(
+    public bsModalRef: BsModalRef,
     private _router: Router,
     private _rs: RequestService,
     private _aw3s: AccountWeb3Service) {
@@ -43,11 +40,15 @@ export class RequestModalComponent implements OnInit, OnDestroy {
     this._subscriptionRequests = this._rs.requests$.subscribe(result => this._requests = result);
 
     this.requestForm = new FormGroup({
-      linkInput: new FormControl(this.issue.link, [
+      linkControl: new FormControl('', [
         Validators.required,
         Validators.pattern(/^https:\/\/github.com\/FundRequest\/area51\/issues\/[0-9]+$/)
       ]),
-      'fund-amount': new FormControl(this.fundAmount)
+      fundAmountControl: new FormControl('', [
+        Validators.required,
+        Validators.min(0.01),
+        Validators.max(this.balance)
+      ])
     });
   }
 
@@ -57,19 +58,26 @@ export class RequestModalComponent implements OnInit, OnDestroy {
   }
 
   public addRequest() {
-    let technologies = [];
-    this._rs.addRequest(this.linkValue, this.fundAmount);
+    this._rs.addRequest(this.linkValue, this.fundAmountValue);
     this.bsModalRef.hide();
     this.requestForm.reset();
   }
 
-  public get link(): FormControl {
-    return this.requestForm.get('link') as FormControl;
+  public get linkControl(): FormControl {
+    return this.requestForm.get('linkControl') as FormControl;
+  }
+
+  public get fundAmountControl(): FormControl {
+    return this.requestForm.get('fundAmountControl') as FormControl;
   }
 
   public get linkValue(): string {
-    let linkValue: string = this.link.value;
+    let linkValue: string = this.linkControl.value;
     return linkValue ? linkValue.trim() : '';
+  }
+
+  public get fundAmountValue(): number {
+    return this.fundAmountControl.value as number;
   }
 
   public get platform(): string {
@@ -80,7 +88,7 @@ export class RequestModalComponent implements OnInit, OnDestroy {
     return Utils.getPlatformIdFromUrl(this.linkValue);
   }
 
-  public requestExists(): boolean {
+  public get requestExists(): boolean {
     let checkRequests = this._requests.filter((request: IRequestRecord) =>
       (request.issueInformation.platform == this.platform && request.issueInformation.platformId == this.platformId)
     );

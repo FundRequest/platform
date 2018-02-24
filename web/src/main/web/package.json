@@ -93,7 +93,7 @@
     "simple-line-icons": "2.4.1",
     "spinkit": "1.2.5",
     "summernote": "0.8.10",
-    "sweetalert": "2.1.0",
+    "sweetalert2": "^7.12.15",
     "ts-helpers": "1.1.2",
     "typed-immutable-record": "0.0.6",
     "weather-icons": "github:erikflowers/weather-icons",
