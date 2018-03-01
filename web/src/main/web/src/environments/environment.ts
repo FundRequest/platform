@@ -7,7 +7,7 @@ export const environment = {
   production: false,
   restApiLocation: 'http://localhost:8080',
   keycloak: {
-    url: 'https://key.fundrequest.io/auth',
+    url: 'https://alpha-key.fundrequest.io/auth',
     realm: 'fundrequest',
     clientId: 'fundrequest_dev',
     //'ssl-required': 'external',
