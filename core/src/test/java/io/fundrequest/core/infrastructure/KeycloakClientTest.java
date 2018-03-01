@@ -16,7 +16,7 @@ public class KeycloakClientTest {
     @Test
     public void name() throws JsonProcessingException {
         Keycloak keycloak = Keycloak.getInstance(
-                "https://key.fundrequest.io/auth",
+                "https://alpha-key.fundrequest.io/auth",
                 "fundrequest",
                 "fr-api-client",
                 "62EHRDy*!sm1tzv4*8njo!7dKDd!16&",
