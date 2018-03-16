@@ -5,13 +5,14 @@ import {RequestService} from '../../../services/request/request.service';
 import {UserService} from '../../../services/user/user.service';
 import {IUserRecord} from '../../../redux/user.models';
 import {Utils} from '../../../shared/utils';
-import {AuthService} from "../../../core/auth/auth.service";
+import {AuthService} from '../../../core/auth/auth.service';
 import {Subscription} from 'rxjs/Subscription';
+import swal from 'sweetalert2';
 
 @Component({
-  selector   : 'fnd-request-detail',
+  selector: 'fnd-request-detail',
   templateUrl: './detail.component.html',
-  styleUrls  : ['./detail.component.scss']
+  styleUrls: ['./detail.component.scss']
 })
 export class DetailComponent implements OnInit, OnDestroy {
 
@@ -26,9 +27,9 @@ export class DetailComponent implements OnInit, OnDestroy {
   private _showClaim: boolean = null;
 
   constructor(private route: ActivatedRoute,
-              private _rs: RequestService,
-              private _us: UserService,
-              private _as: AuthService) {
+    private _rs: RequestService,
+    private _us: UserService,
+    private _as: AuthService) {
   }
 
   async ngOnInit() {
@@ -55,7 +56,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   public async canClaim(): Promise<boolean> {
-    if(this._canClaim == null) {
+    if (this._canClaim == null) {
       this._canClaim = this._as.isAuthenticated() && await this._rs.canClaim(this.request);
     }
 
@@ -64,13 +65,15 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   public async claim(): Promise<void> {
     let canClaim = await this.canClaim();
-    if(canClaim) {
+    if (canClaim) {
       let info = this.request.issueInformation;
       this._rs.claimRequest(new ClaimRequestCommand(this.request.id, info.platform, info.platformId, ''));
     } else {
-      swal('Not authenticated',
-        'For claiming a request you need to be logged in with an account that is linked to Github. And you need to be the solver of this issue.', 'error'
-      );
+      swal({
+        title: 'Not authenticated',
+        text: 'For claiming a request you need to be logged in with an account that is linked to Github. And you need to be the solver of this issue.',
+        type: 'error'
+      });
     }
   }
 

@@ -1,0 +1,65 @@
+<!-- connected ok -->
+<div class="media-box" *ngIf="!accountWeb3.disabled && !accountWeb3.locked && accountWeb3.supported">
+  <div class="pull-left">
+    <em class="fa fa-check"></em>
+  </div>
+  <div class="media-box-body clearfix">
+    <p class="m0 text-muted">Connected to {{accountWeb3.network}}.</p>
+    <p class="m0">
+      <strong>
+        <small>0xc31eb6e317054a79bb5e442d686cb9b225670c1d</small>
+      </strong>
+    </p>
+  </div>
+</div>
+
+<!-- connected unsupported -->
+<div class="media-box" *ngIf="!accountWeb3.disabled && !accountWeb3.locked && !accountWeb3.supported">
+  <div class="pull-left">
+    <em class="fa fa-check"></em>
+  </div>
+  <div class="media-box-body clearfix">
+    <p class="m0 text-muted">Connected to {{accountWeb3.network}}.</p>
+    <p class="m0">
+      <strong>
+        <small>Please connect to <!--mainnet or--> ropsten.</small>
+      </strong>
+    </p>
+  </div>
+</div>
+
+<!-- connected unsupported -->
+<div class="media-box" *ngIf="accountWeb3.disabled">
+  <div class="pull-left">
+    <em class="fa fa-check"></em>
+  </div>
+  <div class="media-box-body clearfix">
+    <p class="m0 text-muted">No DApp functionality</p>
+    <p class="m0">
+      <strong>
+        <small>Use a
+          <span (click)="goToMist()">DApp browser like <a>mist</a></span>
+          or use a
+          <span (click)="goToMetamask()">browser plugin like <a>Metamask</a>.</span>
+        </small>
+      </strong>
+    </p>
+  </div>
+</div>
+
+<!-- connected locked -->
+<div class="media-box" *ngIf="!accountWeb3.disabled && accountWeb3.locked">
+  <div class="pull-left">
+    <em class="fa fa-exclamation"></em>
+  </div>
+  <div class="media-box-body clearfix">
+    <p class="m0 text-muted">DApp functionality locked</p>
+    <p class="m0">
+      <strong>
+        <small>
+          Please unlock your DApp functionality
+        </small>
+      </strong>
+    </p>
+  </div>
+</div>

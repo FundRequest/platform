@@ -2,13 +2,13 @@ import {Injectable, OnDestroy} from '@angular/core';
 
 import * as Web3 from 'web3';
 import {Store} from '@ngrx/store';
-import {SettingsService} from '../../core/settings/settings.service';
-import {createAccountWeb3, IAccountWeb3Record} from '../../redux/accountWeb3.models';
-import {IState} from '../../redux/store';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
+import {createAccountWeb3, IAccountWeb3Record} from '../../redux/accountWeb3.models';
 import {ReplaceAccountWeb3} from '../../redux/accountWeb3.reducer';
+import {IState} from '../../redux/store';
 import {Settings} from '../../core/settings/settings.model';
+import {SettingsService} from '../../core/settings/settings.service';
 
 declare let window: any;
 
@@ -35,7 +35,12 @@ export class AccountWeb3Service implements OnDestroy {
 
   public getWeb3(accountWeb3: IAccountWeb3Record): any {
     if (accountWeb3 != null) {
-      let web3 = new Web3(window.web3.currentProvider);
+      let web3;
+      if (typeof window.web3 != 'undefined') {
+        web3 = new Web3(window.web3.currentProvider);
+      } else {
+        web3 = new Web3();
+      }
       let networkId = accountWeb3.networkId;
       if (networkId !== '3') {
         return new Web3(new Web3.providers.HttpProvider(this._settings.providerApi));
@@ -69,6 +74,7 @@ export class AccountWeb3Service implements OnDestroy {
     let networkId = '';
     let web3 = null;
     let supported = false;
+    let disabled = false;
     let accountWeb3 = createAccountWeb3();
     let account;
 
@@ -100,8 +106,11 @@ export class AccountWeb3Service implements OnDestroy {
         default:
           supported = false;
       }
+    } else {
+      disabled = true;
     }
 
+    accountWeb3 = accountWeb3.set('disabled', disabled);
     accountWeb3 = accountWeb3.set('locked', account == this._nullAccount);
     accountWeb3 = accountWeb3.set('supported', supported);
     accountWeb3 = accountWeb3.set('network', network);

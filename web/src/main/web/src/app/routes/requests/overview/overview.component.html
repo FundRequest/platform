@@ -76,7 +76,7 @@
         </td>
         <td>{{request.status}}</td>
         <td class="text-center">
-          <a target="_blank" href="{{request.issueInformation?.link}}">
+          <a target="_blank" href="{{request | urlOfIssue}}">
             <i [ngClass]="['fa fa-2x fa-' + request.issueInformation?.platform | lowercase]"></i>
           </a>
         </td>

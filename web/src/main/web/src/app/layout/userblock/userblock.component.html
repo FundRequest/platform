@@ -1,0 +1,91 @@
+<ul class="nav navbar-nav navbar-right">
+  <!--li class="li--user-block" *ngIf="userBlockIsVisible()">
+    <div class="item user-block">
+      <div class="user-block-info bg-block-info"
+           *ngIf="!accountWeb3.disabled && !accountWeb3.locked && accountWeb3.supported">
+        <span class="user-block-role">
+          <strong class="user-block-name text-sm">{{accountWeb3.currentAccount}}</strong>
+          <span>Balance: </span><span>{{accountWeb3.balance | wei}}</span><span> FND</span>
+        </span>
+      </div>
+    </div>
+  </li-->
+
+  <!--li class="li--user-block" *ngIf="!userIsLoggedIn()">
+    <div class="user-block-info">
+      <button (click)="login($event)" class="btn btn-default">Login</button>
+    </div>
+  </li-->
+
+  <li class="dropdown dropdown-list" dropdown>
+    <a dropdownToggle>
+      <div class="media-box">
+        <div class="media-box-body user-block-picture">
+          <div class="user-block-status">
+            <img class="img-thumbnail img-circle"
+                 [src]="_user?.picture || 'https://api.adorable.io/avatars/face/eyes5/nose4/mouth9/fecf41'"
+                 alt="Avatar"/>
+            <div class="circle circle-lg" [ngClass]="[userIsLoggedIn() ? 'circle-success' : 'circle-danger']"></div>
+          </div>
+        </div>
+        <div class="pull-right">
+          <em class="fa fa-chevron-down"></em>
+        </div>
+      </div>
+    </a>
+    <ul *dropdownMenu class="dropdown-menu animated flipInX">
+      <li>
+        <div class="list-group">
+          <div class="list-group-item">
+            <app-network-status></app-network-status>
+          </div>
+          <div class="list-group-item" *ngIf="userIsLoggedIn()">
+            <div class="media-box">
+              <div class="pull-left">
+                <em class="fa fa-envelope"></em>
+              </div>
+              <div class="media-box-body clearfix">
+                <p class="m0 text-muted">Signed in with</p>
+                <p class="m0">
+                  <strong>
+                    <small>{{_user?.email}}</small>
+                  </strong>
+                </p>
+              </div>
+            </div>
+          </div>
+          <a class="list-group-item" [routerLink]="'/settings'" *ngIf="userIsLoggedIn()">
+            <div class="media-box">
+              <div class="pull-left">
+                <em class="fa fa-user"></em>
+              </div>
+              <div class="media-box-body clearfix">
+                <p class="m0">Settings</p>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item" (click)="login($event)" *ngIf="!userIsLoggedIn()">
+            <div class="media-box">
+              <div class="pull-left">
+                <em class="fa fa-sign-in"></em>
+              </div>
+              <div class="media-box-body clearfix">
+                <p class="m0">Login</p>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item" (click)="logout($event)" *ngIf="userIsLoggedIn()">
+            <div class="media-box">
+              <div class="pull-left">
+                <em class="fa fa-sign-out"></em>
+              </div>
+              <div class="media-box-body clearfix">
+                <p class="m0">Logout</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </li>
+    </ul>
+</ul>
+

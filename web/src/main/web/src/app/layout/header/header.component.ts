@@ -1,11 +1,8 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {UserblockService} from '../sidebar/userblock/userblock.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {UserblockService} from '../userblock/userblock.service';
 import {SettingsService} from '../../core/settings/settings.service';
 import {MenuService} from '../../core/menu/menu.service';
 import {UserService} from '../../services/user/user.service';
-import {Subscription} from 'rxjs/Subscription';
-import {AccountWeb3Service} from '../../services/accountWeb3/account-web3.service';
-import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
 
 declare let require: any;
 declare let $: any;
@@ -18,7 +15,7 @@ const browser = require('jquery.browser');
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
 
   navCollapsed = true; // for horizontal layout
   menuItems = []; // for horizontal layout
@@ -26,14 +23,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isNavSearchVisible: boolean;
   @ViewChild('fsbutton') fsbutton;  // the fullscreen button
 
-  private _subscriptionAccountWeb3: Subscription;
-  private _accountWeb3: IAccountWeb3Record;
-
   constructor(public menu: MenuService,
     public userblockService: UserblockService,
     public settings: SettingsService,
-    public userService: UserService,
-    private _aw3s: AccountWeb3Service) {
+    public userService: UserService) {
     this.menuItems = menu.getMenu().slice(0, 4); // for horizontal layout
   }
 
@@ -42,19 +35,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (browser.msie) { // Not supported under IE
       this.fsbutton.nativeElement.style.display = 'none';
     }
-
-    this._subscriptionAccountWeb3 = this._aw3s.currentAccountWeb3$.subscribe((accountWeb3: IAccountWeb3Record) => {
-      this._accountWeb3 = accountWeb3;
-    });
-  }
-
-  public get accountWeb3(): IAccountWeb3Record {
-    return this._accountWeb3;
-  }
-
-  logout($event) {
-    $event.preventDefault();
-    this.userService.logout();
   }
 
   toggleUserBlock($event) {
@@ -101,9 +81,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
     else {
       el.children('em').removeClass('fa-compress').addClass('fa-expand');
     }
-  }
-
-  public ngOnDestroy() {
-    this._subscriptionAccountWeb3.unsubscribe();
   }
 }

@@ -1,7 +1,5 @@
 import {Injectable, OnDestroy} from '@angular/core';
 
-import * as swal from 'sweetalert';
-
 import {IRequestRecord, RequestIssueFundInformation, SignedClaim} from '../../redux/requests.models';
 import {NotificationService} from '../notification/notification.service';
 import {NotificationType} from '../notification/notificationType';
@@ -11,6 +9,7 @@ import {SettingsService} from '../../core/settings/settings.service';
 import {Subscription} from 'rxjs/Subscription';
 import {AccountWeb3Service} from '../accountWeb3/account-web3.service';
 import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
+import swal from 'sweetalert2';
 
 /**
  * Used to load json abi's of contracts
@@ -63,7 +62,9 @@ export class ContractsService implements OnDestroy {
    * @param {NotificationService} _ns
    * @param {AccountWeb3Service} _aw3s
    */
-  constructor(private _ss: SettingsService, private _ns: NotificationService, private _aw3s: AccountWeb3Service) {
+  constructor(private _ss: SettingsService,
+    private _ns: NotificationService,
+    private _aw3s: AccountWeb3Service) {
   }
 
   /**
@@ -220,8 +221,9 @@ export class ContractsService implements OnDestroy {
   public async fundRequest(platform: string, platformId: string, value: number): Promise<string> {
     if (!this._accountWeb3.locked && this._accountWeb3.supported) {
       let total = this._web3.toWei(value, 'ether');
+      let contractAddress = await this.getFundRequestContractAddress();
       let tx = await new Promise((resolve, reject) => {
-        this._tokenContract.approveAndCall(this.getFundRequestContractAddress(), total, this._web3.fromAscii(platform + '|AAC|' + String(platformId)), this._getTransactionOptions(this._accountWeb3.currentAccount), function (err, tx) {
+        this._tokenContract.approveAndCall(contractAddress, total, this._web3.fromAscii(platform + '|AAC|' + String(platformId)), this._getTransactionOptions(this._accountWeb3.currentAccount), function (err, tx) {
           err ? reject(err) : resolve(tx);
         });
       }) as string;
@@ -278,9 +280,11 @@ export class ContractsService implements OnDestroy {
   }
 
   private _showLimitedFunctionalityAlert() {
-    swal('Limited functionality',
-      'You cannot execute transactions since you are not using a Dapp browser like Mist or have MetaMask enabled', 'error'
-    );
+    swal({
+      title: 'Limited functionality',
+      text: 'You cannot execute transactions since you are not using a Dapp browser like Mist or have MetaMask enabled',
+      type: 'info'
+    });
   }
 
   /**

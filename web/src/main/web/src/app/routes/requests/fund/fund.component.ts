@@ -4,10 +4,9 @@ import {HttpClient} from '@angular/common/http';
 import {RequestService} from '../../../services/request/request.service';
 import {Utils} from '../../../shared/utils';
 import {FundRequestCommand} from '../../../redux/requests.models';
-
-import * as swal from 'sweetalert';
 import {AccountWeb3Service} from '../../../services/accountWeb3/account-web3.service';
 import {IAccountWeb3Record} from '../../../redux/accountWeb3.models';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'fnd-request-detail',
@@ -70,7 +69,11 @@ export class FundComponent implements OnInit {
         this.requestDetails.platformId,
         this.fundAmount)
     ).catch((e) => {
-      swal('Error when funding', `An error ocurred wile funding: ${e.message}`, 'error');
+      swal({
+        title: 'Error when funding',
+        text: `An error ocurred wile funding: ${e.message}`,
+        type: 'error'
+      });
       this.fundingInProgress = false;
     });
   }

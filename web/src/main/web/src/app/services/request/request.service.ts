@@ -27,8 +27,7 @@ import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/take';
-
-import * as swal from 'sweetalert';
+import swal from 'sweetalert2';
 
 @Injectable()
 export class RequestService implements OnDestroy {
@@ -54,7 +53,10 @@ export class RequestService implements OnDestroy {
       let params: HttpParams = new HttpParams();
       params = params.set('platform', request.issueInformation.platform);
       params = params.set('platformId', request.issueInformation.platformId);
-      let canClaim: string = await this._http.get(ApiUrls.canClaim(request.id), { params: params, responseType: 'text'}).toPromise() as string;
+      let canClaim: string = await this._http.get(ApiUrls.canClaim(request.id), {
+        params: params,
+        responseType: 'text'
+      }).toPromise() as string;
       return canClaim == 'true';
     }
   }
@@ -115,9 +117,11 @@ export class RequestService implements OnDestroy {
         return this._cs.claimRequest(signedClaim);
       },
       error => {
-        swal('Not implemented',
-          'You\'re logged into github and the issue is claimable, but claim functionality is not yet fully implemented is this application!', 'error'
-        );
+        swal({
+          title: 'Not implemented',
+          text: 'You\'re logged into github and the issue is claimable, but claim functionality is not yet fully implemented is this application!',
+          type: 'error'
+        });
       }
     );
     return null;
@@ -164,7 +168,7 @@ export class RequestService implements OnDestroy {
 
   public addRequestInStore(newRequest: IRequestRecord): void {
     this.store.dispatch(new AddRequest(newRequest));
-    this.updateRequestBalance(newRequest);
+    this.updateRequestWithNewFundInfoFromContract(newRequest);
   }
 
   public editRequestInStore(oldRequest: IRequestRecord, modifiedRequest: IRequestRecord) {
@@ -172,15 +176,15 @@ export class RequestService implements OnDestroy {
   }
 
   public editOrAddRequestInStore(newOrModifiedRequest: IRequestRecord) {
-    let existingRequest: IRequestRecord;
+    let existingRequest: IRequestRecord = null;
 
     this.store.select(state => state.requests).take(1).subscribe((requests: IRequestList) => {
       requests.filter((request: IRequestRecord) => request.id == newOrModifiedRequest.id)
         .map((request: IRequestRecord) => {
           existingRequest = request;
         });
+      existingRequest == null ? this.addRequestInStore(newOrModifiedRequest) : this.updateRequestWithNewFundInfoFromContract(existingRequest);
     });
-    typeof existingRequest == 'undefined' ? this.addRequestInStore(newOrModifiedRequest) : this.updateRequestBalance(existingRequest);
   }
 
   private updateRequestWithNewFundInfoFromContract(request: IRequestRecord): void {
@@ -188,14 +192,6 @@ export class RequestService implements OnDestroy {
         this.updateRequestWithNewFundInfo(request, fundInfo);
       }
     ).catch(error => {
-      this.handleError(error);
-    });
-  }
-
-  private updateRequestBalance(request: IRequestRecord): void {
-    this._cs.getRequestFundInfo(request).then((fundInfo) => {
-      this.updateRequestWithNewFundInfo(request, fundInfo);
-    }).catch(error => {
       this.handleError(error);
     });
   }

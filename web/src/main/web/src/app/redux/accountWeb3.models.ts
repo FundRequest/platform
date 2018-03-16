@@ -7,6 +7,7 @@ interface IAccountWeb3 {
   currentAccount: '0x0000000000000000000000000000000000000000',
   locked: boolean,
   supported: boolean,
+  disabled: boolean,
   web3: any
 }
 
@@ -20,5 +21,6 @@ export const createAccountWeb3 = makeTypedFactory<IAccountWeb3, IAccountWeb3Reco
   currentAccount: '0x0000000000000000000000000000000000000000',
   locked: true,
   supported: false,
+  disabled: true,
   web3: null
 });

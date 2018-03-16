@@ -51,6 +51,5 @@ export class AppComponent implements OnInit {
   constructor(public settings: SettingsService, private _nss: NotificationStreamService, private _cs: ContractsService, private _ns: NotificationService) { }
 
   ngOnInit() {
-    $(document).on('click', '[href="#"]', e => e.preventDefault());
   }
 }

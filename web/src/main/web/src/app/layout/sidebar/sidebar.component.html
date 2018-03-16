@@ -3,10 +3,6 @@
 
     <ul class="nav">
 
-      <li class="has-user-block">
-        <app-userblock></app-userblock>
-      </li>
-
       <li *ngFor='let item of menuItems' [ngClass]="{'nav-heading': item.heading}" [routerLinkActive]="['active']">
         <span *ngIf="item.heading">{{(item.translate | translate) || item.text}}</span>
         <a *ngIf="!item.heading && !item.submenu && item.elink" [attr.target]="item.target" [attr.href]="item.elink"

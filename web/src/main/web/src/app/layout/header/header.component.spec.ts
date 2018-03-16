@@ -3,7 +3,7 @@
 import { async, inject, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 
-import { UserblockService } from '../sidebar/userblock/userblock.service';
+import { UserblockService } from '../userblock/userblock.service';
 import { SettingsService } from '../../core/settings/settings.service';
 import { MenuService } from '../../core/menu/menu.service';
 

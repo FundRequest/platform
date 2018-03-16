@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {UserblockService} from './userblock.service';
-import {UserService} from '../../../services/user/user.service';
-import {IUserRecord} from '../../../redux/user.models';
-import {AccountWeb3Service} from '../../../services/accountWeb3/account-web3.service';
-import {IAccountWeb3Record} from '../../../redux/accountWeb3.models';
+import {UserService} from '../../services/user/user.service';
+import {IUserRecord} from '../../redux/user.models';
+import {AccountWeb3Service} from '../../services/accountWeb3/account-web3.service';
+import {IAccountWeb3Record} from '../../redux/accountWeb3.models';
 import {Subscription} from 'rxjs/Subscription';
 
 @Component({
@@ -42,6 +42,11 @@ export class UserblockComponent implements OnInit, OnDestroy {
 
   public login(): void {
     this._us.login();
+  }
+
+  public logout($event): void {
+    $event.preventDefault();
+    this._us.logout();
   }
 
   public userIsLoggedIn(): boolean {

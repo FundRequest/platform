@@ -9,7 +9,6 @@ import {AccordionModule} from 'ngx-bootstrap/accordion';
 import {AlertModule} from 'ngx-bootstrap/alert';
 import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
 import {ButtonsModule} from 'ngx-bootstrap/buttons';
-import {CarouselModule} from 'ngx-bootstrap/carousel';
 import {CollapseModule} from 'ngx-bootstrap/collapse';
 import {DatepickerModule} from 'ngx-bootstrap/datepicker';
 import {ModalModule} from 'ngx-bootstrap/modal';
@@ -33,12 +32,13 @@ import {JqcloudDirective} from './directives/jqcloud/jqcloud.directive';
 import {LocalStorageModule} from 'angular-2-local-storage';
 import {FundButtonDirective} from './directives/fund-button/fund-button.directive';
 import {AddRequestDirective} from './directives/add-request/add-request.directive';
-import {WeiAsNumberPipe, WeiPipe} from './pipes/wei/wei.pipe';
+import {WeiAsNumberPipe, WeiPipe} from './pipes/wei.pipe';
 import {Ng2FilterPipeModule} from 'ng2-filter-pipe';
+import {UrlOfIssuePipe} from './pipes/url-of-issue.pipe';
 
 // https://angular.io/styleguide#!#04-10
 @NgModule({
-  imports     : [
+  imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -60,62 +60,63 @@ import {Ng2FilterPipeModule} from 'ng2-filter-pipe';
     TypeaheadModule.forRoot(),
     ToasterModule,
     LocalStorageModule.withConfig({
-      prefix     : 'FND',
+      prefix: 'FND',
       storageType: 'localStorage'
     })
   ],
-  providers   : [
-    ColorsService
+  providers: [
+    ColorsService,
   ],
   declarations: [
-    FlotDirective,
-    SparklineDirective,
-    EasypiechartDirective,
+    AddRequestDirective,
     CheckallDirective,
-    VectormapDirective,
+    EasypiechartDirective,
+    FlotDirective,
+    FundButtonDirective,
+    JqcloudDirective,
     NowDirective,
     ScrollableDirective,
-    JqcloudDirective,
-    FundButtonDirective,
-    AddRequestDirective,
-    WeiPipe,
+    SparklineDirective,
+    VectormapDirective,
     WeiAsNumberPipe,
+    WeiPipe,
+    UrlOfIssuePipe
   ],
-  exports     : [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    RouterModule,
+  exports: [
     AccordionModule,
+    AddRequestDirective,
     AlertModule,
-    ButtonsModule,
-    CarouselModule,
-    CollapseModule,
-    DatepickerModule,
+    FundButtonDirective,
     BsDropdownModule,
+    ButtonsModule,
+    CollapseModule,
+    CommonModule,
+    CheckallDirective,
+    DatepickerModule,
+    EasypiechartDirective,
+    FlotDirective,
+    FormsModule,
+    JqcloudDirective,
     ModalModule,
     Ng2FilterPipeModule,
+    NowDirective,
+    RatingModule,
+    ReactiveFormsModule,
+    RouterModule,
     PaginationModule,
     ProgressbarModule,
-    RatingModule,
     TabsModule,
+    TranslateModule,
     TimepickerModule,
+    ToasterModule,
     TooltipModule,
     TypeaheadModule,
-    ToasterModule,
-    FlotDirective,
-    SparklineDirective,
-    EasypiechartDirective,
-    CheckallDirective,
-    VectormapDirective,
-    NowDirective,
     ScrollableDirective,
-    JqcloudDirective,
-    FundButtonDirective,
-    AddRequestDirective,
-    WeiPipe,
+    SparklineDirective,
+    VectormapDirective,
     WeiAsNumberPipe,
+    WeiPipe,
+    UrlOfIssuePipe
   ]
 })
 

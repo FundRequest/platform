@@ -19,6 +19,7 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
+        "../node_modules/sweetalert2/dist/sweetalert2.min.css",
         "app/core/preloader/preloader.scss",
         "styles.scss"
       ],
@@ -36,12 +37,14 @@
         "../node_modules/easy-pie-chart/dist/easypiechart.js",
         "../node_modules/chart.js/dist/Chart.bundle.js",
         "../node_modules/jqcloud2/dist/jqcloud.js",
-        "../node_modules/bootstrap/js/modal.js",
-        "../node_modules/bootstrap/js/dropdown.js",
-        "../node_modules/bootstrap/js/tooltip.js",
+        "../node_modules/popper.js/dist/umd/popper.min.js",
+        "../node_modules/bootstrap/js/dist/modal.js",
+        "../node_modules/bootstrap/js/dist/dropdown.js",
+        "../node_modules/bootstrap/js/dist/tooltip.js",
         "../node_modules/summernote/dist/summernote.js",
         "../node_modules/moment/min/moment-with-locales.min.js",
         "../node_modules/fullcalendar/dist/fullcalendar.js",
+        "../node_modules/sweetalert2/dist/sweetalert2.min.js",
         "../node_modules/web3/dist/web3.min.js"
       ],
       "environmentSource": "environments/environment.ts",

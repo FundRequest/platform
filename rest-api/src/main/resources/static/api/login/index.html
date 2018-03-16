@@ -3,7 +3,7 @@
 <head>
     <title>Login with keycloak</title>
     <meta charset="utf-8">
-    <script src="https://key.fundrequest.io//auth/js/keycloak.js"></script>
+    <script src="https://alpha-key.fundrequest.io//auth/js/keycloak.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script
@@ -45,7 +45,7 @@
   var logoutBtn = document.getElementById('btn-logout');
   logoutBtn.addEventListener('click', logout);
   var keycloak = Keycloak({
-    url: 'https://key.fundrequest.io/auth',
+    url: 'https://alpha-key.fundrequest.io/auth',
     realm: 'fundrequest',
     clientId: 'fundrequest_dev'
   });
