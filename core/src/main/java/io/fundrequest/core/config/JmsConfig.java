@@ -23,8 +23,7 @@ public class JmsConfig {
     RabbitTemplate approvedClaimRabbitTemplate(ConnectionFactory connectionFactory,
                                       @Value("${io.fundrequest.azrael.queue.approved-claim}") final String queueName) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setQueue(queueName);
-        rabbitTemplate.setExchange("azrael-exchange");
+        rabbitTemplate.setRoutingKey(queueName);
         RetryTemplate retryTemplate = new RetryTemplate();
         retryTemplate.setRetryPolicy(new SimpleRetryPolicy(5));
         rabbitTemplate.setRetryTemplate(retryTemplate);
