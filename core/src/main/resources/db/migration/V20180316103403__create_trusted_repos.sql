@@ -1,0 +1,4 @@
+CREATE TABLE trusted_repo (
+  id    BIGINT PRIMARY KEY AUTO_INCREMENT,
+  owner VARCHAR(100)
+);

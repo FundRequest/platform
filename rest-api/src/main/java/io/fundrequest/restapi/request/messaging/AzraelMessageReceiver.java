@@ -1,4 +1,4 @@
-package io.fundrequest.core.request.fund.messaging;
+package io.fundrequest.restapi.request.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.core.request.RequestService;

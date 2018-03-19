@@ -22,6 +22,7 @@
         <module>core</module>
         <module>rest-api</module>
         <module>web</module>
+        <module>admin-web</module>
     </modules>
 
     <properties>
@@ -34,7 +35,7 @@
         <hikaricp.version>2.4.6</hikaricp.version>
         <spring-social.version>1.1.4.RELEASE</spring-social.version>
         <assertj.version>3.6.2</assertj.version>
-        <mapstruct.version>1.1.0.Final</mapstruct.version>
+        <mapstruct.version>1.2.0.Final</mapstruct.version>
         <auth0-spring-security-api.version>0.3.3</auth0-spring-security-api.version>
     </properties>
 

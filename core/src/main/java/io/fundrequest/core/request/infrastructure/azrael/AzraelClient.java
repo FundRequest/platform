@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 )
 public interface AzraelClient {
 
-    @RequestMapping(method = RequestMethod.POST, value = "/claims", consumes = "application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/claims", consumes = "application/json;charset=UTF-8")
     ClaimSignature getSignature(SignClaimCommand signClaimCommand);
 
 }

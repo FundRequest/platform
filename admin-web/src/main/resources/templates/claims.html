@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Claims</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
+</head>
+<body>
+<section layout:fragment="content">
+    <h2>Pending claims</h2>
+    <div class="table-responsive">
+        <table class="table table-condensed table-striped table-hover" id="pending-claims">
+            <thead>
+            <tr>
+                <th>Platform</th>
+                <th>Solver</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Flagged</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${pendingClaims}">
+                <td><a th:href="${c.getUrl()}" target="_blank">GITHUB</a></td>
+                <td th:text="${c.getSolver()}"></td>
+                <td th:text="${c.getAddress()}"></td>
+                <td th:text="${c.getStatus()}"></td>
+                <td th:text="${c.getFlagged()}"></td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-success btn-xs approve"><i
+                                class="fas fa-check"></i></button>
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-danger btn-xs decline"><i
+                                class="fas fa-times"></i></button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+<div layout:fragment="scripts">
+    <script src="assets/js/fundrequest/claims.js"></script>
+</div>
+</body>
+</html>

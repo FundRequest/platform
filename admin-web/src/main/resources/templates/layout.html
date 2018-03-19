@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+
+    <title layout:title-pattern="$CONTENT_TITLE">Base</title>
+    <meta name="description" content=""/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/assets/js/fontawesome506.js"></script>
+    <link rel="apple-touch-icon" type="image/png" href="/assets/favicons/logo-single180.png" sizes="180x180"/>
+    <link rel="icon" type="image/png" href="/assets/img/logo-single32.png" sizes="32x31"/>
+    <link rel="icon" type="image/png" href="/assets/img/logo-single16.png" sizes="16x15"/>
+    <link rel="stylesheet" href="/assets/css/googlefonts-titilium/googlefonts.titilium.css"/>
+    <link rel="stylesheet" href="/assets/css/typekit-jaf-domus/typekit.css"/>
+    <link rel="stylesheet" href="/assets/css/main.css"/>
+    <link rel="stylesheet" href="/assets/css/style.css"/>
+    <link rel="stylesheet" href="/assets/css/headroom.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
+</head>
+<body>
+
+<section class="header section section--blue">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-7">
+                <h1>
+                    <img class="top" src="/assets/img/Fundrequest-title-white.png" alt="Fundrequest logo"/>
+                </h1>
+                <p>
+                    Platform Administration
+                </p>
+            </div>
+            <div class="col-sm-12 col-md-5 tablet-hide">
+                <div class="centerdiv">
+                    <div class="center">
+                        <img class="align-middle" src="/assets/img/headerimg.png"
+                             alt="A decentralized marketplace for open source collaboration"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section--white section--compact">
+    <div class="container">
+        <div layout:fragment="content"></div>
+    </div>
+
+
+</section>
+
+
+<section class="footer section section--blue section--compact section--end">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="disclaimer">
+                    <p>© 2018 FundRequest OÜ </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+<script src="/assets/js/headroom.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+
+<th:block layout:fragment="scripts">
+</th:block>
+
+</body>
+
+</html>
