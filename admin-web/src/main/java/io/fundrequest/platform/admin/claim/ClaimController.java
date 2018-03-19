@@ -4,7 +4,6 @@ import io.fundrequest.core.request.claim.ClaimService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,7 +32,7 @@ public class ClaimController {
     }
 
     @PostMapping("/claims/declined")
-    public ModelAndView declineRequestClaim(@ModelAttribute Long id) {
+    public ModelAndView declineRequestClaim(@RequestParam Long id) {
         claimService.declineClaim(id);
         return
                 new ModelAndView(new RedirectView("/claims", true, true, true));
