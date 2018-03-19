@@ -2,7 +2,7 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Content page</title>
+    <title>Claims</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
           integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
 </head>
@@ -23,24 +23,22 @@
             </thead>
             <tbody>
             <tr th:each="c : ${pendingClaims}">
-                <td><a href="#">GITHUB</a></td>
+                <td><a th:href="${c.getUrl()}" target="_blank">GITHUB</a></td>
                 <td th:text="${c.getSolver()}"></td>
                 <td th:text="${c.getAddress()}"></td>
                 <td th:text="${c.getStatus()}"></td>
                 <td th:text="${c.getFlagged()}"></td>
                 <td>
-                    <div class="btn-group" role="group" >
-                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i></button>
-                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-danger btn-xs decline"><i class="fas fa-times"></i></button>
+                    <div class="btn-group" role="group">
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-success btn-xs approve"><i
+                                class="fas fa-check"></i></button>
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-danger btn-xs decline"><i
+                                class="fas fa-times"></i></button>
                     </div>
                 </td>
             </tr>
             </tbody>
         </table>
-        <form action="/claims/approved" method="post">
-            <input type="hidden" value="1"/>
-            <button type="submit"/>
-        </form>
     </div>
 </section>
 <div layout:fragment="scripts">
