@@ -1,0 +1,262 @@
+.img-responsive {
+    > img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+.modal-dialog--with-tabs {
+    @include media-breakpoint-up(md) {
+        max-width: 650px;
+    }
+
+    .modal-content {
+        box-shadow: none;
+        background: 0 none;
+        border: 0 none;
+    }
+
+    .modal-header {
+        background: rgba(255, 255, 255, 0.8);
+        border: 0 none;
+        padding-bottom: 0;
+    }
+}
+
+.modal-body {
+    .form-group {
+        margin-bottom: 5px;
+    }
+}
+
+.modal-tabs {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 0 0 $border-radius-base $border-radius-base;
+    padding: $modal-inner-padding;
+}
+
+.modal-tab {
+    padding: 0;
+}
+
+.modal-sidebar a {
+    color: $gray-500;
+    text-decoration: none;
+}
+
+.modal-sidebar__options,
+.modal-sidebar__close {
+    display: block;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.8);
+    width: 60px;
+
+    text-align: center;
+    border-radius: $border-radius-base;
+    margin-bottom: $modal-dialog-margin;
+
+    a {
+        display: block;
+        padding: 7px;
+
+        &.active,
+        &:hover {
+            background-color: $white;
+        }
+
+        &.active {
+            color: $primary-color;
+        }
+
+        + a {
+            border-top: 1px solid $white;
+        }
+    }
+}
+
+.modal-sidebar__close {
+    height: 47px;
+    padding: 0;
+    a > span {
+        font-size: 2rem;
+        line-height: 1;
+        display: block;
+    }
+}
+
+.modal-tab-option {
+    padding: 20px 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.modal-tab-option__text {
+    font-weight: bold;
+    font-size: 9px;
+    text-align: center;
+}
+
+.modal-tab-option__image {
+    display: inline-block;
+    height: 31px;
+    width: 34px;
+    background-size: 102px 62px;
+    background-image: url('../img/providers.png');
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: top;
+
+    &--metamask {
+        background-position-x: left;
+    }
+
+    &--trustwallet {
+        background-position-x: center;
+    }
+
+    .modal-tab-option.active > &,
+    .modal-tab-option:hover > & {
+        background-position-y: bottom;
+    }
+}
+
+.modal-content .modal-body--form {
+    padding: 0;
+}
+
+.form-horizontal--border {
+    background: $white;
+    border-radius: $border-radius-base;
+    overflow: hidden;
+
+    + .form-horizontal--border {
+        margin-top: 10px;
+    }
+
+    label {
+        font-weight: normal;
+    }
+
+    .form-group {
+        margin: 0;
+
+        + .form-group {
+            border-top: 1px solid $gray-100;
+        }
+
+        .form-control-static,
+        .control-label {
+            padding: 15px 20px;
+            line-height: 15px;
+        }
+
+        .form-control-static--qr {
+            .img-responsive {
+                width: 150px;
+                display: inline-block;
+            }
+        }
+
+        .control-label {
+            text-align: left;
+        }
+
+        .control-label--image {
+            line-height: 30px;
+            margin: 0;
+        }
+
+        .form-group__in-between {
+            font-size: 10px;
+            display: inline-block;
+            margin: 0 5px;
+        }
+
+        .form-control-static {
+            text-align: right;
+
+            label {
+                margin: 0;
+            }
+        }
+
+        .form-control--fnd {
+            padding: 0;
+
+            .form-control {
+                text-align: right;
+                border-radius: 0;
+                border: 0 none;
+                box-shadow: none;
+                background-color: transparent;
+                padding-right: 8px;
+                height: 45px;
+                line-height: 45px;
+            }
+        }
+
+        .control-label {
+            border-right: 1px solid $gray-200;
+        }
+        .control-label + .form-control-static {
+            margin-left: -1px;
+            border-left: 1px solid $gray-200;
+        }
+    }
+}
+
+
+.form-heading {
+    position: relative;
+    line-height: 40px;
+    padding: 10px 15px;
+    color: $primary;
+    border-bottom: 1px solid $gray-100;
+}
+
+.form-heading__number,
+.form-heading__text {
+    line-height: 40px;
+    display: inline-block;
+}
+
+.form-heading__info {
+    float: right;
+    display: table;
+}
+
+.form-heading__info-text {
+    color: $gray-800;
+    display: table-cell;
+    padding-right: 10px;
+    vertical-align: middle;
+    font-size: 10px;
+    font-weight: bold;
+    width: 100px;
+    line-height: 10px;
+    text-align: right;
+}
+
+.form-heading__logo {
+    display: table-cell;
+    height: 40px;
+    width: 40px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.form-heading__logo--metamask {
+    background-image: url('../img/metamask.png');
+}
+
+.form-heading__logo--trustwallet {
+    background-image: url('../img/trustwallet.png');
+}
+
+.form-heading__number {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-right: 5px;
+    vertical-align: bottom;
+}

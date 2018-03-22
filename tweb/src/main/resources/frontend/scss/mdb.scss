@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+@import "fundrequest/colors";
+@import "fundrequest/variables";
+
+// Bootstrap
+@import "~mdbootstrap/scss/core/bootstrap/functions";
+@import "~mdbootstrap/scss/core/bootstrap/variables";
+
+// CORE
+@import "mdb-overrides/core/mixins";
+@import "mdb-overrides/core/colors";
+@import "mdb-overrides/core/color-classes";
+@import "~mdbootstrap/scss/core/variables";
+@import "fundrequest/variables";
+$link-color: $primary-color;
+@import "~mdbootstrap/scss/core/global";
+@import "~mdbootstrap/scss/core/helpers";
+@import "~mdbootstrap/scss/core/typography";
+@import "~mdbootstrap/scss/core/masks";
+@import "~mdbootstrap/scss/core/waves";
+
+// FREE
+@import "~mdbootstrap/scss/free/animations-basic";
+@import "~mdbootstrap/scss/free/animations-extended";
+@import "mdb-overrides/free/buttons";
+@import "~mdbootstrap/scss/free/cards";
+@import "~mdbootstrap/scss/free/dropdowns";
+@import "mdb-overrides/free/navbars";
+@import "~mdbootstrap/scss/free/pagination";
+@import "~mdbootstrap/scss/free/badges";
+@import "~mdbootstrap/scss/free/modals";
+@import "~mdbootstrap/scss/free/carousels";
+@import "~mdbootstrap/scss/free/forms";
+@import "~mdbootstrap/scss/free/input-group";
+@import "~mdbootstrap/scss/free/msc";
+@import "~mdbootstrap/scss/free/footers";
+@import "~mdbootstrap/scss/free/list-group";
+@import "~mdbootstrap/scss/free/tables";

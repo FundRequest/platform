@@ -1,0 +1,63 @@
+{
+  "name": "FundRequest-bootstrap-material-design",
+  "version": "1.0.0",
+  "keywords": [
+    "material",
+    "design",
+    "bootstrap",
+    "jquery",
+    "css",
+    "js",
+    "sass",
+    "mobile-first",
+    "responsive",
+    "front-end",
+    "framework",
+    "web",
+    "fundrequest"
+  ],
+  "main": "./js/app.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bootstrap": "^4.0.1",
+    "@types/clipboard": "^2.0.0",
+    "@types/jquery": "^3.3.1",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-cssnano": "^2.1.2",
+    "gulp-if": "^2.0.2",
+    "gulp-install": "^1.1.0",
+    "gulp-notify": "^3.2.0",
+    "gulp-plumber": "^1.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-sass-lint": "^1.3.4",
+    "gulp-shell": "^0.6.5",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-typescript": "^4.0.1",
+    "node-sass": "4.5.3",
+    "node-sass-tilde-importer": "^1.0.0",
+    "run-sequence": "^2.2.1",
+    "typescript": "^2.7.2"
+  },
+  "files": [
+    "scss/**/*.scss",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "clipboard": "^2.0.0",
+    "datatables.net": "^1.10.16",
+    "datatables.net-bs4": "^1.10.16",
+    "datatables.net-responsive": "^2.2.1",
+    "datatables.net-responsive-bs4": "^2.2.1",
+    "font-awesome-5-css": "^1.0.0",
+    "headroom.js": "^0.9.4",
+    "jquery": "^3.3.1",
+    "lightslider": "^1.1.6",
+    "mdbootstrap": "^4.5.0",
+    "node-waves": "^0.7.6",
+    "requirejs": "^2.3.5",
+    "typeface-titillium-web": "0.0.54"
+  }
+}

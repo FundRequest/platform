@@ -1,0 +1,34 @@
+.rewards-list {
+    &__title {
+        font-weight: $font-weight-bold;
+        margin-bottom: $headings-margin-bottom;
+    }
+
+    &__item {
+        padding-left: $list-group-item-padding-y;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: .25em;
+
+        &--referral {
+            padding-left: 0;
+            margin-bottom: 1rem;
+
+            .rewards-list__text {
+                margin-left: 1rem;
+                display: flex;
+                line-height: 1;
+                flex-direction: column;
+                justify-content: center;
+            }
+        }
+    }
+
+    &__text {
+    }
+
+    &__link {
+        font-size: $font-size-sm;
+    }
+}

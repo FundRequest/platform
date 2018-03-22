@@ -1,0 +1,19 @@
+.fnd-user-avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 3em;
+  height: 3em;
+  font-size: 1rem;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: $white;
+  overflow: hidden;
+  border-radius: $btn-border-radius;
+  border: $border-width solid $border-color;
+  img {
+    width: 100%;
+  }
+}

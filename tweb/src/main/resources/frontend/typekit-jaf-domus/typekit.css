@@ -1,0 +1,35 @@
+/*
+ * The Typekit service used to deliver this font or fonts for use on websites
+ * is provided by Adobe and is subject to these Terms of Use
+ * http://www.adobe.com/products/eulas/tou_typekit. For font license
+ * information, see the list below.
+ *
+ * jaf-domus:
+ *   - http://typekit.com/eulas/00000000000000003b9adf41
+ *   - http://typekit.com/eulas/00000000000000003b9adf44
+ *
+ * © 2009-2018 Adobe Systems Incorporated. All Rights Reserved.
+ */
+/*{"last_published":"2018-01-30 14:51:38 UTC"}*/
+
+@font-face {
+    font-family: "jaf-domus";
+    src: url("jaf-domus.woff2") format("woff2"),
+    url("jaf-domus.woff") format("woff"),
+    url("jaf-domus.ttf") format("opentype");
+    font-style: normal;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "jaf-domus";
+    src: url("jaf-domus-400.woff2") format("woff2"),
+    url("jaf-domus-400.woff") format("woff"),
+    url("jaf-domus-400.ttf") format("opentype");
+    font-style: normal;
+    font-weight: 400;
+}
+
+.tk-jaf-domus {
+    font-family: "jaf-domus", sans-serif;
+}

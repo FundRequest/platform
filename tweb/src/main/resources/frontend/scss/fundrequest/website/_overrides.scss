@@ -1,0 +1,8 @@
+.btn.btn-warning {
+    box-shadow: none;
+    margin-bottom: 0;
+
+    &:hover {
+        box-shadow: $z-depth-1-half;
+    }
+}
