@@ -215,7 +215,5 @@ $RECYCLE.BIN/
 # Docker
 core/docker_data
 
-web/src/main/resources/config
 
-tweb/src/main/resources/static/assets/**
 **/node_modules/**

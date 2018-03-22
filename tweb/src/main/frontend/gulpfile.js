@@ -42,7 +42,7 @@ const gulp = require('gulp'),
     runSequence = require('run-sequence'),
     ts = require('gulp-typescript');
 
-let target = "../static/assets";
+let target = "../../../target/classes/static/assets";
 
 let displayError = function(error) {
     // Initial building up of the error
