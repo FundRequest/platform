@@ -216,4 +216,5 @@ $RECYCLE.BIN/
 core/docker_data
 
 
+**/node/**
 **/node_modules/**

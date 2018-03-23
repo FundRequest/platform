@@ -1,0 +1,99 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>FundRequest - Request XYZ</title>
+</head>
+
+<th:block layout:fragment="content">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card card--primary">
+                <div class="row">
+                    <div class="col-12 col-md-6 d-flex align-items-center">
+                        <div class="card-body">
+                            <h4 class="mb-0 text-center text-md-left">
+                                <a href="#" class="watch-link">
+                                    <i class="far fa-sm fa-star"></i>
+                                    <small><strong>0</strong></small>
+                                </a>
+                                <span class="ml-3">
+                                Add hello world for c++
+                            </span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="card-body text-center text-md-right">
+                            <button class="btn btn-outline-secondary mb-0">Other actions</button>
+                            <button class="btn btn-success mb-0">Claim</button>
+                            <button class="btn btn-primary mb-0" data-toggle="modal" data-target="#fund-request">Fund
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-4 col-md-3">Source</dt>
+                        <dd class="col-8 col-md-9"><a href="#github"><i class="fab fa-github fa-2x"></i></a></dd>
+
+                        <dt class="col-4 col-md-3">Owner</dt>
+                        <dd class="col-8 col-md-9">FundRequest</dd>
+
+                        <dt class="col-4 col-md-3">Repo</dt>
+                        <dd class="col-8 col-md-9">area51</dd>
+
+                        <dt class="col-4 col-md-3">Issue</dt>
+                        <dd class="col-8 col-md-9">60</dd>
+
+                        <dt class="col-4 col-md-3">Type</dt>
+                        <dd class="col-8 col-md-9">ISSUE</dd>
+
+                        <dt class="col-4 col-md-3">Technologies</dt>
+                        <dd class="col-8 col-md-9">
+                            <span class="badge badge-primary">C#</span>
+                            <span class="badge badge-primary">C</span>
+                            <span class="badge badge-primary">Javascript</span>
+                            <span class="badge badge-primary">Kotlin</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card card--outline-primary h-100">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-4 col-md-3">Status</dt>
+                        <dd class="col-8 col-md-9">
+                            <span class="badge badge-primary">FUNDED</span>
+                        </dd>
+
+                        <dt class="col-4 col-md-3">Total Funding</dt>
+                        <dd class="col-8 col-md-9">
+                            <div>100.00 FND</div>
+                            <div>15.00 XYZ</div>
+                        </dd>
+
+                        <dt class="col-4 col-md-3">#Funders</dt>
+                        <dd class="col-8 col-md-9">1</dd>
+
+                        <dt class="col-4 col-md-3">My Funding</dt>
+                        <dd class="col-8 col-md-9">
+                            <div>100.00 FND</div>
+                            <div>15.00 XYZ</div>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+</html>

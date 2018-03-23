@@ -1,6 +1,5 @@
-import 'mdb';
-import * as $ from 'jquery';
 import * as ClipboardJS from 'clipboard';
+import * as $ from 'jquery';
 import {Alert} from './alert';
 import {InstantEdit} from './instant-edit';
 import {OpenLinkInPopup} from "./open-link-in-popup";

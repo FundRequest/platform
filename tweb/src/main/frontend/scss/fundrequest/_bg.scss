@@ -27,8 +27,10 @@
 
     &--blue {
         color: $white;
+        background-color: $blue-500;
 
         &::before {
+            background-color: $blue-500;
             background-image: url("../img/rect.png"), url("../img/bg-blue.png");
             background-repeat: no-repeat, repeat-y;
             background-size: contain, 100%;

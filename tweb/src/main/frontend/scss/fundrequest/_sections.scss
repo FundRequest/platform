@@ -54,6 +54,7 @@
 
     &--blue {
         color: $white;
+        background-color: $blue-500;
 
         &::before {
             background-color: $blue-500;

@@ -68,6 +68,9 @@
                         <goals>
                             <goal>gulp</goal>
                         </goals>
+                        <configuration>
+                            <arguments>--target ../../../target/classes/static/assets</arguments>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>

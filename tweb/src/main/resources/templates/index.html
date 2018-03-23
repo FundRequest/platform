@@ -1,14 +1,59 @@
-<!DOCTYPE html>
-<html
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
 <head>
     <title>FundRequest - Home</title>
 </head>
-<body>
-<section layout:fragment="content">
-    <div>
-        Welcome to FundRequest!
+
+
+<th:block layout:fragment="content">
+    <div class="row mb-5 mt-5">
+        <div class="col-12 col-md-6 mb-3">
+            <div th:replace="fragments/widgets :: statistic('3', '# REQUESTS FUNDED', 'fa-tachometer-alt')"></div>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+            <div th:replace="fragments/widgets :: statistic('4', '# FUNDERS', 'fa-users')"></div>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+            <div th:replace="fragments/widgets :: statistic('56.67 FND', 'AVERAGE FUNDING', 'fa-FUNDING')"></div>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+            <div th:replace="fragments/widgets :: statistic('170 FND', 'TOTAL FUNDED', 'fa-fire')"></div>
+        </div>
     </div>
-</section>
-</body>
+
+    <div class="row mb-5">
+        <div class="col-12 col-md-6">
+            <div class="card h-100">
+                <div class="card-body media align-items-center">
+                    <img class="w-25 mr-3" th:src="@{/assets/img/logo-single.png}" alt="Logo FundRequest"/>
+                    <div class="media-body">
+                        <h5 class="card-title mt-0">Don't know where to start?</h5>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-center">
+                    <a class="btn btn-primary btn-lg"
+                       href="https://docs.fundrequest.io/display/PUB/Alpha+Release">Documentation</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card h-100">
+                <div class="card-body media align-items-center">
+                    <img class="w-25 mr-3" th:src="@{/assets/img/rocketchat.png}" alt="Logo Rocketchat"/>
+                    <div class="media-body">
+                        <h5 class="card-title mt-0">Need some ropsten FND tokens? Join #faucet channel and post
+                            your
+                            Ether address!</h5>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-center">
+                    <a class="btn btn-primary btn-lg"
+                       href="https://fundrequest.chat/channel/faucet" target="_blank">Join faucet</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
 </html>

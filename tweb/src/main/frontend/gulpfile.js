@@ -40,6 +40,7 @@ const gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     tildeImporter = require('node-sass-tilde-importer'),
     runSequence = require('run-sequence'),
+    amdOptimize = require('amd-optimize');
     ts = require('gulp-typescript');
 
 let target = "../../../target/classes/static/assets";
@@ -107,10 +108,8 @@ gulp.task('scripts', function() {
     return runTs('tsconfig.json', 'js/**/*.ts');
 });
 
-gulp.task('copy-assets', function() {
+gulp.task('copy-dependencies', function() {
     let copy = [];
-
-    // dependencies
     copy.push(gulp.src(['node_modules/jquery/dist/*']).pipe(gulp.dest(`${target}/vendors/jquery`)));
     copy.push(gulp.src(['node_modules/bootstrap/dist/**/*']).pipe(gulp.dest(`${target}/vendors/bootstrap`)));
     copy.push(gulp.src(['node_modules/mdbootstrap/js/mdb.*']).pipe(gulp.dest(`${target}/vendors/mdbootstrap/js`)));
@@ -125,15 +124,18 @@ gulp.task('copy-assets', function() {
     copy.push(gulp.src(['node_modules/lightslider/dist/**/*']).pipe(gulp.dest(`${target}/vendors/lightslider`)));
     copy.push(gulp.src(['node_modules/typeface-titillium-web/index.css']).pipe(gulp.dest(`${target}/vendors/typeface-titillium-web`)));
     copy.push(gulp.src(['node_modules/typeface-titillium-web/files/*']).pipe(gulp.dest(`${target}/vendors/typeface-titillium-web/files`)));
-
-    // own code
-    copy.push(gulp.src(['font/**/*']).pipe(gulp.dest(`${target}/font`)));
-    copy.push(gulp.src(['webfonts/**/*']).pipe(gulp.dest(`${target}/webfonts`)));
-    copy.push(gulp.src(['img/**/*']).pipe(gulp.dest(`${target}/img`)));
-    copy.push(gulp.src(['js/**/*.js']).pipe(gulp.dest(`${target}/js`)));
-    copy.push(gulp.src(['css/**/*']).pipe(gulp.dest(`${target}/css`)));
     return copy;
 });
+
+gulp.task('copy-assets', function() {
+    let copy = [];
+    copy.push(gulp.src(['fonts/**/*']).pipe(gulp.dest(`${target}/fonts`)));
+    copy.push(gulp.src(['img/**/*']).pipe(gulp.dest(`${target}/img`)));
+    copy.push(gulp.src(['js/**/*.js']).pipe(gulp.dest(`${target}/js`)));
+
+    return copy;
+});
+
 
 gulp.task('styles-bootstrap', function() {
     return runSass('scss/bootstrap.scss', `${target}/vendors/bootstrap/css`)
@@ -156,17 +158,20 @@ gulp.task('install', function() {
 });
 
 gulp.task('run-watch', function() {
-    gulp.watch(['core.scss', 'scss/fundrequest/*.scss', '!scss/fundrequest/website/*.scss'], ['copy-assets','styles-core']);
-    gulp.watch(['website.scss', 'scss/fundrequest/website/*.scss'], ['copy-assets','styles-website']);
-    gulp.watch(['js/**/*.ts'], ['copy-assets', 'scripts']);
+    gulp.watch(['js/*.js'], ['copy-assets']);
+    gulp.watch(['scss/bootstrap.scss', 'scss/fundrequest/+(_variables|_colors).scss'], ['styles-bootstrap']);
+    gulp.watch(['scss/mdb.scss', 'scss/mdb-overrides/*.scss', 'scss/fundrequest/+(_variables|_colors).scss'], ['styles-mdb']);
+    gulp.watch(['scss/core.scss', 'scss/fundrequest/*.scss', '!scss/fundrequest/website/*.scss'], ['styles-core']);
+    gulp.watch(['scss/website.scss', 'scss/fundrequest/website/*.scss'], ['styles-website']);
+    gulp.watch(['js/app/*.ts'], ['scripts']);
 });
 
 gulp.task('default', function(done) {
     target = (arg && arg.target) || target;
-    runSequence('install', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website', 'scripts', done);
+    runSequence('install', 'copy-dependencies', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website', 'scripts', done);
 });
 
 gulp.task('watch', function(done) {
     target = (arg && arg.target) || target;
-    runSequence('copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website', 'scripts', 'run-watch', done);
+    runSequence('copy-dependencies', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website', 'scripts', 'run-watch', done);
 });

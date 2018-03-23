@@ -56,17 +56,6 @@
                             <arguments>run build --prod --env=prod</arguments>
                         </configuration>
                     </execution>
-
-                    <execution>
-                        <id>npm run doc:build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-
-                        <configuration>
-                            <arguments>run doc:build</arguments>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 

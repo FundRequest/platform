@@ -3,37 +3,75 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/><!--/* TODO: Description should be a variable */-->
+    <meta name="application-name" content="FundRequest"/>
+    <meta name="keywords" content=""/><!--/* TODO: Keywords should be a variable */-->
+    <meta name="robots" content="index, follow"/>
+    <!--/* TODO: Robots should also be a variable, probably we don't want to index all pages */-->
 
-    <title layout:title-pattern="$CONTENT_TITLE">Base</title>
-    <meta name="description" content=""/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!--/* TODO: Include extra css for specific pages
+    {% for css in page.extra-css %}<link type="text/css" rel="stylesheet" href="{{ css }}?{{site.time | date: '%s%N'}}">
+    {% endfor %}
+    */-->
 
-    <link rel="apple-touch-icon" type="image/png" th:href="@{/assets/favicons/logo-single180.png}" sizes="180x180"/>
-    <link rel="icon" type="image/png" th:href="@{/assets/img/logo-single32.png}" sizes="32x31"/>
-    <link rel="icon" type="image/png" th:href="@{/assets/img/logo-single16.png}" sizes="16x15"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/assets/fonts/typekit-jaf-domus/typekit.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/assets/vendors/typeface-titillium-web/index.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/assets/vendors/font-awesome/css/fontawesome-all.min.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/assets/vendors/bootstrap/css/bootstrap.min.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/assets/vendors/mdbootstrap/css/mdb.min.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/assets/css/core.min.css}"/>
 
-    <link rel="stylesheet" th:href="@{/assets/vendors/font-awesome/css/fontawesome-all.min.css}"/>
-    <link rel="stylesheet" th:href="@{/assets/vendors/css/typeface-titillium-web/index.css}"/>
-    <link rel="stylesheet" th:href="@{/assets/css/typekit-jaf-domus/typekit.css}"/>
-    <link rel="stylesheet" th:href="@{/assets/vendors/bootstrap/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" th:href="@{/assets/vendors/mdbootstrap/css/mdb.min.css}"/>
-    <link rel="stylesheet" th:href="@{/assets/css/core.min.css}"/>
+    <th:block layout:fragment="css">
+    </th:block>
 
-    <script data-main="/assets/js/app" th:src="@{/assets/vendors/requirejs/require.js}"></script>
+    <title layout:title-pattern="$CONTENT_TITLE">Page Title - FundRequest</title>
+
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:site" content="@fundrequest_io"/>
+    <meta name="twitter:title" content="Boosting Open Source by rewarding contributions."/>
+    <meta name="twitter:description"
+          content="A decentralized marketplace for open source collaboration. FundRequest is a system for custom support that will boost the Open Source community as a whole – from developer to end user."/>
+    <meta name="twitter:image" th:content="@{/assets/img/og-image.png}"/>
+    <meta name="twitter:url" content="https://fundrequest.io"/>
+    <meta property="og:title" content="Boosting Open Source by rewarding contributions."/>
+    <meta property="og:site_name" content="FundRequest.io"/>
+    <meta property="og:url" content="https://fundrequest.io"/>
+    <meta property="og:description"
+          content="A decentralized marketplace for open source collaboration. FundRequest is a system for custom support that will boost the Open Source community as a whole – from developer to end user."/>
+    <meta property="og:image" th:content="@{/assets/img/og-image.png}"/>
+
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/img/logo-single180.png}"/>
+    <link rel="icon" type="image/png" th:href="@{/assets/img/logo-single32.png}" sizes="32x32"/>
+    <link rel="icon" type="image/png" th:href="@{/assets/img/logo-single16.png}" sizes="16x16"/>
+    <meta name="theme-color" content="#ffffff"/>
+
+    <script th:attr="data-main=@{/assets/js/app}" th:src="@{/assets/vendors/requirejs/require.js}"></script>
     <script th:src="@{/assets/js/requireconfig.js}"></script>
-
 </head>
-<body>
-<section layout:fragment="content">
+<body data-spy="scroll" data-target="#primary-menu">
 
-</section>
 
-<th:block layout:fragment="modals">
-</th:block>
+<div th:replace="fragments/top :: alert-banner"></div>
+<div th:replace="fragments/top :: alert-container"></div>
+<div th:replace="fragments/top :: loader"></div>
 
-<th:block layout:fragment="scripts">
-</th:block>
+<div class="fnd-page-container">
+    <div th:replace="fragments/header :: header"></div>
+    <section class="section section--main">
+        <div class="container">
+            <th:block layout:fragment="content" />
+        </div>
+    </section>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<th:block layout:fragment="modals" />
+
+<th:block layout:fragment="scripts" />
 
 </body>
 
