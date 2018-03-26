@@ -1,5 +1,6 @@
 package io.fundrequest.restapi.view;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.fundrequest.core.request.RequestService;
@@ -27,6 +28,7 @@ import java.security.Principal;
 import java.util.Collections;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 public class RequestControllerTest {
@@ -45,7 +47,7 @@ public class RequestControllerTest {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        converter.setObjectMapper(objectMapper);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         principal = Mockito.mock(Principal.class);
         when(principal.getName()).thenReturn("davyvanroy@fundrequest.io");
         mockMvc = MockMvcBuilders.standaloneSetup(new RequestController(requestService))
@@ -112,10 +114,11 @@ public class RequestControllerTest {
         SignedClaim expected = new SignedClaim("davyvanroy", "0x0", Platform.GITHUB, "1", "r", "s", 1);
         when(requestService.signClaimRequest(principal, userClaimRequest)).thenReturn(expected);
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/private/requests/123/claim").accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8)
+                RestDocumentationRequestBuilders.post("/api/private/requests/123/claim")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(objectMapper.writeValueAsString(userClaimRequest))
                         .principal(principal))
-                .andExpect(content().string(objectMapper.writeValueAsString(expected)))
+                .andExpect(content().string(new ObjectMapper().writeValueAsString(expected)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcRestDocumentation.document("requests-claim-example"));
     }

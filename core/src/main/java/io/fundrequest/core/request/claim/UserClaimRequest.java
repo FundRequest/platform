@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Builder
 public class UserClaimRequest {
     @NotEmpty
     private String address;
@@ -17,5 +16,13 @@ public class UserClaimRequest {
     @NotEmpty
     private String platformId;
 
+    private UserClaimRequest() {
+    }
 
+    @Builder
+    public UserClaimRequest(String address, Platform platform, String platformId) {
+        this.address = address;
+        this.platform = platform;
+        this.platformId = platformId;
+    }
 }
