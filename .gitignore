@@ -218,3 +218,5 @@ core/docker_data
 
 **/node/**
 **/node_modules/**
+
+web/src/main/web/package-lock.json
