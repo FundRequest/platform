@@ -1,8 +1,9 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout">
+<!--/*@thymesVar id="request" type="io.fundrequest.core.request.view.RequestDto"*/-->
 <head>
-    <title>FundRequest - Request XYZ</title>
+    <title th:text="${'FundRequest - ' + request.issueInformation.title}">FundRequest - Request XYZ</title>
 </head>
 
 <th:block layout:fragment="content">
@@ -15,9 +16,9 @@
                             <h4 class="mb-0 text-center text-md-left">
                                 <a href="#" class="watch-link">
                                     <i class="far fa-sm fa-star"></i>
-                                    <small><strong>0</strong></small>
+                                    <small><strong th:text="${#sets.size(request.watchers)}">0</strong></small>
                                 </a>
-                                <span class="ml-3">
+                                <span class="ml-3" th:text="${request.issueInformation.title}">
                                 Add hello world for c++
                             </span>
                             </h4>
@@ -40,26 +41,25 @@
                 <div class="card-body">
                     <dl class="row">
                         <dt class="col-4 col-md-3">Source</dt>
-                        <dd class="col-8 col-md-9"><a href="#github"><i class="fab fa-github fa-2x"></i></a></dd>
+                        <dd class="col-8 col-md-9"><a th:href="${request.issueInformation.url}" href="#github"><i class="fab fa-github fa-2x"></i></a></dd>
 
                         <dt class="col-4 col-md-3">Owner</dt>
-                        <dd class="col-8 col-md-9">FundRequest</dd>
+                        <dd class="col-8 col-md-9" th:text="${request.issueInformation.owner}">FundRequest</dd>
 
                         <dt class="col-4 col-md-3">Repo</dt>
-                        <dd class="col-8 col-md-9">area51</dd>
+                        <dd class="col-8 col-md-9" th:text="${request.issueInformation.repo}">area51</dd>
 
                         <dt class="col-4 col-md-3">Issue</dt>
-                        <dd class="col-8 col-md-9">60</dd>
+                        <dd class="col-8 col-md-9" th:text="${request.issueInformation.number}">60</dd>
 
                         <dt class="col-4 col-md-3">Type</dt>
-                        <dd class="col-8 col-md-9">ISSUE</dd>
+                        <dd class="col-8 col-md-9" th:text="${request.type}">ISSUE</dd>
 
                         <dt class="col-4 col-md-3">Technologies</dt>
                         <dd class="col-8 col-md-9">
-                            <span class="badge badge-primary">C#</span>
-                            <span class="badge badge-primary">C</span>
-                            <span class="badge badge-primary">Javascript</span>
-                            <span class="badge badge-primary">Kotlin</span>
+                        <span th:each="t : ${request.technologies}" th:remove="tag">
+                            <span class="badge badge-primary" th:text="${t}">Java</span>
+                        </span>
                         </dd>
                     </dl>
                 </div>
@@ -71,22 +71,22 @@
                     <dl class="row">
                         <dt class="col-4 col-md-3">Status</dt>
                         <dd class="col-8 col-md-9">
-                            <span class="badge badge-primary">FUNDED</span>
+                            <span class="badge badge-primary" th:text="${request.status}">FUNDED</span>
                         </dd>
 
                         <dt class="col-4 col-md-3">Total Funding</dt>
                         <dd class="col-8 col-md-9">
-                            <div>100.00 FND</div>
-                            <div>15.00 XYZ</div>
+                            <div>- FND</div>
+                            <div>- XYZ</div>
                         </dd>
 
                         <dt class="col-4 col-md-3">#Funders</dt>
-                        <dd class="col-8 col-md-9">1</dd>
+                        <dd class="col-8 col-md-9">-</dd>
 
                         <dt class="col-4 col-md-3">My Funding</dt>
                         <dd class="col-8 col-md-9">
-                            <div>100.00 FND</div>
-                            <div>15.00 XYZ</div>
+                            <div>-</div>
+                            <div>-</div>
                         </dd>
                     </dl>
                 </div>

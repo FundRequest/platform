@@ -3,6 +3,7 @@ package io.fundreqest.platform.tweb;
 import io.fundreqest.platform.tweb.infrastructure.mav.AbstractController;
 import io.fundrequest.core.request.RequestService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,7 +26,10 @@ public class RequestController extends AbstractController {
     }
 
     @RequestMapping("/requests/{id}")
-    public ModelAndView details() {
-        return new ModelAndView("pages/requests/detail");
+    public ModelAndView details(@PathVariable Long id) {
+        return modelAndView()
+                .withObject("request", requestService.findRequest(id))
+                .withView("pages/requests/detail")
+                .build();
     }
 }
