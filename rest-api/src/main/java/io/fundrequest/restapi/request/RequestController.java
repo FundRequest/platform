@@ -62,8 +62,8 @@ public class RequestController extends AbstractRestController {
         return requestService.canClaim(principal, canClaimRequest);
     }
 
-    @PostMapping({PRIVATE_PATH + "/requests/{id}/claim"})
-    public SignedClaim claimRequest(Principal principal, @RequestBody @Valid UserClaimRequest userClaimRequest, BindingResult bindingResult) {
+    @PostMapping(value = {PRIVATE_PATH + "/requests/{id}/claim"}, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public SignedClaim getSignedClaim(Principal principal, @RequestBody @Valid UserClaimRequest userClaimRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new RuntimeException("Your claim contains errors");
         }

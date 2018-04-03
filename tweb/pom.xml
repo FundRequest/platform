@@ -12,6 +12,10 @@
 
     <artifactId>tweb</artifactId>
 
+    <properties>
+        <keycloak.version>3.4.3.Final</keycloak.version>
+    </properties>
+
 
     <dependencies>
         <dependency>
@@ -31,6 +35,15 @@
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-java8time</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-boot-starter</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
