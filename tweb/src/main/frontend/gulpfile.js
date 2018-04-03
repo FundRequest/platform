@@ -32,15 +32,16 @@ const gulp = require('gulp'),
     install = require("gulp-install"),
     gulpif = require('gulp-if'),
     rename = require('gulp-rename'),
-    autoprefixer = require('gulp-autoprefixer'),
-    cssnano = require('gulp-cssnano'),
     plumber = require('gulp-plumber'),
     notify = require('gulp-notify'),
     sassLint = require('gulp-sass-lint'),
     sourcemaps = require('gulp-sourcemaps'),
     tildeImporter = require('node-sass-tilde-importer'),
     runSequence = require('run-sequence'),
-    amdOptimize = require('amd-optimize');
+    amdOptimize = require('amd-optimize'),
+    postcss = require('gulp-postcss'),
+    autoprefixer = require('autoprefixer'),
+    cssnano = require('cssnano'),
     ts = require('gulp-typescript');
 
 let target = "../../../target/classes/static/assets";
@@ -78,20 +79,25 @@ let sassOptions = {
 };
 
 let autoprefixerConfig = {
-    browsers: ['last 3 versions']
+    browsers: ['last 3 versions'],
+    remove: false
 };
 let cssnanoConfig = {
     reduceIdents: false
 };
 
 function runSass(filename, cssTarget) {
+    let plugins = [
+        autoprefixer(autoprefixerConfig),
+        cssnano(cssnanoConfig)
+    ];
+
     return gulp.src(filename)
         .pipe(plumber({errorHandler: onError}))
         .pipe(sass(sassOptions))
-        .pipe(autoprefixer(autoprefixerConfig))
+        .pipe(postcss([plugins[0]]))
         .pipe(gulp.dest(cssTarget))
-        .pipe(cssnano(cssnanoConfig))
-        .pipe(autoprefixer(autoprefixerConfig))
+        .pipe(postcss(plugins))
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest(cssTarget));
 }
