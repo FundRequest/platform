@@ -21,7 +21,6 @@
     <modules>
         <module>core</module>
         <module>rest-api</module>
-        <module>web</module>
         <module>tweb</module>
         <module>admin-web</module>
     </modules>
