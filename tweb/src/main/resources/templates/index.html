@@ -15,15 +15,15 @@
             <div th:replace="fragments/widgets :: statistic('4', '# FUNDERS', 'fa-users')"></div>
         </div>
         <div class="col-12 col-md-6 mb-3">
-            <div th:replace="fragments/widgets :: statistic('56.67 FND', 'AVERAGE FUNDING', 'fa-FUNDING')"></div>
+            <div th:replace="fragments/widgets :: statistic('56.67 FND', 'AVERAGE FUNDING', 'fa-chart-bar')"></div>
         </div>
         <div class="col-12 col-md-6 mb-3">
             <div th:replace="fragments/widgets :: statistic('170 FND', 'TOTAL FUNDED', 'fa-fire')"></div>
         </div>
     </div>
 
-    <div class="row mb-5">
-        <div class="col-12 col-md-6">
+    <div class="row">
+        <div class="col-12 col-md-6 mb-5">
             <div class="card h-100">
                 <div class="card-body media align-items-center">
                     <img class="w-25 mr-3" th:src="@{/assets/img/logo-single.png}" alt="Logo FundRequest"/>
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 mb-5">
             <div class="card h-100">
                 <div class="card-body media align-items-center">
                     <img class="w-25 mr-3" th:src="@{/assets/img/rocketchat.png}" alt="Logo Rocketchat"/>
