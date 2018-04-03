@@ -8,7 +8,7 @@
 <th:block layout:fragment="content">
     <div class="card mt-4 mb-5">
         <div class="card-body">
-            <table class="table table-striped dt-responsive w-100" data-order="[[5, &quot;desc&quot;]]">
+            <table class="table table-striped dt-responsive nowrap w-100" data-order="[[ 5, &quot;desc&quot;]]">
                 <thead>
                 <tr>
                     <th></th>
@@ -22,210 +22,37 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr th:each="r : ${requests}" th:attr="data-request-id=${r.getId()}">
+                    <!--/*@thymesVar id="r" type="io.fundrequest.core.request.view.RequestDto"*/-->
                     <td>
                         <a href="#" class="watch-link float-right">
                             <i class="far fa-star"></i>
-                            <small><strong>0</strong></small>
+                            <small><strong th:text="${#sets.size(r.watchers)}">0</strong></small>
                         </a>
                     </td>
-                    <td><a th:href="@{/requests/1}" class="line-clamp line-clamp--3">Nico retest Nico retest Nico retest Nico retest Nico retest Nico retest Nico retest Nico retest Nico retest 20180115</a></td>
+                    <td>
+                        <a class="watch-link float-right" th:href="@{/requests/{id}(id=${r.id})}" th:text="${r.issueInformation.title}"
+                >Nico retest 20180115</a></td>
                     <td>FUNDED</td>
                     <td class="text-center">
-                        <a target="_blank" href="https://github.com">
+                        <a target="_blank" href="https://github.com" th:href="${r.issueInformation.url}">
                             <i class="fab fa-2x fa-github"></i>
                         </a>
                     </td>
                     <td>ISSUE</td>
                     <td class="d-none d-md-table-cell">
-                        <span class="badge badge-primary">C#</span>
-                        <span class="badge badge-primary">C</span>
-                        <span class="badge badge-primary">JavaScript</span>
-                        <span class="badge badge-primary">Kotlin</span>
-                    </td>
-                    <td class="text-right">20.00</td>
-                    <td class="text-right">
-                        <button class="btn btn-primary" title="Fund" data-toggle="modal" data-target="#fund-request">
-                            <i class="fa fa-exchange-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="#" class="watch-link float-right">
-                            <i class="far fa-star"></i>
-                            <small><strong>0</strong></small>
-                        </a>
-                    </td>
-                    <td><a th:href="@{/requests/2}" class="line-clamp line-clamp--3">Create more issues</a></td>
-                    <td>FUNDED</td>
-                    <td class="text-center">
-                        <a target="_blank" href="https://github.com">
-                            <i class="fab fa-2x fa-github"></i>
-                        </a>
-                    </td>
-                    <td>ISSUE</td>
-                    <td class="d-none d-md-table-cell">
-                        <span class="badge badge-primary">C#</span>
-                        <span class="badge badge-primary">C</span>
-                        <span class="badge badge-primary">JavaScript</span>
-                        <span class="badge badge-primary">Kotlin</span>
-                    </td>
-                    <td class="text-right">50.00</td>
-                    <td class="text-right">
-                        <button class="btn btn-primary" title="Fund" data-toggle="modal" data-target="#fund-request">
-                            <i class="fa fa-exchange-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="#" class="watch-link float-right">
-                            <i class="far fa-star"></i>
-                            <small><strong>0</strong></small>
-                        </a>
-                    </td>
-                    <td><a th:href="@{/requests/3}" class="line-clamp line-clamp--3">Add hello world for c++</a></td>
-                    <td>FUNDED</td>
-                    <td class="text-center">
-                        <a target="_blank" href="https://github.com">
-                            <i class="fab fa-2x fa-github"></i>
-                        </a>
-                    </td>
-                    <td>ISSUE</td>
-                    <td class="d-none d-md-table-cell">
-                        <span class="badge badge-primary">C#</span>
-                        <span class="badge badge-primary">C</span>
-                        <span class="badge badge-primary">JavaScript</span>
-                        <span class="badge badge-primary">Kotlin</span>
-                    </td>
-                    <td class="text-right">100.00</td>
-                    <td class="text-right">
-                        <button class="btn btn-primary" title="Fund" data-toggle="modal" data-target="#fund-request">
-                            <i class="fa fa-exchange-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-                <!--/*-->
-                <tr>
-                    <td>Cedric</td>
-                    <td>Kelly</td>
-                    <td>Senior Javascript Developer</td>
-                    <td>Edinburgh</td>
-                    <td>22</td>
-                    <td>2012/03/29</td>
-                    <td>$433,060</td>
-                </tr>
-                <tr>
-                    <td>Airi</td>
-                    <td>Satou</td>
-                    <td>Accountant</td>
-                    <td>Tokyo</td>
-                    <td>33</td>
-                    <td>2008/11/28</td>
-                    <td>$162,700</td>
-                </tr>
-                <tr>
-                    <td>Brielle</td>
-                    <td>Williamson</td>
-                    <td>Integration Specialist</td>
-                    <td>New York</td>
-                    <td>61</td>
-                    <td>2012/12/02</td>
-                    <td>$372,000</td>
-                </tr>
-                <tr>
-                    <td>Herrod</td>
-                    <td>Chandler</td>
-                    <td>Sales Assistant</td>
-                    <td>San Francisco</td>
-                    <td>59</td>
-                    <td>2012/08/06</td>
-                    <td>$137,500</td>
-                </tr>
-                <tr>
-                    <td>Rhona</td>
-                    <td>Davidson</td>
-                    <td>Integration Specialist</td>
-                    <td>Tokyo</td>
-                    <td>55</td>
-                    <td>2010/10/14</td>
-                    <td>$327,900</td>
-                </tr>
-                <tr>
-                    <td>Colleen</td>
-                    <td>Hurst</td>
-                    <td>Javascript Developer</td>
-                    <td>San Francisco</td>
-                    <td>39</td>
-                    <td>2009/09/15</td>
-                    <td>$205,500</td>
-                </tr>
-                <tr>
-                    <td>Sonya</td>
-                    <td>Frost</td>
-                    <td>Software Engineer</td>
-                    <td>Edinburgh</td>
-                    <td>23</td>
-                    <td>2008/12/13</td>
-                    <td>$103,600</td>
-                </tr>
-                <tr>
-                    <td>Jena</td>
-                    <td>Gaines</td>
-                    <td>Office Manager</td>
-                    <td>London</td>
-                    <td>30</td>
-                    <td>2008/12/19</td>
-                    <td>$90,560</td>
-                </tr>
-                <tr>
-                    <td>Quinn</td>
-                    <td>Flynn</td>
-                    <td>Support Lead</td>
-                    <td>Edinburgh</td>
-                    <td>22</td>
-                    <td>2013/03/03</td>
-                    <td>$342,000</td>
-                </tr>
-                <tr>
-                    <td>Charde</td>
-                    <td>Marshall</td>
-                    <td>Regional Director</td>
-                    <td>San Francisco</td>
-                    <td>36</td>
-                    <td>2008/10/16</td>
-                    <td>$470,600</td>
-                </tr>
-                <tr>
-                    <td>Haley</td>
-                    <td>Kennedy</td>
-                    <td>Senior Marketing Designer</td>
-                    <td>London</td>
-                    <td>43</td>
-                    <td>2012/12/18</td>
-                    <td>$313,500</td>
-                </tr>
-                <tr>
-                    <td>Tatyana</td>
-                    <td>Fitzpatrick</td>
-                    <td>Regional Director</td>
-                    <td>London</td>
-                    <td>19</td>
-                    <td>2010/03/17</td>
-                    <td>$385,750</td>
-                </tr>
-                <tr>
-                    <td>Michael</td>
-                    <td>Silva</td>
-                    <td>Marketing Designer</td>
-                    <td>London</td>
-                    <td>66</td>
-                    <td>2012/11/27</td>
-                    <td>$198,500</td>
-                </tr>
 
-                <!--*/-->
+                        <span th:each="t : ${r.technologies}" th:remove="tag">
+                            <span class="badge badge-primary" th:text="${t}">Java</span>
+                        </span>
+                    </td>
+                    <td class="text-right">-</td>
+                    <td class="text-right">
+                        <button class="btn btn-primary" title="Fund" data-toggle="modal" data-target="#fund-request">
+                            <i class="fa fa-exchange-alt"></i>
+                        </button>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -236,8 +63,10 @@
 
 
 <th:block layout:fragment="css">
-    <link type="text/css" rel="stylesheet" th:href="@{/assets/vendors/datatables.net-bs4/css/dataTables.bootstrap4.css}"/>
-    <link type="text/css" rel="stylesheet" th:href="@{/assets/vendors/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css}"/>
+    <link type="text/css" rel="stylesheet"
+          th:href="@{/assets/vendors/datatables.net-bs4/css/dataTables.bootstrap4.css}"/>
+    <link type="text/css" rel="stylesheet"
+          th:href="@{/assets/vendors/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css}"/>
 </th:block>
 <th:block layout:fragment="scripts">
     <script>require(['app/dataTables'])</script>
