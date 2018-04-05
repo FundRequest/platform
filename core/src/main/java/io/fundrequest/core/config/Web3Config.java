@@ -26,13 +26,13 @@ public class Web3Config {
 
     @Bean
     @Primary
-    public Web3jService provideWeb3JService(@Value("${cloud.cinder.ethereum.endpoint.url}") final String endpoint) {
+    public Web3jService provideWeb3JService(@Value("${io.fundrequest.ethereum.endpoint.url}") final String endpoint) {
         return new HttpService(endpoint);
     }
 
     @Bean
     @Qualifier("local")
-    public Web3jService provideInfuraEndpoint(@Value("${cloud.cinder.ethereum.endpoint.local-url}") final String endpoint) {
+    public Web3jService provideInfuraEndpoint(@Value("${io.fundrequest.ethereum.endpoint.local-url}") final String endpoint) {
         return new HttpService(endpoint);
     }
 }
