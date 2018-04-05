@@ -17,6 +17,7 @@ import io.fundrequest.core.token.TokenInfoService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -29,8 +30,10 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,6 +46,7 @@ public class FundServiceTest {
     private Mappers mappers;
     private ApplicationEventPublisher eventPublisher;
     private TokenInfoService tokenInfoService;
+    private CacheManager cacheManager;
 
     @Before
     public void setUp() throws Exception {
@@ -50,8 +54,9 @@ public class FundServiceTest {
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
-        CacheManager cacheManager = mock(CacheManager.class);
+        cacheManager = mock(CacheManager.class, RETURNS_DEEP_STUBS);
         tokenInfoService = mock(TokenInfoService.class);
+        when(fundRepository.saveAndFlush(any(Fund.class))).then(returnsFirstArg());
         fundService = new FundServiceImpl(
                 fundRepository,
                 requestRepository,
@@ -88,7 +93,7 @@ public class FundServiceTest {
 
 
     @Test
-    public void findOne() throws Exception {
+    public void saveFunds() throws Exception {
         Request request = RequestMother.freeCodeCampNoUserStories().build();
 
         FundsAddedCommand command = new FundsAddedCommand();
@@ -107,11 +112,14 @@ public class FundServiceTest {
         RequestDto requestDto = new RequestDto();
         when(mappers.map(eq(Request.class), eq(RequestDto.class), any(Request.class)))
                 .thenReturn(requestDto);
+        Cache cache = mock(Cache.class);
+        when(cacheManager.getCache("funds")).thenReturn(cache);
 
         fundService.addFunds(command);
 
         verifyFundsSaved(command, funder);
         verifyEventCreated(requestDto, fundDto);
+        verify(cache).evict(request.getId());
     }
 
     private void verifyEventCreated(RequestDto requestDto, FundDto fundDto) {
