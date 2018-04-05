@@ -28,6 +28,7 @@ const arg = (argList => {
 
 
 const gulp = require('gulp'),
+    run = require('gulp-run');
     sass = require('gulp-sass'),
     install = require("gulp-install"),
     gulpif = require('gulp-if'),
@@ -45,6 +46,7 @@ const gulp = require('gulp'),
     ts = require('gulp-typescript');
 
 let target = "../../../target/classes/static/assets";
+let origin = "./src";
 
 let displayError = function(error) {
     // Initial building up of the error
@@ -111,7 +113,15 @@ function runTs(tsConfig, filename) {
 }
 
 gulp.task('scripts', function() {
-    return runTs('tsconfig.json', 'js/**/*.ts');
+    return runTs('tsconfig.json', [`${origin}/js/**/*.ts`, `!${origin}/js/vue/**/*`]);
+});
+
+gulp.task('typechain', function() {
+    return run("npm run typechain").exec();
+});
+
+gulp.task('compile-vue', function() {
+    return run(`cd ${origin}/js/vue ; npm run build`).exec();
 });
 
 gulp.task('copy-dependencies', function() {
@@ -135,28 +145,27 @@ gulp.task('copy-dependencies', function() {
 
 gulp.task('copy-assets', function() {
     let copy = [];
-    copy.push(gulp.src(['fonts/**/*']).pipe(gulp.dest(`${target}/fonts`)));
-    copy.push(gulp.src(['img/**/*']).pipe(gulp.dest(`${target}/img`)));
-    copy.push(gulp.src(['js/**/*.js']).pipe(gulp.dest(`${target}/js`)));
+    copy.push(gulp.src([`${origin}/fonts/**/*`]).pipe(gulp.dest(`${target}/fonts`)));
+    copy.push(gulp.src([`${origin}/img/**/*`]).pipe(gulp.dest(`${target}/img`)));
+    copy.push(gulp.src([`${origin}/js/**/*.js`, `!${origin}/js/vue/**/*`]).pipe(gulp.dest(`${target}/js`)));
 
     return copy;
 });
 
-
 gulp.task('styles-bootstrap', function() {
-    return runSass('scss/bootstrap.scss', `${target}/vendors/bootstrap/css`)
+    return runSass(`${origin}/scss/bootstrap.scss`, `${target}/vendors/bootstrap/css`)
 });
 
 gulp.task('styles-mdb', function() {
-    return runSass('scss/mdb.scss', `${target}/vendors/mdbootstrap/css`)
+    return runSass(`${origin}/scss/mdb.scss`, `${target}/vendors/mdbootstrap/css`)
 });
 
 gulp.task('styles-core', function() {
-    return runSass('scss/core.scss', `${target}/css`)
+    return runSass(`${origin}/scss/core.scss`, `${target}/css`)
 });
 
 gulp.task('styles-website', function() {
-    return runSass('scss/website.scss', `${target}/css`);
+    return runSass(`${origin}/scss/website.scss`, `${target}/css`);
 });
 
 gulp.task('install', function() {
@@ -174,7 +183,7 @@ gulp.task('run-watch', function() {
 
 gulp.task('default', function(done) {
     target = (arg && arg.target) || target;
-    runSequence('install', 'copy-dependencies', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website', 'scripts', done);
+    runSequence('install', 'copy-dependencies', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website',  'scripts', 'typechain', 'compile-vue', done);
 });
 
 gulp.task('watch', function(done) {

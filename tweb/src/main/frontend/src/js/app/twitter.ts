@@ -15,13 +15,11 @@ class Twitter {
 
         if (button != null) {
             button.addEventListener('click', (e) => {
-                this._verify(() => {
-                    $(modal).modal('hide');
-                })
+                this._verify(() => $(modal).modal('hide'))
             });
 
             buttonTweet.addEventListener('click', (e) => {
-                let text: string = buttonTweet.dataset.twitterTweet;
+                let text: string = buttonTweet.dataset.twitterTweet as string;
                 let link: string = `http://twitter.com/home?status=${encodeURIComponent(text)}`;
 
                 let twitterWindow: Window = Utils.getNewWindow(link, 600, 600);
@@ -42,8 +40,8 @@ class Twitter {
         this._getVerify()
             .then((data: VerifyResponse) => {
                 Alert.show(data.message, data.validated ? 'success' : 'danger');
-                if (data.validated) {
-                    callback != null ? callback() : null;
+                if (data.validated && callback != null) {
+                     callback();
                 }
                 Utils.hideLoading();
             })

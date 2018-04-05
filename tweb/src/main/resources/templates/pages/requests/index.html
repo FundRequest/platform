@@ -8,7 +8,7 @@
 <th:block layout:fragment="content">
     <div class="card mt-4 mb-5">
         <div class="card-body">
-            <table class="table table-striped dt-responsive nowrap w-100" data-order="[[ 5, &quot;desc&quot;]]">
+            <table class="table table-striped dt-responsive w-100" data-order="[[ 5, &quot;desc&quot;]]">
                 <thead>
                 <tr>
                     <th></th>
@@ -31,8 +31,10 @@
                         </a>
                     </td>
                     <td>
-                        <a class="watch-link float-right" th:href="@{/requests/{id}(id=${r.id})}" th:text="${r.issueInformation.title}"
-                >Nico retest 20180115</a></td>
+                        <a class="line-clamp line-clamp--3"
+                        th:href="@{/requests/{id}(id=${r.id})}"
+                        th:text="${r.issueInformation.title}">Nico retest 20180115</a>
+                    </td>
                     <td>FUNDED</td>
                     <td class="text-center">
                         <a target="_blank" href="https://github.com" th:href="${r.issueInformation.url}">
@@ -41,12 +43,13 @@
                     </td>
                     <td>ISSUE</td>
                     <td class="d-none d-md-table-cell">
-
                         <span th:each="t : ${r.technologies}" th:remove="tag">
                             <span class="badge badge-primary" th:text="${t}">Java</span>
                         </span>
                     </td>
-                    <td class="text-right">-</td>
+                    <td class="text-right">
+                        <fnd-issue-balance th:attr="issue-id=${r.id}"></fnd-issue-balance>
+                    </td>
                     <td class="text-right">
                         <button class="btn btn-primary" title="Fund" data-toggle="modal" data-target="#fund-request">
                             <i class="fa fa-exchange-alt"></i>

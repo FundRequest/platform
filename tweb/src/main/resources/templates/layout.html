@@ -53,12 +53,12 @@
 </head>
 <body data-spy="scroll" data-target="#primary-menu">
 
-
 <div th:replace="fragments/top :: alert-banner"></div>
 <div th:replace="fragments/top :: alert-container"></div>
 <div th:replace="fragments/top :: loader"></div>
 
-<div class="fnd-page-container">
+<div class="fnd-page-container" id="vue-app">
+
     <div th:replace="fragments/header :: header"></div>
     <section class="section section--main">
         <div class="container">
@@ -72,6 +72,9 @@
 <th:block layout:fragment="modals" />
 
 <th:block layout:fragment="scripts" />
+
+
+<script th:src="@{/assets/js/vue.js}"></script>
 
 </body>
 
