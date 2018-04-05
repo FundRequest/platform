@@ -6,18 +6,20 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.domain.Fund;
-import io.fundrequest.core.request.fund.domain.FundBuilder;
 import io.fundrequest.core.request.fund.dto.FundDto;
+import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.token.TokenInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -32,14 +34,17 @@ class FundServiceImpl implements FundService {
     private Mappers mappers;
     private ApplicationEventPublisher eventPublisher;
     private CacheManager cacheManager;
+    private TokenInfoService tokenInfoService;
+
 
     @Autowired
-    public FundServiceImpl(FundRepository fundRepository, RequestRepository requestRepository, Mappers mappers, ApplicationEventPublisher eventPublisher, CacheManager cacheManager) {
+    public FundServiceImpl(FundRepository fundRepository, RequestRepository requestRepository, Mappers mappers, ApplicationEventPublisher eventPublisher, CacheManager cacheManager, TokenInfoService tokenInfoService) {
         this.fundRepository = fundRepository;
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.eventPublisher = eventPublisher;
         this.cacheManager = cacheManager;
+        this.tokenInfoService = tokenInfoService;
     }
 
     @Transactional(readOnly = true)
@@ -70,10 +75,26 @@ class FundServiceImpl implements FundService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "funds", key = "#requestId")
-    public BigDecimal getTotalFundsForRequest(Long requestId) {
+    public List<TotalFundDto> getTotalFundsForRequest(Long requestId) {
         return fundRepository.findByRequestId(requestId).stream()
-                .map(Fund::getAmountInWei)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .collect(Collectors.groupingBy(
+                        Fund::getToken,
+                        Collectors.mapping(Fund::getAmountInWei,
+                                Collectors.reducing(BigDecimal.ZERO, BigDecimal::add)
+                        )
+                ))
+                .entrySet().stream()
+                .map(f -> createTotalFundDto(f.getKey(), f.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    private TotalFundDto createTotalFundDto(String token, BigDecimal totalAmount) {
+        return TotalFundDto
+                .builder()
+                .tokenAddress(token)
+                .tokenSymbol(tokenInfoService.getTokenInfo(token).getSymbol())
+                .totalAmount(Convert.fromWei(totalAmount, Convert.Unit.ETHER))
+                .build();
     }
 
     @Override
@@ -89,10 +110,11 @@ class FundServiceImpl implements FundService {
     public void addFunds(FundsAddedCommand command) {
         Request request = requestRepository.findOne(command.getRequestId())
                 .orElseThrow(() -> new RuntimeException("Unable to find request"));
-        Fund fund = FundBuilder.aFund()
-                .withAmountInWei(command.getAmountInWei())
-                .withRequestId(command.getRequestId())
-                .withTimestamp(command.getTimestamp())
+        Fund fund = Fund.builder()
+                .amountInWei(command.getAmountInWei())
+                .requestId(command.getRequestId())
+                .token(command.getToken())
+                .timestamp(command.getTimestamp())
                 .build();
         fund = fundRepository.saveAndFlush(fund);
         cacheManager.getCache("funds").evict(fund.getId());

@@ -2,9 +2,8 @@ package io.fundrequest.core.request.fund;
 
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.dto.FundDto;
-import org.springframework.transaction.annotation.Transactional;
+import io.fundrequest.core.request.fund.dto.TotalFundDto;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +16,7 @@ public interface FundService {
 
     List<FundDto> findByRequestId(Long requestId);
 
-    @Transactional(readOnly = true)
-    BigDecimal getTotalFundsForRequest(Long requestId);
+    List<TotalFundDto> getTotalFundsForRequest(Long requestId);
 
     Map<Long, List<FundDto>> findByRequestIds(List<Long> requestIds);
 

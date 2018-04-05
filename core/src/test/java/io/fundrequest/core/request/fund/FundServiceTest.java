@@ -13,6 +13,7 @@ import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.view.FundDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.token.TokenInfoService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -41,6 +42,7 @@ public class FundServiceTest {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private ApplicationEventPublisher eventPublisher;
+    private TokenInfoService tokenInfoService;
 
     @Before
     public void setUp() throws Exception {
@@ -49,12 +51,14 @@ public class FundServiceTest {
         mappers = mock(Mappers.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
         CacheManager cacheManager = mock(CacheManager.class);
+        tokenInfoService = mock(TokenInfoService.class);
         fundService = new FundServiceImpl(
                 fundRepository,
                 requestRepository,
                 mappers,
                 eventPublisher,
-                cacheManager);
+                cacheManager,
+                tokenInfoService);
     }
 
     @Test

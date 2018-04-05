@@ -1,58 +1,29 @@
 package io.fundrequest.core.request.fund.messaging.dto;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data
 public class FundedEthDto {
     private String transactionHash;
     private String from;
     private String platform;
     private String platformId;
     private String amount;
+    private String token;
     private long timestamp;
 
-    public String getFrom() {
-        return from;
+    FundedEthDto() {
     }
 
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public String getAmount() {
-        return amount;
-    }
-
-    public void setAmount(String amount) {
-        this.amount = amount;
-    }
-
-    public String getPlatform() {
-        return platform;
-    }
-
-    public void setPlatform(String platform) {
-        this.platform = platform;
-    }
-
-    public String getPlatformId() {
-        return platformId;
-    }
-
-    public void setPlatformId(String platformId) {
-        this.platformId = platformId;
-    }
-
-    public String getTransactionHash() {
-        return transactionHash;
-    }
-
-    public void setTransactionHash(String transactionHash) {
+    @Builder
+    public FundedEthDto(String transactionHash, String from, String platform, String platformId, String amount, String token, long timestamp) {
         this.transactionHash = transactionHash;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
+        this.from = from;
+        this.platform = platform;
+        this.platformId = platformId;
+        this.amount = amount;
+        this.token = token;
         this.timestamp = timestamp;
     }
 }

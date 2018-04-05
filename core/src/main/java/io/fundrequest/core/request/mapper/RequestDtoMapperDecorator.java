@@ -3,6 +3,7 @@ package io.fundrequest.core.request.mapper;
 import io.fundrequest.core.infrastructure.SecurityContextService;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.FundService;
+import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMapper;
 import io.fundrequest.core.user.UserService;
@@ -11,9 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
-import org.web3j.utils.Convert;
 
-import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -37,7 +37,7 @@ public abstract class RequestDtoMapperDecorator implements RequestDtoMapper {
         return map(request, fundService.getTotalFundsForRequest(request.getId()));
     }
 
-    private RequestDto map(Request request, BigDecimal totalFunds) {
+    private RequestDto map(Request request, List<TotalFundDto> totalFunds) {
         RequestDto result = delegate.map(request);
         Authentication currentAuth = securityContextService.getLoggedInUser();
         if (result != null && currentAuth != null) {
@@ -45,7 +45,8 @@ public abstract class RequestDtoMapperDecorator implements RequestDtoMapper {
             result.setWatchers(request.getWatchers().stream().map(this::getUser).filter(Objects::nonNull).collect(Collectors.toSet()));
         }
         if (result != null && totalFunds != null) {
-            result.setTotalFunds(Convert.fromWei(totalFunds, Convert.Unit.ETHER));
+            result.setFndFunds(totalFunds.stream().filter(f -> "FND".equalsIgnoreCase(f.getTokenSymbol())).findFirst().orElse(null));
+            result.setOtherFunds(totalFunds.stream().filter(f -> !"FND".equalsIgnoreCase(f.getTokenSymbol())).findFirst().orElse(null));
         }
 
         return result;

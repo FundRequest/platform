@@ -89,7 +89,6 @@ public class AzraelMessageReceiverTest {
     }
 
 
-
     private void verifyRequestCreated(FundedEthDto dto) {
         ArgumentCaptor<CreateRequestCommand> captor = ArgumentCaptor.forClass(CreateRequestCommand.class);
         verify(requestService).createRequest(captor.capture());
@@ -122,12 +121,13 @@ public class AzraelMessageReceiverTest {
     }
 
     private FundedEthDto createDto() {
-        FundedEthDto dto = new FundedEthDto();
-        dto.setAmount("5223000000000000000");
-        dto.setPlatform("GITHUB");
-        dto.setPlatformId("1");
-        dto.setFrom("0x");
-        dto.setTransactionHash("0xh");
-        return dto;
+        return FundedEthDto.builder()
+                .platform("GITHUB")
+                .platformId("1")
+                .amount("5223000000000000000")
+                .token("0xe5dada80aa6477e85d09747f2842f7993d0df71c")
+                .from("0xbbee53d695c8f744b21b3ebb48c73700df375b49")
+                .transactionHash("0x4056a21aaec0e60a1ff76cfe5b08f3d3594e07de1aa88c93cc8ff0df0b9370f1")
+                .build();
     }
 }
