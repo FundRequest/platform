@@ -28,7 +28,7 @@ const arg = (argList => {
 
 
 const gulp = require('gulp'),
-    run = require('gulp-run');
+    run = require('gulp-run'),
     sass = require('gulp-sass'),
     install = require("gulp-install"),
     gulpif = require('gulp-if'),
@@ -183,7 +183,7 @@ gulp.task('run-watch', function() {
 
 gulp.task('default', function(done) {
     target = (arg && arg.target) || target;
-    runSequence('install', 'copy-dependencies', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website',  'scripts', 'typechain', 'compile-vue', done);
+    runSequence('copy-dependencies', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website',  'scripts', 'typechain', 'compile-vue', done);
 });
 
 gulp.task('watch', function(done) {
