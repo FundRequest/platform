@@ -1,5 +1,5 @@
 {
-  "name": "FundRequest-bootstrap-material-design",
+  "name": "FundRequest-frontend",
   "version": "1.0.0",
   "keywords": [
     "material",
@@ -19,7 +19,7 @@
   "main": "./js/app.js",
   "scripts": {
     "build": "gulp",
-    "init": "npm install ; cd ./src/js/vue/ ; npm install",
+    "webpack": "webpack --config ./src/js/vue/webpack.config.js",
     "typechain": "typechain --outDir ./src/js/contracts './src/js/abi/*.json'",
     "watch": "",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -52,8 +52,11 @@
     "run-sequence": "^2.2.1",
     "typechain": "^0.1.4",
     "typescript": "^2.9.0-dev.20180405",
-    "vue": "^2.5.16",
-    "vue-class-component": "latest"
+    "css-loader": "^0.28.1",
+    "ts-loader": "^2.0.3",
+    "vue-loader": "^12.0.3",
+    "vue-template-compiler": "^2.5.2",
+    "webpack": "^2.5.0"
   },
   "files": [
     "scss/**/*.scss",
@@ -73,6 +76,10 @@
     "mdbootstrap": "^4.5.0",
     "node-waves": "^0.7.6",
     "requirejs": "^2.3.5",
-    "typeface-titillium-web": "0.0.54"
+    "typeface-titillium-web": "0.0.54",
+    "vue": "^2.5.2",
+    "vue-class-component": "^6.0.0",
+    "vue-property-decorator": "^6.0.0",
+    "vue-router": "^3.0.1"
   }
 }

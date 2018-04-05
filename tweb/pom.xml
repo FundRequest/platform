@@ -73,16 +73,25 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run init</arguments>
+                            <arguments>install</arguments>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>gulp build</id>
+                        <id>gulp</id>
                         <goals>
                             <goal>gulp</goal>
                         </goals>
                         <configuration>
                             <arguments>--target ../../../target/classes/static/assets</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm run webpack</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run webpack</arguments>
                         </configuration>
                     </execution>
                 </executions>

@@ -3,7 +3,10 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-  entry: './src/index.ts',
+  dependencies: [
+        path.join(__dirname, "../../..", "node_modules")
+    ],
+  entry: path.resolve(__dirname, './src/index.ts'),
   output: {
     path: path.resolve(__dirname, '../../../../../../target/classes/static/assets/js'),
     publicPath: '/assets/js/',

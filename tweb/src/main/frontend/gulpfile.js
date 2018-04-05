@@ -120,10 +120,6 @@ gulp.task('typechain', function() {
     return run("npm run typechain").exec();
 });
 
-gulp.task('compile-vue', function() {
-    return run(`cd ${origin}/js/vue ; npm run build`).exec();
-});
-
 gulp.task('copy-dependencies', function() {
     let copy = [];
     copy.push(gulp.src(['node_modules/jquery/dist/*']).pipe(gulp.dest(`${target}/vendors/jquery`)));
@@ -183,7 +179,7 @@ gulp.task('run-watch', function() {
 
 gulp.task('default', function(done) {
     target = (arg && arg.target) || target;
-    runSequence('copy-dependencies', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website',  'scripts', 'typechain', 'compile-vue', done);
+    runSequence('copy-dependencies', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website',  'scripts', 'typechain', done);
 });
 
 gulp.task('watch', function(done) {
