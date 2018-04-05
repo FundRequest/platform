@@ -8,6 +8,6 @@ cache:
 node_js: "8.7.0"
 
 after_success:
-  - docker build -t fundrequestio/platform:"$TRAVIS_BRANCH" rest-api
+  - docker build -t fundrequestio/platform:"$TRAVIS_BRANCH" tweb
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - docker push fundrequestio/platform:"$TRAVIS_BRANCH"
