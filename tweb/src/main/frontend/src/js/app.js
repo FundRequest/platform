@@ -1,3 +1,2 @@
 define(['jquery', 'bootstrap.bundle', 'waves', 'clipboard'], function() {
-    require(['mdb' , 'app/main']);
-});
+    require(['mdb' , 'app/main']);});

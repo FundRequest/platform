@@ -9,7 +9,7 @@
 <th:block layout:fragment="content">
     <div class="row mb-5 mt-5">
         <div class="col-12 col-md-6 mb-3">
-            <div th:replace="fragments/widgets :: statistic('3', '# REQUESTS FUNDED', 'fa-tachometer-alt')"></div>
+            <statistic-tile  :icon-class="'fa-tachometer-alt'" :description="'# REQUESTS FUNDED'" :value="3"></statistic-tile>
         </div>
         <div class="col-12 col-md-6 mb-3">
             <div th:replace="fragments/widgets :: statistic('4', '# FUNDERS', 'fa-users')"></div>
