@@ -1,4 +1,4 @@
-package io.fundreqest.platform.tweb;
+package io.fundreqest.platform.tweb.request;
 
 import io.fundreqest.platform.tweb.infrastructure.mav.AbstractController;
 import io.fundrequest.core.request.RequestService;
@@ -32,4 +32,6 @@ public class RequestController extends AbstractController {
                 .withView("pages/requests/detail")
                 .build();
     }
+
+
 }

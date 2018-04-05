@@ -3,6 +3,7 @@ package io.fundrequest.core.request.view;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +22,8 @@ public class RequestDto {
     private boolean loggedInUserIsWatcher;
 
     private Set<String> watchers = new HashSet<>();
+
+    private BigDecimal totalFunds;
 
     public Long getId() {
         return id;
@@ -76,5 +79,13 @@ public class RequestDto {
 
     public void setWatchers(Set<String> watchers) {
         this.watchers = watchers;
+    }
+
+    public BigDecimal getTotalFunds() {
+        return totalFunds;
+    }
+
+    public void setTotalFunds(BigDecimal totalFunds) {
+        this.totalFunds = totalFunds;
     }
 }

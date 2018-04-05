@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 class FundServiceImpl implements FundService {
@@ -52,6 +54,20 @@ class FundServiceImpl implements FundService {
     @Transactional(readOnly = true)
     public FundDto findOne(Long id) {
         return mappers.map(Fund.class, FundDto.class, fundRepository.findOne(id).orElseThrow(ResourceNotFoundException::new));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<FundDto> findByRequestId(Long requestId) {
+        return mappers.mapList(Fund.class, FundDto.class, fundRepository.findByRequestId(requestId));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<Long, List<FundDto>> findByRequestIds(List<Long> requestIds) {
+        return mappers.mapList(Fund.class, FundDto.class, fundRepository.findByRequestIdIn(requestIds))
+                .stream()
+                .collect(Collectors.groupingBy(FundDto::getId));
     }
 
     @Transactional

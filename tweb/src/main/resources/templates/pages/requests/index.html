@@ -46,7 +46,7 @@
                             <span class="badge badge-primary" th:text="${t}">Java</span>
                         </span>
                     </td>
-                    <td class="text-right">-</td>
+                    <td class="text-right" th:text="${#numbers.formatDecimal(r.totalFunds,1,3,'POINT')}">-</td>
                     <td class="text-right">
                         <button class="btn btn-primary" title="Fund" data-toggle="modal" data-target="#fund-request">
                             <i class="fa fa-exchange-alt"></i>

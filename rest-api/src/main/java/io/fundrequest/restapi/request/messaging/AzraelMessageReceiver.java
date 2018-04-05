@@ -42,7 +42,7 @@ public class AzraelMessageReceiver {
     public void receiveFundedMessage(String message) throws IOException {
         LOGGER.debug("Recieved new message from Azrael: " + message);
         FundedEthDto result = objectMapper.readValue(message, FundedEthDto.class);
-        if (isNewFunding(result)) {
+        if (isNotProcessed(result)) {
             CreateRequestCommand createRequestCommand = new CreateRequestCommand();
             createRequestCommand.setPlatform(getPlatform(result.getPlatform()));
             createRequestCommand.setPlatformId(result.getPlatformId());
@@ -76,7 +76,7 @@ public class AzraelMessageReceiver {
                 .toLocalDateTime();
     }
 
-    private boolean isNewFunding(FundedEthDto result) {
+    private boolean isNotProcessed(FundedEthDto result) {
         return !processedBlockchainEventRepository.findOne(result.getTransactionHash()).isPresent()
                 && StringUtils.isNotBlank(result.getPlatformId());
     }
