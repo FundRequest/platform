@@ -35,13 +35,13 @@
                         th:href="@{/requests/{id}(id=${r.id})}"
                         th:text="${r.issueInformation.title}">Nico retest 20180115</a>
                     </td>
-                    <td>FUNDED</td>
+                    <td th:text="${#messages.msg('enum.RequestStatus.'+r.status)}">FUNDED</td>
                     <td class="text-center">
                         <a target="_blank" href="https://github.com" th:href="${r.issueInformation.url}">
                             <i class="fab fa-2x fa-github"></i>
                         </a>
                     </td>
-                    <td>ISSUE</td>
+                    <td th:text="${#messages.msg('enum.RequestType.'+r.type)}">ISSUE</td>
                     <td class="d-none d-md-table-cell">
                         <span th:each="t : ${r.technologies}" th:remove="tag">
                             <span class="badge badge-primary" th:text="${t}">Java</span>
