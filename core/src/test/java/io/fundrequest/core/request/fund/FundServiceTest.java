@@ -16,6 +16,7 @@ import io.fundrequest.core.request.view.RequestDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
@@ -47,12 +48,13 @@ public class FundServiceTest {
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
+        CacheManager cacheManager = mock(CacheManager.class);
         fundService = new FundServiceImpl(
                 fundRepository,
                 requestRepository,
                 mappers,
-                eventPublisher
-        );
+                eventPublisher,
+                cacheManager);
     }
 
     @Test

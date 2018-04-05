@@ -13,10 +13,13 @@ import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.view.RequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,13 +31,15 @@ class FundServiceImpl implements FundService {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private ApplicationEventPublisher eventPublisher;
+    private CacheManager cacheManager;
 
     @Autowired
-    public FundServiceImpl(FundRepository fundRepository, RequestRepository requestRepository, Mappers mappers, ApplicationEventPublisher eventPublisher) {
+    public FundServiceImpl(FundRepository fundRepository, RequestRepository requestRepository, Mappers mappers, ApplicationEventPublisher eventPublisher, CacheManager cacheManager) {
         this.fundRepository = fundRepository;
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.eventPublisher = eventPublisher;
+        this.cacheManager = cacheManager;
     }
 
     @Transactional(readOnly = true)
@@ -64,6 +69,15 @@ class FundServiceImpl implements FundService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "funds", key = "#requestId")
+    public BigDecimal getTotalFundsForRequest(Long requestId) {
+        return fundRepository.findByRequestId(requestId).stream()
+                .map(Fund::getAmountInWei)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Map<Long, List<FundDto>> findByRequestIds(List<Long> requestIds) {
         return mappers.mapList(Fund.class, FundDto.class, fundRepository.findByRequestIdIn(requestIds))
                 .stream()
@@ -81,6 +95,7 @@ class FundServiceImpl implements FundService {
                 .withTimestamp(command.getTimestamp())
                 .build();
         fund = fundRepository.saveAndFlush(fund);
+        cacheManager.getCache("funds").evict(fund.getId());
         if (request.getStatus() == RequestStatus.OPEN) {
             request.setStatus(RequestStatus.FUNDED);
             request = requestRepository.saveAndFlush(request);
