@@ -1,6 +1,7 @@
-package io.fundrequest.restapi.request.messaging;
+package io.fundrequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.fundreqest.platform.tweb.request.messsaging.AzraelMessageReceiver;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
@@ -10,6 +11,7 @@ import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
 import io.fundrequest.core.request.fund.infrastructure.ProcessedBlockchainEventRepository;
 import io.fundrequest.core.request.fund.messaging.dto.ClaimedEthDto;
 import io.fundrequest.core.request.fund.messaging.dto.FundedEthDto;
+import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -22,6 +24,7 @@ import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -41,7 +44,7 @@ public class AzraelMessageReceiverTest {
         blockchainEventRepository = mock(ProcessedBlockchainEventRepository.class);
         requestService = mock(RequestService.class);
         objectMapper = new ObjectMapper();
-        messageReceiver = new AzraelMessageReceiver(requestService, objectMapper, blockchainEventRepository);
+        messageReceiver = new AzraelMessageReceiver(requestService, objectMapper, blockchainEventRepository, mock(FundService.class));
     }
 
     @Test
@@ -50,6 +53,7 @@ public class AzraelMessageReceiverTest {
         StringWriter w = new StringWriter();
         objectMapper.writeValue(w, dto);
         when(blockchainEventRepository.findOne(dto.getTransactionHash())).thenReturn(Optional.empty());
+        when(requestService.createRequest(any())).thenReturn(RequestDtoMother.freeCodeCampNoUserStories().getId());
 
         messageReceiver.receiveFundedMessage(w.toString());
 
