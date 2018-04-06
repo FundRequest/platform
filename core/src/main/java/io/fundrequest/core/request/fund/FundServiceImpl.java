@@ -36,7 +36,6 @@ class FundServiceImpl implements FundService {
     private CacheManager cacheManager;
     private TokenInfoService tokenInfoService;
 
-
     @Autowired
     public FundServiceImpl(FundRepository fundRepository, RequestRepository requestRepository, Mappers mappers, ApplicationEventPublisher eventPublisher, CacheManager cacheManager, TokenInfoService tokenInfoService) {
         this.fundRepository = fundRepository;
@@ -76,6 +75,8 @@ class FundServiceImpl implements FundService {
     @Transactional(readOnly = true)
     @Cacheable(value = "funds", key = "#requestId")
     public List<TotalFundDto> getTotalFundsForRequest(Long requestId) {
+
+
         return fundRepository.findByRequestId(requestId).stream()
                 .collect(Collectors.groupingBy(
                         Fund::getToken,
