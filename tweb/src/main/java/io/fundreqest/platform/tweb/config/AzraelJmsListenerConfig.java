@@ -1,6 +1,6 @@
-package io.fundrequest.restapi.config;
+package io.fundreqest.platform.tweb.config;
 
-import io.fundrequest.restapi.request.messaging.AzraelMessageReceiver;
+import io.fundreqest.platform.tweb.request.messsaging.AzraelMessageReceiver;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;

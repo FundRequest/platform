@@ -6,6 +6,11 @@
 </head>
 
 <th:block layout:fragment="content">
+    <div class="form-inline">
+        <input type="text" class="form-control" id="tempFundNumber" placeholder="IssueNumber" />
+        <input type="text" class="form-control" id="tempFundAmount" placeholder="Amount" />
+        <button type="button" id="tempFund" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i> Fund</button>
+    </div>
     <div class="card mt-4 mb-5">
         <div class="card-body">
             <table class="table table-striped dt-responsive w-100" data-order="[[ 5, &quot;desc&quot;]]">
@@ -17,7 +22,8 @@
                     <th class="text-center">Platform</th>
                     <th>Type</th>
                     <th class="d-none d-md-table-cell">Technologies</th>
-                    <th class="text-right">Funded</th>
+                    <th class="text-right">FND</th>
+                    <th class="text-right">Other</th>
                     <th data-orderable="false" class="text-right">Actions</th>
                 </tr>
                 </thead>
@@ -47,9 +53,8 @@
                             <span class="badge badge-primary" th:text="${t}">Java</span>
                         </span>
                     </td>
-                    <td class="text-right">
-                        <fnd-issue-balance th:attr="issue-id=${r.id}"></fnd-issue-balance>
-                    </td>
+                    <td class="text-right"><span th:if="${r.fndFunds}" th:text="${#numbers.formatDecimal(r.fndFunds.totalAmount,1,3,'POINT')}">-</span></td>
+                    <td class="text-right"><span th:if="${r.otherFunds}" th:text="|${#numbers.formatDecimal(r.otherFunds.totalAmount,1,3,'POINT')} ${r.otherFunds.tokenSymbol}|">-</span></td>
                     <td class="text-right">
                         <button class="btn btn-primary" title="Fund" data-toggle="modal" data-target="#fund-request">
                             <i class="fa fa-exchange-alt"></i>
@@ -73,6 +78,7 @@
 </th:block>
 <th:block layout:fragment="scripts">
     <script>require(['app/dataTables'])</script>
+    <script>require(['app/requests'])</script>
 </th:block>
 
 </html>
