@@ -62,6 +62,7 @@ public class FundRepositoryContract extends Contract {
     }
 
     public RemoteCall<BigInteger> getFundedTokenCount(final String platform, final String platformId) {
+
         final Function function = new Function("getFundedTokenCount",
                 Arrays.asList(
                         new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),

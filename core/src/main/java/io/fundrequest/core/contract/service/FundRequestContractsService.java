@@ -47,6 +47,7 @@ public class FundRequestContractsService {
             );
         } catch (final Exception ex) {
             log.error("Unable to start application, couldn't access contracts");
+            ex.printStackTrace();
             throw new IllegalArgumentException("Couldn't startup");
         }
     }
