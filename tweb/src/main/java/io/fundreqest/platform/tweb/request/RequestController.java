@@ -18,7 +18,6 @@ public class RequestController extends AbstractController {
 
     @RequestMapping("/requests")
     public ModelAndView requests() {
-        requestService.findAll();
         return modelAndView()
                 .withObject("requests", requestService.findAll())
                 .withView("pages/requests/index")
