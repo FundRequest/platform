@@ -37,17 +37,6 @@ h2 .svg-inline--fa {
     vertical-align: baseline;
 }
 
-.description {
-    &--header {
-        color: $white;
-        margin-bottom: 2rem;
-    }
-}
-
-.text-white-transparent {
-    color: rgba($white, 0.7);
-}
-
 .footer {
     &__title {
         margin: 0 0 10px 0;

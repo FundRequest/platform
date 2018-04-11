@@ -13,30 +13,50 @@
         </button>
 
         <div class="collapse navbar-collapse" id="primary-menu">
+            <ul class="navbar-nav text-center mr-md-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Your Requests</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Developers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Browse</a>
+                </li>
+            </ul>
             <ul class="navbar-nav text-center ml-md-auto">
                 <!--/* TODO: Make list of pages in header dynamic */-->
                 <!--/* TODO: Highlight active page (add .active class to link */-->
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/}">Home</a>
+                    <a class="nav-link" th:href="@{/requests}">Help needed?</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/requests}">Requests</a>
+                    <a class="nav-link" th:href="@{/requests}">
+                        <i class="fa fa-comment"></i>
+                    </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <button class="btn btn-warning btn--round-icon btn--profile dropdown-toggle"
+                    <a class="nav-link dropdown-toggle"
                             title="Profile"
-                            type="button"
                             id="user-profile-menu"
+                            href="#dropdown"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-user"></i>
-                    </button>
+                    </a>
 
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="user-profile-menu">
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu--main" aria-labelledby="user-profile-menu">
                         <div th:replace="fragments/dapp-status"></div>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" th:href="@{/profile}">Profile</a>
-                        <a class="dropdown-item" th:href="@{/rewards}">Rewards</a>
-                        <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                        <a class="dropdown-item d-flex flex-nowrap" th:href="@{/profile}">
+                            <div class="mr-2"><i class="fa fa-id-card"></i></div> <span>Profile</span>
+                        </a>
+                        <a class="dropdown-item d-flex flex-nowrap" th:href="@{/settings}">
+                            <div class="mr-2"><i class="fa fa-cogs"></i></div> <span>Settings</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item d-flex flex-nowrap" th:href="@{/logout}">
+                            <div class="mr-2"><i class="fa fa-sign-out-alt"></i></div> <span>Logout</span>
+                        </a>
                     </div>
                 </li>
             </ul>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+        <th:block th:replace="fragments/head :: common"></th:block>
+
+        <th:block layout:fragment="css"></th:block>
+
+        <title layout:title-pattern="$CONTENT_TITLE">Page Title - FundRequest</title>
+</head>
+<body data-spy="scroll" data-target="#primary-menu">
+
+<div th:replace="fragments/top :: alert-banner"></div>
+<div th:replace="fragments/top :: alert-container"></div>
+<div th:replace="fragments/top :: loader"></div>
+
+<div class="fnd-page-container">
+    <div th:replace="fragments/header :: header"></div>
+    <th:block layout:fragment="content" />
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+
+</html>

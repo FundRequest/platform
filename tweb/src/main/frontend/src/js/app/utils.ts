@@ -22,4 +22,7 @@ export class Utils {
         return newWindow;
     }
 
+    public static getFundRequestTokenAddress() {
+        return document.head.querySelector('[property="contracts:FundRequestToken"]').getAttribute('content');
+    }
 }

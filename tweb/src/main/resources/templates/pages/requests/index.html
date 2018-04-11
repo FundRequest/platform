@@ -1,19 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout">
+      layout:decorator="layouts/default">
 <head>
     <title>FundRequest - Requests</title>
 </head>
 
 <th:block layout:fragment="content">
-    <div class="form-inline">
-        <input type="text" class="form-control" id="tempFundNumber" placeholder="IssueNumber" />
-        <input type="text" class="form-control" id="tempFundAmount" placeholder="Amount" />
-        <button type="button" id="tempFund" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i> Fund</button>
-        <button type="button" id="tempZrxFund" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i> Fund ZRX</button>
-    </div>
-    <div class="card mt-4 mb-5">
+    <div class="card mb-5">
         <div class="card-body">
+            <div class="form-inline mb-3">
+                <input type="text" class="form-control" id="tempFundNumber" placeholder="IssueNumber" />
+                <input type="text" class="form-control" id="tempFundAmount" placeholder="Amount" />
+                <button type="button" id="tempFund" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i> Fund</button>
+                <button type="button" id="tempZrxFund" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i> Fund ZRX</button>
+            </div>
             <table class="table table-striped dt-responsive w-100" data-order="[[ 5, &quot;desc&quot;]]">
                 <thead>
                 <tr>

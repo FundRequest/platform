@@ -1,0 +1,142 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layouts/default">
+<head>
+    <title>FundRequest - Fund Existing GitHub Request</title>
+</head>
+
+<th:block layout:fragment="content">
+    <section class="section section--header">
+        <div class="row">
+            <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
+                <i class="fab fa-github-alt fa-10x text-warning"></i>
+            </div>
+            <div class="col-12 col-md-8">
+                <h1 class="text-warning">
+                    Fund an Existing Request
+                </h1>
+                <div class="d-block d-md-none my-2 mx-5">
+                    <img th:src="@{/assets/img/headerimg.png}" alt="A deventralized marketplace for open source collaboration"/>
+                </div>
+                <div class="description text-muted">
+                    <p>
+                        GitHub has millions of existing issues, not every request requires the creation of a new issue. Incentive our developer to start or keep working on an open issue.
+                    </p>
+                </div>
+                <a class="text-warning text-transform-normal" th:href="@{https://docs.fundrequest.io/display/PUB/Alpha+Release}">
+                    How it works...
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="wrapper">
+      <div id="wizard" class="wizard">
+        <div class="wizard__content">
+          <header class="wizard__header mb-2">
+            <div class="wizard__steps">
+              <nav class="steps">
+              <div class="step">
+                <div class="step__content">
+                  <p class="step__number"><i class="fab fa-github-alt"></i></p>
+                  <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                  </svg>
+                  <div class="lines">
+                    <div class="line -start"></div>
+                    <div class="line -background"></div>
+                    <div class="line -progress"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="step__content">
+                  <p class="step__number"><i class="fas fa-dollar-sign"></i></p>
+                  <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                  </svg>
+
+                  <div class="lines">
+                    <div class="line -background"></div>
+                    <div class="line -progress"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="step__content">
+                  <p class="step__number"><i class="far fa-handshake"></i></p>
+                  <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                  </svg>
+
+                  <div class="lines">
+                    <div class="line -background"></div>
+                    <div class="line -progress"></div>
+                  </div>
+                </div>
+              </div>
+            </nav>
+            </div>
+          </header>
+
+
+          <div class="panels" style="height: 300px;">
+            <div class="panel movingIn w-100">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                </div>
+                                <div class="card-body">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="panel movingOutFoward">
+               <header class="panel__header">
+                  <h2 class="panel__title">Learn more about pure Javascript.</h2>
+                  <p class="panel__subheading">We have cool frameworks, but none is better then VanillaJS</p>
+               </header>
+
+               <p class="panel__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna culpa qui officia deserunt mollit anim id est laborum.</p>
+               <p class="panel__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+
+            <div class="panel movingOutFoward">
+              <header class="panel__header">
+                <h2 class="panel__title">Stay in touch with the community.</h2>
+                <p class="panel__subheading">Community is everything, and here we do some crazy stuff.</p>
+               </header>
+
+              <p class="panel__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+          </div>
+
+          <div class="wizard__footer">
+              <button class="btn btn-link text-warning">Cancel</button>
+              <button class="btn btn-warning">Continue to funding</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+
+</th:block>
+
+
+<th:block layout:fragment="css">
+</th:block>
+<th:block layout:fragment="scripts">
+    <script>require(['app/fund'])</script>
+</th:block>
+
+</html>

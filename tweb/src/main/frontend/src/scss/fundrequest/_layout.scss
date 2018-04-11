@@ -18,9 +18,7 @@ body {
 
 .fnd-header {
     z-index: $zindex-dropdown;
-    transition: transform .35s ease, background-color .35s ease, color .35s ease, padding-top .35s ease, box-shadow .35s ease;
-    will-change: transform, background-color, color, padding-top, box-shadow;
-
+    box-shadow: none;
     margin: 0 auto;
 
     &.navbar-light {
@@ -104,14 +102,26 @@ body {
 }
 
 .fnd-ribbon {
-    height: 13rem;
+    position: absolute;
+    height: 5rem;
     flex-shrink: 0;
-    background-color: $blue-300;
+    background-image: url('../img/bg-blue.png');
+    background-size: 100%;
+    background-repeat: repeat-y;
+    left: 0;
+    right: 0;
+}
+
+.fnd-bg {
+    background-color: $body-bg;
+    border-radius: $border-radius-sm;
 }
 
 .navbar-brand--fnd {
+    padding-bottom: 12px;
+
     > img {
-        max-height: 35px;
+        max-height: 30px;
     }
 }
 
