@@ -32,7 +32,7 @@ class Requests {
         this._frContract = await FundRequestContract.createAndValidate(this._web3, this._frContractAddress);
     }
 
-    private _initButton() {
+    private _initButtons() {
         $('#tempFund').on('click', () => {
             let issue = $('#tempFundNumber').val();
             let amount = <number>$('#tempFundAmount').val() * Math.pow(10, 18);
@@ -87,6 +87,6 @@ class Requests {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+$(function() {
     new Requests();
 });
