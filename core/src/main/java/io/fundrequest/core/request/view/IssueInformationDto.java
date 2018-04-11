@@ -62,7 +62,7 @@ public class IssueInformationDto {
 
     public String getUrl() {
         if (platform == Platform.GITHUB) {
-            return "https://github.com/" + owner + "/" + repo + "/" + number;
+            return "https://github.com/" + owner + "/" + repo + "/issues/" + number;
         }
         return "";
     }
