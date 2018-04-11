@@ -14,14 +14,37 @@
 
 <script lang="ts">
     import { Vue, Component, Prop } from "vue-property-decorator";
+    //import {Utils} from '../../../app/utils';
+   // import {FundRequestToken} from '../../../contracts/FundRequestToken';
+   // import * as Web3 from 'web3';
+
 
     @Component
     export default class HelloDecorator extends Vue {
         @Prop({required: true}) iconClass!: string;
         @Prop({required: true}) value!: string;
         @Prop({required: true}) description!: string;
+
+      /*  const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+        private async getRequestsFunded() {
+            const fundRequestToken = await FundRequestToken.createAndValidate(web3, Utils.getFundRequestTokenAddress())
+
+        }
+        private async setContracts() {
+            this._tokenContract = this._web3.eth.contract(tokenAbi).at(this.getTokenContractAddress());
+            this._fundRequestContract = this._web3.eth.contract(fundRequestAbi).at(this.getFundRequestContractAddress());
+
+            this._fundRepositoryContract = this._web3.eth.contract(fundRepositoryAbi).at(await this.getFundRepositoryContractAddress());
+            this._claimRepositoryContract = this._web3.eth.contract(claimRepositoryAbi).at(await this.getClaimRepositoryContractAddress());
+        };  public async getRequestsFunded(): Promise<number> {
+            return new Promise((resolve, reject) => {
+                this._fundRepositoryContract.requestsFunded.call(function (err, result) {
+                    err ? reject(err) : resolve(result);
+                });
+            }) as Promise<number>;
+        }*/
     }
 </script>
 
 <style></style>
-
