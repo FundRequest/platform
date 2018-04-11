@@ -38,7 +38,7 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
 .line {
     position: absolute;
     top: $circle-size / 2;
-    left: 50%;
+    left: 0;
     z-index: -1;
     height: 2px;
     transition: all $animation-time ease;
@@ -56,8 +56,14 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     }
 
     &.-background {
-        background: $gray-500;
+        background: $gray-300;
         width: 100%;
+    }
+
+    &.-overlay {
+        background: $body-bg;
+        width: $circle-size + 10px;
+        left: -5px;
     }
 
     &.-progress {
@@ -76,19 +82,22 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
 .panels {
     position: relative;
     overflow: hidden;
+    margin: 0 -2rem;
 }
 
 .panel {
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
+    padding: 2rem;
     transition: .5s all;
 
     &.movingOutBackward {
         transform: translateX(100% * -1);
     }
 
-    &.movingOutFoward {
+    &.movingOutForward {
         transform: translateX(100%);
     }
 
@@ -120,9 +129,9 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
         width: $circle-size;
         height: $circle-size;
         line-height: $circle-size;
-        margin: 0 auto;
+        margin: 0;
         border-radius: 50%;
-        border: 2px solid $gray-500;
+        border: 2px solid $gray-300;
 
         transition: opacity .5s;
         opacity: 1;
@@ -150,9 +159,7 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     }
 
     &:last-child {
-        .line {
-            width: 50%;
-        }
+        flex-grow: 0;
     }
 }
 
@@ -160,8 +167,7 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
 .checkmark {
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
     width: $circle-size;
     height: $circle-size;
     border-radius: 50%;

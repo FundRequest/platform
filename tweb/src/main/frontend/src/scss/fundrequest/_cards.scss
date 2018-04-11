@@ -16,6 +16,10 @@
     }
 
     &-body {
+        + .card-body {
+            border-top: 1px solid rgba(0,0,0,.125);
+        }
+
         &--fnd-badge-holder {
             .fnd-badge {
                 right: 0;
