@@ -1,9 +1,8 @@
 package io.fundrequest.core.token;
 
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.erc20.service.ERC20Service;
 import io.fundrequest.core.token.domain.TokenInfo;
 import io.fundrequest.core.token.dto.TokenInfoDto;
-import io.fundrequest.core.token.infrastructure.TokenInfoRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,18 +10,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TokenInfoServiceImpl implements TokenInfoService {
 
-    private TokenInfoRepository repository;
-    private Mappers mappers;
 
-    public TokenInfoServiceImpl(TokenInfoRepository repository, Mappers mappers) {
-        this.repository = repository;
-        this.mappers = mappers;
+    private ERC20Service erc20Service;
+
+    public TokenInfoServiceImpl(final ERC20Service erc20Service) {
+        this.erc20Service = erc20Service;
     }
 
-    @Cacheable(value = "tokens", key = "#tokenAddress")
     @Override
     @Transactional(readOnly = true)
-    public TokenInfoDto getTokenInfo(String tokenAddress) {
-        return mappers.map(TokenInfo.class, TokenInfoDto.class, repository.getOne(tokenAddress));
+    public TokenInfoDto getTokenInfo(final String tokenAddress) {
+        return TokenInfoDto.builder()
+                .address(tokenAddress)
+                .decimals(erc20Service.decimals(tokenAddress))
+                .name(erc20Service.name(tokenAddress))
+                .symbol(erc20Service.symbol(tokenAddress))
+                .build();
     }
 }
