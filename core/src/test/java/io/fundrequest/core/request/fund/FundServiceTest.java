@@ -1,6 +1,7 @@
 package io.fundrequest.core.request.fund;
 
 
+import io.fundrequest.core.contract.service.FundRequestContractsService;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.Request;
@@ -33,10 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class FundServiceTest {
 
@@ -47,15 +45,18 @@ public class FundServiceTest {
     private ApplicationEventPublisher eventPublisher;
     private TokenInfoService tokenInfoService;
     private CacheManager cacheManager;
+    private FundRequestContractsService fundRequestContractsService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         fundRepository = mock(FundRepository.class);
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
         cacheManager = mock(CacheManager.class, RETURNS_DEEP_STUBS);
         tokenInfoService = mock(TokenInfoService.class);
+        fundRequestContractsService = mock(FundRequestContractsService.class);
+
         when(fundRepository.saveAndFlush(any(Fund.class))).then(returnsFirstArg());
         fundService = new FundServiceImpl(
                 fundRepository,
@@ -63,11 +64,12 @@ public class FundServiceTest {
                 mappers,
                 eventPublisher,
                 cacheManager,
-                tokenInfoService);
+                tokenInfoService,
+                fundRequestContractsService);
     }
 
     @Test
-    public void findAll() throws Exception {
+    public void findAll() {
         List<Fund> funds = singletonList(FundMother.aFund().build());
         when(fundRepository.findAll()).thenReturn(funds);
         List<FundDto> expecedFunds = singletonList(FundDtoMother.aFundDto());
@@ -79,7 +81,7 @@ public class FundServiceTest {
     }
 
     @Test
-    public void findAllByIterable() throws Exception {
+    public void findAllByIterable() {
         List<Fund> funds = singletonList(FundMother.aFund().build());
         Set<Long> ids = funds.stream().map(Fund::getId).collect(Collectors.toSet());
         when(fundRepository.findAll(ids)).thenReturn(funds);
@@ -93,7 +95,7 @@ public class FundServiceTest {
 
 
     @Test
-    public void saveFunds() throws Exception {
+    public void saveFunds() {
         Request request = RequestMother.freeCodeCampNoUserStories().build();
 
         FundsAddedCommand command = new FundsAddedCommand();
