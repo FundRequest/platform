@@ -136,6 +136,7 @@ gulp.task('copy-dependencies', function() {
     copy.push(gulp.src(['node_modules/lightslider/dist/**/*']).pipe(gulp.dest(`${target}/vendors/lightslider`)));
     copy.push(gulp.src(['node_modules/typeface-titillium-web/index.css']).pipe(gulp.dest(`${target}/vendors/typeface-titillium-web`)));
     copy.push(gulp.src(['node_modules/typeface-titillium-web/files/*']).pipe(gulp.dest(`${target}/vendors/typeface-titillium-web/files`)));
+    copy.push(gulp.src(['node_modules/web3/dist/*']).pipe(gulp.dest(`${target}/vendors/web3`)));
     return copy;
 });
 
@@ -169,12 +170,12 @@ gulp.task('install', function() {
 });
 
 gulp.task('run-watch', function() {
-    gulp.watch(['js/*.js'], ['copy-assets']);
-    gulp.watch(['scss/bootstrap.scss', 'scss/fundrequest/+(_variables|_colors).scss'], ['styles-bootstrap']);
-    gulp.watch(['scss/mdb.scss', 'scss/mdb-overrides/*.scss', 'scss/fundrequest/+(_variables|_colors).scss'], ['styles-mdb']);
-    gulp.watch(['scss/core.scss', 'scss/fundrequest/*.scss', '!scss/fundrequest/website/*.scss'], ['styles-core']);
-    gulp.watch(['scss/website.scss', 'scss/fundrequest/website/*.scss'], ['styles-website']);
-    gulp.watch(['js/app/*.ts'], ['scripts']);
+    gulp.watch([`${origin}/js/*.js`], ['copy-assets']);
+    gulp.watch([`${origin}/scss/bootstrap.scss`, `${origin}/scss/fundrequest/+(_variables|_colors).scss`], ['styles-bootstrap']);
+    gulp.watch([`${origin}/scss/mdb.scss`, `${origin}/scss/mdb-overrides/*.scss`, `${origin}/scss/fundrequest/+(_variables|_colors).scss`], ['styles-mdb']);
+    gulp.watch([`${origin}/scss/core.scss`, `${origin}/scss/fundrequest/*.scss`, `!${origin}/scss/fundrequest/website/*.scss`], ['styles-core']);
+    gulp.watch([`${origin}/scss/website.scss`, `${origin}/scss/fundrequest/website/*.scss`], ['styles-website']);
+    gulp.watch([`${origin}/js/app/*.ts`], ['scripts']);
 });
 
 gulp.task('default', function(done) {

@@ -12,5 +12,6 @@ require.config({
         'datatables.net-bs4': ['//cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min', '/assets/vendors/dataTables.net-bs4/js/dataTables.bootstrap4'],
         'datatables.net-responsive': ['//cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min', '/assets/vendors/datatables.net-responsive/js/dataTables.responsive.min'],
         'datatables.net-responsive-bs4': ['//cdn.datatables.net/responsive/2.2.1/js/responsive.bootstrap4.min', '/assets/vendors/datatables.net-responsive-bs4/js/responsive.bootstrap4.min'],
+        'web3': ['//cdn.jsdelivr.net/npm/web3@0.20.6/dist/web3.min', '/assets/vendors/web3.min'],
     }
 });
