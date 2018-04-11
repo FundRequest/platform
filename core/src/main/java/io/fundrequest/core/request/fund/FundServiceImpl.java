@@ -1,5 +1,7 @@
 package io.fundrequest.core.request.fund;
 
+import io.fundrequest.core.contract.service.FundRequestContractsService;
+import io.fundrequest.core.erc20.service.ERC20Service;
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.Request;
@@ -13,18 +15,23 @@ import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.token.TokenInfoService;
+import io.fundrequest.core.token.dto.TokenInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 @Service
 class FundServiceImpl implements FundService {
@@ -35,15 +42,23 @@ class FundServiceImpl implements FundService {
     private ApplicationEventPublisher eventPublisher;
     private CacheManager cacheManager;
     private TokenInfoService tokenInfoService;
+    private FundRequestContractsService fundRequestContractsService;
 
     @Autowired
-    public FundServiceImpl(FundRepository fundRepository, RequestRepository requestRepository, Mappers mappers, ApplicationEventPublisher eventPublisher, CacheManager cacheManager, TokenInfoService tokenInfoService) {
+    public FundServiceImpl(FundRepository fundRepository,
+                           RequestRepository requestRepository,
+                           Mappers mappers,
+                           ApplicationEventPublisher eventPublisher,
+                           CacheManager cacheManager,
+                           TokenInfoService tokenInfoService,
+                           FundRequestContractsService fundRequestContractsService) {
         this.fundRepository = fundRepository;
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.eventPublisher = eventPublisher;
         this.cacheManager = cacheManager;
         this.tokenInfoService = tokenInfoService;
+        this.fundRequestContractsService = fundRequestContractsService;
     }
 
     @Transactional(readOnly = true)
@@ -76,26 +91,34 @@ class FundServiceImpl implements FundService {
     @Cacheable(value = "funds", key = "#requestId")
     public List<TotalFundDto> getTotalFundsForRequest(Long requestId) {
 
-
-        return fundRepository.findByRequestId(requestId).stream()
-                .collect(Collectors.groupingBy(
-                        Fund::getToken,
-                        Collectors.mapping(Fund::getAmountInWei,
-                                Collectors.reducing(BigDecimal.ZERO, BigDecimal::add)
-                        )
-                ))
-                .entrySet().stream()
-                .map(f -> createTotalFundDto(f.getKey(), f.getValue()))
-                .collect(Collectors.toList());
+        final Optional<Request> one = requestRepository.findOne(requestId);
+        if (one.isPresent()) {
+            try {
+                final Request request = one.get();
+                final Long fundedTokenCount = fundRequestContractsService.fundRepository().getFundedTokenCount(request.getIssueInformation().getPlatform().name(), request.getIssueInformation().getPlatformId());
+                return LongStream.range(0, fundedTokenCount)
+                        .mapToObj(x -> fundRequestContractsService.fundRepository().getFundedToken(request.getIssueInformation().getPlatform().name(), request.getIssueInformation().getPlatformId(), x)).filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .map(getTotalFundDto(request)).collect(Collectors.toList());
+            } catch (final Exception ex) {
+                return Collections.emptyList();
+            }
+        } else {
+            return Collections.emptyList();
+        }
     }
 
-    private TotalFundDto createTotalFundDto(String token, BigDecimal totalAmount) {
-        return TotalFundDto
-                .builder()
-                .tokenAddress(token)
-                .tokenSymbol(tokenInfoService.getTokenInfo(token).getSymbol())
-                .totalAmount(Convert.fromWei(totalAmount, Convert.Unit.ETHER))
-                .build();
+    private Function<String, TotalFundDto> getTotalFundDto(final Request request) {
+        return tokenAddress -> {
+            final TokenInfoDto tokenInfo = tokenInfoService.getTokenInfo(tokenAddress);
+            final BigDecimal rawBalance = new BigDecimal(fundRequestContractsService.fundRepository().balance(request.getIssueInformation().getPlatform().name(), request.getIssueInformation().getPlatformId(), tokenAddress));
+            final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
+            return TotalFundDto.builder()
+                    .tokenAddress(tokenAddress)
+                    .tokenSymbol(tokenInfo.getSymbol())
+                    .totalAmount(rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN))
+                    .build();
+        };
     }
 
     @Override
