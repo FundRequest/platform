@@ -11,7 +11,7 @@ public class MasteryController {
 
     @RequestMapping("/profile/mastery")
     public ModelAndView rewards(Principal principal) {
-        ModelAndView mav = new ModelAndView("mastery");
+        ModelAndView mav = new ModelAndView("pages/profile/mastery");
         return mav;
     }
 }
