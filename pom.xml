@@ -20,6 +20,7 @@
 
     <modules>
         <module>core</module>
+        <module>profile</module>
         <module>rest-api</module>
         <module>tweb</module>
         <module>admin-web</module>

@@ -17,6 +17,6 @@ public class KeycloakRepository {
     public Stream<UserIdentity> getUserIdentities(String userId) {
         return resource.users().get(userId).getFederatedIdentity()
                 .stream()
-                .map(fi -> new UserIdentity(fi.getIdentityProvider(), fi.getUserName()));
+                .map(fi -> UserIdentity.builder().provider(Provider.fromString(fi.getIdentityProvider())).username(fi.getUserName()).userId(fi.getUserId()).build());
     }
 }

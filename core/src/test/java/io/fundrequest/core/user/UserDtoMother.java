@@ -1,5 +1,6 @@
 package io.fundrequest.core.user;
 
+import io.fundrequest.core.keycloak.Provider;
 import io.fundrequest.core.keycloak.UserIdentity;
 import io.fundrequest.core.user.dto.UserDto;
 
@@ -11,7 +12,11 @@ public final class UserDtoMother {
         UserDto userDto = new UserDto();
         userDto.setEmail("davy@fundrequest.io");
         userDto.setUserId("12347468fas738");
-        userDto.setUserIdentities(Collections.singletonList(new UserIdentity("github", "davyvanroy")));
+        userDto.setUserIdentities(Collections.singletonList(UserIdentity.builder()
+                .provider(Provider.GITHUB)
+                .userId(userDto.getUserId())
+                .username("davyvanroy")
+                .build()));
         return userDto;
     }
 }

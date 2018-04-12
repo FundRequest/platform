@@ -2,6 +2,7 @@ package io.fundrequest.core.request.infrastructure.github;
 
 import io.fundrequest.core.request.infrastructure.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubResult;
+import io.fundrequest.core.request.infrastructure.github.parser.GithubUser;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @FeignClient(
         name = "github-client",
@@ -54,5 +53,10 @@ public interface GithubClient {
     Map<String, Long> getLanguages(
             @PathVariable("owner") String owner,
             @PathVariable("repo") String repo
+    );
+
+    @RequestMapping(value = "/users/{username}", method = GET)
+    GithubUser getUser(
+            @PathVariable("username") String username
     );
 }

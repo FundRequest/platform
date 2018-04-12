@@ -9,9 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class KeycloakRepositoryTest {
 
@@ -36,6 +34,11 @@ public class KeycloakRepositoryTest {
 
         Stream<UserIdentity> result = keycloakRepository.getUserIdentities(userId);
 
-        assertThat(result.collect(Collectors.toList())).containsExactly(new UserIdentity("GITHUB", "davyvanroy"));
+        assertThat(result.collect(Collectors.toList())).containsExactly(
+                UserIdentity.builder()
+                        .provider(Provider.GITHUB)
+                        .userId(userId)
+                        .username("davyvanroy")
+                        .build());
     }
 }
