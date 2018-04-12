@@ -52,12 +52,11 @@ class Requests {
             let issue = $('#tempFundNumber').val();
             let amount = <number>$('#tempFundAmount').val() * Math.pow(10, 18);
 
-            let fundErc20 = function () {
-                this._frContract.fundTx(this._this._web.fromAscii('GITHUB'), 'FundRequest|FR|area51|FR|' + issue, this._tokenContractZRXAddress, amount)
+            let fundErc20 = () => {
+                this._frContract.fundTx(this._web3.fromAscii('GITHUB'), 'FundRequest|FR|area51|FR|' + issue, this._tokenContractZRXAddress, amount)
                     .send({from: this._account, gas: 300000})
-                    .then((error, response) => {
+                    .then((response) => {
                         console.log('response: ' + response);
-                        console.log('error: ' + error);
                     });
             };
 
@@ -68,15 +67,15 @@ class Requests {
 
                 if (allowance > 0 && allowance < amount) {
                     console.log('setting to 0 first');
-                    this._tokenContractZRX.approveTx(this._tokenContractAddress, 0)
+                    this._tokenContractZRX.approveTx(this._frContractAddress, 0)
                         .send({from: this._account, gas: 300000})
                         .then((res) => {
-                            this._tokenContractZRX.approveTx(this._tokenContractAddress, amount)
+                            this._tokenContractZRX.approveTx(this._frContractAddress, amount)
                                 .send({from: this._account, gas: 300000})
                                 .then(() => fundErc20());
                         });
                 } else if (allowance === 0) {
-                    this._tokenContractZRX.approveTx(this._tokenContractAddress, amount)
+                    this._tokenContractZRX.approveTx(this._frContractAddress, amount)
                         .send({from: this._account, gas: 300000})
                         .then(() => fundErc20());
                 } else {

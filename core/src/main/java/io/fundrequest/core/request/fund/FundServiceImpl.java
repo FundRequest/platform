@@ -141,7 +141,7 @@ class FundServiceImpl implements FundService {
                 .timestamp(command.getTimestamp())
                 .build();
         fund = fundRepository.saveAndFlush(fund);
-        cacheManager.getCache("funds").evict(fund.getId());
+        cacheManager.getCache("funds").evict(fund.getRequestId());
         if (request.getStatus() == RequestStatus.OPEN) {
             request.setStatus(RequestStatus.FUNDED);
             request = requestRepository.saveAndFlush(request);
