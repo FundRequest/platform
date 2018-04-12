@@ -9,9 +9,6 @@
         <artifactId>platform</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <properties>
-        <keycloak.version>3.4.3.Final</keycloak.version>
-    </properties>
 
     <artifactId>admin-web</artifactId>
     <dependencyManagement>

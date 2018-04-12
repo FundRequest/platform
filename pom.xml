@@ -39,6 +39,8 @@
         <mapstruct.version>1.2.0.Final</mapstruct.version>
         <auth0-spring-security-api.version>0.3.3</auth0-spring-security-api.version>
         <web3j.version>3.3.1</web3j.version>
+        <keycloak.version>3.4.3.Final</keycloak.version>
+        <keycloak-client.version>3.1.4.Final</keycloak-client.version>
     </properties>
 
 
@@ -54,7 +56,7 @@
             <dependency>
                 <groupId>org.keycloak.bom</groupId>
                 <artifactId>keycloak-adapter-bom</artifactId>
-                <version>3.4.0.CR1</version>
+                <version>${keycloak.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -84,6 +86,21 @@
                 <groupId>io.github.jhipster</groupId>
                 <artifactId>jhipster</artifactId>
                 <version>${jhipster.server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-admin-client</artifactId>
+                <version>${keycloak.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-client</artifactId>
+                <version>${keycloak-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jackson2-provider</artifactId>
+                <version>${keycloak-client.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

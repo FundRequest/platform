@@ -12,8 +12,6 @@
 
     <properties>
         <spring-restdocs.version>1.2.1.RELEASE</spring-restdocs.version>
-        <keycloak.version>3.4.0.Final</keycloak.version>
-        <keycloak-client.version>3.1.4.Final</keycloak-client.version>
     </properties>
 
     <artifactId>rest-api</artifactId>
@@ -68,12 +66,10 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>${keycloak-client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jackson2-provider</artifactId>
-            <version>${keycloak-client.version}</version>
         </dependency>
 
         <dependency>

@@ -12,11 +12,6 @@
 
     <artifactId>tweb</artifactId>
 
-    <properties>
-        <keycloak.version>3.4.3.Final</keycloak.version>
-    </properties>
-
-
     <dependencies>
         <dependency>
             <groupId>io.fundrequest</groupId>
