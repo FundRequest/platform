@@ -18,7 +18,7 @@ public class ReferralController {
 
     @GetMapping("/referrals")
     public ModelAndView showReferrals(Principal principal) {
-        ModelAndView mav = new ModelAndView("fragments/referrals");
+        ModelAndView mav = new ModelAndView("pages/profile/fragments/referrals");
         mav.addObject("referrals", referralService.getReferrals(principal));
         return mav;
     }

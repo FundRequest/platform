@@ -39,7 +39,7 @@ public class BountyController {
 
     @RequestMapping("/rewards")
     public ModelAndView rewards(Principal principal, HttpServletRequest request) {
-        ModelAndView mav = new ModelAndView("rewards");
+        ModelAndView mav = new ModelAndView("pages/profile/rewards");
         mav.addObject("survey", surveyService.getSurveyResult(principal));
         mav.addObject("githubVerification", githubBountyService.getVerification(principal));
         mav.addObject("stackOverflowVerification", stackOverflowBountyService.getVerification(principal));

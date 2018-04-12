@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
         basePackageClasses = {ProfileApplication.class, Jsr310JpaConverters.class}
 )
 @Configuration
-public class DataConfig {
+public class ProfileDataConfig {
 
     @Bean
     public AuditorAware<String> auditorProvider() {

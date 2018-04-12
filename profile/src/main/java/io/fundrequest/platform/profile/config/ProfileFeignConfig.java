@@ -6,5 +6,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableFeignClients(basePackageClasses = {ProfileApplication.class})
-public class FeignConfig {
+public class ProfileFeignConfig {
 }

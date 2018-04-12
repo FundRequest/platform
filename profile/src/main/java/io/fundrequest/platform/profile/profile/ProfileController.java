@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 import java.security.Principal;
@@ -61,7 +60,7 @@ public class ProfileController {
             eventPublisher.publishEvent(RefSignupEvent.builder().principal(principal).ref(ref).build());
             return redirectToProfile();
         }
-        final ModelAndView mav = new ModelAndView("profile");
+        final ModelAndView mav = new ModelAndView("pages/profile/profile");
         final UserProfile userProfile = (UserProfile) model.asMap().get("profile");
         enrichTwitter(mav, userProfile);
         enrichTelegram(mav, principal);
@@ -147,9 +146,4 @@ public class ProfileController {
         return new ModelAndView(new RedirectView("/profile"));
     }
 
-    @GetMapping(path = "/logout")
-    public String logout(HttpServletRequest request) throws ServletException {
-        request.logout();
-        return "redirect:https://fundrequest.io";
-    }
 }

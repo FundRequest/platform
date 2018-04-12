@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layouts/default"
+      th:with="activeTab='profile'"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>FundRequest - Profile</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <th:block th:replace="pages/profile/fragments/header :: header"></th:block>
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card mb-5">
+                <a class="anchor" id="referral-link"></a>
+                <h5 class="card-header card-header--label">
+                    <span>Personal referral link</span>
+                    <small class="text-muted">Rewards 5 FND for each verified developer</small>
+                </h5>
+                <div class="card-body">
+                    <div class="card-text mb-3">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-default mb-0" data-clipboard-target="#referral-link-field">
+                                    <i class="fa fa-clipboard"></i>
+                                </button>
+                            </div>
+                            <input class="form-control form-control--not-editable" id="referral-link-field"
+                                   title="personal referral link"
+                                   value="https://xyz.testReferralLink-Copy" th:value="${refLink}" readonly="readonly"/>
+                        </div>
+                    </div>
+
+                    <div class="card-text text-center">
+                        <a class="btn btn-outline-linkedin icon-left mb-2 mb-md-0" data-open-link-in-popup="true"
+                           th:href="${'https://www.linkedin.com/shareArticle?mini=true&amp;url='+refLinkLinkedin+'&amp;title=FundRequest%20Early-Signup&amp;summary=To%20all%20the%20developers%20in%20my%20network%2C%20I%E2%80%99ve%20just%20registered%20on%20%40fundrequest%2C%20great%20way%20for%20developers%20to%20get%20into%20blockchain.%20Early%20sign%20up%20is%20now%20open! '+ refLink +'%20%23opensource%20%23ethereum%20%23fundrequest%20%20%23callingalldevelopers%20https%3A%2F%2Ffundrequest.io%0A&amp;source='}"
+                           rel="noopener noreferrer" target="_blank">
+                            <i class="fab fa-linkedin"></i>
+                            <span>Share on LinkedIn</span>
+                        </a>
+                        <a class="btn btn-outline-twitter icon-left mb-2 mb-md-0" data-open-link-in-popup="true"
+                           th:href="@{'https://twitter.com/home?status=Just%20registered%20on%20%40fundrequest_io%2C%20great%20way%20for%20%23developers%20to%20get%20into%20%23blockchain.%20Early%20sign%20up%20is%20now%20open%20__${refLinkTwitter}__%20%20%23opensource%20%23ethereum%20%23fundrequest%20%20%23callingalldevelopers%20https%3A%2F%2Ffundrequest.io'}"
+                           rel="noopener noreferrer" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                            <span>Share on Twitter</span>
+
+                        </a>
+                        <a class="btn btn-outline-facebook icon-left mb-0" data-open-link-in-popup="true"
+                           th:href="${'https://www.facebook.com/sharer/sharer.php?u='+ refLinkFacebook +'description=Just%20registered%20on%20FundRequest%2C%20a%20great%20way%20for%20developers%20to%20get%20into%20blockchain.%20Early%20sign%20up%20is%20now%20open ' + refLink + '%20%23opensource%20%23ethereum%20%23fundrequest%20%20%23callingalldevelopers%20https%3A%2F%2Ffundrequest.io'}"
+                           rel="noopener noreferrer" target="_blank">
+                            <i class="fab fa-facebook"></i>
+                            <span>Share on facebook</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-5">
+                <a class="anchor" id="verify-developer"></a>
+                <h5 class="card-header card-header--label">
+                    <span th:if="${profile.isVerifiedDeveloper()}">You're verified as a developer!</span>
+                    <span th:unless="${profile.isVerifiedDeveloper()}">Verify yourself as a developer ...</span>
+                    <small class="text-muted">Rewards up to 25 FND</small>
+                </h5>
+                <div class="card-body text-center">
+                    <div class="row">
+                        <div class="col-12 col-md-6 mb-4 mb-md-0">
+                            <div th:replace="pages/profile/fragments/developer :: block(platform=${profile.getGithub()}, title='Github', platformName='github', verification=${githubVerification})"></div>
+                        </div>
+
+                        <div class="col-12 col-md-6 mb-0">
+                            <div th:replace="pages/profile/fragments/developer :: block(platform=${profile.getStackoverflow()}, title='Stack Overflow', platformName='stack-overflow', verification=${stackOverflowVerification})"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card--blocked mb-5">
+                <a class="anchor" id="get-social"></a>
+                <h5 class="card-header card-header--label">
+                    <span th:if="${profile.isVerifiedDeveloper()}">Be social and be rewarded!</span>
+                    <span th:unless="${profile.isVerifiedDeveloper()}">Social rewards are only available for verified developers</span>
+                    <small class="text-muted">Rewards up to 25 FND</small>
+                </h5>
+                <div class="card-body text-center"
+                     th:classappend="${profile.isVerifiedDeveloper() ? '' : 'card-body--blocked'}">
+                    <div class="row">
+                        <div class="col-12 col-lg-4 mb-4 mb-lg-0 text-lg-center">
+                            <div th:replace="pages/profile/fragments/linkedin :: social-connect-block(platform=${profile.getLinkedin()}, verification=${linkedInVerification})"></div>
+                        </div>
+                        <div class="col-12 col-lg-4 mb-4 mb-lg-0 text-lg-center">
+                            <div th:replace="pages/profile/fragments/twitter :: social-connect-block(platform=${profile.getTwitter()}, bountyResult=${validatedTwitterBountyResult}, activeBounty=${activeBounty}, claimedTwitterBounty=${claimedTwitterBounty})"></div>
+                        </div>
+                        <div class="col-12 col-lg-4 text-lg-center">
+                            <div th:replace="pages/profile/fragments/telegram :: social-connect-block(username=${profile.getTelegramName()}, verified=${telegramVerified})"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="modals">
+    <th:block th:replace="pages/profile/fragments/linkedin :: modal"></th:block>
+    <th:block th:replace="pages/profile/fragments/twitter :: modal"></th:block>
+    <th:block
+            th:replace="pages/profile/fragments/telegram :: modal(profile=${profile}, verified=${telegramVerified}, verificationCommand=${telegramVerificationCommand})"></th:block>
+</th:block>
+
+<th:block layout:fragment="scripts">
+    <script>require(['app/twitter'])</script>
+    <script>require(['app/linkedin'])</script>
+</th:block>
+
+</body>
+</html>

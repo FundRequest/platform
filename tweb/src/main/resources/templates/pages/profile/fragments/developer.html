@@ -1,0 +1,30 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<body>
+
+<div th:fragment="block(platform, title, platformName, verification)"
+     class="card card--developer"
+     th:classappend="${platform.getUsername() != null ? 'card--developer--success' : 'card--developer--primary'}">
+    <h5 class="card-header">
+        <div>
+            <span th:text="${title}">Github</span>
+            <i class="fab" th:classappend="'fa-' + ${platformName}"></i>
+        </div>
+        <div class="text-success" th:if="${platform.getUsername() != null}">
+            <span th:text="${platform.getUsername()}">Github username</span>
+        </div>
+    </h5>
+    <div class="card-body">
+        <div class="card-text" th:if="${platform.getUsername() == null}">
+            <a class="btn btn-primary"
+               th:href="${platform.getSignupLink()}">Connect</a>
+        </div>
+        <div class="card-text" th:if="${platform.getUsername() != null}">
+            <i class="text-success fa fa-4x fa-check"></i>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

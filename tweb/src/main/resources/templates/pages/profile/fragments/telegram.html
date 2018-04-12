@@ -1,0 +1,123 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="social-connect-block (username, verified)">
+    <a class="anchor" id="get-social-telegram"></a>
+    <div class="card card--social" th:classappend="${verified ? 'card--social--success' : 'card--social--primary'}">
+        <h5 class="card-header" th:if="${username == null}">
+            <span>Telegram <i class="fab fa-telegram"></i></span>
+        </h5>
+        <div class="card-header" th:if="${username != null}">
+            <div>Telegram <i class="fab fa-telegram"></i></div>
+            <span class="text-success" th:text="${username}">
+                User name
+            </span>
+        </div>
+        <div class="card-body" th:if="${verified}">
+            <div class="card-text">
+                <span>Great, thanks for joining!</span>
+            </div>
+        </div>
+        <div class="card-body" th:unless="${verified}">
+            <div class="card-text">
+                <button class="btn icon-left btn-outline-telegram" data-target="#modal-share-telegram"
+                        data-toggle="modal">
+                    <i class="fab fa-telegram"></i>
+                    <span>Join us on telegram</span>
+                </button>
+            </div>
+            <div class="card-text">
+                Rewards 5 FND for joining us on telegram.
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<div th:fragment="modal (profile, verified, verificationCommand)" class="modal fade" tabindex="-1"
+     role="dialog" id="modal-share-telegram">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Join us on Telegram</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body d-block">
+                <div class="card">
+                    <div class="card-body">
+                        <div th:if="${verified}">
+                            <div class="form-group bmd-form-group">
+                                <label class="bmd-label-static">E-mail</label>
+                                <input type="text"
+                                       th:value="${profile.getTelegramName()}"
+                                       class="form-control form-control--label" disabled="disabled"
+                                       readonly="readonly"/>
+                            </div>
+                        </div>
+                        <div th:unless="${verified}">
+                            <div class="card-text card-text--step-1 mb-4">
+                                <label for="telegram-handle">Enter your telegram handle</label>
+                                <div class="form-group bmd-form-group mb-0 pt-0">
+                                    <input type="text"
+                                           id="telegram-handle"
+                                           data-edit="telegram-handle"
+                                           data-edit-validation="telegram-handle"
+                                           placeholder="Ex. @myTelegramHandle"
+                                           th:value="${profile.getTelegramName()}"
+                                           class="form-control form-control--instant-edit"/>
+                                    <span class="text-danger" data-edit-messages="telegram-handle"></span>
+                                </div>
+                            </div>
+
+                            <div class="card-text card-text--step-2 mb-4">
+                                <div>Join our telegram channel</div>
+                                <a class="btn btn-outline-linkedin icon-left mb-1"
+                                   th:href="@{https://t.me/fundrequestofficial}"
+                                   rel="noopener noreferrer" target="_blank">
+                                    <i class="fab fa-telegram"></i>
+                                    <span>Go to FundRequest Telegram</span>
+                                </a>
+                            </div>
+
+                            <div class="card-text card-text--step-3 mb-4">
+                                <div>Introduce yourself in Telegram</div>
+                            </div>
+
+                            <div class="card-text card-text--step-4 mb-4">
+                                <div>Copy the command below</div>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-default mb-0" data-clipboard-target="#telegram-bot-verify-command">
+                                            <i class="fa fa-clipboard"></i>
+                                        </button>
+                                    </div>
+                                    <input id="telegram-bot-verify-command" title="personal referral link"
+                                           class="form-control form-control--label text-code"
+                                           readonly="readonly"
+                                           th:value="${verificationCommand}"/>
+                                </div>
+                            </div>
+
+                            <div class="card-text card-text--step-5 mb-1">
+                                <div>Now, open a chat with our verifier bot and send him the copied command</div>
+                                <a class="btn btn-outline-linkedin icon-left mb-1"
+                                   th:href="@{https://t.me/FundRequestVerifierBot}"
+                                   rel="noopener noreferrer" target="_blank">
+                                    <i class="fab fa-telegram"></i>
+                                    <span>Open chat with our bot</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Take me back</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

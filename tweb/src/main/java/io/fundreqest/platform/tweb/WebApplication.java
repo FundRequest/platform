@@ -2,6 +2,7 @@ package io.fundreqest.platform.tweb;
 
 import io.fundrequest.core.FundRequestCore;
 import io.fundrequest.core.infrastructure.IgnoreDuringComponentScan;
+import io.fundrequest.platform.profile.ProfileApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
@@ -13,7 +14,7 @@ import org.springframework.context.annotation.FilterType;
 @SpringBootConfiguration
 @EnableAutoConfiguration
 @ComponentScan(
-        basePackageClasses = {WebApplication.class, FundRequestCore.class},
+        basePackageClasses = {WebApplication.class, FundRequestCore.class, ProfileApplication.class},
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class),

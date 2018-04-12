@@ -56,6 +56,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/profile","/profile/**").authenticated()
                 .anyRequest().permitAll();
     }
 }

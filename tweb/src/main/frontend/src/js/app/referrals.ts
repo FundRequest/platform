@@ -1,3 +1,5 @@
+import * as $ from 'jquery';
+
 class Referrals {
     constructor() {
         let rewardsContainer = document.querySelector('#rewards-list-content');
