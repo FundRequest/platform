@@ -37,7 +37,7 @@ public class BountyController {
         this.profileService = profileService;
     }
 
-    @RequestMapping("/rewards")
+    @RequestMapping("/profile/rewards")
     public ModelAndView rewards(Principal principal, HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("pages/profile/rewards");
         mav.addObject("survey", surveyService.getSurveyResult(principal));

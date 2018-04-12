@@ -60,7 +60,7 @@ public class ProfileController {
             eventPublisher.publishEvent(RefSignupEvent.builder().principal(principal).ref(ref).build());
             return redirectToProfile();
         }
-        final ModelAndView mav = new ModelAndView("pages/profile/profile");
+        final ModelAndView mav = new ModelAndView("pages/profile/index");
         final UserProfile userProfile = (UserProfile) model.asMap().get("profile");
         enrichTwitter(mav, userProfile);
         enrichTelegram(mav, principal);
