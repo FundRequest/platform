@@ -1,3 +1,7 @@
+import {Contracts} from "./contracts";
+import {FundRepository} from "../contracts/FundRepository";
+import {init} from "node-waves";
+
 export class GithubUser {
     login: string;
     id: number;
@@ -46,6 +50,20 @@ export class GithubIssue {
 
 export class Github {
 
+    private static _tokenContractAddress = Contracts.tokenContractAddress;
+
+    private _fundRepository: FundRepository;
+
+    constructor() {
+        init();
+    }
+
+    private async _init() {
+        await Promise.all([
+            Contracts.getInstance().getFundRepository().then(c => this._fundRepository = c)
+        ]);
+    }
+
     public static validateLink(link: string) {
         let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(link);
         return matches && matches.length >= 4;
@@ -60,5 +78,11 @@ export class Github {
                 .then(res => Object.assign(new GithubIssue(), res));
         }
     }
+
+    public static getPlatformId(githubIssue: GithubIssue) {
+        let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(githubIssue.url);
+        return matches[1] + '|FR|' + matches[2] + '|FR|' + matches[3];
+    }
+
 
 }
