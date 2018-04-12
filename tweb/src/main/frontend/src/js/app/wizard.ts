@@ -1,62 +1,81 @@
+import {Utils} from './utils';
+import {Github} from './github';
+
 class ControlButton {
-    private readonly el: HTMLElement;
-    private readonly buttonTexts: any;
+    private readonly _el: HTMLElement;
+    private readonly _buttonTexts: any;
 
     constructor(buttonEl, clickEvent) {
-        this.el = buttonEl;
-        if(this.el != null) {
-            this.buttonTexts = JSON.parse((<any>this.el.dataset).wizardControlTexts);
-            this.el.addEventListener('click', () => clickEvent());
+        this._el = buttonEl;
+        if (this._el != null) {
+            this._buttonTexts = JSON.parse((<any>this._el.dataset).wizardControlTexts);
+            this._el.addEventListener('click', () => clickEvent());
         }
     }
 
-    hide() {
-        if (this.el != null) {
-            this.el.classList.remove('disabled');
-            this.el.classList.add('d-none');
+    public hide() {
+        if (this._el != null) {
+            this._el.classList.remove('disabled');
+            this._el.classList.add('d-none');
         }
     }
 
-    show() {
-        if (this.el != null) {
-            this.el.classList.remove('d-none', 'disabled');
+    public show() {
+        if (this._el != null) {
+            this._el.classList.remove('d-none', 'disabled');
         }
     }
 
-    disable() {
-        if (this.el != null) {
-            this.el.classList.remove('d-none');
-            this.el.classList.add('disabled');
+    public disable() {
+        if (this._el != null) {
+            this._el.classList.remove('d-none');
+            this._el.classList.add('disabled');
         }
     }
 
-    enable() {
-        if (this.el != null) {
-            this.el.classList.remove('d-none', 'disabled');
+    public enable() {
+        if (this._el != null) {
+            this._el.classList.remove('d-none', 'disabled');
         }
     }
 
-    updateText(stepNumber: number) {
-        if (this.el != null) {
-            if (this.buttonTexts.hasOwnProperty(stepNumber)) {
-                this.el.innerHTML = this.buttonTexts[`${stepNumber}`];
+    public updateText(stepNumber: number) {
+        if (this._el != null) {
+            if (this._buttonTexts.hasOwnProperty(stepNumber)) {
+                this._el.innerHTML = this._buttonTexts[`${stepNumber}`];
             } else {
-                this.el.innerHTML = this.buttonTexts['default'];
+                this._el.innerHTML = this._buttonTexts['default'];
             }
         }
     }
 }
 
-class Step {
-    public stepIcon: StepIcon;
-    public panel: Panel;
-    public number: number;
-    public nextButton: ControlButton;
-    public previousButton: ControlButton;
-    public finishedCallback: any;
+interface Step {
+    stepIcon: StepIcon;
+    panel: Panel;
+    number: number;
+    nextButton: ControlButton;
+    previousButton: ControlButton;
+    finishedCallback: any;
 
-    private nextStep: Step = null;
-    private previousStep: Step = null;
+    setNextStep(step: Step);
+    setPreviousStep(step: Step);
+    setActive();
+    finish();
+    goToNext(): Step;
+    goToPrevious(): Step;
+}
+
+class StepImpl implements Step {
+    stepIcon: StepIcon;
+    panel: Panel;
+    number: number;
+    nextButton: ControlButton;
+    previousButton: ControlButton;
+    finishedCallback: any;
+
+    private _nextStep: Step = null;
+    private _previousStep: Step = null;
 
     constructor(stepIcon, panel, number, buttonNext, buttonPrevious, finishedCallback = null) {
         this.stepIcon = stepIcon;
@@ -68,25 +87,25 @@ class Step {
     }
 
     public setNextStep(step: Step) {
-        this.nextStep = step;
+        this._nextStep = step;
     }
 
     public setPreviousStep(step: Step) {
-        this.previousStep = step;
+        this._previousStep = step;
     }
 
     public setActive() {
-        if(this.previousStep != null) {
-            this.previousStep.stepIcon.setCompleted();
-            this.previousStep.panel.setBackwards();
+        if (this._previousStep != null) {
+            this._previousStep.stepIcon.setCompleted();
+            this._previousStep.panel.setBackwards();
         }
-        this.stepIcon.unsetCompleted();
+        this.stepIcon.setActive();
         this.panel.setActive();
-        if(this.nextStep != null) {
-            this.nextStep.stepIcon.unsetCompleted();
-            this.nextStep.panel.setForwards();
+        if (this._nextStep != null) {
+            this._nextStep.stepIcon.unsetCompleted();
+            this._nextStep.panel.setForwards();
         }
-        this.updateButtons();
+        this._updateButtons();
     }
 
     public finish() {
@@ -94,116 +113,152 @@ class Step {
     }
 
     public goToNext(): Step {
-        if (this.nextStep != null) {
-            this.nextStep.setActive();
-            return this.nextStep;
+        if (this.validate()) {
+            if (this._nextStep != null) {
+                this._nextStep.setActive();
+                return this._nextStep;
+            } else {
+                this.finish();
+                return this;
+            }
         } else {
-            this.finish();
             return this;
         }
     }
 
     public goToPrevious(): Step {
-        if (this.previousStep != null) {
-            this.previousStep.setActive();
-            return this.previousStep;
+        if (this._previousStep != null) {
+            this._previousStep.setActive();
+            return this._previousStep;
         } else {
             return this;
         }
     }
 
-    public updateButtons() {
+    protected validate() {
+        let isValid: boolean = true;
+        let panelEl = this.panel.getEl();
+        let formElements: HTMLElement[] = Array.from(panelEl.querySelectorAll('[data-form-validation]'));
+        if (formElements.length > 0) {
+            formElements.forEach((fieldElement: HTMLElement) => {
+                isValid = Utils.validateHTMLElement(fieldElement) && isValid;
+            });
+        }
+
+        this.panel.updateHeight();
+        return isValid;
+    }
+
+    private _updateButtons() {
         this.previousButton.updateText(this.number);
         this.nextButton.updateText(this.number);
-        this.previousStep == null ? this.previousButton.hide() : this.previousButton.show();
+        this._previousStep == null ? this.previousButton.hide() : this.previousButton.show();
+    }
+}
+
+class StepImplGithub extends StepImpl implements Step {
+    protected validate(): boolean {
+        let isValid: boolean = true;
+        let panelEl = this.panel.getEl();
+        let formElements: HTMLElement[] = Array.from(panelEl.querySelectorAll('[data-form-validation]'));
+        if (formElements.length > 0) {
+            formElements.forEach((fieldElement: HTMLElement) => {
+                if (fieldElement.dataset.formValidation == 'github') {
+                    isValid = Utils.validateHTMLElement(fieldElement, (githubLink: string) => {
+                        Github.getGithubInfo(githubLink).then((info) => {
+                            let title = panelEl.parentElement.parentElement.querySelector('[data-wizard-title]');
+                            if (title) {
+                                title.innerHTML = `${info.title} <span class="text-muted">#${info.number}</span>`;
+                            }
+                        });
+                    }) && isValid;
+                } else {
+                    isValid = Utils.validateHTMLElement(fieldElement) && isValid;
+                }
+            });
+        }
+
+        this.panel.updateHeight();
+        return isValid;
     }
 }
 
 class StepIcon {
-    private el: HTMLElement;
+    private _el: HTMLElement;
+
+    public getEl() {
+        return this._el;
+    }
 
     constructor(stepEl) {
-        this.el = stepEl;
+        this._el = stepEl;
     }
 
     public setCompleted() {
-        this.el.classList.add('-completed');
+        this._el.classList.remove('-active');
+        this._el.classList.add('-completed');
     }
 
     public unsetCompleted() {
-        this.el.classList.remove('-completed');
+        this._el.classList.remove('-active', '-completed');
+    }
+
+    public setActive() {
+        this._el.classList.remove('-completed');
+        this._el.classList.add('-active');
     }
 }
 
 class Panel {
-    private el: HTMLElement;
+    private readonly _el: HTMLElement;
 
     constructor(panelEl) {
-        this.el = panelEl;
+        this._el = panelEl;
+    }
+
+    public getEl() {
+        return this._el;
     }
 
     public setActive() {
-        this.el.classList.remove('movingOutBackward', 'movingOutForward');
-        this.el.classList.add('movingIn');
-        this.el.parentElement.style.height = `${this.el.offsetHeight}px`;
+        this._el.classList.remove('movingOutBackward', 'movingOutForward');
+        this._el.classList.add('movingIn');
+        this.updateHeight();
     }
 
     public setBackwards() {
-        this.el.classList.remove('movingIn', 'movingOutForward');
-        this.el.classList.add('movingOutBackward');
+        this._el.classList.remove('movingIn', 'movingOutForward');
+        this._el.classList.add('movingOutBackward');
     }
 
     public setForwards() {
-        this.el.classList.remove('movingIn', 'movingOutBackward');
-        this.el.classList.add('movingOutForward');
+        this._el.classList.remove('movingIn', 'movingOutBackward');
+        this._el.classList.add('movingOutForward');
+    }
 
+    public updateHeight() {
+        this._el.parentElement.style.height = `${this._el.offsetHeight}px`;
     }
 }
 
 class Steps {
-    private el: HTMLElement;
-    private buttonNext: ControlButton;
-    private buttonPrevious: ControlButton;
-    private steps: Step[];
+    private _el: HTMLElement;
+    private _buttonNext: ControlButton;
+    private _buttonPrevious: ControlButton;
+    private readonly _stepsEl: HTMLElement[];
+    private readonly _panelsEl: HTMLElement[];
+    private _steps: Step[];
+
     public currentStep: Step;
     public numberOfSteps: number;
 
     constructor(wizardEl: HTMLElement, numberOfSteps: number, buttonNext: HTMLElement, buttonPrevious: HTMLElement, finishedCallback) {
-        this.el = wizardEl;
+        this._el = wizardEl;
+        this._stepsEl = Array.from(this._el.querySelectorAll('[data-wizard-step'));
+        this._panelsEl = Array.from(this._el.querySelectorAll('[data-wizard-panel]'));
         this.numberOfSteps = numberOfSteps;
-        this.initButtons(buttonNext, buttonPrevious);
-        this.initSteps(finishedCallback);
-    }
-
-    private setCurrentStep(step: Step) {
-        this.currentStep = step;
-        this.currentStep.setActive();
-    }
-
-    private initSteps(finishedCallback) {
-        this.steps = [];
-        let previousStep = null;
-
-        for (let i = 1; i <= this.numberOfSteps; i++) {
-            let stepIcon: StepIcon = new StepIcon(this.el.querySelector(`[data-wizard-step="${i}"]`));
-            let panel: Panel = new Panel(this.el.querySelector(`[data-wizard-panel="${i}"]`));
-            let step: Step = new Step(stepIcon, panel, i, this.buttonNext, this.buttonPrevious, finishedCallback);
-
-            if (previousStep != null) {
-                previousStep.setNextStep(step);
-            }
-
-            step.setPreviousStep(previousStep);
-            previousStep = step;
-            this.steps.push(step);
-        }
-
-        this.setCurrentStep(this.steps[0]);
-    }
-
-    private initButtons(buttonNext, buttonPrevious) {
-        this.buttonNext = new ControlButton(buttonNext, () => {this.goToNextStep(); });
-        this.buttonPrevious = new ControlButton(buttonPrevious, () => {this.goToPreviousStep(); });
+        this._initButtons(buttonNext, buttonPrevious);
+        this._initSteps(finishedCallback);
     }
 
     public goToNextStep() {
@@ -212,6 +267,46 @@ class Steps {
 
     public goToPreviousStep() {
         this.currentStep = this.currentStep.goToPrevious();
+    }
+
+    private _setCurrentStep(step: Step) {
+        this.currentStep = step;
+        this.currentStep.setActive();
+    }
+
+    private _initSteps(finishedCallback) {
+        this._steps = [];
+        let previousStep = null;
+
+        for (let i = 0; i < this.numberOfSteps; i++) {
+            let stepIcon: StepIcon = new StepIcon(this._stepsEl[i]);
+            let panel: Panel = new Panel(this._panelsEl[i]);
+            let step: Step;
+
+            switch((<any>stepIcon.getEl().dataset).wizardStep) {
+                case 'github':
+                    step = new StepImplGithub(stepIcon, panel, i + 1, this._buttonNext, this._buttonPrevious);
+                    break;
+                default:
+                    step = new StepImpl(stepIcon, panel, i + 1, this._buttonNext, i + 1 == this.numberOfSteps ? finishedCallback : null);
+                    break;
+            }
+
+            if (previousStep != null) {
+                previousStep.setNextStep(step);
+            }
+
+            step.setPreviousStep(previousStep);
+            previousStep = step;
+            this._steps.push(step);
+        }
+
+        this._setCurrentStep(this._steps[0]);
+    }
+
+    private _initButtons(buttonNext, buttonPrevious) {
+        this._buttonNext = new ControlButton(buttonNext, () => {this.goToNextStep(); });
+        this._buttonPrevious = new ControlButton(buttonPrevious, () => {this.goToPreviousStep(); });
     }
 
     /*public goToStep(stepNumber: number) {
@@ -225,24 +320,24 @@ class Steps {
     }*/
 }
 
-class Wizard {
-    private readonly el: HTMLElement;
-    private readonly buttonPrevious: HTMLElement;
-    private readonly buttonNext: HTMLElement;
+export class Wizard {
+    private readonly _el: HTMLElement;
+    private readonly _buttonPrevious: HTMLElement;
+    private readonly _buttonNext: HTMLElement;
 
-    private steps: Steps;
+    private _steps: Steps;
 
     constructor(wizardEl, finishedCallback) {
-        this.el = wizardEl;
-        this.buttonNext = this.el.querySelector('[data-wizard-control="next"]');
-        this.buttonPrevious = this.el.querySelector('[data-wizard-control="previous"]');
+        this._el = wizardEl;
+        this._buttonNext = this._el.querySelector('[data-wizard-control="next"]');
+        this._buttonPrevious = this._el.querySelector('[data-wizard-control="previous"]');
 
-        this.steps = new Steps(this.el, (<any>this.el.dataset).wizard, this.buttonNext, this.buttonPrevious, finishedCallback);
+        this._steps = new Steps(this._el, this._el.querySelectorAll('.step').length, this._buttonNext, this._buttonPrevious, finishedCallback);
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    Array.from(document.querySelectorAll('[data-wizard]')).forEach((wizardEl) => {
+Utils.loadOnPageReady(() => {
+    Array.from(document.querySelectorAll('[data-wizard="true"]')).forEach((wizardEl) => {
         new Wizard(wizardEl, () => alert('initate fund transaction'));
     });
 });

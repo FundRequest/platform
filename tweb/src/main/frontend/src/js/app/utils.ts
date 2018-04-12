@@ -1,3 +1,5 @@
+import {Github} from './github';
+
 export class Utils {
 
     public static showLoading() {
@@ -25,4 +27,63 @@ export class Utils {
     public static getFundRequestTokenAddress() {
         return document.head.querySelector('[property="contracts:FundRequestToken"]').getAttribute('content');
     }
+
+    public static loadOnPageReady(readyFunction) {
+        if (document.readyState === 'complete') {
+            readyFunction();
+        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                readyFunction();
+            });
+        }
+    }
+
+    public static validateHTMLElement(element: HTMLElement, callback = null): boolean {
+        let isValid: boolean = false;
+        let validation = element.dataset.formValidation;
+        let value = '';
+
+        switch (element.tagName.toLowerCase()) {
+            case 'input':
+                value = (<HTMLInputElement>element).value;
+                break;
+            case 'textarea':
+                value = (<HTMLTextAreaElement>element).value;
+                break;
+            case 'select':
+                value = (<HTMLSelectElement>element).value;
+                break;
+        }
+
+        switch (validation) {
+            case 'required':
+                isValid = value.trim().length > 0;
+                break;
+            case 'github':
+                isValid = Utils._validation.github(value);
+                break;
+            default:
+                isValid = true;
+                break;
+        }
+
+        if (isValid) {
+            element.classList.add('is-valid');
+            element.classList.remove('is-invalid');
+            if (callback != null) {
+                callback(value);
+            }
+        } else {
+            element.classList.remove('is-valid');
+            element.classList.add('is-invalid');
+        }
+
+        return isValid;
+    }
+
+    private static _validation = {
+        github: (link) => {
+            return Github.validateLink(link);
+        }
+    };
 }

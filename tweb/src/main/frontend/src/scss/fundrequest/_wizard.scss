@@ -23,14 +23,9 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
         z-index: 10;
     }
 
-    &.completed {
-        .wizard__content {
-            animation: gettingOut 2s cubic-bezier(1, -0.71, 1, 1.16) forwards;
-        }
-
-        .wizard__congrats-message {
-            animation: fadeIn 2s cubic-bezier(1, -0.71, 1, 1.16) forwards;
-        }
+    &__title {
+        padding-top: 1rem;
+        margin-bottom: -2rem;
     }
 }
 
@@ -136,6 +131,13 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
         transition: opacity .5s;
         opacity: 1;
         z-index: 5;
+    }
+
+    &.-active {
+        .step__number {
+            border-color: $green-400;
+            background-color: $green-50;
+        }
     }
 
     &.-completed {

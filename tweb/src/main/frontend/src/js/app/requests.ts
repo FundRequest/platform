@@ -2,6 +2,7 @@ import * as $ from 'jquery';
 
 import {FundRequestToken} from '../contracts/FundRequestToken';
 import {FundRequestContract} from '../contracts/FundRequestContract';
+import {Utils} from './utils';
 
 class Requests {
     private _account = '0xc31Eb6E317054A79bb5E442D686CB9b225670c1D';
@@ -33,24 +34,22 @@ class Requests {
     }
 
     private _initButtons() {
-        $('#tempFund').on('click', () => {
-            let issue = $('#tempFundNumber').val();
-            let amount = <number>$('#tempFundAmount').val() * Math.pow(10, 18);
+        document.getElementById('#tempFund').addEventListener('click', () => {
+            let issue = (<HTMLInputElement>document.getElementById('#tempFundNumber')).value;
+            let amount = parseFloat((<HTMLInputElement>document.getElementById('#tempFundAmount')).value) * Math.pow(10, 18);
             console.log('funding issue: ' + issue + ' with amount ' + amount);
             this._tokenContract.allowance(this._account, this._frContractAddress).then((res) => {
                 console.log(res);
             });
-            this._tokenContract.approveAndCallTx(
-                this._frContractAddress,
-                amount,
+            this._tokenContract.approveAndCallTx(this._frContractAddress, amount,
                 this._web3.fromAscii('GITHUB' + '|AAC|' + 'FundRequest|FR|area51|FR|' + issue))
                 .send({from: this._account, gas: 300000})
                 .then((x) => console.log(x));
         });
 
-        $('#tempZrxFund').on('click', () => {
-            let issue = $('#tempFundNumber').val();
-            let amount = <number>$('#tempFundAmount').val() * Math.pow(10, 18);
+        document.getElementById('#tempZrxFund').addEventListener('click', () => {
+            let issue = (<HTMLInputElement>document.getElementById('#tempFundNumber')).value;
+            let amount = parseFloat((<HTMLInputElement>document.getElementById('#tempFundAmount')).value) * Math.pow(10, 18);
 
             let fundErc20 = () => {
                 this._frContract.fundTx(this._web3.fromAscii('GITHUB'), 'FundRequest|FR|area51|FR|' + issue, this._tokenContractZRXAddress, amount)
@@ -62,8 +61,7 @@ class Requests {
 
             this._tokenContractZRX.allowance(this._account, this._frContractAddress).then((res) => {
                 let allowance = res.toNumber();
-                console.log(allowance);
-                console.log(amount);
+                console.log(allowance, amount);
 
                 if (allowance > 0 && allowance < amount) {
                     console.log('setting to 0 first');
@@ -86,6 +84,6 @@ class Requests {
     }
 }
 
-$(function() {
+Utils.loadOnPageReady(() => {
     new Requests();
 });
