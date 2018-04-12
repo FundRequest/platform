@@ -34,12 +34,12 @@
     </section>
 
     <section class="position-relative mb-5">
-        <div class="wizard" data-wizard="3">
+        <div class="wizard" data-wizard="true">
             <div class="wizard__content">
                 <header class="wizard__header mb-2">
                     <div class="wizard__steps">
                         <nav class="steps">
-                            <div class="step" data-wizard-step="1">
+                            <div class="step" data-wizard-step="github">
                                 <div class="step__content">
                                     <p class="step__number"><i class="fab fa-github-alt"></i></p>
                                     <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
@@ -54,7 +54,7 @@
                                 </div>
                             </div>
 
-                            <div class="step" data-wizard-step="2">
+                            <div class="step" data-wizard-step="github-fund">
                                 <div class="step__content">
                                     <p class="step__number"><i class="fas fa-dollar-sign"></i></p>
                                     <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
 
-                            <div class="step" data-wizard-step="3">
+                            <div class="step" data-wizard-step="github-initiate">
                                 <div class="step__content">
                                     <p class="step__number"><i class="far fa-handshake"></i></p>
                                     <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
@@ -87,26 +87,26 @@
                         </nav>
                     </div>
                 </header>
-
-
-                <div class="panels" style="height: 400px">
-                    <div class="panel movingIn" data-wizard-panel="1">
+                <div class="wizard__title">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="section-title text-primary" data-wizard-title="true"></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="panels">
+                    <div class="panel movingIn" data-wizard-panel="github">
                         <div class="row">
                             <div class="col-12">
-                                <h2 class="section-title text-primary">Altivec/VSX support <span class="text-muted">#42743</span>
-                                </h2>
                                 <div class="card mb-3">
                                     <div class="card-header">
                                         Which GitHub issue would you like to fund?
                                     </div>
                                     <div class="card-body">
-                                        <div class="input-group">
-                                            <span class="input-group-prepend">
-                                                <span class="input-group-text">https://github.com/</span>
-                                            </span>
-                                            <input class="form-control" type="text"
-                                                   placeholder="ex: repoXYZ/issues/1" />
-                                        </div>
+                                        <input class="form-control" type="text"
+                                               data-form-validation="github"
+                                               placeholder="ex: https://github.com/repoXYZ/issues/1" />
+                                        <div class="invalid-feedback">Please enter a valid github issue</div>
                                     </div>
                                 </div>
 
@@ -125,11 +125,9 @@
                         </div>
                     </div>
 
-                    <div class="panel movingOutForward" data-wizard-panel="2">
+                    <div class="panel movingOutForward" data-wizard-panel="github-fund">
                         <div class="row">
                             <div class="col-12">
-                                <h2 class="section-title text-primary">Altivec/VSX support <span class="text-muted">#42743</span>
-                                </h2>
                                 <div class="card mb-3">
                                     <div class="card-header">
                                         For how much would you like to fund the request?
@@ -190,14 +188,16 @@
                         </div>
                     </div>
 
-                    <div class="panel movingOutForward" data-wizard-panel="3">
+                    <div class="panel movingOutForward" data-wizard-panel="github-initiate">
                         <header class="panel__header">
                             <h2 class="panel__title">Stay in touch with the community.</h2>
-                            <p class="panel__subheading">Community is everything, and here we do some crazy stuff.</p>
+                            <p class="panel__subheading">Community is everything, and here we do some crazy
+                                                         stuff.</p>
                         </header>
 
                         <p class="panel__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                                  eiusmod tempor incididunt ut labore et dolore magna culpa qui officia
+                                                  eiusmod tempor incididunt ut labore et dolore magna culpa qui
+                                                  officia
                                                   deserunt mollit anim id est laborum.</p>
                     </div>
                 </div>
