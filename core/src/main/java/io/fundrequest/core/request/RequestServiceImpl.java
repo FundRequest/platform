@@ -21,7 +21,6 @@ import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.FundService;
-import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
@@ -95,11 +94,10 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public RequestDto createRequest(CreateRequestCommand command) {
+    public Long createRequest(CreateRequestCommand command) {
         Optional<Request> request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId());
         Request r = request.orElseGet(() -> createNewRequest(command));
-        fundRequest(command, r);
-        return mappers.map(Request.class, RequestDto.class, r);
+        return r.getId();
     }
 
     @Override
@@ -132,14 +130,6 @@ class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public Boolean canClaim(Principal user, CanClaimRequest canClaimRequest) {
         return githubClaimResolver.canClaim(user, findRequest(canClaimRequest.getPlatform(), canClaimRequest.getPlatformId()));
-    }
-
-    private void fundRequest(CreateRequestCommand command, Request r) {
-        FundsAddedCommand fundsCommand = new FundsAddedCommand();
-        fundsCommand.setRequestId(r.getId());
-        fundsCommand.setAmountInWei(command.getFunds());
-        fundsCommand.setTimestamp(command.getTimestamp());
-        fundService.addFunds(fundsCommand);
     }
 
     @Override

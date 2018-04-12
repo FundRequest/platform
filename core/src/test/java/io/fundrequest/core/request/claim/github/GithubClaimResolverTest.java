@@ -1,6 +1,7 @@
 package io.fundrequest.core.request.claim.github;
 
 import io.fundrequest.core.keycloak.KeycloakRepository;
+import io.fundrequest.core.keycloak.Provider;
 import io.fundrequest.core.keycloak.UserIdentity;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
@@ -41,7 +42,10 @@ public class GithubClaimResolverTest {
         RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
         UserClaimRequest userClaimRequest = createClaimRequest(request);
 
-        when(keycloakRepository.getUserIdentities("davyvanroy")).thenReturn(Stream.of(new UserIdentity("github", "davyvanroy")));
+        when(keycloakRepository.getUserIdentities("davyvanroy")).thenReturn(Stream.of(UserIdentity.builder()
+                .provider(Provider.GITHUB)
+                .username("davyvanroy")
+                .build()));
         when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of("davyvanroy"));
         SignClaimCommand signClaimCommand = createSignClaimCommand(userClaimRequest, "davyvanroy");
         ClaimSignature claimSignature = createClaimSignature(signClaimCommand);

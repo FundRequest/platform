@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+
+<body>
+    <div id="vue-app">
+         <div>
+            Name: <input v-model="name" type="text">
+            <hello-decorator-component :name="name" :initial-enthusiasm="5" />
+        </div>
+    </div>
+</body>
+
+<script src="./dist/build.js"></script>
+
+</html>

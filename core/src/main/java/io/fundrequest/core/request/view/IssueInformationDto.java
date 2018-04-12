@@ -59,4 +59,12 @@ public class IssueInformationDto {
     public void setPlatformId(String platformId) {
         this.platformId = platformId;
     }
+
+    public String getUrl() {
+        if (platform == Platform.GITHUB) {
+            return "https://github.com/" + owner + "/" + repo + "/issues/" + number;
+        }
+        return "";
+    }
+
 }

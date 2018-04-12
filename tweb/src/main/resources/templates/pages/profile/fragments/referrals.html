@@ -1,0 +1,28 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <div class="rewards-list__item rewards-list__item--referral" th:each="r : ${referrals}">
+        <div class="d-flex">
+            <div class="fnd-user-avatar">
+                <img th:if="${r.getPicture() != null}" alt="Completely round image" th:src="${r.getPicture()}" />
+                <i class="fas fa-user" th:if="${r.getPicture() == null}"></i>
+            </div>
+            <div class="rewards-list__text">
+                <div th:text="${r.getName()}">Steve Maris</div>
+                <small th:text="${#temporals.format(r.getCreatedAt(), 'yyyy-MM-dd HH:mm')}">date</small>
+            </div>
+        </div>
+        <div class="d-flex">
+            <div th:if="${r.getStatus() == T(io.fundrequest.profile.ref.domain.ReferralStatus).PENDING}"
+                 th:remove="tag">
+                <span class="text-muted">Not verified</span>
+            </div>
+            <div th:if="${r.getStatus() == T(io.fundrequest.profile.ref.domain.ReferralStatus).VERIFIED}"
+                 th:remove="tag">
+                <span class="text-success" th:text="'Verified ' + ${T(io.fundrequest.profile.bounty.domain.BountyType).LINK_TELEGRAM.getReward() + ' FND'}">5 FND</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="rewards-list__item rewards-list__item--referral" th:if="${referrals.isEmpty()}">
+        You don't have any referrals yet.
+    </div>
+</div>

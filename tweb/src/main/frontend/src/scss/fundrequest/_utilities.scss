@@ -1,0 +1,32 @@
+.line-clamp {
+    max-height: 1rem;
+    overflow: hidden;
+}
+
+@supports (-webkit-line-clamp: 1) {
+    .line-clamp {
+        max-height: none;
+        display: -webkit-box;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+}
+
+@for $i from 2 through 5 {
+    .line-clamp--#{$i} {
+        max-height: #{$i}rem;
+    }
+
+    @supports (-webkit-line-clamp: $i) {
+        .line-clamp--#{$i} {
+            max-height: none;
+            -webkit-line-clamp: $i;
+        }
+    }
+}
+
+.text-transform-normal {
+    text-transform: none !important;
+}
+

@@ -1,0 +1,24 @@
+$my-social-colors: (
+        facebook:     $fb-color,
+        twitter:      $tw-color,
+        google-plus:  $gplus-color,
+        github:       $git-color,
+        linkedin:     $li-color,
+        youtube:      $yt-color,
+        vimeo:        #aad450,
+        tumblr:       #32506d,
+        instagram:    $ins-color,
+        flickr:       #ff0084,
+        telegram:     #0088cc,
+        vk:           $vk-color,
+        stumbleupon:  #EB4823,
+        slack:          $slack-color,
+        stack-overflow:  $so-color,
+        yahoo:        #7B0099,
+        email:        $email-color,
+);
+
+@each $media, $color in $my-social-colors {
+    @include make-button($media, $color);
+    @include make-outline-button($media, $color);
+}

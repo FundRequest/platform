@@ -1,0 +1,154 @@
+.section {
+    &--steps {
+        p {
+            color: #545556;
+        }
+
+        h3 {
+            margin: 0;
+            color: #23a7e0;
+            font-size: 30px;
+            padding-bottom: 30px;
+            font-weight: $font-weight-bold;
+        }
+    }
+
+    &--supporters {
+        padding: 15rem 0 5rem 0;
+    }
+
+    &--partnership-logos {
+        height: 140px + 75px;
+        padding: 0 0 75px 0;
+        background-color: $white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @include media-breakpoint-up(md) {
+            height: 140px;
+            padding-bottom: 0;
+        }
+    }
+
+    &--team {
+        .nav-pills {
+            @include media-breakpoint-down(sm) {
+                display: none;
+            }
+        }
+
+        .tab-pane {
+            @include media-breakpoint-down(sm) {
+                display: flex !important;
+            }
+        }
+
+        .section__title {
+            color: $gray-500;
+            margin: 0;
+        }
+
+        .nav-link {
+            border-radius: 0;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 10px;
+            margin: 0 20px;
+
+            &:hover {
+                border-bottom-color: $gray-500;
+            }
+
+            &.active,
+            &.active:hover {
+                background-color: transparent;
+                border-bottom-color: #556992;
+            }
+
+            &.active .section__title {
+                color: #556992;
+            }
+        }
+    }
+
+    &__title {
+        color: #556992;
+        font-weight: $font-weight-bold;
+        text-align: center;
+
+        &--info {
+            margin-bottom: 3rem;
+
+            @include media-breakpoint-up(md) {
+                margin-bottom: 4rem;
+            }
+        }
+    }
+
+}
+
+.scrolltonext {
+    position: absolute;
+    display: flex;
+    text-decoration: none;
+    justify-content: center;
+    align-items: center;
+    bottom: 0;
+    height: 50px;
+    width: 100%;
+    left: 0;
+    margin: 0 auto;
+    z-index: 99;
+
+    @include media-breakpoint-up(md) {
+        height: 115px;
+    }
+
+    &--top {
+        top: 0;
+        bottom: auto;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+        text-decoration: none;
+    }
+
+    &::after {
+        width: 6px;
+        height: 48px;
+        display: block;
+        content: "";
+
+        background-image: url('../img/scrollblue.png');
+        background-size: contain;
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+
+    &--header {
+        text-align: center;
+        height: 80px;
+        align-items: start;
+
+        @include media-breakpoint-up(md) {
+            padding-top: 10rem;
+            padding-bottom: 10rem;
+            min-height: 45rem;
+            height: 110px;
+            height: calc(100vh - 50px);
+            flex-basis: calc(100vh - 50px);
+        }
+
+        @media screen and (min-height: 900px) {
+            height: auto;
+            min-height: 900px;
+            flex-basis: 900px;
+        }
+
+        &::after {
+            background-image: url('../img/scroll.png');
+        }
+    }
+}

@@ -215,4 +215,7 @@ $RECYCLE.BIN/
 # Docker
 core/docker_data
 
-web/src/main/resources/config
+
+**/node/**
+**/node_modules/**
+/tweb/src/main/frontend/src/js/contracts/

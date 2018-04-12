@@ -1,0 +1,264 @@
+h1 {
+    font-size: 28px;
+    line-height: 32px;
+
+    @include media-breakpoint-up(md) {
+        font-size: 34px;
+        line-height: 40px;
+    }
+}
+
+h2 {
+    font-size: 24px;
+    line-height: 28px;
+
+    @include media-breakpoint-up(md) {
+        font-size: 30px;
+        line-height: 36px;
+    }
+}
+
+h3 {
+    font-size: 20px;
+    line-height: 26px;
+}
+
+p {
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 400;
+
+    @include media-breakpoint-up(md) {
+        font-size: 20px;
+    }
+}
+
+h2 .svg-inline--fa {
+    vertical-align: baseline;
+}
+
+.footer {
+    &__title {
+        margin: 0 0 10px 0;
+        font-size: 25px;
+        font-weight: $font-weight-bold;
+        text-transform: uppercase;
+        color: $white;
+    }
+
+    &__list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    &__link {
+        margin-bottom: 8px;
+        font-size: 21px;
+        color: $white;
+
+        &:hover {
+            text-decoration: underline;
+            color: $white;
+        }
+    }
+
+    &__newsletter {
+        display: flex;
+        justify-content: center;
+
+        @include media-breakpoint-up(md) {
+            .btn {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.vertical-line {
+    background-color: $blue-300;
+    position: absolute;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    top: 20px + (56px/2);
+
+    @include media-breakpoint-up(md) {
+        width: 2px;
+        height: 100%;
+        left: (15px + 12px + 56px/2);
+        top: 0;
+    }
+}
+
+.nav-link__number {
+    font-family: 'Titillium Web', sans-serif;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    height: 56px;
+    width: 56px;
+    border-radius: 56px;
+    background-color: #f4f9fb;
+    color: $blue-300;
+    border: 2px solid $blue-300;
+    transition: background-color .35s ease, color .35s ease, border-color .35s ease;
+    will-change: background-color, color, border-color;
+
+    .nav-link:hover &,
+    .active & {
+        background-color: $blue-500;
+        border-color: $blue-500;
+        color: $white;
+    }
+}
+
+.nav-pills--roadmap .nav-link.active {
+    background-color: transparent;
+}
+
+.nav-link__text {
+    font-family: 'Titillium Web', sans-serif;
+    display: none;
+    margin-left: 10px;
+    text-transform: none;
+    color: $blue-300;
+    font-size: 15px;
+    transition: font-size .35s ease;
+    will-change: font-size;
+
+    .active & {
+        color: $blue-500;
+        font-size: 20px;
+    }
+
+    @include media-breakpoint-up(md) {
+        display: inline-block;
+    }
+}
+
+.svg--nav-pills {
+    text-align: center;
+
+    > svg {
+        display: inline-block;
+        width: 180px;
+
+        @include media-breakpoint-up(md) {
+            width: 70%;
+        }
+    }
+}
+
+@include media-breakpoint-up(md) {
+    .tab-content--smooth-fade {
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 100%;
+
+        .tab-pane {
+            display: block !important;
+            position: absolute;
+            opacity: 0;
+            transition: opacity .35s ease-in-out;
+            will-change: opacity;
+
+            &.active {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.section--roadmap {
+    .nav-link__number {
+        font-size: 20px;
+    }
+
+    h3 {
+        margin: 0;
+        color: #556992;
+        font-size: 30px;
+        padding-bottom: 10px;
+        font-weight: $font-weight-bold;
+    }
+}
+
+.roadmap-image {
+    display: none;
+
+    @include media-breakpoint-up(md) {
+        display: flex;
+        align-items: center;
+
+        > img {
+            width: 100%;
+        }
+    }
+}
+
+.card--person-image {
+    height: 100%;
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+
+    .card-top-image {
+        border-radius: 10rem;
+        height: 10rem;
+        width: 10rem;
+        margin: -1.25rem auto .75rem;
+        background-image: none;
+    }
+}
+
+.partner-image {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+
+    @include media-breakpoint-up(md) {
+        margin-bottom: 1rem;
+    }
+}
+
+.partner-link {
+    padding: 2rem;
+    margin: 1rem;
+    border-radius: .25rem;
+
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    background-color: white;
+
+    img {
+        max-height: 4rem;
+        max-width: 100%;
+    }
+}
+
+a.partner-link {
+    box-shadow: $z-depth-1;
+
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1);
+    will-change: filter, transform;
+
+    &:hover {
+        box-shadow: $z-depth-2;
+    }
+
+    &:active,
+    &:focus {
+        box-shadow: none;
+    }
+}

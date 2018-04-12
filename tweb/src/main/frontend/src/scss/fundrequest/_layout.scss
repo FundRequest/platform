@@ -1,0 +1,176 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-family: $font-family-base;
+}
+
+.fnd-page-container {
+    position: relative;
+    overflow: hidden;
+    padding-top: 0;
+    width: 100%;
+    flex-basis: 100%;
+    flex-grow: 1;
+}
+
+.fnd-header {
+    z-index: $zindex-dropdown;
+    box-shadow: none;
+    margin: 0 auto;
+
+    &.navbar-light {
+        background-color: $white !important;
+        @include box-shadow($z-depth-3);
+
+        &::before, &::after {
+            display: none !important;
+        }
+
+        .fnd-header__logo {
+            background-position: left bottom;
+        }
+
+        @include media-breakpoint-up(md) {
+            padding-top: .5rem;
+        }
+
+        .navbar-nav .nav-item .nav-link:not(:active):not(.active):not(:hover) {
+            color: rgba($black, .5);
+        }
+    }
+
+    &.navbar-dark {
+        .navbar-nav .nav-item .nav-link:not(:active):not(.active):not(:hover) {
+            color: rgba($white, .5);
+        }
+    }
+
+    &__logo {
+        background-image: url('../img/fundrequest-title-sprite.png');
+        background-size: 250px 77px;
+        background-position: left top;
+        background-repeat: no-repeat;
+        height: 40px;
+        width: 260px;
+    }
+
+    &--fixed {
+        z-index: $zindex-fixed;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        @include media-breakpoint-up(md) {
+            padding-top: 3rem;
+            box-shadow: none;
+            bottom: initial;
+            top: 0;
+        }
+    }
+
+    &--off-canvas {
+        transition: translateX .35s ease-in-out;
+        transform: translateX(-100%);
+        will-change: translateX;
+
+        @include media-breakpoint-up(md) {
+            transform: translateX(0);
+        }
+    }
+
+    .navbar-nav {
+        align-items: center;
+    }
+
+    .nav-item {
+        @include media-breakpoint-up(md) {
+            .btn {
+                margin-left: .5rem;
+                margin-right: .5rem;
+            }
+
+            &:last-child .btn {
+                margin-left: .5rem;
+                margin-right: 0;
+            }
+        }
+    }
+}
+
+.fnd-ribbon {
+    position: absolute;
+    height: 5rem;
+    flex-shrink: 0;
+    background-image: url('../img/bg-blue.png');
+    background-size: 100%;
+    background-repeat: repeat-y;
+    left: 0;
+    right: 0;
+}
+
+.fnd-bg {
+    background-color: $body-bg;
+    border-radius: $border-radius-sm;
+}
+
+.navbar-brand--fnd {
+    padding-bottom: 12px;
+
+    > img {
+        max-height: 30px;
+    }
+}
+
+.navbar--fnd-secondary {
+    padding-top: 0;
+    padding-bottom: 0;
+    box-shadow: none;
+
+    .nav-item {
+        margin: 0 map-get($spacers, 2);
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
+
+        &.active .nav-link,
+        &.active .nav-link:hover {
+            color: $primary-color;
+            border-bottom-color: $primary-color;
+        }
+
+
+    }
+
+    .nav-link {
+        transition: border-color, color .3s ease;
+        height: 100%;
+        padding: ($nav-link-padding-y * 2) ($nav-link-padding-x * 2);
+        color: $secondary-color;
+        border-bottom: 3px solid transparent;
+
+        &:hover {
+            color: $primary-color;
+        }
+    }
+}
+
+a.anchor {
+    display: block;
+    position: relative;
+    top: 0;
+    visibility: hidden;
+}
+
+
+.dropdown-menu {
+    box-shadow: $z-depth-2;
+}

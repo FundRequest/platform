@@ -1,0 +1,15 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="statistic (title, text, icon)" class="card bg-primary text-white">
+    <div class="card-body media align-items-center">
+        <div class="w-25 mr-3 text-center">
+            <i class="fa-3x fa" th:classappend="${icon}"></i>
+        </div>
+        <div class="media-body">
+            <h3 th:text="${title}">Title</h3>
+            <div th:text="${text}"># Issues</div>
+        </div>
+    </div>
+</div>
+
+</html>

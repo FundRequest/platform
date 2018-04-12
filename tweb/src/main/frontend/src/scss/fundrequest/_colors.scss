@@ -1,0 +1,105 @@
+// overrides
+$light-bg-color: #f4f9fb;
+
+// colors
+$body-bg: #f4f4f4;
+
+$blue-50: #e7f4fb;
+$blue-100: #c4e4f5;
+$blue-200: #9cd2ee;
+$blue-300: #74bfe7;
+$blue-400: #57b2e1;
+$blue-500: #39a4dc;
+$blue-600: #339cd8;
+$blue-700: #2c92d3;
+$blue-800: #2489ce;
+$blue-900: #1778c5;
+$blue-a100: #f7fbff;
+$blue-a200: #c4e3ff;
+$blue-a400: #91cbff;
+$blue-a700: #78bfff;
+
+$teal-50: #eff8f2;
+$teal-100: #d8eedd;
+$teal-200: #bee3c7;
+$teal-300: #a3d8b1;
+$teal-400: #90cfa0;
+$teal-500: #7cc78f;
+$teal-600: #74c187;
+$teal-700: #69ba7c;
+$teal-800: #5fb372;
+$teal-900: #4ca660;
+$teal-a100: #ffffff;
+$teal-a200: #d0ffda;
+$teal-a400: #9dffb2;
+$teal-a700: #84ff9e;
+
+$green-50: #e6f6ec;
+$green-100: #c1e9d0;
+$green-200: #98dab0;
+$green-300: #6ecb90;
+$green-400: #4fc079;
+$green-500: #30b561;
+$green-600: #2bae59;
+$green-700: #24a54f;
+$green-800: #1e9d45;
+$green-900: #138d33;
+$green-a100: #c1ffcf;
+$green-a200: #8effa8;
+$green-a400: #5bff80;
+$green-a700: #41ff6c;
+
+$yellow-50: #fffae9;
+$yellow-100: #fff3c9;
+$yellow-200: #ffeba5;
+$yellow-300: #ffe280;
+$yellow-400: #ffdc65;
+$yellow-500: #ffd64a;
+$yellow-600: #ffd143;
+$yellow-700: #ffcc3a;
+$yellow-800: #ffc632;
+$yellow-900: #ffbc22;
+$yellow-a100: #ffffff;
+$yellow-a200: #ffffff;
+$yellow-a400: #fff0d1;
+$yellow-a700: #ffe8b8;
+
+$orange-50: #fef1e8;
+$orange-100: #fcddc5;
+$orange-200: #fbc69f;
+$orange-300: #f9af78;
+$orange-400: #f79d5b;
+$orange-500: #f68c3e;
+$orange-600: #f58438;
+$orange-700: #f37930;
+$orange-800: #f26f28;
+$orange-900: #ef5c1b;
+$orange-a100: #ffffff;
+$orange-a200: #fff4f0;
+$orange-a400: #ffcfbd;
+$orange-a700: #ffbca3;
+
+$blue: $blue-500;
+$teal: $teal-500;
+$green: $green-500;
+$yellow: $yellow-500;
+$orange: $orange-500;
+
+$primary: $blue;
+$secondary: #6c757d;
+$success: $green;
+$warning: $orange;
+
+$mastery-levels: (
+        novice: $green,
+        contributor: $blue,
+        expert: $yellow,
+        master: $orange
+);
+
+$theme-colors: ();
+$theme-colors: map-merge((
+        primary: $blue,
+        success: $green,
+        warning: $orange,
+), $theme-colors);

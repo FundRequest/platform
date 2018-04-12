@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+
+<th:block th:fragment="header">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card card--fnd-profile mb-1 d-flex flex-column flex-md-row">
+                <div class="fnd-profile-picture"
+                     th:style="'background-image: url(' + ${profile.getPicture() == null ? '/assets/img/profile-avatar.png' : profile.getPicture()} + ');'"></div>
+                <div class="card-body pb-1">
+                    <div class="row">
+                        <div class="col-12 col-md-9">
+                            <h5 class="card-title">
+                                <div th:text="${profile.getName()}">Name</div>
+                                <small class="text-muted" th:text="${profile.getHeadline()}">Developer</small>
+                            </h5>
+                            <div class="card-text">
+                                <dl class="mb-1">
+                                    <dt><label class="mb-0">E-mail</label></dt>
+                                    <dd th:text="${profile.getEmail()}">my@email.com</dd>
+                                </dl>
+                                <div class="md-form">
+                                    <label for="eth-address" class="font-weight-bold">ETH Address</label>
+
+                                    <input id="eth-address"
+                                           data-edit="eth-address"
+                                           data-edit-validation="ethereum"
+                                           class="form-control form-control--instant-edit"
+                                           th:value="${profile.getEtherAddress()}" type="text"/>
+                                    <span class="text-danger" data-edit-messages="eth-address"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <a th:if="${false}" th:href="@{/profile/mastery}"
+                           class="col-12 col-md-3 d-flex align-items-center justify-content-center">
+                            <h2 class="text-success">Novice</h2>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-5">
+                <nav class="navbar navbar-expand navbar--fnd-secondary">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#sec-menu" aria-controls="sec-menu"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="sec-menu">
+                        <ul class="navbar-nav mr-auto">
+                            <li th:classappend="${activeTab == 'profile'} ? 'active' : ''" class="nav-item">
+                                <a class="nav-link" th:href="@{/profile}">Profile</a>
+                            </li>
+                            <li th:classappend="${activeTab == 'rewards'} ? 'active' : ''" class="nav-item">
+                                <a class="nav-link" th:href="@{/profile/rewards}">Rewards</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</body>
+</html>

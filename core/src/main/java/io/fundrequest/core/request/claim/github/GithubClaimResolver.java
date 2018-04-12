@@ -74,7 +74,7 @@ public class GithubClaimResolver {
             throw new RuntimeException("only github is supported for now");
         }
         return keycloakRepository.getUserIdentities(user.getName())
-                .filter(i -> i.getProvider().equalsIgnoreCase(platform.toString()))
+                .filter(i -> i.getProvider().name().equalsIgnoreCase(platform.toString()))
                 .findFirst().orElseThrow(() -> new RuntimeException("Please link your github account!"))
                 .getUsername();
     }

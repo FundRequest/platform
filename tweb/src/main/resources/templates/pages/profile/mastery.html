@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layouts/default" th:with="activeTab='rewards'"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+</head>
+<body>
+<div layout:fragment="content" class="row justify-content-center">
+    <div class="col-10">
+        <div class="about-rankings__section-header text-center">
+            <h2>Categories of Expertise</h2>
+            <div class="about-rankings__header-description">The Progression System is designed around three FundRequest
+                categories of data science expertise: <strong>Developer</strong>, <strong>Community</strong>, and
+                <strong>X</strong>. Advancement through performance tiers is done independently within each
+                category of expertise.
+            </div>
+            <h2>Performance Tiers</h2>
+            <div class="about-rankings__header-description">Within each category of expertise, there are five
+                performance tiers that can be achieved in accordance with the quality and quantity of work you produce:
+                <span class="text--novice">Novice</span>,
+                <span class="text--contributor">Contributor</span>,
+                <span class="text--expert">Expert</span>, and
+                <span class="text--master">Master</span>.
+            </div>
+            <div class="about-rankings__header-description">
+                <div class="about-rankings__header-description-label">For example, you could be a Community Master,
+                    <br/>a Developer Contributor, and a X Expert:
+                </div>
+                <img src="/static/images/tiers-example.png" width="600px"/>
+            </div>
+            <div class="about-rankings__header-description">The highest tier you have achieved in any of the categories
+                of expertise will be displayed on your profile and under your avatar across the site. Tiers are awarded
+                on the basis of medals earned in each category.
+            </div>
+        </div>
+
+        <div class="card mb-1">
+            <h2 class="card-header text--novice">
+                <span>Novice</span>
+            </h2>
+            <div class="card-body">
+                <div class="card-text">
+                    <p>You've joined the community.</p>
+                    <ul class="fnd-mastery-list">
+                        <li>
+                            <i class="far fa-check-square text--novice"></i>
+                            <span>Verify yourself!</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-1" th:include="pages/profile/fragments/mastery :: mastery('contributor')"></div>
+        <div class="card mb-1" th:include="pages/profile/fragments/mastery :: mastery('expert')"></div>
+        <div class="card mb-5" th:include="pages/profile/fragments/mastery :: mastery('master')"></div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+$circle-size: 30px;
+
+$animation-time: .5s;
+$curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
+
+// General classes
+.wrapper {
+    position: relative;
+}
+
+// Wizard
+.wizard {
+    &__header {
+        position: relative;
+    }
+
+    &__steps {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        transform: translateY(50%);
+        z-index: 10;
+    }
+
+    &.completed {
+        .wizard__content {
+            animation: gettingOut 2s cubic-bezier(1, -0.71, 1, 1.16) forwards;
+        }
+
+        .wizard__congrats-message {
+            animation: fadeIn 2s cubic-bezier(1, -0.71, 1, 1.16) forwards;
+        }
+    }
+}
+
+// Lines
+.line {
+    position: absolute;
+    top: $circle-size / 2;
+    left: 0;
+    z-index: -1;
+    height: 2px;
+    transition: all $animation-time ease;
+
+    &.-start {
+        left: 0;
+        background: $blue-500;
+        width: 50%;
+    }
+
+    &.-end {
+        left: 50%;
+        background: $blue-500;
+        width: 50%;
+    }
+
+    &.-background {
+        background: $gray-300;
+        width: 100%;
+    }
+
+    &.-overlay {
+        background: $body-bg;
+        width: $circle-size + 10px;
+        left: -5px;
+    }
+
+    &.-progress {
+        background: $blue-500;
+        width: 100%;
+        transform: scaleX(0);
+        transform-origin: left center;
+    }
+
+    &.-in-progress {
+        transform: scaleX(1);
+    }
+}
+
+// Panels
+.panels {
+    position: relative;
+    overflow: hidden;
+    margin: 0 -2rem;
+}
+
+.panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem;
+    transition: .5s all;
+
+    &.movingOutBackward {
+        transform: translateX(100% * -1);
+    }
+
+    &.movingOutForward {
+        transform: translateX(100%);
+    }
+
+    &.movingIn {
+        transform: translateX(0);
+    }
+}
+
+// Steps
+.steps {
+    position: relative;
+    display: flex;
+    flex: 0 1 auto;
+}
+
+.step {
+    flex-basis: 0;
+    flex-grow: 1;
+    text-align: center;
+
+    &__content {
+        position: relative;
+        z-index: 2;
+    }
+
+    &__number {
+        background: $white;
+        font-weight: 800;
+        width: $circle-size;
+        height: $circle-size;
+        line-height: $circle-size;
+        margin: 0;
+        border-radius: 50%;
+        border: 2px solid $gray-300;
+
+        transition: opacity .5s;
+        opacity: 1;
+        z-index: 5;
+    }
+
+    &.-completed {
+        .step__number {
+            opacity: 0;
+        }
+
+        .checkmark {
+            z-index: 0;
+            animation: fill .4s ease-in-out forwards,
+            scale .3s ease-in-out .6s both;
+        }
+
+        .checkmark__check {
+            animation: stroke .5s linear .4s forwards;
+        }
+
+        .line {
+            transform: scaleX(1);
+        }
+    }
+
+    &:last-child {
+        flex-grow: 0;
+    }
+}
+
+// Checkmark
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: $circle-size;
+    height: $circle-size;
+    border-radius: 50%;
+    stroke-width: 2;
+    stroke: $white;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0 0 0 $blue-400;
+    z-index: -1;
+
+    &__circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        stroke-width: 4;
+        stroke-miterlimit: 10;
+        stroke: $blue-500;
+        fill: none;
+        animation: stroke .6s $curve forwards;
+    }
+
+    &__check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 40;
+        stroke-dashoffset: 40;
+        stroke: $white;
+        stroke-width: 5;
+    }
+}
+
+// Animations
+@keyframes stroke {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes scale {
+    50% {
+        transform: translateX(-50%) scale3d(1.5, 1.5, 1.5);
+    }
+
+    100% {
+        transform: scale3d(0);
+    }
+}
+
+@keyframes fill {
+    100% {
+        box-shadow: inset 0 0 0 30px $blue-400;
+    }
+}
+
+@keyframes gettingOut {
+    0% {
+        transform: translateY(0%);
+    }
+
+    30% {
+        transform: translateY(100px);
+    }
+
+    100% {
+        transform: translateY(-200%);
+    }
+}
+
+@keyframes fadeIn {
+    100% {
+        opacity: 1;
+    }
+}

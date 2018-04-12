@@ -1,6 +1,8 @@
 package io.fundrequest.core.request.fund.domain;
 
 import io.fundrequest.core.infrastructure.repository.AbstractEntity;
+import lombok.Builder;
+import lombok.Getter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 
 @Table(name = "fund")
 @Entity
+@Getter
 public class Fund extends AbstractEntity {
 
     @Id
@@ -25,6 +28,9 @@ public class Fund extends AbstractEntity {
     @Column(name = "amount_in_wei")
     private BigDecimal amountInWei;
 
+    @Column(name = "token")
+    private String token;
+
     @Column(name = "time_stamp")
     private LocalDateTime timestamp;
 
@@ -34,9 +40,11 @@ public class Fund extends AbstractEntity {
     protected Fund() {
     }
 
-    Fund(String funder, BigDecimal amountInWei, Long requestId, LocalDateTime timestamp) {
+    @Builder
+    Fund(String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp) {
         this.funder = funder;
         this.amountInWei = amountInWei;
+        this.token = token;
         this.requestId = requestId;
         this.timestamp = timestamp;
     }
@@ -45,23 +53,4 @@ public class Fund extends AbstractEntity {
         this.id = id;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getFunder() {
-        return funder;
-    }
-
-    public BigDecimal getAmountInWei() {
-        return amountInWei;
-    }
-
-    public Long getRequestId() {
-        return requestId;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
 }

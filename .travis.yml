@@ -4,10 +4,11 @@ jdk:
 cache:
   directories:
     - $HOME/.m2
-    - web/src/main/web/node_modules
+    - tweb/src/main/frontend/node_modules
+    - tweb/src/main/frontend/src/js/vue/node_modules
 node_js: "8.7.0"
 
 after_success:
-  - docker build -t fundrequestio/platform:"$TRAVIS_BRANCH" rest-api
+  - docker build -t fundrequestio/platform:"$TRAVIS_BRANCH" tweb
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - docker push fundrequestio/platform:"$TRAVIS_BRANCH"

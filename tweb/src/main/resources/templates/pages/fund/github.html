@@ -1,0 +1,276 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layouts/default">
+<head>
+    <title>FundRequest - Fund Existing GitHub Request</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <section class="section section--header">
+        <div class="row">
+            <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
+                <i class="fab fa-github-alt fa-10x text-warning"></i>
+            </div>
+            <div class="col-12 col-md-8">
+                <h1 class="text-warning">
+                    <span class="d-inline-block d-md-none">
+                        <i class="fab fa-github-alt fa-1x text-warning"></i>
+                    </span>
+                    Fund an Existing Request
+                </h1>
+
+                <div class="description text-muted">
+                    <p>
+                        GitHub has millions of existing issues, not every request requires the creation of a new issue.
+                        Incentive our developer to start or keep working on an open issue.
+                    </p>
+                </div>
+                <a class="text-warning text-transform-normal"
+                   th:href="@{https://docs.fundrequest.io/display/PUB/Alpha+Release}">
+                    How it works...
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="position-relative mb-5">
+        <div class="wizard" data-wizard="3">
+            <div class="wizard__content">
+                <header class="wizard__header mb-2">
+                    <div class="wizard__steps">
+                        <nav class="steps">
+                            <div class="step" data-wizard-step="1">
+                                <div class="step__content">
+                                    <p class="step__number"><i class="fab fa-github-alt"></i></p>
+                                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                                    </svg>
+                                    <div class="lines">
+                                        <div class="line -background"></div>
+                                        <div class="line -progress"></div>
+                                        <div class="line -overlay"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step" data-wizard-step="2">
+                                <div class="step__content">
+                                    <p class="step__number"><i class="fas fa-dollar-sign"></i></p>
+                                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                                    </svg>
+
+                                    <div class="lines">
+                                        <div class="line -background"></div>
+                                        <div class="line -progress"></div>
+                                        <div class="line -overlay"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step" data-wizard-step="3">
+                                <div class="step__content">
+                                    <p class="step__number"><i class="far fa-handshake"></i></p>
+                                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                                    </svg>
+
+                                    <div class="lines">
+                                        <div class="line -background"></div>
+                                        <div class="line -overlay"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </header>
+
+
+                <div class="panels" style="height: 400px">
+                    <div class="panel movingIn" data-wizard-panel="1">
+                        <div class="row">
+                            <div class="col-12">
+                                <h2 class="section-title text-primary">Altivec/VSX support <span class="text-muted">#42743</span>
+                                </h2>
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        Which GitHub issue would you like to fund?
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-group">
+                                            <span class="input-group-prepend">
+                                                <span class="input-group-text">https://github.com/</span>
+                                            </span>
+                                            <input class="form-control" type="text"
+                                                   placeholder="ex: repoXYZ/issues/1" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        Describe why you would like to add funding to this GitHub Issue.
+                                    </div>
+                                    <div class="card-body">
+                                        <textarea
+                                                title="Describe why you would like to add funding to this GitHub Issue."
+                                                placeholder="This issue is blocking me from integrating this product with an other piece of open source software."
+                                                class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel movingOutForward" data-wizard-panel="2">
+                        <div class="row">
+                            <div class="col-12">
+                                <h2 class="section-title text-primary">Altivec/VSX support <span class="text-muted">#42743</span>
+                                </h2>
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        For how much would you like to fund the request?
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-group">
+                                            <span class="input-group-prepend">
+                                                <input class="form-control text-right" type="text"
+                                                       placeholder="ex: 120.00" />
+                                            </span>
+                                            <span class="input-group-prepend">
+                                                <select class="form-control" size="auto">
+                                                    <option>FND</option>
+                                                    <option>MLN</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        Select your preferred payment method.
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check mb-2">
+                                            <input disabled="disabled" class="form-check-input" type="radio"
+                                                   name="paymentMethod" id="paymentMethod-wallet" value="wallet" />
+                                            <label class="form-check-label" for="paymentMethod-wallet">
+                                                Internal Wallet (Coming soon)
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio" name="paymentMethod"
+                                                   id="paymentMethod-dapp" value="dapp" checked="checked" />
+                                            <label class="form-check-label" for="paymentMethod-dapp">
+                                                MetaMask / Mist / DApp Browser
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input disabled="disabled" class="form-check-input" type="radio"
+                                                   name="paymentMethod" id="paymentMethod-creditcard"
+                                                   value="creditcard" />
+                                            <label class="form-check-label" for="paymentMethod-creditcard">
+                                                Creditcard (Coming soon)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input disabled="disabled" class="form-check-input" type="radio"
+                                                   name="paymentMethod" id="paymentMethod-paypal" value="paypal" />
+                                            <label class="form-check-label" for="paymentMethod-paypal">
+                                                PayPal (Coming soon)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel movingOutForward" data-wizard-panel="3">
+                        <header class="panel__header">
+                            <h2 class="panel__title">Stay in touch with the community.</h2>
+                            <p class="panel__subheading">Community is everything, and here we do some crazy stuff.</p>
+                        </header>
+
+                        <p class="panel__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                                                  eiusmod tempor incididunt ut labore et dolore magna culpa qui officia
+                                                  deserunt mollit anim id est laborum.</p>
+                    </div>
+                </div>
+
+                <div class="wizard__footer text-right">
+                    <button class="btn btn-link text-warning d-none"
+                            data-wizard-control="previous"
+                            th:attr='data-wizard-control-texts=&apos;{ "default": "back", "2": "back to issue details", "3": "back to funding details" }&apos;'>
+                        Cancel
+                    </button>
+
+                    <button class="btn btn-warning"
+                            data-wizard-control="next"
+                            th:attr='data-wizard-control-texts=&apos;{ "default": "next", "1": "continue to funding details", "2": "continue to last step", "3": "initiate transaction"}&apos;'>
+                        Continue to funding details
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-2">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title text-primary">Frequently Asked Questions</h2>
+                <h3 class="section-subtitle text-muted">
+                    <small>Your funding existing requests FAQ's, answered.</small>
+                </h3>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body faq">
+                        <div class="faq__title">
+                            This is a first question, will other follow, what do you think?
+                        </div>
+                        <div class="faq__answer">
+                            Hmm I'm not sure, one question is of course not a lot, so I
+                            guess the chance is very high that others will follow. My
+                            answer is Yes.
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="faq__title">
+                            This is a first question, will other follow, what do you think?
+                        </div>
+                        <div class="faq__answer">
+                            Hmm I'm not sure, one question is of course not a lot, so I
+                            guess the chance is very high that others will follow. My
+                            answer is Yes.
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="faq__title">
+                            This is a first question, will other follow, what do you think?
+                        </div>
+                        <div class="faq__answer">
+                            Hmm I'm not sure, one question is of course not a lot, so I
+                            guess the chance is very high that others will follow. My
+                            answer is Yes.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block layout:fragment="css">
+</th:block>
+
+<th:block layout:fragment="scripts">
+    <script>require(['app/wizard'])</script>
+</th:block>
+
+</body>
+</html>

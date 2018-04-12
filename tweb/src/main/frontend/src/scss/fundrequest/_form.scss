@@ -1,0 +1,85 @@
+@keyframes rainbow {
+    0% {border-color: $yellow-500;}
+    20% {border-color: $green-500;}
+    40% {border-color: $teal-500;}
+    80% {border-color: $orange-500;}
+    100% {border-color: $yellow-500;}
+}
+
+@keyframes valid {
+    0% {border-color: $input-border-color;}
+    25% {border-color: $teal-500;}
+    50% {border-color: $green-500;}
+    75% {border-color: $teal-500;}
+    100% {border-color: $input-border-color;}
+}
+
+.form-control {
+
+
+    &.is-loading {
+        border-color: $yellow-500;
+        animation: rainbow 1s infinite;
+    }
+
+    &.is-valid {
+        border-color: $input-border-color;
+        animation: valid 1s;
+    }
+
+    &--not-editable,
+    &--label {
+        border-color: transparent;
+        cursor: default;
+        &[readonly] {
+            background-color: transparent;
+        }
+    }
+
+    &--label[readonly] {
+        background-image: none;
+    }
+
+    &--not-editable,
+    &--instant-edit {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    &--instant-edit:not(:hover,:active,:focus,.is-invalid) {
+        border-color: transparent;
+
+        .form-edit & {
+            border-color: $input-border-color;
+        }
+    }
+
+    + .text-danger {
+        position: absolute;
+        margin-top: 0;
+        font-size: $font-size-sm;
+    }
+
+    &--readonly-text {
+        background-color: $gray-200;
+        padding: $input-padding-y-lg;
+        min-height: 6rem;
+
+        user-select: none;
+        cursor: not-allowed;
+    }
+}
+
+.control-label--token-type {
+    padding: 0 10px !important;
+    margin: 0;
+    display: flex;
+    align-items: center;
+
+    .form-control {
+        box-shadow: none;
+        border: 0 none;
+    }
+}
+

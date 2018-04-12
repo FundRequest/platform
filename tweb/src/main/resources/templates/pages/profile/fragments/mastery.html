@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+
+<th:block th:fragment="mastery (mastery)">
+    <h2 class="card-header text-capitalize" th:classappend="${'text--' + mastery}">
+        <span th:text="${mastery}">Contributor</span>
+    </h2>
+    <div class="card-body">
+        <div class="card-text">
+            <p>Add more info about contributor.</p>
+
+            <div class="row">
+                <div class="col-12 col-lg-4">
+                    <h5 class="text-center">Developer</h5>
+                    <ul class="fnd-mastery-list">
+                        <li>
+                            <i class="far fa-check-square" th:classappend="${'text--' + mastery}"></i>
+                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+                        </li>
+                        <li>
+                            <i class="far fa-check-square" th:classappend="${'text--' + mastery}"></i>
+                            <span>Vestibulum volutpat ipsum vitae est posuere dignissim.</span>
+                        </li>
+                        <li>
+                            <i class="far fa-square" th:classappend="${'text--' + mastery}"></i>
+                            <span>Suspendisse gravida metus non bibendum egestas.</span>
+                        </li>
+                        <li>
+                            <i class="far fa-check-square" th:classappend="${'text--' + mastery}"></i>
+                            <span>Proin sodales sapien id velit posuere bibendum.</span>
+                        </li>
+                        <li>
+                            <i class="far fa-square" th:classappend="${'text--' + mastery}"></i>
+                            <span>Vivamus consectetur felis a posuere porta.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <h5 class="text-center">Community</h5>
+                    <ul class="fnd-mastery-list">
+                        <li>
+                            <i class="far fa-check-square" th:classappend="${'text--' + mastery}"></i>
+                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+                        </li>
+                        <li>
+                            <i class="far fa-check-square" th:classappend="${'text--' + mastery}"></i>
+                            <span>Vestibulum volutpat ipsum vitae est posuere dignissim.</span>
+                        </li>
+                        <li>
+                            <i class="far fa-square" th:classappend="${'text--' + mastery}"></i>
+                            <span>Suspendisse gravida metus non bibendum egestas.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <h5 class="text-center">X</h5>
+                    <ul class="fnd-mastery-list">
+                        <li>
+                            <i class="far fa-check-square" th:classappend="${'text--' + mastery}"></i>
+                            <span>Proin sodales sapien id velit posuere bibendum.</span>
+                        </li>
+                        <li>
+                            <i class="far fa-square" th:classappend="${'text--' + mastery}"></i>
+                            <span>Vivamus consectetur felis a posuere porta.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

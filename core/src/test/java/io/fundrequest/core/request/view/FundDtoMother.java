@@ -17,8 +17,7 @@ public final class FundDtoMother {
 
     public static FundDto aFundDto() {
         return mapper.map(FundMother.aFund()
-                .withId(234L)
-                .withTimestamp(LocalDateTime.of(2017, Month.DECEMBER, 27, 0, 0))
+                .timestamp(LocalDateTime.of(2017, Month.DECEMBER, 27, 0, 0))
                 .build());
     }
 

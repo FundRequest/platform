@@ -1,6 +1,8 @@
 package io.fundrequest.core.request.fund;
 
 
+import io.fundrequest.core.contract.service.FundRequestContractsService;
+import io.fundrequest.core.erc20.service.ERC20Service;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.Request;
@@ -13,9 +15,12 @@ import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.view.FundDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.token.TokenInfoService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
@@ -27,11 +32,10 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class FundServiceTest {
 
@@ -40,23 +44,33 @@ public class FundServiceTest {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private ApplicationEventPublisher eventPublisher;
+    private TokenInfoService tokenInfoService;
+    private CacheManager cacheManager;
+    private FundRequestContractsService fundRequestContractsService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         fundRepository = mock(FundRepository.class);
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
+        cacheManager = mock(CacheManager.class, RETURNS_DEEP_STUBS);
+        tokenInfoService = mock(TokenInfoService.class);
+        fundRequestContractsService = mock(FundRequestContractsService.class);
+
+        when(fundRepository.saveAndFlush(any(Fund.class))).then(returnsFirstArg());
         fundService = new FundServiceImpl(
                 fundRepository,
                 requestRepository,
                 mappers,
-                eventPublisher
-        );
+                eventPublisher,
+                cacheManager,
+                tokenInfoService,
+                fundRequestContractsService);
     }
 
     @Test
-    public void findAll() throws Exception {
+    public void findAll() {
         List<Fund> funds = singletonList(FundMother.aFund().build());
         when(fundRepository.findAll()).thenReturn(funds);
         List<FundDto> expecedFunds = singletonList(FundDtoMother.aFundDto());
@@ -68,7 +82,7 @@ public class FundServiceTest {
     }
 
     @Test
-    public void findAllByIterable() throws Exception {
+    public void findAllByIterable() {
         List<Fund> funds = singletonList(FundMother.aFund().build());
         Set<Long> ids = funds.stream().map(Fund::getId).collect(Collectors.toSet());
         when(fundRepository.findAll(ids)).thenReturn(funds);
@@ -82,7 +96,7 @@ public class FundServiceTest {
 
 
     @Test
-    public void findOne() throws Exception {
+    public void saveFunds() {
         Request request = RequestMother.freeCodeCampNoUserStories().build();
 
         FundsAddedCommand command = new FundsAddedCommand();
@@ -101,11 +115,14 @@ public class FundServiceTest {
         RequestDto requestDto = new RequestDto();
         when(mappers.map(eq(Request.class), eq(RequestDto.class), any(Request.class)))
                 .thenReturn(requestDto);
+        Cache cache = mock(Cache.class);
+        when(cacheManager.getCache("funds")).thenReturn(cache);
 
         fundService.addFunds(command);
 
         verifyFundsSaved(command, funder);
         verifyEventCreated(requestDto, fundDto);
+        verify(cache).evict(request.getId());
     }
 
     private void verifyEventCreated(RequestDto requestDto, FundDto fundDto) {

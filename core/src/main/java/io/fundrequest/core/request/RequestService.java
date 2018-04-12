@@ -23,7 +23,7 @@ public interface RequestService {
 
     RequestDto findRequest(Platform platform, String platformId);
 
-    RequestDto createRequest(CreateRequestCommand command);
+    Long createRequest(CreateRequestCommand command);
 
     void requestClaimed(RequestClaimedCommand command);
 

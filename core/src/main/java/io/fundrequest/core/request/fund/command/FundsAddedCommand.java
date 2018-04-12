@@ -1,10 +1,13 @@
 package io.fundrequest.core.request.fund.command;
 
+import lombok.Data;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Data
 public class FundsAddedCommand {
 
     @NotNull
@@ -16,37 +19,8 @@ public class FundsAddedCommand {
 
     private String transactionId;
 
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
+    private String token;
 
     private LocalDateTime timestamp;
 
-    public Long getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(Long requestId) {
-        this.requestId = requestId;
-    }
-
-    public BigDecimal getAmountInWei() {
-        return amountInWei;
-    }
-
-    public void setAmountInWei(BigDecimal amountInWei) {
-        this.amountInWei = amountInWei;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
 }

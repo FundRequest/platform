@@ -1,0 +1,35 @@
+.nav-link {
+    //text-transform: uppercase;
+}
+
+.dropdown-menu {
+    &--main {
+        border: 0 none;
+        padding: 10px;
+        background-color: $blue-100;
+        .dropdown-divider {
+            border-color: $gray-500;
+        }
+
+        &::before {
+            content: '';
+            display: block;
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: -5px;
+            right: 13px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid $blue-100;
+        }
+
+        .dropdown-item {
+            border-radius: $border-radius-sm;
+            transition: background-color .3s ease-in-out;
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+        }
+    }
+}

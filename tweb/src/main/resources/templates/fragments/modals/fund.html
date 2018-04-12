@@ -1,0 +1,184 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="default (id)" class="modal" tabindex="-1" role="dialog" th:id="${id}">
+    <div class="modal-dialog modal-dialog--with-tabs" role="document">
+        <div class="modal-content">
+            <div class="media">
+                <div class="modal-sidebar mr-2">
+                    <div class="modal-select-tabs">
+                        <div class="modal-sidebar__close">
+                            <a aria-label="Close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </div>
+                        <div class="modal-sidebar__options">
+                            <a class="modal-tab-option active">
+                                <div class="modal-tab-option__image modal-tab-option__image--metamask"></div>
+                                <div class="modal-tab-option__text">Metamask</div>
+                            </a>
+                            <a class="modal-tab-option modal-tab-option--trustwallet">
+                                <div class="modal-tab-option__image modal-tab-option__image--trustwallet"></div>
+                                <div class="modal-tab-option__text">Trustwallet</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="media-body">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-center">Fund
+                            <a target="_blank" th:href="@{#issue-link}">
+                                Issue title
+                            </a>
+                        </h4>
+                    </div>
+
+                    <div class="modal-tabs">
+                        <div class="modal-tab d-block">
+                            <div class="modal-body modal-body--form">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-horizontal form-horizontal--border">
+                                            <div class="form-heading">
+                                                <span class="form-heading__number">1</span>
+                                                <span class="form-heading__text">Enable metamask</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-horizontal form-horizontal--border">
+                                            <div class="form-heading">
+                                                <span class="form-heading__number">2</span>
+                                                <span class="form-heading__text">Enter funding amount</span>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="fund-amount"
+                                                       class="col-4 control-label control-label--token-type">
+                                                    <select class="form-control">
+                                                        <option>FND</option>
+                                                        <option>XYZ</option>
+                                                    </select>
+                                                </label>
+                                                <div class="col-8 form-control-static form-control--fnd">
+                                                    <input id="fund-amount" type="number" class="form-control"
+                                                           placeholder="ex: 15.00" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-12 col-md-8 offset-md-4 form-control-static">
+                                                    <label class="text-danger">
+                                                        Funding amount needs to be bigger then 0.
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-8 offset-4 form-control-static">
+                                                    <button type="button" class="btn btn-primary mb-0">
+                                                        Fund
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-horizontal form-horizontal--border">
+                                            <div class="form-heading">
+                                                <span class="form-heading__number">3</span>
+                                                <span class="form-heading__text">Approve transaction</span>
+                                                <span class="form-heading__info">
+                                    <span class="form-heading__info-text">Do following actions in metamask</span>
+                                        <a class="form-heading__logo form-heading__logo--metamask" target="_blank"
+                                           th:href="@{https://metamask.io}">
+                                        </a>
+                                    </span>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="fund-amount"
+                                                       class="col-4 control-label control-label--image">Click</label>
+                                                <div class="col-8 form-control-static">
+                                                    <img height="30" th:src="@{/assets/img/metamask-submit.png}"
+                                                         alt="click submit in metamask"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-tab d-none">
+                            <div class="modal-body modal-body--form">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-horizontal form-horizontal--border">
+                                            <div class="form-heading">
+                                                <span class="form-heading__number">1</span>
+                                                <span class="form-heading__text">Enter funding amount</span>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="fund-amount"
+                                                       class="col-4 control-label control-label--token-type">
+                                                    <select class="form-control">
+                                                        <option>FND</option>
+                                                        <option>XYZ</option>
+                                                    </select>
+                                                </label>
+                                                <div class="col-8 form-control-static form-control--fnd">
+                                                    <input type="number" class="form-control" placeholder="ex: 15.00" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-12 col-md-8 offset-md-4 form-control-static">
+                                                    <label class="text-danger">Funding amount needs to be bigger then
+                                                        0.</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-horizontal form-horizontal--border">
+                                            <div class="form-heading">
+                                                <span class="form-heading__number">2</span>
+                                                <span class="form-heading__text">Send funds</span>
+                                                <span class="form-heading__info">
+                                    <span class="form-heading__info-text">Do following actions in trustwallet</span>
+                                    <a class="form-heading__logo form-heading__logo--trustwallet"
+                                       target="_blank" th:href="@{https://trustwalletapp.com}">
+                                    </a>
+                                  </span>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-4 control-label control-label--image">Click</label>
+                                                <div class="col-8 form-control-static">
+                                                    <img height="30" th:src="@{/assets/img/trustwallet-send.png}"
+                                                         alt="send button"/>
+                                                    <span class="form-group__in-between">and then</span>
+                                                    <img height="30" th:src="@{/assets/img/trustwallet-qr.png}"
+                                                         alt="qr button"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-4 control-label">Scan QR</label>
+                                                <div class="col-8 form-control-static form-control-static--qr">
+                                                    <img class="img-responsive" th:src="@{/assets/img/qr-code.svg}"
+                                                         alt="qr-code"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-4 control-label control-label--image">Click</label>
+                                                <div class="col-8 form-control-static">
+                                                    <img height="30" th:src="@{/assets/img/trustwallet-next.png}"
+                                                         alt="next button"/>
+                                                    <span class="form-group__in-between">and then</span>
+                                                    <img height="30" th:src="@{/assets/img/trustwallet-send-big.png}"
+                                                         alt="send button"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

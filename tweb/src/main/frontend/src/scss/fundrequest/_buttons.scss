@@ -1,0 +1,23 @@
+.btn {
+    &--profile {
+        .top-nav-item & {
+            margin: 10px 0 10px 10px;
+        }
+    }
+
+    &--round-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+    }
+
+    &--flat {
+        box-shadow: none;
+    }
+}
+
+@import "../social-buttons/imports";

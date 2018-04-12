@@ -1,0 +1,67 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<nav th:fragment="header"
+        class="fnd-header navbar navbar-dark navbar-expand-md bg bg--blue bg--no-rect">
+    <div class="container">
+        <a class="navbar-brand navbar-brand--fnd" href="/">
+            <img class="d-md-none" th:src="@{/assets/img/logo-single180.png}" alt="Fundrequest logo"/>
+            <img class="d-none d-md-block" th:src="@{/assets/img/Fundrequest-title-white.png}" alt="Fundrequest logo"/>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#primary-menu"
+                aria-controls="primary-menu" aria-expanded="false" aria-label="Toggle primary menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="primary-menu">
+            <ul class="navbar-nav text-center mr-md-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Your Requests</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Developers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Browse</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav text-center ml-md-auto">
+                <!--/* TODO: Make list of pages in header dynamic */-->
+                <!--/* TODO: Highlight active page (add .active class to link */-->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/requests}">Help needed?</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/requests}">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"
+                            title="Profile"
+                            id="user-profile-menu"
+                            href="#dropdown"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-user"></i>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu--main" aria-labelledby="user-profile-menu">
+                        <div th:replace="fragments/dapp-status"></div>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item d-flex flex-nowrap" th:href="@{/profile}">
+                            <div class="mr-2"><i class="fa fa-id-card"></i></div> <span>Profile</span>
+                        </a>
+                        <a class="dropdown-item d-flex flex-nowrap" th:href="@{/settings}">
+                            <div class="mr-2"><i class="fa fa-cogs"></i></div> <span>Settings</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item d-flex flex-nowrap" th:href="@{/logout}">
+                            <div class="mr-2"><i class="fa fa-sign-out-alt"></i></div> <span>Logout</span>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+</html>
