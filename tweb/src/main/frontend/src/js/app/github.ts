@@ -1,5 +1,8 @@
 import {Utils} from './utils';
 
+import {Contracts} from "./contracts";
+import {FundRepository} from "../contracts/FundRepository";
+
 export class GithubUser {
     login: string;
     id: number;
@@ -44,9 +47,36 @@ export class GithubIssue {
     author_association: string;
     body: string;
     closed_by: string;
+
+    // extra params
+    owner: string;
+    repo: string;
+    platformId: string;
+
+    constructor(res: any) {
+        Object.assign(this, res);
+        let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(this.url);
+        this.owner = matches[1];
+        this.repo = matches[2];
+        this.platformId = `${this.owner}|FR|${this.repo}||${this.number}`;
+    }
 }
 
 export class Github {
+
+    private static _tokenContractAddress = Contracts.tokenContractAddress;
+
+    private _fundRepository: FundRepository;
+
+    constructor() {
+        this._init();
+    }
+
+    private async _init() {
+        await Promise.all([
+            Contracts.getInstance().getFundRepository().then(c => this._fundRepository = c)
+        ]);
+    }
 
     public static async validateLink(link: string): Promise<boolean> {
         return (await Github.getGithubInfo(link)) != null;
@@ -57,10 +87,13 @@ export class Github {
         if (matches && matches.length >= 4) {
             let url = `https://api.github.com/repos/${matches[1]}/${matches[2]}/issues/${matches[3]}`;
             return Utils.fetchJSON(url)
-                .then(res => res ? Object.assign(new GithubIssue(), res) : null);
+                .then(res => res ? new GithubIssue(res) : null);
         } else {
             return Promise.resolve(null);
         }
     }
 
+    public static getPlatformId(githubIssue: GithubIssue) {
+        return githubIssue.platformId;
+    }
 }

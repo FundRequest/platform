@@ -1,36 +1,31 @@
-import * as $ from 'jquery';
-
 import {FundRequestToken} from '../contracts/FundRequestToken';
 import {FundRequestContract} from '../contracts/FundRequestContract';
 import {Utils} from './utils';
+import {Web3} from './web3';
+import {Contracts} from "./contracts";
 
 class Requests {
     private _account = '0xc31Eb6E317054A79bb5E442D686CB9b225670c1D';
-    private _tokenContractAddress = '0x9f88c5cc76148d41a5db8d0a7e581481efc9667b';
     private _tokenContractZRXAddress = '0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570';
-    private _frContractAddress = '0x0ade7b8f58ba034a2a818f1fd48c3c92039c1cc8';
+    private _frContractAddress = Contracts.frContractAddress;
 
     private _tokenContract: FundRequestToken = null;
     private _tokenContractZRX: FundRequestToken = null;
     private _frContract: FundRequestContract = null;
 
-    private _web3: any = null;
+    private _web3: any = Web3.getInstance();
 
     constructor() {
-        if (typeof (<any>window).web3 !== 'undefined') {
-            this._web3 = new (<any>window).Web3((<any>window).web3.currentProvider);
-        } else {
-            this._web3 = new (<any>window).Web3(new (<any>window).Web3.providers.HttpProvider('https://kovan.fundrequest.io'));
-            // TODO: make app readonly, no transactions are possible
-        }
         this._init();
         this._initButtons();
     }
 
     private async _init() {
-        this._tokenContract = await FundRequestToken.createAndValidate(this._web3, this._tokenContractAddress);
-        this._tokenContractZRX = await FundRequestToken.createAndValidate(this._web3, this._tokenContractZRXAddress);
-        this._frContract = await FundRequestContract.createAndValidate(this._web3, this._frContractAddress);
+        await Promise.all([
+            Contracts.getInstance().getTokenContract().then(c => this._tokenContract = c),
+            FundRequestToken.createAndValidate(this._web3, this._tokenContractZRXAddress).then(c => this._tokenContractZRX = c),
+            Contracts.getInstance().getFrContract().then(c => this._frContract = c)
+        ]);
     }
 
     private _initButtons() {
