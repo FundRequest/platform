@@ -133,17 +133,22 @@
                                         For how much would you like to fund the request?
                                     </div>
                                     <div class="card-body">
-                                        <div class="input-group">
-                                            <span class="input-group-prepend">
-                                                <input class="form-control text-right" type="text"
-                                                       placeholder="ex: 120.00" />
-                                            </span>
-                                            <span class="input-group-prepend">
-                                                <select class="form-control" size="auto">
-                                                    <option>FND</option>
-                                                    <option>MLN</option>
-                                                </select>
-                                            </span>
+                                        <div class="row">
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <div class="input-group">
+                                                    <input class="form-control text-right"
+                                                           data-form-validation="required,number"
+                                                           type="text"
+                                                           placeholder="ex: 120.00" />
+                                                    <span class="input-group-prepend">
+                                                        <select title="token" class="form-control" size="auto">
+                                                            <option>FND</option>
+                                                            <option>MLN</option>
+                                                        </select>
+                                                    </span>
+                                                    <div class="invalid-feedback">Please enter a valid number</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

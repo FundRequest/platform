@@ -1,3 +1,5 @@
+import {Utils} from './utils';
+
 export class GithubUser {
     login: string;
     id: number;
@@ -46,18 +48,18 @@ export class GithubIssue {
 
 export class Github {
 
-    public static validateLink(link: string) {
-        let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(link);
-        return matches && matches.length >= 4;
+    public static async validateLink(link: string): Promise<boolean> {
+        return (await Github.getGithubInfo(link)) != null;
     }
 
     public static getGithubInfo(link: string): Promise<GithubIssue> {
         let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(link);
         if (matches && matches.length >= 4) {
             let url = `https://api.github.com/repos/${matches[1]}/${matches[2]}/issues/${matches[3]}`;
-            return fetch(url)
-                .then(res => res.json())
-                .then(res => Object.assign(new GithubIssue(), res));
+            return Utils.fetchJSON(url)
+                .then(res => res ? Object.assign(new GithubIssue(), res) : null);
+        } else {
+            return Promise.resolve(null);
         }
     }
 

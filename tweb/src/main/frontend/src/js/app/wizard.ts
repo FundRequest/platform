@@ -66,9 +66,9 @@ interface Step {
 
     finish();
 
-    goToNext(): Step;
+    goToNext(): Promise<Step>;
 
-    goToPrevious(): Step;
+    goToPrevious(): Promise<Step>;
 }
 
 class StepImpl implements Step {
@@ -117,8 +117,8 @@ class StepImpl implements Step {
         this.finishedCallback();
     }
 
-    public goToNext(): Step {
-        if (this.validate()) {
+    public async goToNext(): Promise<Step> {
+        if (await this.validate()) {
             if (this._nextStep != null) {
                 this._nextStep.setActive();
                 return this._nextStep;
@@ -131,7 +131,7 @@ class StepImpl implements Step {
         }
     }
 
-    public goToPrevious(): Step {
+    public async goToPrevious(): Promise<Step> {
         if (this._previousStep != null) {
             this._previousStep.setActive();
             return this._previousStep;
@@ -140,14 +140,12 @@ class StepImpl implements Step {
         }
     }
 
-    protected validate() {
+    protected async validate(): Promise<boolean> {
         let isValid: boolean = true;
         let panelEl = this.panel.getEl();
         let formElements: HTMLElement[] = Array.from(panelEl.querySelectorAll('[data-form-validation]'));
-        if (formElements.length > 0) {
-            formElements.forEach((fieldElement: HTMLElement) => {
-                isValid = Utils.validateHTMLElement(fieldElement) && isValid;
-            });
+        for (let fieldElement of formElements) {
+            isValid = await Utils.validateHTMLElement(fieldElement) && isValid;
         }
 
         this.panel.updateHeight();
@@ -162,36 +160,31 @@ class StepImpl implements Step {
 }
 
 class StepImplGithub extends StepImpl implements Step {
-    protected validate(): boolean {
+    protected async validate(): Promise<boolean> {
         let isValid: boolean = true;
         let panelEl = this.panel.getEl();
         let formElements: HTMLElement[] = Array.from(panelEl.querySelectorAll('[data-form-validation]'));
-        if (formElements.length > 0) {
-            formElements.forEach((fieldElement: HTMLElement) => {
-                if (fieldElement.dataset.formValidation == 'github') {
-                    isValid = Utils.validateHTMLElement(fieldElement, (githubLink: string) => {
-                        Github.getGithubInfo(githubLink).then((info: GithubIssue) => {
-                            console.log(info);
-                            let title = panelEl.parentElement.parentElement.querySelector('[data-wizard-title]');
-                            if (title) {
-                                title.innerHTML = `${info.title} <span class="text-muted">#${info.number}</span>`;
-                            }
-                        });
-                    }) && isValid;
-                } else {
-                    isValid = Utils.validateHTMLElement(fieldElement) && isValid;
-                }
-            });
+        for (let fieldElement of formElements) {
+            if (fieldElement.dataset.formValidation == 'github') {
+                isValid = await Utils.validateHTMLElement(fieldElement, async (githubLink: string) => {
+                    let info: GithubIssue = await Github.getGithubInfo(githubLink);
+                    let title = panelEl.parentElement.parentElement.querySelector('[data-wizard-title]');
+                    if (title) {
+                        info == null ? title.innerHTML = '' : title.innerHTML = `${info.title} <span class="text-muted">#${info.number}</span>`;
+                    }
+                }) && isValid;
+            } else {
+                isValid = await Utils.validateHTMLElement(fieldElement) && isValid;
+            }
         }
-
         this.panel.updateHeight();
         return isValid;
     }
 }
 
 class StepIcon {
-    private _el: HTMLElement;
-    private _title: string;
+    private readonly _el: HTMLElement;
+    private readonly _title: string;
 
     constructor(stepEl) {
         this._el = stepEl;
@@ -273,12 +266,12 @@ class Steps {
         this._initSteps(finishedCallback);
     }
 
-    public goToNextStep() {
-        this.currentStep = this.currentStep.goToNext();
+    public async goToNextStep() {
+        this.currentStep = await this.currentStep.goToNext();
     }
 
-    public goToPreviousStep() {
-        this.currentStep = this.currentStep.goToPrevious();
+    public async goToPreviousStep() {
+        this.currentStep = await this.currentStep.goToPrevious();
     }
 
     private _setCurrentStep(step: Step) {

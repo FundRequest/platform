@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import {Github} from './github';
 
 export class Utils {
@@ -29,18 +30,27 @@ export class Utils {
     }
 
     public static loadOnPageReady(readyFunction) {
-        if (document.readyState === 'complete') {
-            readyFunction();
-        } else {
-            document.addEventListener('DOMContentLoaded', () => {
-                readyFunction();
-            });
-        }
+        $(() => readyFunction());
     }
 
-    public static validateHTMLElement(element: HTMLElement, callback = null): boolean {
-        let isValid: boolean = false;
+    private static _handleHttpErrors(response) {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return response;
+    }
+
+    public static fetchJSON(url: string) {
+        return fetch(url)
+            .then(Utils._handleHttpErrors)
+            .then(res => res.json())
+            .catch(err => null);
+    }
+
+    public static async validateHTMLElement(element: HTMLElement, callback = null): Promise<boolean> {
+        let isValid: boolean = true;
         let validation = element.dataset.formValidation;
+        let validations = validation.split(',');
         let value = '';
 
         switch (element.tagName.toLowerCase()) {
@@ -55,23 +65,25 @@ export class Utils {
                 break;
         }
 
-        switch (validation) {
-            case 'required':
-                isValid = value.trim().length > 0;
-                break;
-            case 'github':
-                isValid = Utils._validation.github(value);
-                break;
-            default:
-                isValid = true;
-                break;
+        for (let validation of validations) {
+            switch (validation) {
+                case 'required':
+                    isValid = isValid && value.trim().length > 0;
+                    break;
+                case 'number':
+                    isValid = isValid && (value.trim().length <= 0 || /^[0-9]+(\.[0-9]{1,2})?$/.exec(value) != null);
+                    break;
+                case 'github':
+                    isValid = isValid && (value.trim().length <= 0 || (await Utils._validation.github(value)));
+                    break;
+            }
         }
 
         if (isValid) {
             element.classList.add('is-valid');
             element.classList.remove('is-invalid');
             if (callback != null) {
-                callback(value);
+                await callback(value);
             }
         } else {
             element.classList.remove('is-valid');
@@ -82,8 +94,10 @@ export class Utils {
     }
 
     private static _validation = {
-        github: (link) => {
+        github: (link): Promise<boolean> => {
             return Github.validateLink(link);
         }
     };
+
+
 }
