@@ -31,6 +31,7 @@ public class RequestClaim extends AbstractEntity {
     private String solver;
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
+    @Builder.Default
     private ClaimRequestStatus status = ClaimRequestStatus.PENDING;
     @Column(name = "flagged")
     private Boolean flagged;
