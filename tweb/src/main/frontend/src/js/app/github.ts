@@ -52,20 +52,21 @@ export class GithubIssue {
     owner: string;
     repo: string;
     platformId: string;
+    avatar: string;
 
     constructor(res: any) {
         Object.assign(this, res);
-        let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(this.url);
+        let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(this.html_url);
         this.owner = matches[1];
         this.repo = matches[2];
         this.platformId = `${this.owner}|FR|${this.repo}||${this.number}`;
+        this.avatar = `https://github.com/${this.owner}.png`;
     }
 }
 
 export class Github {
 
-    private static _tokenContractAddress = Contracts.tokenContractAddress;
-
+    private static _tokenContractAddress = Contracts.getInstance().tokenContractAddress;
     private _fundRepository: FundRepository;
 
     constructor() {

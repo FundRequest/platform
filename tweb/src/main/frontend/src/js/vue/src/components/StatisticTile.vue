@@ -20,7 +20,7 @@
 
 
     @Component
-    export default class HelloDecorator extends Vue {
+    export default class StatisticTile extends Vue {
         @Prop({required: true}) iconClass!: string;
         @Prop({required: true}) value!: string;
         @Prop({required: true}) description!: string;
