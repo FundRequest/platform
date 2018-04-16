@@ -4,6 +4,7 @@ import {FundRequestToken} from "../contracts/FundRequestToken";
 import {FundRepository} from "../contracts/FundRepository";
 import {Utils} from "./utils";
 import {TokenInfo} from "./token-info";
+import {ERC20} from "../contracts/ERC20";
 
 export class Contracts {
 
@@ -13,12 +14,13 @@ export class Contracts {
     public frContractAddress: string;
     private _tokenContract: Promise<FundRequestToken> = null;
     private _frContract: Promise<FundRequestContract> = null;
+    private _erc20Contract: Map<string, Promise<ERC20>> = new Map<string, Promise<ERC20>>();
     private _fundRepository: Promise<FundRepository> = null;
     private _web3: any = Web3.getInstance();
 
     constructor() {
-        let metaFundRequestToken = document.head.querySelector('[property="contracts:FundRequestToken"]');
-        let metaFundRequestContract = document.head.querySelector('[property="contracts:FundRequestContract"]');
+        let metaFundRequestToken = document.head.querySelector('[name="contracts:FundRequestToken"]');
+        let metaFundRequestContract = document.head.querySelector('[name="contracts:FundRequestContract"]');
         this.tokenContractAddress = metaFundRequestToken ? metaFundRequestToken.getAttribute('content') : null;
         this.frContractAddress = metaFundRequestContract ? metaFundRequestContract.getAttribute('content') : null;
     }
@@ -35,6 +37,13 @@ export class Contracts {
             this._frContract = FundRequestContract.createAndValidate(this._web3, Contracts.getInstance().frContractAddress);
         }
         return this._frContract;
+    }
+
+    public getErc20Contract(address: string): Promise<ERC20> {
+        if (!this._erc20Contract.get(address)) {
+            this._erc20Contract.set(address, ERC20.createAndValidate(this._web3, address));
+        }
+        return this._erc20Contract.get(address);
     }
 
     public async getFundRepository(): Promise<FundRepository> {

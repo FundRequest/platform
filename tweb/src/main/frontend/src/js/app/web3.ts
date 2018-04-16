@@ -16,6 +16,6 @@ export class Web3 {
         if (!Web3.instance) {
             Web3.instance = new Web3();
         }
-        return Web3.instance;
+        return Web3.instance._web3;
     }
 }
