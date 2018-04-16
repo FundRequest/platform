@@ -33,9 +33,9 @@
         </div>
     </section>
 
-    <section class="position-relative mb-5">
-        <form class="wizard" data-wizard="true" is="wizard-component" inline-template="true">
-            <div>
+    <div is="wizard-component" inline-template="true">
+        <div class="wizard">
+            <section class="position-relative mb-5">
                 <div class="wizard__content">
                     <header class="wizard__header mb-2">
                         <div class="wizard__steps">
@@ -43,7 +43,8 @@
                                 <div class="step" v-bind:class="getClassesStep(1)">
                                     <div class="step__content">
                                         <p class="step__number"><i class="fab fa-github-alt"></i></p>
-                                        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 52 52">
                                             <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
                                             <path class="checkmark__check" fill="none"
                                                   d="M14.1 27.2l7.1 7.2 16.7-16.8" />
@@ -59,7 +60,8 @@
                                 <div class="step" v-bind:class="getClassesStep(2)">
                                     <div class="step__content">
                                         <p class="step__number"><i class="fas fa-dollar-sign"></i></p>
-                                        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 52 52">
                                             <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
                                             <path class="checkmark__check" fill="none"
                                                   d="M14.1 27.2l7.1 7.2 16.7-16.8" />
@@ -76,7 +78,8 @@
                                 <div class="step" v-bind:class="getClassesStep(3)">
                                     <div class="step__content">
                                         <p class="step__number"><i class="far fa-handshake"></i></p>
-                                        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 52 52">
                                             <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
                                             <path class="checkmark__check" fill="none"
                                                   d="M14.1 27.2l7.1 7.2 16.7-16.8" />
@@ -106,7 +109,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panels" v-bind:style="{ height: panelsHeight + 'px' }">
+                    <div class="panels" v-bind:style="{ height: panelsHeight + 'px' }" ref="panels">
                         <div class="panel" ref="panelStep1"
                              v-bind:class="getClassesPanel(1)">
                             <div class="row mb-3">
@@ -162,15 +165,18 @@
                                                                placeholder="ex: 120.00"
                                                                v-model="fundAmount"
                                                         />
-                                                        <span class="input-group-prepend" v-if="selectedToken != null">
-                                                        <select title="token" class="form-control" size="auto"
-                                                                v-model="selectedToken">
-                                                          <option v-for="token in supportedTokens" v-bind:value="token">
-                                                            {{ token.symbol }}
-                                                          </option>
-                                                        </select>
-                                                    </span>
-                                                        <div class="invalid-feedback">Please enter a valid number</div>
+                                                        <span class="input-group-prepend"
+                                                              v-if="selectedToken != null">
+                                                            <select title="token" class="form-control" size="auto"
+                                                                    v-model="selectedToken">
+                                                              <option v-for="token in supportedTokens"
+                                                                      v-bind:value="token">
+                                                                {{ token.symbol }}
+                                                              </option>
+                                                            </select>
+                                                        </span>
+                                                        <div class="invalid-feedback">Please enter a valid number
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -198,11 +204,13 @@
                                                        :disabled="paymentMethods.dapp.disabledMsg != ''"
                                                        id="paymentMethod-dapp" v-bind:value="paymentMethods.dapp" />
                                                 <label class="form-check-label" for="paymentMethod-dapp">
-                                                    MetaMask / Mist / DApp Browser {{ paymentMethods.dapp.disabledMsg }}
+                                                    MetaMask / Mist / DApp Browser {{
+                                                    paymentMethods.dapp.disabledMsg }}
                                                 </label>
                                             </div>
                                             <div class="form-check mb-2">
-                                                <input :disabled="paymentMethods.wallet.disabledMsg != ''" class="form-check-input" type="radio"
+                                                <input :disabled="paymentMethods.wallet.disabledMsg != ''"
+                                                       class="form-check-input" type="radio"
                                                        v-model="paymentMethod"
                                                        name="paymentMethod" id="paymentMethod-wallet"
                                                        v-bind:value="paymentMethods.wallet" />
@@ -211,16 +219,18 @@
                                                 </label>
                                             </div>
                                             <div class="form-check mb-2">
-                                                <input :disabled="paymentMethods.creditCard.disabledMsg != ''" class="form-check-input" type="radio"
+                                                <input :disabled="paymentMethods.creditCard.disabledMsg != ''"
+                                                       class="form-check-input" type="radio"
                                                        v-model="paymentMethod"
                                                        name="paymentMethod" id="paymentMethod-creditcard"
                                                        v-bind:value="paymentMethods.creditCard" />
                                                 <label class="form-check-label" for="paymentMethod-creditcard">
-                                                    Creditcard {{ paymentMethods.creditCard.disabledMsg }}
+                                                    Credit card {{ paymentMethods.creditCard.disabledMsg }}
                                                 </label>
                                             </div>
                                             <div class="form-check">
-                                                <input :disabled="paymentMethods.paypal.disabledMsg != ''" class="form-check-input" type="radio"
+                                                <input :disabled="paymentMethods.paypal.disabledMsg != ''"
+                                                       class="form-check-input" type="radio"
                                                        v-model="paymentMethod"
                                                        name="paymentMethod" id="paymentMethod-paypal"
                                                        v-bind:value="paymentMethods.paypal" />
@@ -287,97 +297,102 @@
                                     back to funding details
                                 </button>
 
-                                <button class="btn btn-warning" data-wizard-control="next">
-                                    <span v-if="paymentMethod == paymentMethods.dapp" v-on:click="fundWithDapp()">Start transaction</span>
-                                    <span v-if="paymentMethod == paymentMethods.trustWallet"
-                                          v-on:click="fundWithTrust()">Get QR code</span>
+                                <button class="btn btn-warning" v-on:click="fund()">
+                                    <span v-if="paymentMethod == paymentMethods.dapp">Start transaction</span>
+                                    <span v-if="paymentMethod == paymentMethods.trustWallet">Get QR code</span>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal" tabindex="-1" role="dialog" v-if="false">
+                <div class="modal" ref="trustWalletModal" tabindex="-1" role="dialog" v-cloak="true"
+                     v-bind:class="[trustWalletModalActive ? 'd-block' : 'd-none']"
+                     v-if="githubIssue != null &amp;&amp; trustWalletModalActive">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">LinkedIn</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <h5 class="modal-title">
+                                    <span class="text-primary">Fund</span>
+                                    <span class="text-muted">
+                                        {{githubIssue.owner}}/{{githubIssue.repo}} #{{githubIssue.number}}
+                                    </span>
+                                </h5>
+                                <button type="button" class="close" v-on:click="hideTrustWalletModal()">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body d-block">
-                                <div class="d-flex mb-3">
-                                    <img class="mr-3 img--linked-in-modal" data-share-linked-in="image" src="" />
-                                    <div>
-                                        <div data-share-linked-in="title">Title</div>
-                                        <small><strong data-share-linked-in="url">fundrequest.io</strong></small>
+                            <div class="modal-body">
+                                <div class="row mb-2">
+                                    <div class="col-12 col-md-8">
+                                        <span>Open QR Support Wallet</span>
+                                        <span>Scan QR Code</span>
+                                        <span>Send transaction</span>
+                                    </div>
+                                    <div class="col-12 col-md-4">
                                     </div>
                                 </div>
-                                <div class="form-control form-control--readonly-text mb-2" data-share-linked-in="text">
-                                    FundRequest is awesome
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <small>
+                                            Note: Requests funded via QR code scanning will only appear in your
+                                            requests when
+                                            the blockchain transaction is completed
+                                        </small>
+                                    </div>
                                 </div>
-                                <div><label class="mb-2">Share with: <strong>public</strong></label></div>
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button class="btn btn-primary mb-3" type="button" data-share-linked-in="button">
-                                    Share
-                                </button>
-                                <button type="button" class="btn btn-secondary mb-3" data-dismiss="modal">
-                                    Hmm, I don't want to share ...
-                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
-    </section>
+            </section>
 
-    <section class="mb-2">
-        <div class="row">
-            <div class="col-12">
-                <h4 class="section-title text-primary">Frequently Asked Questions</h4>
-                <h5 class="section-subtitle text-muted">
-                    <small>Your funding existing requests FAQ's, answered.</small>
-                </h5>
-            </div>
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body faq">
-                        <div class="faq__title">
-                            This is a first question, will other follow, what do you think?
-                        </div>
-                        <div class="faq__answer">
-                            Hmm I'm not sure, one question is of course not a lot, so I
-                            guess the chance is very high that others will follow. My
-                            answer is Yes.
-                        </div>
+            <section class="mb-2" ref="faq">
+                <div class="row">
+                    <div class="col-12">
+                        <h4 class="section-title text-primary">Frequently Asked Questions</h4>
+                        <h5 class="section-subtitle text-muted">
+                            <small>Your funding existing requests FAQ's, answered.</small>
+                        </h5>
                     </div>
-                    <div class="card-body">
-                        <div class="faq__title">
-                            This is a first question, will other follow, what do you think?
-                        </div>
-                        <div class="faq__answer">
-                            Hmm I'm not sure, one question is of course not a lot, so I
-                            guess the chance is very high that others will follow. My
-                            answer is Yes.
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="faq__title">
-                            This is a first question, will other follow, what do you think?
-                        </div>
-                        <div class="faq__answer">
-                            Hmm I'm not sure, one question is of course not a lot, so I
-                            guess the chance is very high that others will follow. My
-                            answer is Yes.
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body faq">
+                                <div class="faq__title">
+                                    This is a first question, will other follow, what do you think?
+                                </div>
+                                <div class="faq__answer">
+                                    Hmm I'm not sure, one question is of course not a lot, so I
+                                    guess the chance is very high that others will follow. My
+                                    answer is Yes.
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="faq__title">
+                                    This is a first question, will other follow, what do you think?
+                                </div>
+                                <div class="faq__answer">
+                                    Hmm I'm not sure, one question is of course not a lot, so I
+                                    guess the chance is very high that others will follow. My
+                                    answer is Yes.
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="faq__title">
+                                    This is a first question, will other follow, what do you think?
+                                </div>
+                                <div class="faq__answer">
+                                    Hmm I'm not sure, one question is of course not a lot, so I
+                                    guess the chance is very high that others will follow. My
+                                    answer is Yes.
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
-    </section>
+    </div>
 </th:block>
 
 <th:block layout:fragment="css">

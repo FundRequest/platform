@@ -38,7 +38,7 @@ public class RequestController extends AbstractController {
                 .build();
     }
 
-    @PostMapping(value = {"/rest/requests/{id}/erc67/fund"}, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = {"/rest/requests/erc67/fund"}, produces = MediaType.TEXT_PLAIN_VALUE)
     public String generateERC67ForFunding(@RequestBody @Valid CreateERC67FundRequest createERC67FundRequest) {
         return requestService.generateERC67(createERC67FundRequest);
     }

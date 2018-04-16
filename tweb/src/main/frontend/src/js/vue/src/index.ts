@@ -5,17 +5,14 @@ import WizardComponent from './components/WizardComponent.vue';
 
 let v = new Vue({
     el: '#vue-app',
-    data: {name: 'World'},
+    data: {},
     components: {
         'statistic-tile': StatisticTile,
         'wizard-component': WizardComponent
     },
     mounted() {
-        setTimeout(function(){
+        setTimeout(function () {
             document.body.classList.remove('preload');
-        },500);
+        }, 500);
     }
 });
-
-
-
