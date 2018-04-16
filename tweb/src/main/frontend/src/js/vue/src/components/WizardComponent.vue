@@ -4,6 +4,7 @@
     import {Github, GithubIssue} from "../../../app/github";
     import {TokenInfo} from "../../../app/token-info";
     import {Contracts} from "../../../app/contracts";
+    import {PaymentMethod, PaymentMethods} from "../../../app/payment-method";
 
     @Component
     export default class WizardComponent extends Vue {
@@ -13,8 +14,7 @@
         public supportedTokens: TokenInfo[] = [];
         public selectedToken: TokenInfo = null;
 
-
-        public paymentMethod: string = "dapp";
+        public paymentMethod: PaymentMethod = PaymentMethods.getInstance().trustWallet;
         public fundAmount: number = 0;
 
         mounted() {
@@ -25,6 +25,10 @@
 
         public get totalAmount() {
             return this.fundAmount;
+        }
+
+        public get paymentMethods(): PaymentMethods {
+            return PaymentMethods.getInstance();
         }
 
         async updateUrl(url): Promise<void> {
