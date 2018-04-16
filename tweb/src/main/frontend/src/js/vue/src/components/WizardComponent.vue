@@ -12,7 +12,7 @@
         public githubIssue: GithubIssue = null;
         public paymentMethod: string = "dapp";
         public supportedTokens: TokenInfo[] = [];
-        public selectedToken: string = "";
+        public selectedToken: TokenInfo = null;
 
         mounted() {
             new Wizard(this.$el, () => {
@@ -28,11 +28,13 @@
         }
 
         private async updatePossibleTokens(res: GithubIssue): Promise<void> {
-            let tokens: TokenInfo[] = await Contracts.getPossibleTokens(res.platformId);
-            if (tokens) {
-                this.supportedTokens = tokens;
-                this.selectedToken = this.supportedTokens[0].address;
-                this.$forceUpdate();
+            if (res != null) {
+                let tokens: TokenInfo[] = await Contracts.getPossibleTokens(res.platformId);
+                if (tokens) {
+                    this.supportedTokens = tokens;
+                    this.selectedToken = this.supportedTokens[0];
+                    this.$forceUpdate();
+                }
             }
         }
     }

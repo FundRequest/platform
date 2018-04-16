@@ -158,10 +158,9 @@
                                                            data-form-validation="required;number"
                                                            type="text"
                                                            placeholder="ex: 120.00" />
-                                                    <span class="input-group-prepend">
+                                                    <span class="input-group-prepend" v-if="selectedToken != null">
                                                         <select title="token" class="form-control" size="auto" v-model="selectedToken">
-                                                          <!-- inline object literal -->
-                                                          <option v-for="token in supportedTokens" v-bind:value="token.address">
+                                                          <option v-for="token in supportedTokens" v-bind:value="token">
                                                             {{ token.symbol }}
                                                           </option>
                                                         </select>
@@ -184,7 +183,7 @@
                                                    id="paymentMethod-trustwallet" value="trustwallet"
                                                    checked="checked" />
                                             <label class="form-check-label" for="paymentMethod-trustwallet">
-                                                Trustwallet
+                                                Trust Wallet
                                             </label>
                                         </div>
                                         <div class="form-check mb-2">
@@ -243,13 +242,17 @@
                                         Summary
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
+                                        <div class="row" v-if="githubIssue != null &amp;&amp; selectedToken != null">
                                             <div class="col-9">
-
+                                                Fund an Existing Request
+                                                (<a v-bind:href="githubIssue.html_url" target="_blank" rel="noopener noreferrer">
+                                                    <span class="text-muted">{{githubIssue.owner}}/{{githubIssue.repo}} #{{githubIssue.number}}</span>
+                                                </a>)
                                             </div>
                                             <div class="col-3 text-right">
-                                                {{}}
+                                                {{selectedToken.symbol}}
                                             </div>
+                                            <hr />
                                         </div>
                                     </div>
                                 </div>
