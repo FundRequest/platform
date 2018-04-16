@@ -45,7 +45,7 @@ export class Contracts {
         return this._fundRepository;
     }
 
-    public getPossibleTokens(platformId: string): Promise<TokenInfo[]> {
+    static getPossibleTokens(platformId: string): Promise<TokenInfo[]> {
         return Utils.fetchJSON("/rest/fund/allowed-tokens?platform=GITHUB&platformId=" + encodeURIComponent(platformId));
     }
 

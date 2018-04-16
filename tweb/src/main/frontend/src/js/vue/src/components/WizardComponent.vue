@@ -28,7 +28,7 @@
         }
 
         private updatePossibleTokens(res: GithubIssue) {
-            Contracts.getInstance().getPossibleTokens(res.platformId).then((res: TokenInfo[]) => {
+            Contracts.getPossibleTokens(res.platformId).then((res: TokenInfo[]) => {
                 if (res) {
                     this.supportedTokens = res;
                     this.selectedToken = this.supportedTokens[0].address;
