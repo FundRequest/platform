@@ -23,6 +23,7 @@
         public fundAmount: number = 0;
 
         mounted() {
+            this.updateDappPaymentMethod();
             this.setActiveStep(1);
         }
 
@@ -67,6 +68,28 @@
 
             console.log(valid);
             this._loading = false;
+        }
+
+        private async updateDappPaymentMethod() {
+            await this.updateDappDisabledMsg();
+            if(!PaymentMethods.getInstance().dapp.disabledMsg) {
+                this.paymentMethod = PaymentMethods.getInstance().dapp;
+            }
+        }
+
+        private async updateDappDisabledMsg() {
+            let web3 = Web3.getInstance();
+            if (web3 && web3.eth && web3.eth.defaultAccount) {
+                web3.version.getNetwork(function(err, res) {
+                    if(!err) {
+                        if(res != '42') {
+                            PaymentMethods.getInstance().dapp.disabledMsg = 'Not connected to the correct network.';
+                        }
+                    }
+                });
+            } else {
+                PaymentMethods.getInstance().dapp.disabledMsg = 'Please initialize your dapp browser correctly, no accounts available.';
+            }
         }
 
         private fund() {

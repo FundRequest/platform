@@ -188,7 +188,7 @@
                                                        id="paymentMethod-trustwallet"
                                                        v-bind:value="paymentMethods.trustWallet" />
                                                 <label class="form-check-label" for="paymentMethod-trustwallet">
-                                                    Trust Wallet
+                                                    Trust Wallet {{ paymentMethods.trustWallet.disabledMsg }}
                                                 </label>
                                             </div>
                                             <div class="form-check mb-2">
@@ -196,7 +196,7 @@
                                                        v-model="paymentMethod"
                                                        id="paymentMethod-dapp" v-bind:value="paymentMethods.dapp" />
                                                 <label class="form-check-label" for="paymentMethod-dapp">
-                                                    MetaMask / Mist / DApp Browser
+                                                    MetaMask / Mist / DApp Browser {{ paymentMethods.dapp.disabledMsg }}
                                                 </label>
                                             </div>
                                             <div class="form-check mb-2">
@@ -205,7 +205,7 @@
                                                        name="paymentMethod" id="paymentMethod-wallet"
                                                        v-bind:value="paymentMethods.wallet" />
                                                 <label class="form-check-label" for="paymentMethod-wallet">
-                                                    Internal Wallet (Coming soon)
+                                                    Internal Wallet {{ paymentMethods.wallet.disabledMsg }}
                                                 </label>
                                             </div>
                                             <div class="form-check mb-2">
@@ -214,7 +214,7 @@
                                                        name="paymentMethod" id="paymentMethod-creditcard"
                                                        v-bind:value="paymentMethods.creditCard" />
                                                 <label class="form-check-label" for="paymentMethod-creditcard">
-                                                    Creditcard (Coming soon)
+                                                    Creditcard {{ paymentMethods.creditCard.disabledMsg }}
                                                 </label>
                                             </div>
                                             <div class="form-check">
@@ -223,7 +223,7 @@
                                                        name="paymentMethod" id="paymentMethod-paypal"
                                                        v-bind:value="paymentMethods.paypal" />
                                                 <label class="form-check-label" for="paymentMethod-paypal">
-                                                    PayPal (Coming soon)
+                                                    PayPal {{ paymentMethods.paypal.disabledMsg }}
                                                 </label>
                                             </div>
                                         </div>
