@@ -20,23 +20,20 @@
             });
         }
 
-        updateUrl(url) {
-            Github.getGithubInfo(url).then((res: GithubIssue) => {
-                this.githubIssue = res;
-                this.githubUrl = url;
-                this.$forceUpdate();
-                this.updatePossibleTokens(res);
-            });
+        async updateUrl(url): Promise<void> {
+            this.githubIssue = await Github.getGithubInfo(url);
+            this.githubUrl = url;
+            this.$forceUpdate();
+            await this.updatePossibleTokens(this.githubIssue);
         }
 
-        private updatePossibleTokens(res: GithubIssue) {
-            Contracts.getPossibleTokens(res.platformId).then((res: TokenInfo[]) => {
-                if (res) {
-                    this.supportedTokens = res;
-                    this.selectedToken = this.supportedTokens[0].address;
-                    this.$forceUpdate();
-                }
-            });
+        private async updatePossibleTokens(res: GithubIssue): Promise<void> {
+            let tokens: TokenInfo[] = await Contracts.getPossibleTokens(res.platformId);
+            if (tokens) {
+                this.supportedTokens = tokens;
+                this.selectedToken = this.supportedTokens[0].address;
+                this.$forceUpdate();
+            }
         }
     }
 
