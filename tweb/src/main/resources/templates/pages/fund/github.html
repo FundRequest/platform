@@ -156,8 +156,9 @@
                                                 <div class="input-group">
                                                     <input class="form-control text-right"
                                                            data-form-validation="required;number"
-                                                           type="text"
-                                                           placeholder="ex: 120.00" />
+                                                           placeholder="ex: 120.00"
+                                                           v-model="fundAmount"
+                                                    />
                                                     <span class="input-group-prepend" v-if="selectedToken != null">
                                                         <select title="token" class="form-control" size="auto" v-model="selectedToken">
                                                           <option v-for="token in supportedTokens" v-bind:value="token">
@@ -235,14 +236,14 @@
                     </div>
 
                     <div class="panel movingOutForward" data-wizard-panel="github-fund">
-                        <div class="row md-3">
+                        <div class="row md-3" v-if="githubIssue != null &amp;&amp; selectedToken != null">
                             <div class="col-12">
-                                <div class="card mb-3" v-if="paymentMethod == 'dapp'">
+                                <div class="card mb-3">
                                     <div class="card-header">
                                         Summary
                                     </div>
                                     <div class="card-body">
-                                        <div class="row" v-if="githubIssue != null &amp;&amp; selectedToken != null">
+                                        <div class="row">
                                             <div class="col-9">
                                                 Fund an Existing Request
                                                 (<a v-bind:href="githubIssue.html_url" target="_blank" rel="noopener noreferrer">
@@ -250,19 +251,19 @@
                                                 </a>)
                                             </div>
                                             <div class="col-3 text-right">
-                                                {{selectedToken.symbol}}
+                                                {{fundAmount}} {{selectedToken.symbol}}
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-9">
+                                                Total
+                                            </div>
+                                            <div class="col-3 text-right">
+                                                {{totalAmount}} {{selectedToken.symbol}}
                                             </div>
                                             <hr />
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3" v-if="paymentMethod == 'trustwallet'">
-                                    <div class="card-header">
-
-                                    </div>
-                                    <div class="card-body">
-                                        Fund:
-                                        Payment method: {{paymentMethod}}
                                     </div>
                                 </div>
                             </div>

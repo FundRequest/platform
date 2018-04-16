@@ -10,14 +10,21 @@
 
         public githubUrl: string = "";
         public githubIssue: GithubIssue = null;
-        public paymentMethod: string = "dapp";
         public supportedTokens: TokenInfo[] = [];
         public selectedToken: TokenInfo = null;
+
+
+        public paymentMethod: string = "dapp";
+        public fundAmount: number = 0;
 
         mounted() {
             new Wizard(this.$el, () => {
                 alert(this.paymentMethod);
             });
+        }
+
+        public get totalAmount() {
+            return this.fundAmount;
         }
 
         async updateUrl(url): Promise<void> {
