@@ -59,7 +59,7 @@ export class GithubIssue {
         let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(this.html_url);
         this.owner = matches[1];
         this.repo = matches[2];
-        this.platformId = `${this.owner}|FR|${this.repo}||${this.number}`;
+        this.platformId = `${this.owner}|FR|${this.repo}|FR|${this.number}`;
         this.avatar = `https://github.com/${this.owner}.png`;
     }
 }
