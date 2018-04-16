@@ -20,6 +20,7 @@
   "scripts": {
     "build": "gulp",
     "webpack": "webpack --config ./src/js/vue/webpack.config.js",
+    "webpack-watch": "webpack --watch --config ./src/js/vue/webpack.config.js",
     "typechain": "typechain --outDir ./src/js/contracts './src/js/abi/*.json'",
     "watch": "gulp watch",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -80,7 +81,9 @@
     "requirejs": "^2.3.5",
     "typeface-titillium-web": "0.0.54",
     "vue": "^2.5.2",
+    "vue-async-computed": "^3.3.1",
     "vue-class-component": "^6.0.0",
+    "vue-computed-promise": "^1.0.3",
     "vue-property-decorator": "^6.0.0",
     "vue-router": "^3.0.1",
     "web3": "^0.20.6"

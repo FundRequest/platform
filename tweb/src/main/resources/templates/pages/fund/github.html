@@ -34,17 +34,18 @@
     </section>
 
     <section class="position-relative mb-5">
-        <div class="wizard" data-wizard="true">
+        <form class="wizard" data-wizard="true" is="wizard-component" inline-template="true">
             <div class="wizard__content">
                 <header class="wizard__header mb-2">
                     <div class="wizard__steps">
                         <nav class="steps">
-                            <div class="step" data-wizard-step="github">
+                            <div class="step" data-wizard-step="true">
                                 <div class="step__content">
                                     <p class="step__number"><i class="fab fa-github-alt"></i></p>
                                     <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                                         <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                                        <path class="checkmark__check" fill="none"
+                                              d="M14.1 27.2l7.1 7.2 16.7-16.8" />
                                     </svg>
                                     <div class="lines">
                                         <div class="line -background"></div>
@@ -54,12 +55,13 @@
                                 </div>
                             </div>
 
-                            <div class="step" data-wizard-step="github-fund">
+                            <div class="step" data-wizard-step="true">
                                 <div class="step__content">
                                     <p class="step__number"><i class="fas fa-dollar-sign"></i></p>
                                     <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                                         <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                                        <path class="checkmark__check" fill="none"
+                                              d="M14.1 27.2l7.1 7.2 16.7-16.8" />
                                     </svg>
 
                                     <div class="lines">
@@ -70,12 +72,13 @@
                                 </div>
                             </div>
 
-                            <div class="step" data-wizard-step="github-initiate">
+                            <div class="step" data-wizard-step="true">
                                 <div class="step__content">
                                     <p class="step__number"><i class="far fa-handshake"></i></p>
                                     <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                                         <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                                        <path class="checkmark__check" fill="none"
+                                              d="M14.1 27.2l7.1 7.2 16.7-16.8" />
                                     </svg>
 
                                     <div class="lines">
@@ -90,12 +93,18 @@
                 <div class="wizard__title">
                     <div class="row">
                         <div class="col-12">
-                            <h2 class="section-title text-primary" data-wizard-title="true"></h2>
+                            <h2 class="section-title text-primary" v-if="githubIssue != null" v-cloak="true">
+                                <img v-bind:src="githubIssue.avatar + '?size=30'" height="30" width="30" />
+                                <a v-bind:href="githubIssue.html_url" target="_blank" rel="noopener noreferrer">
+                                    {{githubIssue.owner}}/{{githubIssue.repo}} <span class="text-muted">#{{githubIssue.number}}</span>
+                                </a>
+                            </h2>
                         </div>
                     </div>
                 </div>
                 <div class="panels">
-                    <div class="panel movingIn" data-wizard-panel="github">
+                    <div class="panel" data-wizard-panel="github"
+                         data-wizard-panel-next="continue to funding details">
                         <div class="row">
                             <div class="col-12">
                                 <div class="card mb-3">
@@ -104,8 +113,10 @@
                                     </div>
                                     <div class="card-body">
                                         <input class="form-control" type="text"
-                                               data-form-validation="github"
-                                               placeholder="ex: https://github.com/repoXYZ/issues/1" />
+                                               data-form-validation="required;github"
+                                               placeholder="ex.: https://github.com/repoXYZ/issues/1"
+                                               v-bind:value="githubUrl"
+                                               v-on:input="updateUrl($event.target.value)" />
                                         <div class="invalid-feedback">Please enter a valid github issue</div>
                                     </div>
                                 </div>
@@ -117,7 +128,7 @@
                                     <div class="card-body">
                                         <textarea
                                                 title="Describe why you would like to add funding to this GitHub Issue."
-                                                placeholder="This issue is blocking me from integrating this product with an other piece of open source software."
+                                                placeholder="ex.: This issue is blocking me from integrating this product with an other piece of open source software."
                                                 class="form-control"></textarea>
                                     </div>
                                 </div>
@@ -125,7 +136,9 @@
                         </div>
                     </div>
 
-                    <div class="panel movingOutForward" data-wizard-panel="github-fund">
+                    <div class="panel movingOutForward" data-wizard-panel="github-fund-method"
+                         data-wizard-panel-previous="back to issue details"
+                         data-wizard-panel-next="continue to last step">
                         <div class="row">
                             <div class="col-12">
                                 <div class="card mb-3">
@@ -137,7 +150,7 @@
                                             <div class="col-12 col-md-6 col-lg-4">
                                                 <div class="input-group">
                                                     <input class="form-control text-right"
-                                                           data-form-validation="required,number"
+                                                           data-form-validation="required;number"
                                                            type="text"
                                                            placeholder="ex: 120.00" />
                                                     <span class="input-group-prepend">
@@ -160,6 +173,7 @@
                                     <div class="card-body">
                                         <div class="form-check mb-2">
                                             <input disabled="disabled" class="form-check-input" type="radio"
+                                                   v-model="paymentMethod"
                                                    name="paymentMethod" id="paymentMethod-wallet" value="wallet" />
                                             <label class="form-check-label" for="paymentMethod-wallet">
                                                 Internal Wallet (Coming soon)
@@ -167,6 +181,16 @@
                                         </div>
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="paymentMethod"
+                                                   v-model="paymentMethod"
+                                                   id="paymentMethod-trustwallet" value="trustwallet"
+                                                   checked="checked" />
+                                            <label class="form-check-label" for="paymentMethod-trustwallet">
+                                                Trustwallet
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio" name="paymentMethod"
+                                                   v-model="paymentMethod"
                                                    id="paymentMethod-dapp" value="dapp" checked="checked" />
                                             <label class="form-check-label" for="paymentMethod-dapp">
                                                 MetaMask / Mist / DApp Browser
@@ -174,6 +198,7 @@
                                         </div>
                                         <div class="form-check mb-2">
                                             <input disabled="disabled" class="form-check-input" type="radio"
+                                                   v-model="paymentMethod"
                                                    name="paymentMethod" id="paymentMethod-creditcard"
                                                    value="creditcard" />
                                             <label class="form-check-label" for="paymentMethod-creditcard">
@@ -182,6 +207,7 @@
                                         </div>
                                         <div class="form-check">
                                             <input disabled="disabled" class="form-check-input" type="radio"
+                                                   v-model="paymentMethod"
                                                    name="paymentMethod" id="paymentMethod-paypal" value="paypal" />
                                             <label class="form-check-label" for="paymentMethod-paypal">
                                                 PayPal (Coming soon)
@@ -193,35 +219,41 @@
                         </div>
                     </div>
 
-                    <div class="panel movingOutForward" data-wizard-panel="github-initiate">
-                        <header class="panel__header">
-                            <h2 class="panel__title">Stay in touch with the community.</h2>
-                            <p class="panel__subheading">Community is everything, and here we do some crazy
-                                                         stuff.</p>
-                        </header>
+                    <div class="panel movingOutForward" data-wizard-panel="github-fund"
+                         data-wizard-panel-previous="back to funding details"
+                         data-wizard-panel-next="Start transaction">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card mb-3" v-if="paymentMethod == 'dapp'">
+                                    <div class="card-header">
+                                        MetaMask / Mist / DApp Browser
+                                    </div>
+                                </div>
+                                <div class="card mb-3" v-if="paymentMethod == 'trustwallet'">
+                                    <div class="card-header">
 
-                        <p class="panel__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                                  eiusmod tempor incididunt ut labore et dolore magna culpa qui
-                                                  officia
-                                                  deserunt mollit anim id est laborum.</p>
+                                    </div>
+                                    <div class="card-body">
+                                        Fund:
+                                        Payment method: {{paymentMethod}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="wizard__footer text-right">
-                    <button class="btn btn-link text-warning d-none"
-                            data-wizard-control="previous"
-                            th:attr='data-wizard-control-texts=&apos;{ "default": "back", "github-fund": "back to issue details", "github-initiate": "back to funding details" }&apos;'>
-                        Cancel
+                    <button class="btn btn-link text-warning d-none" data-wizard-control="previous">
+                        Back
                     </button>
 
-                    <button class="btn btn-warning"
-                            data-wizard-control="next"
-                            th:attr='data-wizard-control-texts=&apos;{ "default": "next", "github": "continue to funding details", "github-fund": "continue to last step", "github-initiate": "initiate transaction"}&apos;'>
-                        Continue to funding details
+                    <button class="btn btn-warning" data-wizard-control="next">
+                        Next
                     </button>
                 </div>
             </div>
-        </div>
+        </form>
     </section>
 
     <section class="mb-2">

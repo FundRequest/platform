@@ -43,10 +43,8 @@ export class Utils {
             .catch(err => null);
     }
 
-    public static async validateHTMLElement(element: HTMLElement, callback = null): Promise<boolean> {
+    public static async validateHTMLElement(element: HTMLElement, validations: string[], callback = null): Promise<boolean> {
         let isValid: boolean = true;
-        let validation = element.dataset.formValidation;
-        let validations = validation.split(',');
         let value = '';
 
         switch (element.tagName.toLowerCase()) {
