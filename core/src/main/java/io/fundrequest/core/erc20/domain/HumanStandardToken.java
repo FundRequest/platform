@@ -16,6 +16,7 @@ import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 
 import java.math.BigInteger;
+import java.util.Collections;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -34,11 +35,7 @@ public final class HumanStandardToken extends Contract {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    private HumanStandardToken(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
-    }
-
-    public RemoteCall<String> nameAsync() {
+    private RemoteCall<String> nameAsync() {
         Function function = new Function("name",
                 emptyList(),
                 singletonList(new TypeReference<Utf8String>() {
@@ -82,7 +79,7 @@ public final class HumanStandardToken extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<BigInteger> decimalsAsync() {
+    private RemoteCall<BigInteger> decimalsAsync() {
         Function function = new Function("decimals",
                 emptyList(),
                 singletonList(new TypeReference<Uint8>() {
@@ -115,7 +112,7 @@ public final class HumanStandardToken extends Contract {
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteCall<String> symbolAsync() {
+    private RemoteCall<String> symbolAsync() {
         Function function = new Function("symbol",
                 emptyList(),
                 singletonList(new TypeReference<Utf8String>() {
@@ -155,25 +152,9 @@ public final class HumanStandardToken extends Contract {
         Function function = new Function("allowance",
                 asList(new org.web3j.abi.datatypes.Address(_owner),
                         new org.web3j.abi.datatypes.Address(_spender)),
-                asList(new TypeReference<Uint256>() {
+                Collections.singletonList(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
-    }
-
-    public static RemoteCall<HumanStandardToken> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, BigInteger _initialAmount, String _tokenName, BigInteger _decimalUnits, String _tokenSymbol) {
-        final String encodedConstructor = FunctionEncoder.encodeConstructor(asList(new org.web3j.abi.datatypes.generated.Uint256(_initialAmount),
-                new org.web3j.abi.datatypes.Utf8String(_tokenName),
-                new org.web3j.abi.datatypes.generated.Uint8(_decimalUnits),
-                new org.web3j.abi.datatypes.Utf8String(_tokenSymbol)));
-        return deployRemoteCall(HumanStandardToken.class, web3j, credentials, gasPrice, gasLimit, BINARY, encodedConstructor);
-    }
-
-    public static RemoteCall<HumanStandardToken> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit, BigInteger _initialAmount, String _tokenName, BigInteger _decimalUnits, String _tokenSymbol) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(asList(new org.web3j.abi.datatypes.generated.Uint256(_initialAmount),
-                new org.web3j.abi.datatypes.Utf8String(_tokenName),
-                new org.web3j.abi.datatypes.generated.Uint8(_decimalUnits),
-                new org.web3j.abi.datatypes.Utf8String(_tokenSymbol)));
-        return deployRemoteCall(HumanStandardToken.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, encodedConstructor);
     }
 
     public static HumanStandardToken load(String contractAddress, Web3j web3j) {

@@ -1,7 +1,6 @@
 package io.fundrequest.core.request.fund;
 
 import io.fundrequest.core.contract.service.FundRequestContractsService;
-import io.fundrequest.core.erc20.service.ERC20Service;
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.Request;
@@ -27,7 +26,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -82,12 +80,6 @@ class FundServiceImpl implements FundService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FundDto> findByRequestId(Long requestId) {
-        return mappers.mapList(Fund.class, FundDto.class, fundRepository.findByRequestId(requestId));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     @Cacheable(value = "funds", key = "#requestId")
     public List<TotalFundDto> getTotalFundsForRequest(Long requestId) {
 
@@ -119,14 +111,6 @@ class FundServiceImpl implements FundService {
                     .totalAmount(rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN))
                     .build();
         };
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Map<Long, List<FundDto>> findByRequestIds(List<Long> requestIds) {
-        return mappers.mapList(Fund.class, FundDto.class, fundRepository.findByRequestIdIn(requestIds))
-                .stream()
-                .collect(Collectors.groupingBy(FundDto::getId));
     }
 
     @Transactional

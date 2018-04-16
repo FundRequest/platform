@@ -14,11 +14,7 @@ public interface FundService {
 
     FundDto findOne(Long id);
 
-    List<FundDto> findByRequestId(Long requestId);
-
     List<TotalFundDto> getTotalFundsForRequest(Long requestId);
-
-    Map<Long, List<FundDto>> findByRequestIds(List<Long> requestIds);
 
     void addFunds(FundsAddedCommand command);
 }

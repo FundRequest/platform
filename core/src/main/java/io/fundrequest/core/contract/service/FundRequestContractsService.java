@@ -61,8 +61,7 @@ public class FundRequestContractsService {
                     web3j
             );
         } catch (final Exception ex) {
-            log.error("Unable to start application, couldn't access contracts");
-            ex.printStackTrace();
+            log.error("Unable to start application, couldn't access contracts", ex);
             throw new IllegalArgumentException("Couldn't startup");
         }
     }
@@ -82,7 +81,8 @@ public class FundRequestContractsService {
                     .map(Optional::get)
                     .map(x -> tokenInfoService.getTokenInfo(x))
                     .collect(Collectors.toList());
-        } catch (final Exception exceptione) {
+        } catch (final Exception exception) {
+            log.debug("Unable to fetch all possible tokens from contract", exception);
             return Collections.emptyList();
         }
     }
