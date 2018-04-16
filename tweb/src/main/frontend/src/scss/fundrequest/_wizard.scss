@@ -28,6 +28,10 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
         margin-bottom: -2rem;
         position: relative;
         z-index: 1;
+
+        .section-title {
+            margin: .5rem 0;
+        }
     }
 }
 

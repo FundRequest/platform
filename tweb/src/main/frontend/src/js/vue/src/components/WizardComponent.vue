@@ -11,7 +11,9 @@
         public paymentMethod: string = "dapp";
 
         mounted() {
-            new Wizard(this.$el, () => alert("initate fund transaction"));
+            new Wizard(this.$el, () => {
+                alert(this.paymentMethod);
+            });
         }
 
         updateUrl(url) {

@@ -91,7 +91,7 @@ h2 .svg-inline--fa {
 }
 
 .nav-link__number {
-    font-family: 'Titillium Web', sans-serif;
+    font-family: $font-family-sans-serif;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -118,7 +118,7 @@ h2 .svg-inline--fa {
 }
 
 .nav-link__text {
-    font-family: 'Titillium Web', sans-serif;
+    font-family: $font-family-sans-serif;
     display: none;
     margin-left: 10px;
     text-transform: none;

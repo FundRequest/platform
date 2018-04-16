@@ -93,19 +93,21 @@
                 <div class="wizard__title">
                     <div class="row">
                         <div class="col-12">
-                            <h2 class="section-title text-primary" v-if="githubIssue != null" v-cloak="true">
-                                <img v-bind:src="githubIssue.avatar + '?size=30'" height="30" width="30" />
+                            <h4 class="section-title text-muted" v-if="githubIssue == null">
+                                Please select a GitHub issue
+                            </h4>
+                            <h4 class="section-title text-primary" v-if="githubIssue != null" v-cloak="true">
+                                <img v-bind:src="githubIssue.avatar + '?size=20'" height="20" width="20" />
                                 <a v-bind:href="githubIssue.html_url" target="_blank" rel="noopener noreferrer">
                                     {{githubIssue.owner}}/{{githubIssue.repo}} <span class="text-muted">#{{githubIssue.number}}</span>
                                 </a>
-                            </h2>
+                            </h4>
                         </div>
                     </div>
                 </div>
                 <div class="panels">
-                    <div class="panel" data-wizard-panel="github"
-                         data-wizard-panel-next="continue to funding details">
-                        <div class="row">
+                    <div class="panel" data-wizard-panel="github">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <div class="card mb-3">
                                     <div class="card-header">
@@ -134,12 +136,15 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="wizard__footer text-right">
+                            <button class="btn btn-warning" data-wizard-control="next">
+                                continue to funding details
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="panel movingOutForward" data-wizard-panel="github-fund-method"
-                         data-wizard-panel-previous="back to issue details"
-                         data-wizard-panel-next="continue to last step">
-                        <div class="row">
+                    <div class="panel movingOutForward" data-wizard-panel="github-fund-method">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <div class="card mb-3">
                                     <div class="card-header">
@@ -172,14 +177,6 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="form-check mb-2">
-                                            <input disabled="disabled" class="form-check-input" type="radio"
-                                                   v-model="paymentMethod"
-                                                   name="paymentMethod" id="paymentMethod-wallet" value="wallet" />
-                                            <label class="form-check-label" for="paymentMethod-wallet">
-                                                Internal Wallet (Coming soon)
-                                            </label>
-                                        </div>
-                                        <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="paymentMethod"
                                                    v-model="paymentMethod"
                                                    id="paymentMethod-trustwallet" value="trustwallet"
@@ -194,6 +191,14 @@
                                                    id="paymentMethod-dapp" value="dapp" checked="checked" />
                                             <label class="form-check-label" for="paymentMethod-dapp">
                                                 MetaMask / Mist / DApp Browser
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input disabled="disabled" class="form-check-input" type="radio"
+                                                   v-model="paymentMethod"
+                                                   name="paymentMethod" id="paymentMethod-wallet" value="wallet" />
+                                            <label class="form-check-label" for="paymentMethod-wallet">
+                                                Internal Wallet (Coming soon)
                                             </label>
                                         </div>
                                         <div class="form-check mb-2">
@@ -217,16 +222,33 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="wizard__footer text-right">
+                            <button class="btn btn-link text-warning" data-wizard-control="previous">
+                                back to issue details
+                            </button>
+
+                            <button class="btn btn-warning" data-wizard-control="next">
+                                continue to last step
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="panel movingOutForward" data-wizard-panel="github-fund"
-                         data-wizard-panel-previous="back to funding details"
-                         data-wizard-panel-next="Start transaction">
-                        <div class="row">
+                    <div class="panel movingOutForward" data-wizard-panel="github-fund">
+                        <div class="row md-3">
                             <div class="col-12">
                                 <div class="card mb-3" v-if="paymentMethod == 'dapp'">
                                     <div class="card-header">
-                                        MetaMask / Mist / DApp Browser
+                                        Summary
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-9">
+
+                                            </div>
+                                            <div class="col-3 text-right">
+                                                {{}}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card mb-3" v-if="paymentMethod == 'trustwallet'">
@@ -240,17 +262,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="wizard__footer text-right">
+                            <button class="btn btn-link text-warning" data-wizard-control="previous">
+                                back to funding details
+                            </button>
+
+                            <button class="btn btn-warning" data-wizard-control="next">
+                                Start transaction
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="wizard__footer text-right">
-                    <button class="btn btn-link text-warning d-none" data-wizard-control="previous">
-                        Back
-                    </button>
-
-                    <button class="btn btn-warning" data-wizard-control="next">
-                        Next
-                    </button>
                 </div>
             </div>
         </form>
@@ -259,10 +280,10 @@
     <section class="mb-2">
         <div class="row">
             <div class="col-12">
-                <h2 class="section-title text-primary">Frequently Asked Questions</h2>
-                <h3 class="section-subtitle text-muted">
+                <h4 class="section-title text-primary">Frequently Asked Questions</h4>
+                <h5 class="section-subtitle text-muted">
                     <small>Your funding existing requests FAQ's, answered.</small>
-                </h3>
+                </h5>
             </div>
             <div class="col-12">
                 <div class="card">
