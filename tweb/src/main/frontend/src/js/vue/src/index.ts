@@ -9,6 +9,11 @@ let v = new Vue({
     components: {
         'statistic-tile': StatisticTile,
         'wizard-component': WizardComponent
+    },
+    mounted() {
+        setTimeout(function(){
+            document.body.classList.remove('preload');
+        },500);
     }
 });
 
