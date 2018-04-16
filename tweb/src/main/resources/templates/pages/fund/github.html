@@ -154,9 +154,11 @@
                                                            type="text"
                                                            placeholder="ex: 120.00" />
                                                     <span class="input-group-prepend">
-                                                        <select title="token" class="form-control" size="auto">
-                                                            <option>FND</option>
-                                                            <option>MLN</option>
+                                                        <select title="token" class="form-control" size="auto" v-model="selectedToken">
+                                                          <!-- inline object literal -->
+                                                          <option v-for="token in supportedTokens" v-bind:value="token.address">
+                                                            {{ token.symbol }}
+                                                          </option>
                                                         </select>
                                                     </span>
                                                     <div class="invalid-feedback">Please enter a valid number</div>

@@ -20,7 +20,7 @@ public class FundRestController {
 
     @RequestMapping("/allowed-tokens")
     public List<TokenInfoDto> getAllowedTokens(@RequestParam("platform") final String platform,
-                                               @RequestParam("platform") final String platformId) {
+                                               @RequestParam("platformId") final String platformId) {
         return fundRequestContractsService.getAllPossibleTokens(platform, platformId);
     }
 }
