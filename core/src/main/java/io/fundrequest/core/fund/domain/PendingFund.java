@@ -30,12 +30,16 @@ public class PendingFund {
     @Column(name = "token_address")
     private String tokenAddress;
 
+    @Column(name = "user_id")
+    private String userId;
+
     @Builder
-    public PendingFund(final String transactionhash, final String description, final String fromAddress, final BigInteger amount, final String tokenAddress) {
+    public PendingFund(final String transactionhash, final String description, final String fromAddress, final BigInteger amount, final String tokenAddress, final String userId) {
         this.transactionHash = transactionhash;
         this.description = description;
         this.fromAddress = fromAddress;
         this.amount = amount;
         this.tokenAddress = tokenAddress;
+        this.userId = userId;
     }
 }
