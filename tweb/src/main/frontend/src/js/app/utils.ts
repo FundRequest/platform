@@ -40,7 +40,7 @@ export class Utils {
         if (body == null) {
             return fetch(url)
                 .then(Utils._handleHttpErrors)
-                .then(res => res.json())
+                .then(res => res ? res.json() : null)
                 .catch(err => null);
         } else {
             return fetch(url, {
@@ -49,8 +49,8 @@ export class Utils {
                 headers: new Headers({
                     'Content-Type': 'application/json'
                 })
-            }).then(res => res.json())
-                .catch(err => null);
+            }).then(res => res ? res.json() : null
+            ).catch(err => null);
         }
 
     }
@@ -109,7 +109,7 @@ export class Utils {
             }, 150);
 
             document.body.addEventListener('click', (e) => {
-                if(e.target == el) {
+                if (e.target == el) {
                     Utils.modal.close(el);
                     closeCallback();
                 }

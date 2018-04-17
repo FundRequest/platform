@@ -7,6 +7,7 @@
     import {Web3} from "../../../app/web3";
     import {Utils} from "../../../app/utils";
     import BigNumber from "bignumber.js";
+    import {PendingFund} from "../../../app/PendingFund";
 
     @Component
     export default class WizardComponent extends Vue {
@@ -22,6 +23,7 @@
 
         public paymentMethod: PaymentMethod = PaymentMethods.getInstance().trustWallet;
         public fundAmount: number = 100;
+        public description: string = '';
 
         mounted() {
             this.updateDappPaymentMethod();
@@ -96,10 +98,11 @@
             }
         }
 
-        private fund() {
+        private async fund() {
             switch (this.paymentMethod) {
                 case PaymentMethods.getInstance().dapp:
-                    this.fundUsingDapp();
+                    await this.fundUsingDapp();
+                    window.location.href = '/your-requests';
                     break;
                 case PaymentMethods.getInstance().trustWallet:
                     this.fundUsingTrustWallet();
@@ -127,14 +130,19 @@
                 await erc20.approveTx(frContractAddress, new BigNumber("1.157920892e77").minus(1)).send({});
             }
             console.log("funding");
-            (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, weiAmount)
-                .send({})
-                .then((response) => {
-                    console.log("response: " + response);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
+            try {
+                let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, weiAmount)
+                    .send({}).catch(rej => {throw new Error(rej)}) as string;
+                let pendingFund = new PendingFund();
+                pendingFund.transactionId = response;
+                pendingFund.amount = this.fundAmount.toString();
+                pendingFund.description = this.description;
+                pendingFund.fromAddress = account;
+                pendingFund.tokenAddress = this.selectedToken.address;
+                await Utils.fetchJSON(`/rest/pending-fund`, pendingFund);
+            } catch (err) {
+                console.log(err);
+            }
         }
 
         public fundUsingTrustWallet() {
