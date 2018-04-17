@@ -109,7 +109,7 @@ function runTs(tsConfig, filename) {
     let tsResult = gulp.src(filename)
         .pipe(tsProject());
 
-    return tsResult.js.pipe(gulp.dest(`${target}/js`));
+    return tsResult.pipe(gulp.dest(`${target}/js`));
 }
 
 gulp.task('scripts', function() {
