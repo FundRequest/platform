@@ -83,6 +83,7 @@
     "lightslider": "^1.1.6",
     "mdbootstrap": "^4.5.0",
     "node-waves": "^0.7.6",
+    "qrcode.vue": "^1.6.0",
     "requirejs": "^2.3.5",
     "typeface-titillium-web": "0.0.54",
     "vue": "^2.5.2",

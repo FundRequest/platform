@@ -7,6 +7,9 @@
     import {Web3} from "../../../app/web3";
     import {Utils} from "../../../app/utils";
     import BigNumber from "bignumber.js";
+    import QrcodeVue from 'qrcode.vue';
+
+    Vue.component('qrcode-vue', QrcodeVue);
 
     @Component
     export default class WizardComponent extends Vue {
@@ -19,6 +22,7 @@
         public selectedToken: TokenInfo = null;
         public panelsHeight: number = 0;
         public trustWalletModalActive: boolean = false;
+        public qrData: string = "";
 
         public paymentMethod: PaymentMethod = PaymentMethods.getInstance().trustWallet;
         public fundAmount: number = 100;
@@ -142,14 +146,13 @@
         }
 
         public async showTrustWalletModal() {
-            let x = await Utils.fetchJSON(`/rest/requests/erc67/fund`, {
+            this.qrData = (await Utils.fetchJSON(`/rest/requests/erc67/fund`, {
                 platform: this.githubIssue.platform,
                 platformId: this.githubIssue.platformId,
                 amount: this.totalAmount,
                 fundrequestAddress: Contracts.getInstance().frContractAddress,
                 tokenAddress: Contracts.getInstance().tokenContractAddress
-            });
-            console.log(x.erc67Link);
+            })).erc67Link;
 
             Utils.modal.open(<HTMLElement>this.$refs.trustWalletModal, () => {
                 this.hideTrustWalletModal();

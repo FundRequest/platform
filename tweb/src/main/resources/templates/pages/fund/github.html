@@ -330,12 +330,15 @@
                             </div>
                             <div class="modal-body">
                                 <div class="row mb-2">
-                                    <div class="col-12 col-md-8">
-                                        <span>Open QR Support Wallet</span>
-                                        <span>Scan QR Code</span>
-                                        <span>Send transaction</span>
+                                    <div class="col-12 col-md-6 d-flex align-items-center">
+                                        <ul class="bullet-steps">
+                                            <li class="bullet-steps__item -yellow">Open QR Support Wallet</li>
+                                            <li class="bullet-steps__item -green">Scan QR Code</li>
+                                            <li class="bullet-steps__item -blue">Send transaction</li>
+                                        </ul>
                                     </div>
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12 col-md-6">
+                                        <qrcode-vue :value="qrData" :size="200" class="text-center"></qrcode-vue>
                                     </div>
                                 </div>
                                 <div class="row">
