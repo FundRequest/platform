@@ -13,6 +13,7 @@
     export default class WizardComponent extends Vue {
         private _activeStep: number = 1;
         private _loading: boolean = false;
+        private _network:string;
 
         public githubUrl: string = "";
         public githubIssue: GithubIssue = null;
@@ -26,6 +27,8 @@
         public description: string = '';
 
         mounted() {
+            let metaNetwork = document.head.querySelector('[name="ethereum:network"]');
+            this._network = metaNetwork ? metaNetwork.getAttribute('content') : '';
             this.updateDappPaymentMethod();
             this.gotoStep(1);
         }
@@ -87,7 +90,7 @@
             if (web3 && web3.eth && web3.eth.defaultAccount) {
                 await new Promise((resolve, reject) => {
                     web3.version.getNetwork((err, res) => {
-                        if (!err && res != "42") {
+                        if (!err && res != this._network) {
                             PaymentMethods.getInstance().dapp.disabledMsg = "Not connected to the correct network.";
                         }
                         resolve("not connected");
