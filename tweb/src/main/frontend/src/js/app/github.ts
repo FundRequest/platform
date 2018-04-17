@@ -49,6 +49,7 @@ export class GithubIssue {
     closed_by: string;
 
     // extra params
+    readonly platform: string = 'GITHUB';
     owner: string;
     repo: string;
     platformId: string;

@@ -36,11 +36,23 @@ export class Utils {
         return response;
     }
 
-    public static fetchJSON(url: string) {
-        return fetch(url)
-            .then(Utils._handleHttpErrors)
-            .then(res => res.json())
-            .catch(err => null);
+    public static fetchJSON(url: string, body: any = null) {
+        if (body == null) {
+            return fetch(url)
+                .then(Utils._handleHttpErrors)
+                .then(res => res.json())
+                .catch(err => null);
+        } else {
+            return fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                })
+            }).then(res => res.json())
+                .catch(err => null);
+        }
+
     }
 
     public static async validateHTMLElement(element: HTMLElement, validations: string[], callback = null): Promise<boolean> {
