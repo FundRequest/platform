@@ -1,6 +1,7 @@
 package io.fundreqest.platform.tweb.request;
 
 import io.fundreqest.platform.tweb.infrastructure.mav.AbstractController;
+import io.fundreqest.platform.tweb.request.dto.ERC67FundDto;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import org.springframework.http.MediaType;
@@ -35,10 +36,10 @@ public class RequestController extends AbstractController {
                 .build();
     }
 
-    @PostMapping(value = {"/rest/requests/erc67/fund"}, produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = {"/rest/requests/erc67/fund"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public String generateERC67ForFunding(@RequestBody @Valid CreateERC67FundRequest createERC67FundRequest) {
-        return requestService.generateERC67(createERC67FundRequest);
+    public ERC67FundDto generateERC67ForFunding(@RequestBody @Valid CreateERC67FundRequest createERC67FundRequest) {
+        return ERC67FundDto.builder().erc67Link(requestService.generateERC67(createERC67FundRequest)).build();
     }
 
 
