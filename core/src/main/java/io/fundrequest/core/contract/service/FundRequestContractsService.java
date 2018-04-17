@@ -7,6 +7,7 @@ import io.fundrequest.core.contract.domain.TokenWhitelistPreconditionContract;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
 
@@ -66,6 +67,7 @@ public class FundRequestContractsService {
         }
     }
 
+    @Cacheable(value = "shortlived_possible_tokens", key = "#platform + '-' + #platformId")
     public List<TokenInfoDto> getAllPossibleTokens(final String platform, final String platformId) {
         return getAllPossibleTokens()
                 .stream()
@@ -73,7 +75,7 @@ public class FundRequestContractsService {
                 .collect(Collectors.toList());
     }
 
-    public List<TokenInfoDto> getAllPossibleTokens() {
+    private List<TokenInfoDto> getAllPossibleTokens() {
         try {
             final int amount = tokenWhitelistPreconditionContract.amountOftokens().send().intValue();
             return IntStream.range(0, amount)
