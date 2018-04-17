@@ -73,6 +73,8 @@
             await this.updateDappDisabledMsg();
             if (!PaymentMethods.getInstance().dapp.disabledMsg) {
                 this.paymentMethod = PaymentMethods.getInstance().dapp;
+            } else {
+                this.paymentMethod = PaymentMethods.getInstance().trustWallet;
             }
         }
 
@@ -145,7 +147,7 @@
                 fundrequestAddress: Contracts.getInstance().frContractAddress,
                 tokenAddress: Contracts.getInstance().tokenContractAddress
             });
-            console.log(x);
+            console.log(x.erc67Link);
 
             this.trustWalletModalActive = true;
             (<HTMLElement>this.$refs.panels).style.opacity = "0.5";
