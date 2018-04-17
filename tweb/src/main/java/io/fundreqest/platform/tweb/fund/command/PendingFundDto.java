@@ -7,5 +7,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PendingFundDto {
 
-    private
+    private String description;
+    private String transactionId;
+    private String fromAddress;
+    private String amount;
+    private String tokenAddress;
 }
