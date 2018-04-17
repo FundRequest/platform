@@ -124,6 +124,20 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
         z-index: 2;
     }
 
+    &__link {
+        color: $black;
+        cursor: default;
+        pointer-events: none;
+
+        &:hover,
+        &:active,
+        &:focus {
+            color: $black;
+            cursor: default;
+            pointer-events: none;
+        }
+    }
+
     &__number {
         background: $white;
         font-weight: 800;
@@ -149,6 +163,18 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     &.-completed {
         .step__number {
             opacity: 0;
+        }
+
+        .step__link {
+            cursor: pointer;
+            pointer-events: auto;
+
+            &:hover .checkmark {
+                width: $circle-size + 6px;
+                height: $circle-size + 6px;
+                margin-left: -3px;
+                margin-top: -3px;
+            }
         }
 
         .checkmark {
@@ -184,6 +210,7 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     stroke-miterlimit: 10;
     box-shadow: inset 0 0 0 $blue-400;
     z-index: -1;
+    transition: width .1s ease-in-out, height .1s ease-in-out, margin-left .1s ease-in-out, margin-top .1s ease-in-out;
 
     &__circle {
         stroke-dasharray: 166;

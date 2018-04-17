@@ -77,10 +77,10 @@ export class Utils {
                     isValid = isValid && value.trim().length > 0;
                     break;
                 case 'number':
-                    isValid = isValid && (value.trim().length <= 0 || /^[0-9]+(\.[0-9]{1,2})?$/.exec(value) != null);
+                    isValid = isValid && (value.trim().length <= 0 || Utils.validators.number(value));
                     break;
                 case 'github':
-                    isValid = isValid && (value.trim().length <= 0 || (await Utils._validation.github(value)));
+                    isValid = isValid && (value.trim().length <= 0 || (await Utils.validators.github(value)));
                     break;
             }
         }
@@ -99,9 +99,38 @@ export class Utils {
         return isValid;
     }
 
-    private static _validation = {
+    public static modal = {
+        open: (el: HTMLElement, closeCallback) => {
+            document.body.classList.add('modal-open');
+            document.body.style.overflow = 'hidden';
+            el.style.display = 'block';
+            setTimeout(() => {
+                el.classList.add('show');
+            }, 150);
+
+            document.body.addEventListener('click', (e) => {
+                if(e.target == el) {
+                    Utils.modal.close(el);
+                    closeCallback();
+                }
+            });
+        },
+        close: (el: HTMLElement) => {
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            el.classList.remove('show');
+            setTimeout(() => {
+                el.style.display = 'none';
+            }, 150);
+        }
+    };
+
+    public static validators = {
         github: (link): Promise<boolean> => {
             return Github.validateLink(link);
+        },
+        number: (value) => {
+            return /^[0-9]+(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
         }
     };
 

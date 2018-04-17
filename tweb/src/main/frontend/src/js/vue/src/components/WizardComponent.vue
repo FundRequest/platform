@@ -21,11 +21,11 @@
         public trustWalletModalActive: boolean = false;
 
         public paymentMethod: PaymentMethod = PaymentMethods.getInstance().trustWallet;
-        public fundAmount: number = 0;
+        public fundAmount: number = 100;
 
         mounted() {
             this.updateDappPaymentMethod();
-            this.setActiveStep(1);
+            this.gotoStep(1);
         }
 
         public getClassesPanel(step: number) {
@@ -50,10 +50,10 @@
             }
         }
 
-        public async setActiveStep(step: number) {
+        public async gotoStep(step: number, onlyCompleted: boolean = false) {
             this._loading = true;
             let valid = true;
-            if (step > this._activeStep) {
+            if (step > this._activeStep && !onlyCompleted) {
                 let $el: HTMLElement = <HTMLElement> this.$refs[`panelStep${this._activeStep}`];
                 let formElements: HTMLElement[] = Array.from($el.querySelectorAll("[data-form-validation]"));
                 for (let fieldElement of formElements) {
@@ -63,8 +63,10 @@
             }
 
             if (valid) {
-                this._activeStep = step;
-                this.panelsHeight = (<HTMLElement>this.$refs[`panelStep${step}`]).clientHeight;
+                if (onlyCompleted && step < this._activeStep || !onlyCompleted) {
+                    this._activeStep = step;
+                    this.panelsHeight = (<HTMLElement>this.$refs[`panelStep${step}`]).clientHeight;
+                }
             }
             this._loading = false;
         }
@@ -84,7 +86,7 @@
                         if (!err && res != "42") {
                             PaymentMethods.getInstance().dapp.disabledMsg = "Not connected to the correct network.";
                         }
-                        resolve('not connected');
+                        resolve("not connected");
                     });
                 });
             } else {
@@ -147,6 +149,10 @@
             });
             console.log(x);
 
+            Utils.modal.open(<HTMLElement>this.$refs.trustWalletModal, () => {
+                this.hideTrustWalletModal();
+            });
+
             this.trustWalletModalActive = true;
             (<HTMLElement>this.$refs.panels).style.opacity = "0.5";
             (<HTMLElement>this.$refs.panels).style.pointerEvents = "none";
@@ -155,6 +161,7 @@
         }
 
         public hideTrustWalletModal() {
+            Utils.modal.close(<HTMLElement>this.$refs.trustWalletModal);
             this.trustWalletModalActive = false;
             (<HTMLElement>this.$refs.panels).style.opacity = "";
             (<HTMLElement>this.$refs.panels).style.pointerEvents = "";
