@@ -75,6 +75,8 @@
             await this.updateDappDisabledMsg();
             if (!PaymentMethods.getInstance().dapp.disabledMsg) {
                 this.paymentMethod = PaymentMethods.getInstance().dapp;
+            } else {
+                this.paymentMethod = PaymentMethods.getInstance().trustWallet;
             }
         }
 
@@ -147,7 +149,7 @@
                 fundrequestAddress: Contracts.getInstance().frContractAddress,
                 tokenAddress: Contracts.getInstance().tokenContractAddress
             });
-            console.log(x);
+            console.log(x.erc67Link);
 
             Utils.modal.open(<HTMLElement>this.$refs.trustWalletModal, () => {
                 this.hideTrustWalletModal();

@@ -17,6 +17,7 @@ import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -98,6 +99,11 @@ class FundServiceImpl implements FundService {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    @CacheEvict(value = "funds", key = "#requestId")
+    public void clearTotalFundsCache(Long requestId) {
     }
 
     private Function<String, TotalFundDto> getTotalFundDto(final Request request) {
