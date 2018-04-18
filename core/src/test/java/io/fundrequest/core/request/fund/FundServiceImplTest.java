@@ -2,7 +2,6 @@ package io.fundrequest.core.request.fund;
 
 
 import io.fundrequest.core.contract.service.FundRequestContractsService;
-import io.fundrequest.core.erc20.service.ERC20Service;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.Request;
@@ -25,6 +24,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -35,9 +35,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public class FundServiceTest {
+public class FundServiceImplTest {
 
     private FundServiceImpl fundService;
     private FundRepository fundRepository;
@@ -99,9 +102,15 @@ public class FundServiceTest {
     public void saveFunds() {
         Request request = RequestMother.freeCodeCampNoUserStories().build();
 
-        FundsAddedCommand command = new FundsAddedCommand();
-        command.setRequestId(request.getId());
-        command.setAmountInWei(BigDecimal.TEN);
+        FundsAddedCommand command = FundsAddedCommand.builder()
+                                                     .requestId(request.getId())
+                                                     .amountInWei(BigDecimal.TEN)
+                                                     .transactionId("trans_id")
+                                                     .funder("funder")
+                                                     .funderAddress("address")
+                                                     .timestamp(LocalDateTime.now())
+                                                     .token("token")
+                                                     .build();
 
         when(requestRepository.findOne(request.getId())).thenReturn(Optional.of(request));
 

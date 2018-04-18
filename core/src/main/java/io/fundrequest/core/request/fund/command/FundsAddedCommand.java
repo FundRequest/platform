@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.fund.command;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.DecimalMin;
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class FundsAddedCommand {
 
     @NotNull
@@ -20,6 +22,10 @@ public class FundsAddedCommand {
     private String transactionId;
 
     private String token;
+
+    private String funderAddress;
+
+    private String funder;
 
     private LocalDateTime timestamp;
 

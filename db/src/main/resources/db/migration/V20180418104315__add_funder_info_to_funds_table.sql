@@ -1,0 +1,2 @@
+ALTER TABLE fund
+  ADD funder_address VARCHAR(42) DEFAULT NULL;

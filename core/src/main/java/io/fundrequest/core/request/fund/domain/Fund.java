@@ -31,20 +31,26 @@ public class Fund extends AbstractEntity {
     @Column(name = "token")
     private String token;
 
-    @Column(name = "time_stamp")
-    private LocalDateTime timestamp;
+    @Column(name = "funder_address")
+    private String funderAddress;
+
 
     @Column(name = "request_id")
     private Long requestId;
+
+
+    @Column(name = "time_stamp")
+    private LocalDateTime timestamp;
 
     protected Fund() {
     }
 
     @Builder
-    Fund(String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp) {
+    Fund(String funder, BigDecimal amountInWei, String token, String funderAddress, Long requestId, LocalDateTime timestamp) {
         this.funder = funder;
         this.amountInWei = amountInWei;
         this.token = token;
+        this.funderAddress = funderAddress;
         this.requestId = requestId;
         this.timestamp = timestamp;
     }
