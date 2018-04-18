@@ -55,6 +55,7 @@ public class RequestController extends AbstractController {
         List<RequestView> requests = requestService.findRequestsForUser(principal).stream()
                                                    .map(r -> RequestView
                                                            .builder()
+                                                           .id(r.getId())
                                                            .icon("https://github.com/" + r.getIssueInformation().getOwner() + ".png")
                                                            .owner(r.getIssueInformation().getOwner())
                                                            .repo(r.getIssueInformation().getRepo())

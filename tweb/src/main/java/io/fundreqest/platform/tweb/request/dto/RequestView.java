@@ -13,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class RequestView {
+    private Long id;
     private String icon;
     private String owner;
     private String platform;
