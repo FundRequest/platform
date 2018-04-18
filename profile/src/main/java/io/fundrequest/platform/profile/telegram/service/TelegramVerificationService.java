@@ -51,10 +51,10 @@ public class TelegramVerificationService {
             if (!telegramVerification.isVerified()) {
                 bountyService.createBounty(
                         CreateBountyCommand.builder()
-                                .type(BountyType.LINK_TELEGRAM)
-                                .userId(telegramVerification.getUserId())
-                                .build()
-                );
+                                           .type(BountyType.LINK_TELEGRAM)
+                                           .userId(telegramVerification.getUserId())
+                                           .build()
+                                          );
             }
             telegramVerification.setLastAction(new Date());
             telegramVerification.setVerified(true);
@@ -79,12 +79,12 @@ public class TelegramVerificationService {
                     telegramVerification.setSecret(createSecret(userId));
                     telegramVerificationRepository.save(
                             telegramVerification
-                    );
+                                                       );
                 }
             } else {
                 telegramVerificationRepository.save(
                         new TelegramVerification(null, telegramname, userId, createSecret(userId), false, new Date())
-                );
+                                                   );
             }
         }
     }

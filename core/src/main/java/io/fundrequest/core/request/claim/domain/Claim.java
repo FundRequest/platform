@@ -68,13 +68,17 @@ public class Claim extends AbstractEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Claim claim = (Claim) o;
         return Objects.equals(solver, claim.solver) &&
-                Objects.equals(amountInWei, claim.amountInWei) &&
-                Objects.equals(timestamp, claim.timestamp) &&
-                Objects.equals(requestId, claim.requestId);
+               Objects.equals(amountInWei, claim.amountInWei) &&
+               Objects.equals(timestamp, claim.timestamp) &&
+               Objects.equals(requestId, claim.requestId);
     }
 
     @Override

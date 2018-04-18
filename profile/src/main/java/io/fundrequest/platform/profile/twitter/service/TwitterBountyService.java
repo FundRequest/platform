@@ -77,7 +77,10 @@ public class TwitterBountyService {
     }
 
     private boolean hasFullFilled(final String username, final String userId, final TwitterBounty bounty, final Principal principal) {
-        return keycloakRepository.isVerifiedDeveloper(principal.getName()) && bounty.getType().equals(TwitterBountyType.TWEET) && validateTweets(username, userId, bounty, principal);
+        return keycloakRepository.isVerifiedDeveloper(principal.getName()) && bounty.getType().equals(TwitterBountyType.TWEET) && validateTweets(username,
+                                                                                                                                                 userId,
+                                                                                                                                                 bounty,
+                                                                                                                                                 principal);
     }
 
     private boolean validateTweets(final String username, final String userId, final TwitterBounty bounty, final Principal principal) {
@@ -85,9 +88,9 @@ public class TwitterBountyService {
         final List<TwitterPost> posts = twitterPostRepository.findAll();
         try {
             boolean fulfillled = twitter.timelines().getUserTimeline(username)
-                    .stream()
-                    .anyMatch(status -> posts.stream()
-                            .anyMatch(post -> status.getText().contains(post.getVerificationText())));
+                                        .stream()
+                                        .anyMatch(status -> posts.stream()
+                                                                 .anyMatch(post -> status.getText().contains(post.getVerificationText())));
             if (fulfillled) {
                 fulfillBounty(username, userId, bounty, principal);
             }
@@ -113,7 +116,7 @@ public class TwitterBountyService {
                             .type(BountyType.TWITTER_TWEET_FOLLOW)
                             .userId(principal.getName())
                             .build()
-            );
+                                      );
         }
     }
 

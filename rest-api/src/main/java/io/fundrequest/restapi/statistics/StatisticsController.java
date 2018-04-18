@@ -36,10 +36,10 @@ public class StatisticsController extends AbstractRestController {
         result.setNumberOfRequests((long) allRequests.size());
         result.setNumberOfFunders(
                 funds.stream().map(FundDto::getFunder).distinct().count()
-        );
+                                 );
         result.setTotalAmountFunded(
                 funds.stream().map(FundDto::getAmountInWei).reduce(BigDecimal.ZERO, BigDecimal::add)
-        );
+                                   );
         long numberOfRequestsFunded = funds.stream().map(FundDto::getRequestId).distinct().count();
         if (numberOfRequestsFunded > 0) {
             result.setRequestsFunded(funds.stream().map(FundDto::getRequestId).distinct().count());

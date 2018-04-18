@@ -4,7 +4,11 @@ import io.fundrequest.core.request.domain.Platform;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
 import java.math.BigInteger;
 
 @Data

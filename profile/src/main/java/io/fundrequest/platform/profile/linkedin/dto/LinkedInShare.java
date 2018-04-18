@@ -14,7 +14,7 @@ public class LinkedInShare {
 
     @Builder
     public LinkedInShare(String comment, LinkedInShareContent content) {
-        visibility =  new LinkedInShareVisibility();
+        visibility = new LinkedInShareVisibility();
         this.comment = comment;
         this.content = content;
     }

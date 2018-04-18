@@ -3,7 +3,11 @@ package io.fundrequest.platform.profile.github.domain;
 import io.fundrequest.core.infrastructure.repository.AbstractEntity;
 import lombok.Builder;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -69,8 +73,12 @@ public class GithubBounty extends AbstractEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         GithubBounty that = (GithubBounty) o;
         return Objects.equals(userId, that.userId);
     }

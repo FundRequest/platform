@@ -29,7 +29,7 @@ public class GithubPlatformIdParser {
                 issueInformation.getOwner(),
                 issueInformation.getRepo(),
                 issueInformation.getNumber()
-        );
+                                                         );
         issueInformation.setTitle(githubResult.getTitle());
         issueInformation.setPlatform(Platform.GITHUB);
         issueInformation.setPlatformId(platformId);

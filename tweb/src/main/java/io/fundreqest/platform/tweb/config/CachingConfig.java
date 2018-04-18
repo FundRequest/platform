@@ -22,7 +22,7 @@ public class CachingConfig {
             @Override
             protected Cache createConcurrentMapCache(final String name) {
                 return new ConcurrentMapCache(name,
-                        cacheBuilder(name).build().asMap(), false);
+                                              cacheBuilder(name).build().asMap(), false);
             }
         };
     }

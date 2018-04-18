@@ -21,7 +21,7 @@ public class JmsConfig {
 
     @Bean
     RabbitTemplate approvedClaimRabbitTemplate(ConnectionFactory connectionFactory,
-                                      @Value("${io.fundrequest.azrael.queue.approved-claim}") final String queueName) {
+                                               @Value("${io.fundrequest.azrael.queue.approved-claim}") final String queueName) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setRoutingKey(queueName);
         RetryTemplate retryTemplate = new RetryTemplate();

@@ -22,14 +22,14 @@ public class PendingFundDto {
 
     public PendingFund toPendingFund(final Principal principal) {
         return PendingFund.builder()
-                .amount(new BigInteger(amount))
-                .description(description)
-                .fromAddress(fromAddress)
-                .tokenAddress(tokenAddress)
-                .transactionhash(transactionId)
-                .platform(platform)
-                .platformId(platformId)
-                .userId(principal.getName())
-                .build();
+                          .amount(new BigInteger(amount))
+                          .description(description)
+                          .fromAddress(fromAddress)
+                          .tokenAddress(tokenAddress)
+                          .transactionhash(transactionId)
+                          .platform(platform)
+                          .platformId(platformId)
+                          .userId(principal.getName())
+                          .build();
     }
 }

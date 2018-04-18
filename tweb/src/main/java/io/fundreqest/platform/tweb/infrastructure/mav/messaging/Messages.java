@@ -44,6 +44,7 @@ public class Messages {
 
         addMessageToList(messageType, message);
     }
+
     public void addExistingMessages(Messages messages) {
         addMessagesToList(MessageType.ERROR, messages.getErrorMessages());
         addMessagesToList(MessageType.INFO, messages.getInfoMessages());
@@ -59,10 +60,18 @@ public class Messages {
 
     private void addMessageToList(MessageType messageType, String message) {
         switch (messageType) {
-            case ERROR: errorMessages.add(message); break;
-            case INFO: infoMessages.add(message); break;
-            case SUCCESS: successMessages.add(message); break;
-            case ALERT: alertMessages.add(message); break;
+            case ERROR:
+                errorMessages.add(message);
+                break;
+            case INFO:
+                infoMessages.add(message);
+                break;
+            case SUCCESS:
+                successMessages.add(message);
+                break;
+            case ALERT:
+                alertMessages.add(message);
+                break;
         }
     }
 

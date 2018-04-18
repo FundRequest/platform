@@ -79,10 +79,10 @@ public class FundRequestContractsService {
         try {
             final int amount = tokenWhitelistPreconditionContract.amountOftokens().send().intValue();
             return IntStream.range(0, amount)
-                    .mapToObj(x -> tokenWhitelistPreconditionContract.token(BigInteger.valueOf(x))).filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .map(x -> tokenInfoService.getTokenInfo(x))
-                    .collect(Collectors.toList());
+                            .mapToObj(x -> tokenWhitelistPreconditionContract.token(BigInteger.valueOf(x))).filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .map(x -> tokenInfoService.getTokenInfo(x))
+                            .collect(Collectors.toList());
         } catch (final Exception exception) {
             log.debug("Unable to fetch all possible tokens from contract", exception);
             return Collections.emptyList();

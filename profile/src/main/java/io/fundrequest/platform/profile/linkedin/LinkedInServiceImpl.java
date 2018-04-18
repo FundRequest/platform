@@ -39,7 +39,11 @@ class LinkedInServiceImpl implements LinkedInService {
     private BountyService bountyService;
     private LinkedInPostRepository postRepository;
 
-    public LinkedInServiceImpl(KeycloakRepository keycloakRepository, LinkedInClient client, LinkedInVerificationRepository repository, BountyService bountyService, LinkedInPostRepository postRepository) {
+    public LinkedInServiceImpl(KeycloakRepository keycloakRepository,
+                               LinkedInClient client,
+                               LinkedInVerificationRepository repository,
+                               BountyService bountyService,
+                               LinkedInPostRepository postRepository) {
         this.keycloakRepository = keycloakRepository;
         this.client = client;
         this.repository = repository;
@@ -52,10 +56,10 @@ class LinkedInServiceImpl implements LinkedInService {
     public LinkedInVerificationDto getVerification(Principal principal) {
         return repository.findByUserId(principal.getName()).map(
                 l -> LinkedInVerificationDto.builder()
-                        .verified(true)
-                        .postUrl(l.getPostUrl())
-                        .build()
-        ).orElseGet(() -> null);
+                                            .verified(true)
+                                            .postUrl(l.getPostUrl())
+                                            .build()
+                                                               ).orElseGet(() -> null);
     }
 
     @EventListener
@@ -86,14 +90,14 @@ class LinkedInServiceImpl implements LinkedInService {
             LinkedInUpdateResult linkedInUpdateResult = client.postNetworkUpdate(
                     keycloakRepository.getAccessToken(token, Provider.LINKEDIN),
                     linkedInShare
-            );
+                                                                                );
 
             LinkedInVerification verification = LinkedInVerification.builder().userId(principal.getName()).postUrl(linkedInUpdateResult.getUpdateUrl()).build();
             repository.save(verification);
             bountyService.createBounty(CreateBountyCommand.builder()
-                    .userId(principal.getName())
-                    .type(BountyType.POST_LINKEDIN_UPDATE)
-                    .build());
+                                                          .userId(principal.getName())
+                                                          .type(BountyType.POST_LINKEDIN_UPDATE)
+                                                          .build());
         }
     }
 
@@ -104,27 +108,27 @@ class LinkedInServiceImpl implements LinkedInService {
         Collections.shuffle(posts);
         LinkedInPost post = posts.get(0);
         return LinkedInPostDto.builder()
-                .id(post.getId())
-                .comment(post.getComment())
-                .title(post.getTitle())
-                .description(post.getDescription())
-                .submittedUrl(post.getSubmittedUrl())
-                .submittedImageUrl(post.getSubmittedImageUrl())
-                .build();
+                              .id(post.getId())
+                              .comment(post.getComment())
+                              .title(post.getTitle())
+                              .description(post.getDescription())
+                              .submittedUrl(post.getSubmittedUrl())
+                              .submittedImageUrl(post.getSubmittedImageUrl())
+                              .build();
     }
 
     private LinkedInShare getLinkedInShare(Long postId) {
         LinkedInPost post = postRepository.findOne(postId);
         return LinkedInShare.builder()
-                .comment(post.getComment())
-                .content(
-                        LinkedInShareContent.builder()
-                                .title(post.getTitle())
-                                .description(post.getDescription())
-                                .submittedUrl(post.getSubmittedUrl())
-                                .submittedImageUrl(post.getSubmittedImageUrl())
-                                .build()
-                )
-                .build();
+                            .comment(post.getComment())
+                            .content(
+                                    LinkedInShareContent.builder()
+                                                        .title(post.getTitle())
+                                                        .description(post.getDescription())
+                                                        .submittedUrl(post.getSubmittedUrl())
+                                                        .submittedImageUrl(post.getSubmittedImageUrl())
+                                                        .build()
+                                    )
+                            .build();
     }
 }

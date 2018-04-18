@@ -20,11 +20,11 @@ public class Mappers {
     @Autowired
     public Mappers(List<BaseMapper> baseMappers) {
         mappers = baseMappers.stream()
-                .filter(m -> !m.getClass().getSimpleName().endsWith("_"))
-                .collect(Collectors.toMap(
-                        this::getClasses,
-                        Function.identity()
-                ));
+                             .filter(m -> !m.getClass().getSimpleName().endsWith("_"))
+                             .collect(Collectors.toMap(
+                                     this::getClasses,
+                                     Function.identity()
+                                                      ));
     }
 
     private FromTo getClasses(final BaseMapper b) {
@@ -64,13 +64,15 @@ public class Mappers {
 
         @Override
         public boolean equals(final Object o) {
-            if (this == o)
+            if (this == o) {
                 return true;
-            if (o == null || getClass() != o.getClass())
+            }
+            if (o == null || getClass() != o.getClass()) {
                 return false;
+            }
             final FromTo fromTo = (FromTo) o;
             return Objects.equals(from, fromTo.from) &&
-                    Objects.equals(to, fromTo.to);
+                   Objects.equals(to, fromTo.to);
         }
 
         @Override

@@ -46,7 +46,10 @@ class ReferralServiceImpl implements ReferralService {
     private BountyService bountyService;
     private String googleUrlShortenerKey;
 
-    public ReferralServiceImpl(ReferralRepository repository, KeycloakRepository keycloakRepository, BountyService bountyService, @Value("${io.fundrequest.profile.google-url-shortener-key}") String googleUrlShortenerKey) {
+    public ReferralServiceImpl(ReferralRepository repository,
+                               KeycloakRepository keycloakRepository,
+                               BountyService bountyService,
+                               @Value("${io.fundrequest.profile.google-url-shortener-key}") String googleUrlShortenerKey) {
         this.repository = repository;
         this.keycloakRepository = keycloakRepository;
         this.bountyService = bountyService;
@@ -60,7 +63,7 @@ class ReferralServiceImpl implements ReferralService {
     public void onProviderLinked(UserLinkedProviderEvent event) {
         if (event.getPrincipal() != null) {
             repository.findByReferee(event.getPrincipal().getName())
-                    .ifPresent(r -> sendBountyIfPossible(r, event.getPrincipal()));
+                      .ifPresent(r -> sendBountyIfPossible(r, event.getPrincipal()));
         }
     }
 
@@ -69,9 +72,9 @@ class ReferralServiceImpl implements ReferralService {
     public ReferralOverviewDto getOverview(Principal principal) {
         Map<ReferralStatus, List<Referral>> byStatus = repository.findByReferrer(principal.getName()).stream().collect(Collectors.groupingBy(Referral::getStatus));
         return ReferralOverviewDto.builder()
-                .totalVerified(byStatus.get(ReferralStatus.VERIFIED).size())
-                .totalUnverified(byStatus.get(ReferralStatus.PENDING).size())
-                .build();
+                                  .totalVerified(byStatus.get(ReferralStatus.VERIFIED).size())
+                                  .totalUnverified(byStatus.get(ReferralStatus.PENDING).size())
+                                  .build();
     }
 
     @Override
@@ -97,19 +100,19 @@ class ReferralServiceImpl implements ReferralService {
     @Override
     public List<ReferralDto> getReferrals(Principal principal) {
         return repository.findByReferrer(principal.getName(), new Sort(Sort.Direction.DESC, "creationDate"))
-                .stream()
-                .parallel()
-                .map(this::createReferralDto)
-                .collect(Collectors.toList());
+                         .stream()
+                         .parallel()
+                         .map(this::createReferralDto)
+                         .collect(Collectors.toList());
     }
 
     private ReferralDto createReferralDto(Referral r) {
         UserRepresentation ur = keycloakRepository.getUser(r.getReferee());
         return ReferralDto.builder().status(r.getStatus())
-                .name(ur.getFirstName() + " " + ur.getLastName())
-                .email(ur.getEmail())
-                .picture(keycloakRepository.getAttribute(ur, "picture"))
-                .createdAt(r.getCreationDate()).build();
+                          .name(ur.getFirstName() + " " + ur.getLastName())
+                          .email(ur.getEmail())
+                          .picture(keycloakRepository.getAttribute(ur, "picture"))
+                          .createdAt(r.getCreationDate()).build();
     }
 
     @Override
@@ -120,10 +123,10 @@ class ReferralServiceImpl implements ReferralService {
         validReferral(referrer, referee);
         if (!repository.existsByReferee(referee)) {
             Referral referral = Referral.builder()
-                    .referrer(referrer)
-                    .referee(referee)
-                    .status(ReferralStatus.PENDING)
-                    .build();
+                                        .referrer(referrer)
+                                        .referee(referee)
+                                        .status(ReferralStatus.PENDING)
+                                        .build();
             repository.save(referral);
             sendBountyIfPossible(referral, command.getPrincipal());
 
@@ -136,9 +139,9 @@ class ReferralServiceImpl implements ReferralService {
         if (isVerifiedPrincipal(principal)) {
             referral.setStatus(ReferralStatus.VERIFIED);
             bountyService.createBounty(CreateBountyCommand.builder()
-                    .userId(principal.getName())
-                    .type(REFERRAL)
-                    .build());
+                                                          .userId(principal.getName())
+                                                          .type(REFERRAL)
+                                                          .build());
             repository.save(referral);
         }
     }
@@ -158,6 +161,6 @@ class ReferralServiceImpl implements ReferralService {
 
     private boolean isValidReferee(String referrer, String referee) {
         return referrer.equalsIgnoreCase(referee) ||
-                !keycloakRepository.userExists(referee);
+               !keycloakRepository.userExists(referee);
     }
 }

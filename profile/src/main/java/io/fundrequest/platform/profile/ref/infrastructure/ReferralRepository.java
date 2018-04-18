@@ -14,6 +14,7 @@ public interface ReferralRepository extends JpaRepository<Referral, Long> {
     boolean existsByReferee(String referee);
 
     List<Referral> findByReferrer(String referrer, Sort sort);
+
     List<Referral> findByReferrer(String referrer);
 
     long countByReferrer(String referrer);

@@ -18,7 +18,8 @@ public class ContractConfig {
     }
 
     @Bean
-    public TokenWhitelistPreconditionContract tokenWhitelistPrecondition(final @Value("${io.fundrequest.contract.token-whitelist-precondition.address}") String tokenWhitelistPreconditionContract,
+    public TokenWhitelistPreconditionContract tokenWhitelistPrecondition(final @Value("${io.fundrequest.contract.token-whitelist-precondition.address}")
+                                                                                 String tokenWhitelistPreconditionContract,
                                                                          final Web3j web3j) {
         return new TokenWhitelistPreconditionContract(tokenWhitelistPreconditionContract, web3j);
     }

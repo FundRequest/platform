@@ -38,7 +38,11 @@ public class GithubBountyServiceImpl implements GithubBountyService, Application
     private GithubClient githubClient;
     private ApplicationEventPublisher eventPublisher;
 
-    public GithubBountyServiceImpl(ProfileService profileService, GithubBountyRepository githubBountyRepository, BountyService bountyService, GithubClient githubClient, ApplicationEventPublisher eventPublisher) {
+    public GithubBountyServiceImpl(ProfileService profileService,
+                                   GithubBountyRepository githubBountyRepository,
+                                   BountyService bountyService,
+                                   GithubClient githubClient,
+                                   ApplicationEventPublisher eventPublisher) {
         this.profileService = profileService;
         this.githubBountyRepository = githubBountyRepository;
         this.bountyService = bountyService;
@@ -69,7 +73,7 @@ public class GithubBountyServiceImpl implements GithubBountyService, Application
     @Transactional(readOnly = true)
     public GithubVerificationDto getVerification(Principal principal) {
         return githubBountyRepository.findByUserId(principal.getName()).map(b -> GithubVerificationDto.builder().approved(b.getValid()).createdAt(b.getCreatedAt()).build())
-                .orElse(null);
+                                     .orElse(null);
     }
 
     private void createBountyWhenNecessary(Principal principal, UserProfile userProfile) {
@@ -95,18 +99,18 @@ public class GithubBountyServiceImpl implements GithubBountyService, Application
 
     private void saveBounty(Principal principal) {
         bountyService.createBounty(CreateBountyCommand.builder()
-                .userId(principal.getName())
-                .type(BountyType.LINK_GITHUB).build());
+                                                      .userId(principal.getName())
+                                                      .type(BountyType.LINK_GITHUB).build());
     }
 
     private void saveGithubBounty(Principal principal, GithubUser githubUser, boolean validForBounty) {
         GithubBounty githubBounty = GithubBounty.builder()
-                .userId(principal.getName())
-                .githubId(profileService.getUserProfile(null, principal).getGithub().getUserId())
-                .createdAt(githubUser.getCreatedAt())
-                .location(githubUser.getLocation())
-                .valid(validForBounty)
-                .build();
+                                                .userId(principal.getName())
+                                                .githubId(profileService.getUserProfile(null, principal).getGithub().getUserId())
+                                                .createdAt(githubUser.getCreatedAt())
+                                                .location(githubUser.getLocation())
+                                                .valid(validForBounty)
+                                                .build();
         githubBountyRepository.save(githubBounty);
     }
 }

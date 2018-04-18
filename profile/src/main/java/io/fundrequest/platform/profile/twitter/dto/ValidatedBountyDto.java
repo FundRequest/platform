@@ -1,4 +1,5 @@
 package io.fundrequest.platform.profile.twitter.dto;
+
 import lombok.Builder;
 import lombok.Data;
 

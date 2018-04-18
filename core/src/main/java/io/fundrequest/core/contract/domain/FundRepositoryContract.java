@@ -2,7 +2,12 @@ package io.fundrequest.core.contract.domain;
 
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.*;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Uint;
+import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Bytes32;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
@@ -28,38 +33,38 @@ public class FundRepositoryContract extends Contract {
 
     public RemoteCall<BigInteger> requestsFunded() {
         final Function function = new Function("requestsFunded",
-                emptyList(),
-                singletonList(new TypeReference<Uint256>() {
-                }));
+                                               emptyList(),
+                                               singletonList(new TypeReference<Uint256>() {
+                                               }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<Boolean> funder(final String address) {
         final Function function = new Function("funders",
-                Arrays.asList(
-                        new Address(address)
-                ),
-                singletonList(new TypeReference<Bool>() {
-                }));
+                                               Arrays.asList(
+                                                       new Address(address)
+                                                            ),
+                                               singletonList(new TypeReference<Bool>() {
+                                               }));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
     public RemoteCall<List<Type>> getFundInfo(final String platform, final String platformId, final String funder, final String token) {
         final Function getFundInfo = new Function("getFundInfo",
-                Arrays.asList(
-                        new Bytes32(platform.getBytes()),
-                        new Utf8String(platformId),
-                        new Address(funder),
-                        new Address(token)
-                ),
-                Arrays.asList(
-                        new TypeReference<Uint256>() {
-                        },
-                        new TypeReference<Uint256>() {
-                        },
-                        new TypeReference<Uint256>() {
-                        }
-                )
+                                                  Arrays.asList(
+                                                          new Bytes32(platform.getBytes()),
+                                                          new Utf8String(platformId),
+                                                          new Address(funder),
+                                                          new Address(token)
+                                                               ),
+                                                  Arrays.asList(
+                                                          new TypeReference<Uint256>() {
+                                                          },
+                                                          new TypeReference<Uint256>() {
+                                                          },
+                                                          new TypeReference<Uint256>() {
+                                                          }
+                                                               )
         );
         return executeRemoteCallMultipleValueReturn(getFundInfo);
     }
@@ -67,13 +72,13 @@ public class FundRepositoryContract extends Contract {
     public RemoteCall<BigInteger> getFundedTokenCountAsync(final String platform, final String platformId) {
 
         final Function function = new Function("getFundedTokenCount",
-                Arrays.asList(
-                        new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
-                        new Utf8String(platformId)
+                                               Arrays.asList(
+                                                       new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
+                                                       new Utf8String(platformId)
 
-                ),
-                singletonList(new TypeReference<Uint256>() {
-                }));
+                                                            ),
+                                               singletonList(new TypeReference<Uint256>() {
+                                               }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
@@ -88,14 +93,14 @@ public class FundRepositoryContract extends Contract {
 
     public RemoteCall<String> getFundedTokenAsync(final String platform, final String platformId, final long index) {
         final Function function = new Function("getFundedTokensByIndex",
-                Arrays.asList(
-                        new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
-                        new Utf8String(platformId),
-                        new Uint(BigInteger.valueOf(index))
+                                               Arrays.asList(
+                                                       new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
+                                                       new Utf8String(platformId),
+                                                       new Uint(BigInteger.valueOf(index))
 
-                ),
-                singletonList(new TypeReference<Address>() {
-                }));
+                                                            ),
+                                               singletonList(new TypeReference<Address>() {
+                                               }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
@@ -110,37 +115,37 @@ public class FundRepositoryContract extends Contract {
 
     public RemoteCall<Long> getFunderCount(final String platform, final String platformId) {
         final Function function = new Function("getFunderCount",
-                Arrays.asList(
-                        new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
-                        new Utf8String(platformId)
-                ),
-                singletonList(new TypeReference<Uint>() {
-                }));
+                                               Arrays.asList(
+                                                       new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
+                                                       new Utf8String(platformId)
+                                                            ),
+                                               singletonList(new TypeReference<Uint>() {
+                                               }));
         return executeRemoteCallSingleValueReturn(function, Long.class);
     }
 
     public RemoteCall<BigInteger> amountFunded(final String platform, final String platformId, final String funder, final String token) {
         final Function function = new Function("amountFunded",
-                Arrays.asList(
-                        new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
-                        new Utf8String(platformId),
-                        new Address(funder),
-                        new Address(token)
-                ),
-                singletonList(new TypeReference<Uint256>() {
-                }));
+                                               Arrays.asList(
+                                                       new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
+                                                       new Utf8String(platformId),
+                                                       new Address(funder),
+                                                       new Address(token)
+                                                            ),
+                                               singletonList(new TypeReference<Uint256>() {
+                                               }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<BigInteger> balanceAsync(final String platform, final String platformId, final String token) {
         final Function function = new Function("balance",
-                Arrays.asList(
-                        new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
-                        new Utf8String(platformId),
-                        new Address(token)
-                ),
-                singletonList(new TypeReference<Uint256>() {
-                }));
+                                               Arrays.asList(
+                                                       new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
+                                                       new Utf8String(platformId),
+                                                       new Address(token)
+                                                            ),
+                                               singletonList(new TypeReference<Uint256>() {
+                                               }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 

@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUser(String email) {
         return userDtoMapper.map(
                 userRepository.findOne(email).orElse(null)
-        );
+                                );
     }
 
     @Override
@@ -32,8 +32,8 @@ public class UserServiceImpl implements UserService {
     @Cacheable("loginUserData")
     public UserAuthentication login(UserLoginCommand loginCommand) {
         User user = userRepository.findOne(loginCommand.getUserId())
-                .map(u -> updateUser(loginCommand, u))
-                .orElseGet(() -> createNewUser(loginCommand));
+                                  .map(u -> updateUser(loginCommand, u))
+                                  .orElseGet(() -> createNewUser(loginCommand));
 
         userRepository.save(user);
         return new UserAuthentication(user.getUserId(), user.getEmail());

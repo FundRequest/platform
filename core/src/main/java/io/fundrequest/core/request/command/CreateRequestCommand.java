@@ -59,11 +59,15 @@ public class CreateRequestCommand {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CreateRequestCommand that = (CreateRequestCommand) o;
         return platform == that.platform &&
-                Objects.equals(platformId, that.platformId);
+               Objects.equals(platformId, that.platformId);
     }
 
     @Override

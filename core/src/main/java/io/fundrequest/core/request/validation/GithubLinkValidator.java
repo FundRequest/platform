@@ -20,7 +20,7 @@ public class GithubLinkValidator implements ConstraintValidator<GithubLink, Stri
 
     public boolean isValid(String link, ConstraintValidatorContext context) {
         return StringUtils.isEmpty(link)
-                || link.matches(regex);
+               || link.matches(regex);
     }
 
 }
