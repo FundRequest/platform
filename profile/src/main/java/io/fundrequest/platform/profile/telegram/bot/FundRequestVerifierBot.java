@@ -24,7 +24,7 @@ public class FundRequestVerifierBot extends AbilityBot {
                                   final String fundrequestChannel,
                                   final String fundrequestChannelLink,
                                   final String registrationPage
-    ) {
+                                 ) {
         super(botToken, botUsername);
         this.telegramVerificationService = telegramVerificationService;
         this.fundrequestChannel = fundrequestChannel;
@@ -39,39 +39,60 @@ public class FundRequestVerifierBot extends AbilityBot {
 
     public Ability verify() {
         return Ability.builder()
-                .name("verify")
-                .info("verifies your connection with FundRequest")
-                .locality(ALL)
-                .privacy(PUBLIC)
-                .action(ctx -> {
-                    final GetChatMember getChatMember = new GetChatMember();
-                    getChatMember.setChatId(fundrequestChannel);
-                    getChatMember.setUserId(ctx.user().id());
-                    try {
-                        final ChatMember execute = this.execute(getChatMember);
-                        if (execute.getStatus().equalsIgnoreCase("member") || execute.getStatus().equalsIgnoreCase("creator") || execute.getStatus().equalsIgnoreCase("administrator")) {
-                            if (telegramVerificationService.exists(ctx.user().username())) {
-                                if (ctx.arguments().length > 0) {
-                                    if (telegramVerificationService.verify(ctx.user().username(), ctx.firstArg())) {
-                                        silent.send(POSITIVE + ctx.user().username() + "! We've successfully verified you as member of our community!", ctx.chatId());
-                                    } else {
-                                        silent.send(NEGATIV + ctx.user().username() + "! We found you as a member of our community, but your platform key appears to be wrong!\nex. /verify myPlatformKey", ctx.chatId());
-                                    }
+                      .name("verify")
+                      .info("verifies your connection with FundRequest")
+                      .locality(ALL)
+                      .privacy(PUBLIC)
+                      .action(ctx -> {
+                          final GetChatMember getChatMember = new GetChatMember();
+                          getChatMember.setChatId(fundrequestChannel);
+                          getChatMember.setUserId(ctx.user().id());
+                          try {
+                              final ChatMember execute = this.execute(getChatMember);
+                              if (execute.getStatus().equalsIgnoreCase("member") || execute.getStatus().equalsIgnoreCase("creator") || execute.getStatus()
+                                                                                                                                              .equalsIgnoreCase("administrator")) {
+                                  if (telegramVerificationService.exists(ctx.user().username())) {
+                                      if (ctx.arguments().length > 0) {
+                                          if (telegramVerificationService.verify(ctx.user().username(), ctx.firstArg())) {
+                                              silent.send(POSITIVE + ctx.user().username() + "! We've successfully verified you as member of our community!", ctx.chatId());
+                                          } else {
+                                              silent.send(NEGATIV
+                                                          + ctx.user().username()
+                                                          + "! We found you as a member of our community, but your platform key appears to be wrong!\nex. /verify myPlatformKey",
+                                                          ctx.chatId());
+                                          }
 
-                                } else {
-                                    silent.send(NEGATIV + ctx.user().username() + "! We found you as a member of our community, but you did not add your platform key. Please register at " + registrationPage + " and add your platform key to your verification.\nex. /verify myPlatformKey", ctx.chatId());
-                                }
-                            } else {
-                                silent.send(NEGATIV + ctx.user().username() + "! We found you as a member of our community but we failed to verify you as a registered user on our platform. Please register at " + registrationPage + " and include your platform key.\nex. /verify myPlatformKey", ctx.chatId());
-                            }
-                        } else {
-                            silent.send(NEGATIV + ctx.user().username() + "! You were not found as a member of the fundrequest channel (" + execute.getStatus() + "). Please join us at " + fundrequestChannelLink, ctx.chatId());
-                        }
-                    } catch (final Exception ex) {
-                        ex.printStackTrace();
-                        silent.send(NEGATIV + ctx.user().username() + "! You were not found as a member of the fundrequest channel. Please join us at " + fundrequestChannelLink, ctx.chatId());
-                    }
-                })
-                .build();
+                                      } else {
+                                          silent.send(NEGATIV
+                                                      + ctx.user().username()
+                                                      + "! We found you as a member of our community, but you did not add your platform key. Please register at "
+                                                      + registrationPage
+                                                      + " and add your platform key to your verification.\nex. /verify myPlatformKey", ctx.chatId());
+                                      }
+                                  } else {
+                                      silent.send(NEGATIV
+                                                  + ctx.user().username()
+                                                  + "! We found you as a member of our community but we failed to verify you as a registered user on our platform. Please "
+                                                  + "register at "
+                                                  + registrationPage
+                                                  + " and include your platform key.\nex. /verify myPlatformKey", ctx.chatId());
+                                  }
+                              } else {
+                                  silent.send(NEGATIV
+                                              + ctx.user().username()
+                                              + "! You were not found as a member of the fundrequest channel ("
+                                              + execute.getStatus()
+                                              + "). Please join us at "
+                                              + fundrequestChannelLink, ctx.chatId());
+                              }
+                          } catch (final Exception ex) {
+                              ex.printStackTrace();
+                              silent.send(NEGATIV
+                                          + ctx.user().username()
+                                          + "! You were not found as a member of the fundrequest channel. Please join us at "
+                                          + fundrequestChannelLink, ctx.chatId());
+                          }
+                      })
+                      .build();
     }
 }

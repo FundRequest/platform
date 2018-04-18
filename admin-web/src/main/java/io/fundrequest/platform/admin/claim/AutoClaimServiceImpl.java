@@ -29,10 +29,10 @@ public class AutoClaimServiceImpl implements AutoClaimService {
     public void autoApproveTrustedRepos() {
         Set<String> repos = trustedRepoRepository.findAll().stream().map(r -> r.getOwner().toLowerCase()).collect(Collectors.toSet());
         claimService.listPendingRequestClaims()
-                .stream()
-                .map(r -> Pair.of(r, requestService.findRequest(r.getId())))
-                .filter(r -> repos.contains(r.getRight().getIssueInformation().getOwner().toLowerCase()))
-                .map(Pair::getLeft)
-                .forEach(rc -> claimService.approveClaim(rc.getId()));
+                    .stream()
+                    .map(r -> Pair.of(r, requestService.findRequest(r.getId())))
+                    .filter(r -> repos.contains(r.getRight().getIssueInformation().getOwner().toLowerCase()))
+                    .map(Pair::getLeft)
+                    .forEach(rc -> claimService.approveClaim(rc.getId()));
     }
 }

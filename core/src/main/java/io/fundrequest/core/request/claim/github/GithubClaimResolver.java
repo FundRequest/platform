@@ -48,7 +48,7 @@ public class GithubClaimResolver {
     public Boolean canClaim(Principal user, RequestDto request) {
         Optional<String> solver = githubSolverResolver.solveResolver(request);
         return solver.isPresent()
-                && solver.get().equalsIgnoreCase(getUserPlatformUsername(user, request.getIssueInformation().getPlatform()));
+               && solver.get().equalsIgnoreCase(getUserPlatformUsername(user, request.getIssueInformation().getPlatform()));
     }
 
     private String getSolver(Principal user, UserClaimRequest userClaimRequest, RequestDto request) throws IOException {
@@ -61,11 +61,11 @@ public class GithubClaimResolver {
 
     private ClaimSignature getSignature(UserClaimRequest userClaimRequest, String solver) {
         SignClaimCommand command = SignClaimCommand.builder()
-                .platform(userClaimRequest.getPlatform().toString())
-                .platformId(userClaimRequest.getPlatformId())
-                .solver(solver)
-                .address(userClaimRequest.getAddress())
-                .build();
+                                                   .platform(userClaimRequest.getPlatform().toString())
+                                                   .platformId(userClaimRequest.getPlatformId())
+                                                   .solver(solver)
+                                                   .address(userClaimRequest.getAddress())
+                                                   .build();
         return azraelClient.getSignature(command);
     }
 
@@ -74,9 +74,9 @@ public class GithubClaimResolver {
             throw new RuntimeException("only github is supported for now");
         }
         return keycloakRepository.getUserIdentities(user.getName())
-                .filter(i -> i.getProvider().name().equalsIgnoreCase(platform.toString()))
-                .findFirst().orElseThrow(() -> new RuntimeException("Please link your github account!"))
-                .getUsername();
+                                 .filter(i -> i.getProvider().name().equalsIgnoreCase(platform.toString()))
+                                 .findFirst().orElseThrow(() -> new RuntimeException("Please link your github account!"))
+                                 .getUsername();
     }
 
 

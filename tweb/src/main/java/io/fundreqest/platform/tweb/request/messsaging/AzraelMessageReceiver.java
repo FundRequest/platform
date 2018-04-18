@@ -35,7 +35,10 @@ public class AzraelMessageReceiver {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzraelMessageReceiver.class);
 
     @Autowired
-    public AzraelMessageReceiver(RequestService requestService, ObjectMapper objectMapper, ProcessedBlockchainEventRepository processedBlockchainEventRepository, FundService fundService) {
+    public AzraelMessageReceiver(RequestService requestService,
+                                 ObjectMapper objectMapper,
+                                 ProcessedBlockchainEventRepository processedBlockchainEventRepository,
+                                 FundService fundService) {
         this.requestService = requestService;
         this.objectMapper = objectMapper;
         this.processedBlockchainEventRepository = processedBlockchainEventRepository;
@@ -60,11 +63,15 @@ public class AzraelMessageReceiver {
     }
 
     private void fundRequest(FundedEthDto dto, Long requestId) {
-        FundsAddedCommand fundsCommand = new FundsAddedCommand();
-        fundsCommand.setRequestId(requestId);
-        fundsCommand.setAmountInWei(new BigDecimal(dto.getAmount()));
-        fundsCommand.setTimestamp(getTimeStamp(dto.getTimestamp()));
-        fundsCommand.setToken(dto.getToken());
+        FundsAddedCommand fundsCommand =
+                FundsAddedCommand.builder()
+                                 .requestId(requestId)
+                                 .amountInWei(new BigDecimal(dto.getAmount()))
+                                 .timestamp(getTimeStamp(dto.getTimestamp()))
+                                 .token(dto.getToken())
+                                 .funderAddress(dto.getFrom())
+                                 .transactionId(dto.getTransactionHash())
+                                 .build();
         fundService.addFunds(fundsCommand);
     }
 
@@ -87,13 +94,13 @@ public class AzraelMessageReceiver {
 
     private LocalDateTime getTimeStamp(Long time) {
         return time == null ? null : Instant.ofEpochMilli(time)
-                .atZone(ZoneOffset.UTC)
-                .toLocalDateTime();
+                                            .atZone(ZoneOffset.UTC)
+                                            .toLocalDateTime();
     }
 
     private boolean isNotProcessed(FundedEthDto result) {
         return !processedBlockchainEventRepository.findOne(result.getTransactionHash()).isPresent()
-                && StringUtils.isNotBlank(result.getPlatformId());
+               && StringUtils.isNotBlank(result.getPlatformId());
     }
 
 }

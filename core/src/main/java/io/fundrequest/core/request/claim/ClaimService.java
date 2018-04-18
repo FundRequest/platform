@@ -11,6 +11,7 @@ public interface ClaimService {
     void approveClaim(Long requestClaimId);
 
     List<RequestClaimDto> listPendingRequestClaims();
+
     List<RequestClaimDto> listCompletedRequestClaims();
 
     void declineClaim(Long requestClaimId);

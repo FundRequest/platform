@@ -35,8 +35,12 @@ public class ProcessedBlockchainEvent {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ProcessedBlockchainEvent that = (ProcessedBlockchainEvent) o;
         return Objects.equals(transactionHash, that.transactionHash);
     }

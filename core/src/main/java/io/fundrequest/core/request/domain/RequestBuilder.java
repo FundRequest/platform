@@ -40,8 +40,8 @@ public final class RequestBuilder {
 
     public RequestBuilder but() {
         return aRequest().withWatchers(watchers)
-                .withTechnologies(technologies)
-                .withIssueInformation(issueInformation);
+                         .withTechnologies(technologies)
+                         .withIssueInformation(issueInformation);
     }
 
     public Request build() {

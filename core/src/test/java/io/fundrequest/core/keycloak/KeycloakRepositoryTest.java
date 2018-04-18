@@ -9,7 +9,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class KeycloakRepositoryTest {
 
@@ -19,7 +21,7 @@ public class KeycloakRepositoryTest {
     @Before
     public void setUp() throws Exception {
         realmResource = mock(RealmResource.class, RETURNS_DEEP_STUBS);
-        keycloakRepository = new KeycloakRepository(realmResource);
+        keycloakRepository = new KeycloakRepository(realmResource, "url");
     }
 
     @Test

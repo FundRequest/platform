@@ -16,6 +16,6 @@ public interface StackOverflowClient {
     @RequestMapping(value = "/users/{userid}?site=stackoverflow&key=${feign.client.stackoverflow.key}", method = GET)
     StackOverflowResult getUser(
             @PathVariable("userid") String userId
-    );
+                               );
 
 }

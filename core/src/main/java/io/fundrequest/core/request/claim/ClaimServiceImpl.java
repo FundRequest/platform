@@ -33,7 +33,12 @@ class ClaimServiceImpl implements ClaimService {
     private RabbitTemplate approvedClaimRabbitTemplate;
     private AzraelClient azraelClient;
 
-    public ClaimServiceImpl(RequestRepository requestRepository, RequestClaimRepository requestClaimRepository, GithubClaimResolver githubClaimResolver, Mappers mappers, RabbitTemplate approvedClaimRabbitTemplate, AzraelClient azraelClient) {
+    public ClaimServiceImpl(RequestRepository requestRepository,
+                            RequestClaimRepository requestClaimRepository,
+                            GithubClaimResolver githubClaimResolver,
+                            Mappers mappers,
+                            RabbitTemplate approvedClaimRabbitTemplate,
+                            AzraelClient azraelClient) {
         this.requestRepository = requestRepository;
         this.requestClaimRepository = requestClaimRepository;
         this.githubClaimResolver = githubClaimResolver;
@@ -46,17 +51,17 @@ class ClaimServiceImpl implements ClaimService {
     @Override
     public void claim(Principal user, UserClaimRequest userClaimRequest) {
         Request request = requestRepository.findByPlatformAndPlatformId(userClaimRequest.getPlatform(), userClaimRequest.getPlatformId())
-                .orElseThrow(() -> new RuntimeException("Request not found"));
+                                           .orElseThrow(() -> new RuntimeException("Request not found"));
 
         RequestDto requestDto = mappers.map(Request.class, RequestDto.class, request);
         String solver = githubClaimResolver.getUserPlatformUsername(user, request.getIssueInformation().getPlatform());
         RequestClaim requestClaim = RequestClaim.builder()
-                .address(userClaimRequest.getAddress())
-                .requestId(request.getId())
-                .flagged(!githubClaimResolver.canClaim(user, requestDto))
-                .solver(solver)
-                .status(ClaimRequestStatus.PENDING)
-                .build();
+                                                .address(userClaimRequest.getAddress())
+                                                .requestId(request.getId())
+                                                .flagged(!githubClaimResolver.canClaim(user, requestDto))
+                                                .solver(solver)
+                                                .status(ClaimRequestStatus.PENDING)
+                                                .build();
         requestClaimRepository.save(requestClaim);
         request.setStatus(RequestStatus.CLAIM_REQUESTED);
         requestRepository.save(request);
@@ -82,7 +87,7 @@ class ClaimServiceImpl implements ClaimService {
                 RequestClaim.class,
                 RequestClaimDto.class,
                 requestClaimRepository.findByStatusIn(Collections.singletonList(ClaimRequestStatus.PENDING), new Sort("creationDate"))
-        );
+                              );
     }
 
     @Override
@@ -94,17 +99,17 @@ class ClaimServiceImpl implements ClaimService {
                 RequestClaim.class,
                 RequestClaimDto.class,
                 requestClaimRepository.findByStatusIn(statuses, new Sort(new Sort.Order(Sort.Direction.DESC, "lastModifiedDate")))
-        );
+                              );
     }
 
 
     private SignClaimCommand createSignClaimCommand(RequestClaim requestClaim, Request request) {
         return SignClaimCommand.builder()
-                .platform(request.getIssueInformation().getPlatform().name())
-                .platformId(request.getIssueInformation().getPlatformId())
-                .solver(requestClaim.getSolver())
-                .address(requestClaim.getAddress())
-                .build();
+                               .platform(request.getIssueInformation().getPlatform().name())
+                               .platformId(request.getIssueInformation().getPlatformId())
+                               .solver(requestClaim.getSolver())
+                               .address(requestClaim.getAddress())
+                               .build();
     }
 
 

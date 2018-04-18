@@ -24,4 +24,11 @@ public final class RequestDtoMother {
                 .build());
     }
 
+    public static RequestDto fundRequestArea51() {
+        return mapper.map(RequestMother.fundRequestArea51()
+                                       .but()
+                                       .withId(Math.abs(UUID.randomUUID().getMostSignificantBits()))
+                                       .build());
+    }
+
 }

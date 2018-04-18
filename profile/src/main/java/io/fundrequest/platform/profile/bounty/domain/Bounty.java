@@ -4,7 +4,14 @@ import io.fundrequest.core.infrastructure.repository.AbstractEntity;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "bounty")
@@ -26,7 +33,6 @@ public class Bounty extends AbstractEntity {
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private BountyStatus status;
-
 
 
     @Builder

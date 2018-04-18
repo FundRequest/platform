@@ -16,7 +16,7 @@ public class RefSignupListener {
     public void onSignup(RefSignupEvent refSignupEvent) {
         referralService.createNewRef(
                 CreateRefCommand.builder().principal(refSignupEvent.getPrincipal()).ref(refSignupEvent.getRef()).build()
-        );
+                                    );
     }
 
 

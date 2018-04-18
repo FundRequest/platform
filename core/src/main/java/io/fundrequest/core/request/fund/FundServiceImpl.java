@@ -1,6 +1,8 @@
 package io.fundrequest.core.request.fund;
 
 import io.fundrequest.core.contract.service.FundRequestContractsService;
+import io.fundrequest.core.fund.domain.PendingFund;
+import io.fundrequest.core.fund.repository.PendingFundRepository;
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.Request;
@@ -36,6 +38,7 @@ import java.util.stream.LongStream;
 class FundServiceImpl implements FundService {
 
     private FundRepository fundRepository;
+    private PendingFundRepository pendingFundRepository;
     private RequestRepository requestRepository;
     private Mappers mappers;
     private ApplicationEventPublisher eventPublisher;
@@ -45,13 +48,14 @@ class FundServiceImpl implements FundService {
 
     @Autowired
     public FundServiceImpl(FundRepository fundRepository,
-                           RequestRepository requestRepository,
+                           PendingFundRepository pendingFundRepository, RequestRepository requestRepository,
                            Mappers mappers,
                            ApplicationEventPublisher eventPublisher,
                            CacheManager cacheManager,
                            TokenInfoService tokenInfoService,
                            FundRequestContractsService fundRequestContractsService) {
         this.fundRepository = fundRepository;
+        this.pendingFundRepository = pendingFundRepository;
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.eventPublisher = eventPublisher;
@@ -88,11 +92,16 @@ class FundServiceImpl implements FundService {
         if (one.isPresent()) {
             try {
                 final Request request = one.get();
-                final Long fundedTokenCount = fundRequestContractsService.fundRepository().getFundedTokenCount(request.getIssueInformation().getPlatform().name(), request.getIssueInformation().getPlatformId());
+                final Long fundedTokenCount = fundRequestContractsService.fundRepository()
+                                                                         .getFundedTokenCount(request.getIssueInformation().getPlatform().name(),
+                                                                                              request.getIssueInformation().getPlatformId());
                 return LongStream.range(0, fundedTokenCount)
-                        .mapToObj(x -> fundRequestContractsService.fundRepository().getFundedToken(request.getIssueInformation().getPlatform().name(), request.getIssueInformation().getPlatformId(), x)).filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .map(getTotalFundDto(request)).collect(Collectors.toList());
+                                 .mapToObj(x -> fundRequestContractsService.fundRepository()
+                                                                           .getFundedToken(request.getIssueInformation().getPlatform().name(),
+                                                                                           request.getIssueInformation().getPlatformId(),
+                                                                                           x)).filter(Optional::isPresent)
+                                 .map(Optional::get)
+                                 .map(getTotalFundDto(request)).collect(Collectors.toList());
             } catch (final Exception ex) {
                 return Collections.emptyList();
             }
@@ -109,13 +118,16 @@ class FundServiceImpl implements FundService {
     private Function<String, TotalFundDto> getTotalFundDto(final Request request) {
         return tokenAddress -> {
             final TokenInfoDto tokenInfo = tokenInfoService.getTokenInfo(tokenAddress);
-            final BigDecimal rawBalance = new BigDecimal(fundRequestContractsService.fundRepository().balance(request.getIssueInformation().getPlatform().name(), request.getIssueInformation().getPlatformId(), tokenAddress));
+            final BigDecimal rawBalance = new BigDecimal(fundRequestContractsService.fundRepository()
+                                                                                    .balance(request.getIssueInformation().getPlatform().name(),
+                                                                                             request.getIssueInformation().getPlatformId(),
+                                                                                             tokenAddress));
             final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
             return TotalFundDto.builder()
-                    .tokenAddress(tokenAddress)
-                    .tokenSymbol(tokenInfo.getSymbol())
-                    .totalAmount(rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN))
-                    .build();
+                               .tokenAddress(tokenAddress)
+                               .tokenSymbol(tokenInfo.getSymbol())
+                               .totalAmount(rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN))
+                               .build();
         };
     }
 
@@ -123,13 +135,18 @@ class FundServiceImpl implements FundService {
     @Override
     public void addFunds(FundsAddedCommand command) {
         Request request = requestRepository.findOne(command.getRequestId())
-                .orElseThrow(() -> new RuntimeException("Unable to find request"));
+                                           .orElseThrow(() -> new RuntimeException("Unable to find request"));
         Fund fund = Fund.builder()
-                .amountInWei(command.getAmountInWei())
-                .requestId(command.getRequestId())
-                .token(command.getToken())
-                .timestamp(command.getTimestamp())
-                .build();
+                        .amountInWei(command.getAmountInWei())
+                        .requestId(command.getRequestId())
+                        .token(command.getToken())
+                        .timestamp(command.getTimestamp())
+                        .funder(command.getFunderAddress())
+                        .build();
+        Optional<PendingFund> pendingFund = pendingFundRepository.findByTransactionHash(command.getTransactionId());
+        if (pendingFund.isPresent()) {
+            fund.setCreatedBy(pendingFund.get().getUserId());
+        }
         fund = fundRepository.saveAndFlush(fund);
         cacheManager.getCache("funds").evict(fund.getRequestId());
         if (request.getStatus() == RequestStatus.OPEN) {
@@ -141,7 +158,8 @@ class FundServiceImpl implements FundService {
                         command.getTransactionId(), mappers.map(Fund.class, FundDto.class, fund),
                         mappers.map(Request.class, RequestDto.class, request),
                         command.getTimestamp())
-        );
+                                   );
 
     }
+
 }

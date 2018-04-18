@@ -1,12 +1,12 @@
 package io.fundrequest.platform.profile.profile;
 
+import io.fundrequest.core.keycloak.KeycloakRepository;
 import io.fundrequest.core.keycloak.Provider;
 import io.fundrequest.core.keycloak.UserIdentity;
 import io.fundrequest.platform.profile.developer.verification.event.DeveloperVerified;
 import io.fundrequest.platform.profile.profile.dto.UserLinkedProviderEvent;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import io.fundrequest.platform.profile.profile.dto.UserProfileProvider;
-import io.fundrequest.platform.profile.profile.infrastructure.ProfileKeycloakRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.common.util.Base64Url;
@@ -31,14 +31,14 @@ import java.util.stream.Collectors;
 @Service
 public class ProfileServiceImpl implements ProfileService {
 
-    private final ProfileKeycloakRepository profileKeycloakRepository;
+    private final KeycloakRepository keycloakRepository;
     private final String keycloakUrl;
     private final ApplicationEventPublisher eventPublisher;
 
-    public ProfileServiceImpl(final ProfileKeycloakRepository profileKeycloakRepository,
+    public ProfileServiceImpl(final KeycloakRepository keycloakRepository,
                               final @Value("${io.fundrequest.keycloak-custom.server-url}") String keycloakUrl,
                               final ApplicationEventPublisher eventPublisher) {
-        this.profileKeycloakRepository = profileKeycloakRepository;
+        this.keycloakRepository = keycloakRepository;
         this.keycloakUrl = keycloakUrl;
         this.eventPublisher = eventPublisher;
     }
@@ -51,30 +51,35 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public UserProfile getUserProfile(HttpServletRequest request, Principal principal) {
         IDToken idToken = ((KeycloakAuthenticationToken) principal).getAccount().getKeycloakSecurityContext().getIdToken();
-        Map<Provider, UserProfileProvider> providers = profileKeycloakRepository.getUserIdentities(principal.getName()).collect(Collectors.toMap(UserIdentity::getProvider, x -> UserProfileProvider.builder().userId(x.getUserId()).username(x.getUsername()).build()));
+        Map<Provider, UserProfileProvider> providers = keycloakRepository.getUserIdentities(principal.getName())
+                                                                         .collect(Collectors.toMap(UserIdentity::getProvider,
+                                                                                                   x -> UserProfileProvider.builder()
+                                                                                                                           .userId(x.getUserId())
+                                                                                                                           .username(x.getUsername())
+                                                                                                                           .build()));
         if (request != null) {
             addMissingProviders(request, principal, providers);
         }
-        UserRepresentation user = profileKeycloakRepository.getUser(principal.getName());
+        UserRepresentation user = keycloakRepository.getUser(principal.getName());
         return UserProfile.builder()
-                .name(idToken.getName())
-                .email(idToken.getEmail())
-                .picture(getPicture(idToken))
-                .verifiedDeveloper(profileKeycloakRepository.isVerifiedDeveloper(user))
-                .etherAddress(profileKeycloakRepository.getEtherAddress(user))
-                .telegramName(profileKeycloakRepository.getTelegramName(user))
-                .headline(profileKeycloakRepository.getHeadline(user))
-                .github(providers.get(Provider.GITHUB))
-                .linkedin(providers.get(Provider.LINKEDIN))
-                .twitter(providers.get(Provider.TWITTER))
-                .google(providers.get(Provider.GOOGLE))
-                .stackoverflow(providers.get(Provider.STACKOVERFLOW))
-                .build();
+                          .name(idToken.getName())
+                          .email(idToken.getEmail())
+                          .picture(getPicture(idToken))
+                          .verifiedDeveloper(keycloakRepository.isVerifiedDeveloper(user))
+                          .etherAddress(keycloakRepository.getEtherAddress(user))
+                          .telegramName(keycloakRepository.getTelegramName(user))
+                          .headline(keycloakRepository.getHeadline(user))
+                          .github(providers.get(Provider.GITHUB))
+                          .linkedin(providers.get(Provider.LINKEDIN))
+                          .twitter(providers.get(Provider.TWITTER))
+                          .google(providers.get(Provider.GOOGLE))
+                          .stackoverflow(providers.get(Provider.STACKOVERFLOW))
+                          .build();
     }
 
     @EventListener
     public void onDeveloperVerified(DeveloperVerified event) {
-        profileKeycloakRepository.updateVerifiedDeveloper(event.getUserId(), true);
+        keycloakRepository.updateVerifiedDeveloper(event.getUserId(), true);
     }
 
     private String getPicture(IDToken idToken) {
@@ -87,17 +92,17 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public void updateEtherAddress(Principal principal, String etherAddress) {
-        profileKeycloakRepository.updateEtherAddress(principal.getName(), etherAddress);
+        keycloakRepository.updateEtherAddress(principal.getName(), etherAddress);
     }
 
     @Override
     public void updateTelegramName(Principal principal, String telegramName) {
-        profileKeycloakRepository.updateTelegramName(principal.getName(), telegramName);
+        keycloakRepository.updateTelegramName(principal.getName(), telegramName);
     }
 
     @Override
     public void updateHeadline(Principal principal, String headline) {
-        profileKeycloakRepository.updateHeadline(principal.getName(), headline);
+        keycloakRepository.updateHeadline(principal.getName(), headline);
     }
 
     private void addMissingProviders(HttpServletRequest request, Principal principal, Map<Provider, UserProfileProvider> providers) {
@@ -111,9 +116,9 @@ public class ProfileServiceImpl implements ProfileService {
             providers.put(
                     provider,
                     UserProfileProvider.builder()
-                            .signupLink(createLink(request, principal, provider.toString().toLowerCase()))
-                            .build()
-            );
+                                       .signupLink(createLink(request, principal, provider.toString().toLowerCase()))
+                                       .build()
+                         );
         }
     }
 
@@ -132,11 +137,11 @@ public class ProfileServiceImpl implements ProfileService {
         String hash = Base64Url.encode(check);
         request.getSession().setAttribute("hash", hash);
         return KeycloakUriBuilder.fromUri(keycloakUrl)
-                .path("/realms/{realm}/broker/{provider}/link")
-                .queryParam("nonce", nonce)
-                .queryParam("hash", hash)
-                .queryParam("client_id", clientId)
-                .queryParam("redirect_uri", getRedirectUrl(request, provider)).build("fundrequest", provider).toString();
+                                 .path("/realms/{realm}/broker/{provider}/link")
+                                 .queryParam("nonce", nonce)
+                                 .queryParam("hash", hash)
+                                 .queryParam("client_id", clientId)
+                                 .queryParam("redirect_uri", getRedirectUrl(request, provider)).build("fundrequest", provider).toString();
     }
 
     private String getRedirectUrl(HttpServletRequest req, String provider) {

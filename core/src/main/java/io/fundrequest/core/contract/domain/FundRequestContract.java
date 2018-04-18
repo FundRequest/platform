@@ -22,17 +22,17 @@ public class FundRequestContract extends Contract {
 
     public RemoteCall<String> fundRepository() {
         Function function = new Function("fundRepository",
-                emptyList(),
-                singletonList(new TypeReference<Address>() {
-                }));
+                                         emptyList(),
+                                         singletonList(new TypeReference<Address>() {
+                                         }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<String> claimRepository() {
         Function function = new Function("claimRepository",
-                emptyList(),
-                singletonList(new TypeReference<Address>() {
-                }));
+                                         emptyList(),
+                                         singletonList(new TypeReference<Address>() {
+                                         }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 }

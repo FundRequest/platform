@@ -46,22 +46,22 @@ public class ModelAndViewBuilder {
         return this;
     }
 
-    public ModelAndViewBuilder withSuccessMessage(String code, String ... args) {
+    public ModelAndViewBuilder withSuccessMessage(String code, String... args) {
         messageHolder.addSuccessMessage(code, args);
         return this;
     }
 
-    public ModelAndViewBuilder withErrorMessage(String code, String ... args) {
+    public ModelAndViewBuilder withErrorMessage(String code, String... args) {
         messageHolder.addErrorMessage(code, args);
         return this;
     }
 
-    public ModelAndViewBuilder withAlertMessage(String code, String ... args) {
+    public ModelAndViewBuilder withAlertMessage(String code, String... args) {
         messageHolder.addAlertMessage(code, args);
         return this;
     }
 
-    public ModelAndViewBuilder withInfoMessage(String code, String ... args) {
+    public ModelAndViewBuilder withInfoMessage(String code, String... args) {
         messageHolder.addInfoMessage(code, args);
         return this;
     }

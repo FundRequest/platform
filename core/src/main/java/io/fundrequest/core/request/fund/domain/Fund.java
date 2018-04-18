@@ -31,11 +31,12 @@ public class Fund extends AbstractEntity {
     @Column(name = "token")
     private String token;
 
-    @Column(name = "time_stamp")
-    private LocalDateTime timestamp;
-
     @Column(name = "request_id")
     private Long requestId;
+
+
+    @Column(name = "time_stamp")
+    private LocalDateTime timestamp;
 
     protected Fund() {
     }

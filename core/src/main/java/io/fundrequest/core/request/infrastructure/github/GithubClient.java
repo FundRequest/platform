@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @FeignClient(
         name = "github-client",
@@ -24,14 +26,14 @@ public interface GithubClient {
             @PathVariable("owner") String owner,
             @PathVariable("repo") String repo,
             @PathVariable("number") String number
-    );
+                         );
 
     @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}/comments", method = GET)
     List<GithubIssueCommentsResult> getCommentsForIssue(
             @PathVariable("owner") String owner,
             @PathVariable("repo") String repo,
             @PathVariable("number") String number
-    );
+                                                       );
 
     @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}/comments", method = POST)
     void createCommentOnIssue(
@@ -39,7 +41,7 @@ public interface GithubClient {
             @PathVariable("repo") String repo,
             @PathVariable("number") String number,
             CreateGithubComment comment
-    );
+                             );
 
     @RequestMapping(value = "/repos/{owner}/{repo}/issues/comments/{commentId}", method = PATCH)
     void editCommentOnIssue(
@@ -47,16 +49,16 @@ public interface GithubClient {
             @PathVariable("repo") String repo,
             @PathVariable("commentId") Long commentId,
             CreateGithubComment comment
-    );
+                           );
 
     @RequestMapping(value = "/repos/{owner}/{repo}/languages", method = GET)
     Map<String, Long> getLanguages(
             @PathVariable("owner") String owner,
             @PathVariable("repo") String repo
-    );
+                                  );
 
     @RequestMapping(value = "/users/{username}", method = GET)
     GithubUser getUser(
             @PathVariable("username") String username
-    );
+                      );
 }

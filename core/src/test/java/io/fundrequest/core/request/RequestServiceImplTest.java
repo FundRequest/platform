@@ -1,6 +1,7 @@
 package io.fundrequest.core.request;
 
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.keycloak.KeycloakRepository;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
@@ -17,7 +18,6 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
-import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
@@ -31,6 +31,8 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -52,18 +54,18 @@ public class RequestServiceImplTest {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private GithubPlatformIdParser githubLinkParser;
-    private FundService fundService;
     private ClaimRepository claimRepository;
     private GithubClient githubClient;
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
+    private KeycloakRepository keycloakRepository;
 
     @Before
     public void setUp() throws Exception {
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
         githubLinkParser = mock(GithubPlatformIdParser.class);
-        fundService = mock(FundService.class);
+        keycloakRepository = mock(KeycloakRepository.class);
         githubClient = mock(GithubClient.class);
         githubClaimResolver = mock(GithubClaimResolver.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
@@ -72,7 +74,7 @@ public class RequestServiceImplTest {
                 requestRepository,
                 mappers,
                 githubLinkParser,
-                fundService,
+                keycloakRepository,
                 claimRepository, githubClient, githubClaimResolver, eventPublisher);
     }
 
@@ -120,10 +122,20 @@ public class RequestServiceImplTest {
         Principal user = mock(Principal.class, RETURNS_DEEP_STUBS);
 
         List<Request> requests = singletonList(RequestMother.freeCodeCampNoUserStories().build());
-        when(requestRepository.findRequestsForUser(user.getName())).thenReturn(requests);
+        when(requestRepository.findRequestsUserIsWatching(user.getName())).thenReturn(requests);
 
-        List<RequestDto> expectedRequests = singletonList(RequestDtoMother.freeCodeCampNoUserStories());
-        when(mappers.mapList(Request.class, RequestDto.class, requests)).thenReturn(expectedRequests);
+        String address = "0x0";
+        when(keycloakRepository.getEtherAddress(user.getName())).thenReturn(address);
+
+        List<Request> fundedRequests = singletonList(RequestMother.fundRequestArea51().build());
+        when(requestRepository.findRequestsUserHasFunded(user.getName(), address)).thenReturn(fundedRequests);
+        HashSet<Request> userRequets = new HashSet<>();
+        userRequets.addAll(requests);
+        userRequets.addAll(fundedRequests);
+        List<RequestDto> expectedRequests = Arrays.asList(RequestDtoMother.freeCodeCampNoUserStories(), RequestDtoMother.fundRequestArea51());
+        when(mappers.mapList(Request.class, RequestDto.class, userRequets)).thenReturn(expectedRequests);
+
+
 
         List<RequestDto> result = requestService.findRequestsForUser(user);
 

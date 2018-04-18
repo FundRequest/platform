@@ -47,4 +47,8 @@ public abstract class AbstractEntity {
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 }

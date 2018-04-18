@@ -76,15 +76,19 @@ public class RequestClaimedCommand {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         RequestClaimedCommand that = (RequestClaimedCommand) o;
         return platform == that.platform &&
-                Objects.equals(platformId, that.platformId) &&
-                Objects.equals(transactionId, that.transactionId) &&
-                Objects.equals(solver, that.solver) &&
-                Objects.equals(timestamp, that.timestamp) &&
-                Objects.equals(amountInWei, that.amountInWei);
+               Objects.equals(platformId, that.platformId) &&
+               Objects.equals(transactionId, that.transactionId) &&
+               Objects.equals(solver, that.solver) &&
+               Objects.equals(timestamp, that.timestamp) &&
+               Objects.equals(amountInWei, that.amountInWei);
     }
 
     @Override
