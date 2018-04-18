@@ -92,3 +92,42 @@
         background-color: $blue-300;
     }
 }
+
+.issue-list {
+    &__options {
+        .fa, label {
+            color: $gray-500;
+        }
+
+        select.form-control {
+            background-color: $gray-300;
+            color: $gray-600;
+        }
+    }
+}
+
+.issue-list__block {
+    box-shadow: $z-depth-1;
+    background-color: $white;
+    margin-bottom: 1rem;
+}
+
+.issue-list__item {
+    display: flex;
+    padding: .5rem;
+
+    &:nth-child(even) {
+        background-color: $gray-100;
+    }
+
+    &__logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 5rem;
+    }
+
+    &__info {
+        flex-grow: 1;
+    }
+}

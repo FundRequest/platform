@@ -2,35 +2,191 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layouts/default">
 <head>
-    <title>FundRequest - Fund Existing GitHub Request</title>
+    <title>FundRequest - Your Request</title>
 </head>
 <body>
 <th:block layout:fragment="content">
     <section class="section section--header">
-        <div class="row">
-            <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
-                <i class="fa fa-bars fa-10x text-warning"></i>
-            </div>
-            <div class="col-12 col-md-8">
-                <h1 class="text-warning">
+        <section class="section section--header">
+            <div class="row">
+                <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
+                    <i class="fa fa-list fa-10x text-warning"></i>
+                </div>
+                <div class="col-12 col-md-8">
+                    <h1 class="text-warning">
                     <span class="d-inline-block d-md-none">
-                        <i class="fa fa-bars fa-1x text-warning"></i>
+                        <i class="fa fa-list fa-1x text-warning"></i>
                     </span>
-                    Your requests
-                </h1>
+                        Overview of your requests
+                    </h1>
 
-                <div class="description text-muted">
-                    <p>
-                        This page contains all your requests
-                    </p>
+                    <div class="description text-muted">
+                        <p>
+                            Quick and easy way to filter through your issues, view completed, ongoing or even pending
+                            requests.
+                        </p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a class="text-warning text-transform-normal"
+                           th:href="@{/}">
+                            How it works...
+                        </a>
+                        <a class="btn btn-warning"
+                           th:href="@{/fund/github}">
+                            Start new
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <div class="issue-lists">
+        <nav class="navbar navbar-expand navbar--fnd-filter mb-4">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#sec-menu" aria-controls="sec-menu"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="sec-menu">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">All</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Funded</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Starred</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Claimed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Failed</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="issue-list__options">
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-3">
+                    <div class="md-form">
+                        <input class="form-control form-control--search" id="list-search" type="search" />
+                        <label for="list-search"><span>Search</span><i class="fa fa-search"></i></label>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 offset-md-4 col-lg-3 offset-lg-6">
+                    <div class="md-form">
+                        <select class="form-control">
+                            <option disabled="disabled" selected="selected">Sort by</option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+        <div class="issue-list__block">
+            <div class="issue-list__item">
+                <div class="issue-list__item__logo">
+                    <img class="issue-list__logo__img" />
+                    <div class="issue-list__logo__title">Ansible</div>
+                </div>
+                <div class="issue-list__item__info">
+                    <div class="issue-list__item__title">ansible-vault: inline yaml encrypt / decript <span
+                            class="text-muted">#38808</span></div>
+                    <div class="issue-list__item__status">
+                        <span class="issue-list__item__badge badge badge-warning">Pending</span>
+                        <span class="issue-list__item__tech">Python</span>
+                    </div>
+                    <div class="issue-list__item__icons">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-github-alt"></i></a>
+                        <a href="#"><i class="fa fa-message"></i></a>
+                    </div>
+                </div>
+                <div class="issue-list__item__funding">
+                    <div class="issue-list__fund">
+                        <span class="issue-list__fund__amount">1259</span>
+                        <span class="issue-list__fund__currency">FND</span>
+                    </div>
+                    <div class="issue-list__fund">
+                        <span class="issue-list__fund__amount">100</span>
+                        <span class="issue-list__fund__currency">IND</span>
+                    </div>
+                </div>
+                <div class="issue-list__item__actions">
+                    <i class="fa fa-ellipsis-v fa-2x text-warning"></i>
+                </div>
+            </div>
+        </div>
+        <div class="issue-list__block">
 
-    <section class="mb-2">
-        Show requests
-    </section>
+            <div class="issue-list__item">
+                <div class="issue-list__item__logo">
+                    <img class="issue-list__logo__img" />
+                    <div class="issue-list__logo__title">Ansible</div>
+                </div>
+                <div class="issue-list__item__info">
+                    <div class="issue-list__item__title">ansible-vault: inline yaml encrypt / decript <span
+                            class="text-muted">#38808</span></div>
+                    <div class="issue-list__item__status">
+                        <span class="issue-list__item__badge badge badge-warning">Pending</span>
+                        <span class="issue-list__item__tech">Python</span>
+                    </div>
+                    <div class="issue-list__item__icons">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-github-alt"></i></a>
+                        <a href="#"><i class="fa fa-message"></i></a>
+                    </div>
+                </div>
+                <div class="issue-list__item__funding">
+                    <div class="issue-list__fund">
+                        <span class="issue-list__fund__amount">1259</span>
+                        <span class="issue-list__fund__currency">FND</span>
+                    </div>
+                    <div class="issue-list__fund">
+                        <span class="issue-list__fund__amount">100</span>
+                        <span class="issue-list__fund__currency">IND</span>
+                    </div>
+                </div>
+                <div class="issue-list__item__actions">
+                    <i class="fa fa-ellipsis-v fa-2x text-warning"></i>
+                </div>
+            </div>
+            <div class="issue-list__item">
+                <div class="issue-list__item__logo">
+                    <img class="issue-list__logo__img" />
+                    <div class="issue-list__logo__title">Ansible</div>
+                </div>
+                <div class="issue-list__item__info">
+                    <div class="issue-list__item__title">ansible-vault: inline yaml encrypt / decript <span
+                            class="text-muted">#38808</span></div>
+                    <div class="issue-list__item__status">
+                        <span class="issue-list__item__badge badge badge-warning">Pending</span>
+                        <span class="issue-list__item__tech">Python</span>
+                    </div>
+                    <div class="issue-list__item__icons">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-github-alt"></i></a>
+                        <a href="#"><i class="fa fa-message"></i></a>
+                    </div>
+                </div>
+                <div class="issue-list__item__funding">
+                    <div class="issue-list__fund">
+                        <span class="issue-list__fund__amount">100</span>
+                        <span class="issue-list__fund__currency">IND</span>
+                    </div>
+                </div>
+                <div class="issue-list__item__actions">
+                    <i class="fa fa-ellipsis-v fa-2x text-warning"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 </th:block>
 
 <th:block layout:fragment="css">
