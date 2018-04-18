@@ -1,0 +1,40 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layouts/default">
+<head>
+    <title>FundRequest - Fund Existing GitHub Request</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <section class="section section--header">
+        <div class="row">
+            <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
+                <i class="fa fa-bars fa-10x text-warning"></i>
+            </div>
+            <div class="col-12 col-md-8">
+                <h1 class="text-warning">
+                    <span class="d-inline-block d-md-none">
+                        <i class="fa fa-bars fa-1x text-warning"></i>
+                    </span>
+                    Your requests
+                </h1>
+
+                <div class="description text-muted">
+                    <p>
+                        This page contains all your requests
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-2">
+        Show requests
+    </section>
+</th:block>
+
+<th:block layout:fragment="css">
+</th:block>
+
+</body>
+</html>

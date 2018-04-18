@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 public class RequestController extends AbstractController {
@@ -33,6 +34,14 @@ public class RequestController extends AbstractController {
         return modelAndView()
                 .withObject("request", requestService.findRequest(id))
                 .withView("pages/requests/detail")
+                .build();
+    }
+
+    @GetMapping("/user/requests")
+    public ModelAndView details(Principal principal) {
+        return modelAndView()
+                .withObject("request", requestService.findRequestsForUser(principal))
+                .withView("pages/user/requests")
                 .build();
     }
 

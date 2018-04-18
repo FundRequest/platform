@@ -110,7 +110,7 @@
             switch (this.paymentMethod) {
                 case PaymentMethods.getInstance().dapp:
                     await this.fundUsingDapp();
-                    window.location.href = "/your-requests";
+                    window.location.href = "/user/requests";
                     break;
                 case PaymentMethods.getInstance().trustWallet:
                     this.fundUsingTrustWallet();
