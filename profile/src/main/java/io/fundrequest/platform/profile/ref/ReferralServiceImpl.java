@@ -2,10 +2,10 @@ package io.fundrequest.platform.profile.ref;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.fundrequest.core.keycloak.KeycloakRepository;
 import io.fundrequest.platform.profile.bounty.event.CreateBountyCommand;
 import io.fundrequest.platform.profile.bounty.service.BountyService;
 import io.fundrequest.platform.profile.profile.dto.UserLinkedProviderEvent;
-import io.fundrequest.platform.profile.profile.infrastructure.ProfileKeycloakRepository;
 import io.fundrequest.platform.profile.ref.domain.Referral;
 import io.fundrequest.platform.profile.ref.domain.ReferralStatus;
 import io.fundrequest.platform.profile.ref.dto.ReferralDto;
@@ -42,13 +42,13 @@ class ReferralServiceImpl implements ReferralService {
 
     private final ObjectMapper objectMapper;
     private ReferralRepository repository;
-    private ProfileKeycloakRepository profileKeycloakRepository;
+    private KeycloakRepository keycloakRepository;
     private BountyService bountyService;
     private String googleUrlShortenerKey;
 
-    public ReferralServiceImpl(ReferralRepository repository, ProfileKeycloakRepository profileKeycloakRepository, BountyService bountyService, @Value("${io.fundrequest.profile.google-url-shortener-key}") String googleUrlShortenerKey) {
+    public ReferralServiceImpl(ReferralRepository repository, KeycloakRepository keycloakRepository, BountyService bountyService, @Value("${io.fundrequest.profile.google-url-shortener-key}") String googleUrlShortenerKey) {
         this.repository = repository;
-        this.profileKeycloakRepository = profileKeycloakRepository;
+        this.keycloakRepository = keycloakRepository;
         this.bountyService = bountyService;
         this.googleUrlShortenerKey = googleUrlShortenerKey;
         this.objectMapper = new ObjectMapper();
@@ -104,11 +104,11 @@ class ReferralServiceImpl implements ReferralService {
     }
 
     private ReferralDto createReferralDto(Referral r) {
-        UserRepresentation ur = profileKeycloakRepository.getUser(r.getReferee());
+        UserRepresentation ur = keycloakRepository.getUser(r.getReferee());
         return ReferralDto.builder().status(r.getStatus())
                 .name(ur.getFirstName() + " " + ur.getLastName())
                 .email(ur.getEmail())
-                .picture(profileKeycloakRepository.getAttribute(ur, "picture"))
+                .picture(keycloakRepository.getAttribute(ur, "picture"))
                 .createdAt(r.getCreationDate()).build();
     }
 
@@ -144,20 +144,20 @@ class ReferralServiceImpl implements ReferralService {
     }
 
     private boolean isVerifiedPrincipal(Principal principal) {
-        return profileKeycloakRepository.isVerifiedDeveloper(principal.getName());
+        return keycloakRepository.isVerifiedDeveloper(principal.getName());
     }
 
     private void validReferral(String referrer, String referee) {
         if (isValidReferee(referrer, referee)) {
             throw new RuntimeException("This is not a valid referee");
         }
-        if (!profileKeycloakRepository.userExists(referrer)) {
+        if (!keycloakRepository.userExists(referrer)) {
             throw new RuntimeException("This is not a valid referrer");
         }
     }
 
     private boolean isValidReferee(String referrer, String referee) {
         return referrer.equalsIgnoreCase(referee) ||
-                !profileKeycloakRepository.userExists(referee);
+                !keycloakRepository.userExists(referee);
     }
 }

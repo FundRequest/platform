@@ -5,6 +5,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,7 +44,7 @@ public class Mappers {
         return getMapper(clazzIn, clazzOut).map(in);
     }
 
-    public <IN, OUT> List<OUT> mapList(final Class<? super IN> clazzIn, Class<OUT> clazzOut, List<IN> in) {
+    public <IN, OUT> List<OUT> mapList(final Class<? super IN> clazzIn, Class<OUT> clazzOut, Collection<IN> in) {
         return getMapper(clazzIn, clazzOut).mapToList(in);
     }
 

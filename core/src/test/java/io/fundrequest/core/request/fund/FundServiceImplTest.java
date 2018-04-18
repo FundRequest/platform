@@ -2,6 +2,8 @@ package io.fundrequest.core.request.fund;
 
 
 import io.fundrequest.core.contract.service.FundRequestContractsService;
+import io.fundrequest.core.fund.domain.PendingFund;
+import io.fundrequest.core.fund.repository.PendingFundRepository;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.Request;
@@ -50,10 +52,12 @@ public class FundServiceImplTest {
     private TokenInfoService tokenInfoService;
     private CacheManager cacheManager;
     private FundRequestContractsService fundRequestContractsService;
+    private PendingFundRepository pendingFundRepository;
 
     @Before
     public void setUp() {
         fundRepository = mock(FundRepository.class);
+        pendingFundRepository = mock(PendingFundRepository.class);
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
@@ -64,6 +68,7 @@ public class FundServiceImplTest {
         when(fundRepository.saveAndFlush(any(Fund.class))).then(returnsFirstArg());
         fundService = new FundServiceImpl(
                 fundRepository,
+                pendingFundRepository,
                 requestRepository,
                 mappers,
                 eventPublisher,
@@ -106,7 +111,6 @@ public class FundServiceImplTest {
                                                      .requestId(request.getId())
                                                      .amountInWei(BigDecimal.TEN)
                                                      .transactionId("trans_id")
-                                                     .funder("funder")
                                                      .funderAddress("address")
                                                      .timestamp(LocalDateTime.now())
                                                      .token("token")
@@ -114,8 +118,7 @@ public class FundServiceImplTest {
 
         when(requestRepository.findOne(request.getId())).thenReturn(Optional.of(request));
 
-        Principal funder = mock(Principal.class);
-        when(funder.getName()).thenReturn("davy");
+        Principal funder = () -> "davy";
 
         FundDto fundDto = new FundDto();
         when(mappers.map(eq(Fund.class), eq(FundDto.class), any(Fund.class)))
@@ -126,6 +129,8 @@ public class FundServiceImplTest {
                 .thenReturn(requestDto);
         Cache cache = mock(Cache.class);
         when(cacheManager.getCache("funds")).thenReturn(cache);
+        when(pendingFundRepository.findByTransactionHash(command.getTransactionId()))
+                .thenReturn(Optional.of(PendingFund.builder().userId(funder.getName()).build()));
 
         fundService.addFunds(command);
 
@@ -146,5 +151,6 @@ public class FundServiceImplTest {
         verify(fundRepository).saveAndFlush(fundArgumentCaptor.capture());
         assertThat(fundArgumentCaptor.getValue().getRequestId()).isEqualTo(command.getRequestId());
         assertThat(fundArgumentCaptor.getValue().getAmountInWei()).isEqualTo(command.getAmountInWei());
+        assertThat(fundArgumentCaptor.getValue().getCreatedBy()).isEqualTo(funder.getName());
     }
 }

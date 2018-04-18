@@ -1,9 +1,9 @@
 package io.fundrequest.platform.profile.twitter.service;
 
+import io.fundrequest.core.keycloak.KeycloakRepository;
 import io.fundrequest.platform.profile.bounty.domain.BountyType;
 import io.fundrequest.platform.profile.bounty.event.CreateBountyCommand;
 import io.fundrequest.platform.profile.bounty.service.BountyService;
-import io.fundrequest.platform.profile.profile.infrastructure.ProfileKeycloakRepository;
 import io.fundrequest.platform.profile.twitter.model.TwitterBounty;
 import io.fundrequest.platform.profile.twitter.model.TwitterBountyFulfillment;
 import io.fundrequest.platform.profile.twitter.model.TwitterBountyType;
@@ -29,20 +29,20 @@ public class TwitterBountyService {
     private TwitterPostRepository twitterPostRepository;
     private TwitterBountyFulfillmentRepository twitterBountyFulfillmentRepository;
     private BountyService bountyService;
-    private ProfileKeycloakRepository profileKeycloakRepository;
+    private KeycloakRepository keycloakRepository;
 
     public TwitterBountyService(final TwitterBountyRepository twitterBountyRepository,
                                 final Twitter twitter,
                                 final TwitterPostRepository twitterPostRepository,
                                 final TwitterBountyFulfillmentRepository twitterBountyFulfillmentRepository,
                                 final BountyService bountyService,
-                                final ProfileKeycloakRepository profileKeycloakRepository) {
+                                final KeycloakRepository keycloakRepository) {
         this.twitterBountyRepository = twitterBountyRepository;
         this.twitter = twitter;
         this.twitterPostRepository = twitterPostRepository;
         this.twitterBountyFulfillmentRepository = twitterBountyFulfillmentRepository;
         this.bountyService = bountyService;
-        this.profileKeycloakRepository = profileKeycloakRepository;
+        this.keycloakRepository = keycloakRepository;
     }
 
     public List<TwitterPost> getTwitterPosts() {
@@ -77,7 +77,7 @@ public class TwitterBountyService {
     }
 
     private boolean hasFullFilled(final String username, final String userId, final TwitterBounty bounty, final Principal principal) {
-        return profileKeycloakRepository.isVerifiedDeveloper(principal.getName()) && bounty.getType().equals(TwitterBountyType.TWEET) && validateTweets(username, userId, bounty, principal);
+        return keycloakRepository.isVerifiedDeveloper(principal.getName()) && bounty.getType().equals(TwitterBountyType.TWEET) && validateTweets(username, userId, bounty, principal);
     }
 
     private boolean validateTweets(final String username, final String userId, final TwitterBounty bounty, final Principal principal) {

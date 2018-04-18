@@ -12,6 +12,9 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     @Query("SELECT r FROM Request r where r.issueInformation.platform = ?1 and r.issueInformation.platformId = ?2")
     Optional<Request> findByPlatformAndPlatformId(Platform platform, String platformId);
 
-    @Query("SELECT r FROM Request r where ?1 member of r.watchers or r.createdBy = ?1")
-    List<Request> findRequestsForUser(String watcher);
+    @Query("SELECT distinct r FROM Request r where ?1 member of r.watchers or r.createdBy = ?1")
+    List<Request> findRequestsUserIsWatching(String user);
+
+    @Query("SELECT distinct r FROM Request r, Fund f where f.requestId = r.id and (f.createdBy = ?1 or f.funder = ?2)")
+    List<Request> findRequestsUserHasFunded(String user, String userAddress);
 }

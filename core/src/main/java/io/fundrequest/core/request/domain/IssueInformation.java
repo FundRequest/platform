@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.util.Objects;
 
 @Embeddable
 public class IssueInformation {
@@ -73,5 +74,24 @@ public class IssueInformation {
 
     public void setPlatformId(String platformId) {
         this.platformId = platformId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        IssueInformation that = (IssueInformation) o;
+        return platform == that.platform &&
+               Objects.equals(platformId, that.platformId);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(platform, platformId);
     }
 }

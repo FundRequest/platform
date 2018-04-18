@@ -1,9 +1,9 @@
 package io.fundrequest.platform.profile.telegram.service;
 
+import io.fundrequest.core.keycloak.KeycloakRepository;
 import io.fundrequest.platform.profile.bounty.domain.BountyType;
 import io.fundrequest.platform.profile.bounty.event.CreateBountyCommand;
 import io.fundrequest.platform.profile.bounty.service.BountyService;
-import io.fundrequest.platform.profile.profile.infrastructure.ProfileKeycloakRepository;
 import io.fundrequest.platform.profile.telegram.domain.TelegramVerification;
 import io.fundrequest.platform.profile.telegram.repository.TelegramVerificationRepository;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -19,14 +19,14 @@ public class TelegramVerificationService {
 
     private final TelegramVerificationRepository telegramVerificationRepository;
     private final BountyService bountyService;
-    private ProfileKeycloakRepository profileKeycloakRepository;
+    private KeycloakRepository keycloakRepository;
 
     public TelegramVerificationService(final TelegramVerificationRepository telegramVerificationRepository,
                                        final BountyService bountyService,
-                                       final ProfileKeycloakRepository profileKeycloakRepository) {
+                                       final KeycloakRepository keycloakRepository) {
         this.telegramVerificationRepository = telegramVerificationRepository;
         this.bountyService = bountyService;
-        this.profileKeycloakRepository = profileKeycloakRepository;
+        this.keycloakRepository = keycloakRepository;
     }
 
     @Transactional(readOnly = true)
@@ -66,7 +66,7 @@ public class TelegramVerificationService {
     }
 
     public void createTelegramVerification(final String userId, final String telegramname) {
-        if (profileKeycloakRepository.isVerifiedDeveloper(userId)) {
+        if (keycloakRepository.isVerifiedDeveloper(userId)) {
             final Optional<TelegramVerification> byUserId = telegramVerificationRepository.findByUserId(userId);
             if (byUserId.isPresent()) {
                 TelegramVerification telegramVerification = byUserId.get();

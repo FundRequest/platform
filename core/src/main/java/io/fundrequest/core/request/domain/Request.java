@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Table(name = "request")
@@ -107,5 +108,23 @@ public class Request extends AbstractEntity {
 
     public Set<String> getTechnologies() {
         return Collections.unmodifiableSet(technologies);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Request request = (Request) o;
+        return Objects.equals(issueInformation, request.issueInformation);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(issueInformation);
     }
 }

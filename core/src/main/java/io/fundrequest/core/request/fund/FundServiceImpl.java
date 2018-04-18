@@ -1,6 +1,8 @@
 package io.fundrequest.core.request.fund;
 
 import io.fundrequest.core.contract.service.FundRequestContractsService;
+import io.fundrequest.core.fund.domain.PendingFund;
+import io.fundrequest.core.fund.repository.PendingFundRepository;
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.Request;
@@ -36,6 +38,7 @@ import java.util.stream.LongStream;
 class FundServiceImpl implements FundService {
 
     private FundRepository fundRepository;
+    private PendingFundRepository pendingFundRepository;
     private RequestRepository requestRepository;
     private Mappers mappers;
     private ApplicationEventPublisher eventPublisher;
@@ -45,13 +48,14 @@ class FundServiceImpl implements FundService {
 
     @Autowired
     public FundServiceImpl(FundRepository fundRepository,
-                           RequestRepository requestRepository,
+                           PendingFundRepository pendingFundRepository, RequestRepository requestRepository,
                            Mappers mappers,
                            ApplicationEventPublisher eventPublisher,
                            CacheManager cacheManager,
                            TokenInfoService tokenInfoService,
                            FundRequestContractsService fundRequestContractsService) {
         this.fundRepository = fundRepository;
+        this.pendingFundRepository = pendingFundRepository;
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.eventPublisher = eventPublisher;
@@ -137,9 +141,12 @@ class FundServiceImpl implements FundService {
                         .requestId(command.getRequestId())
                         .token(command.getToken())
                         .timestamp(command.getTimestamp())
-                        .funder(command.getFunder())
-                        .funderAddress(command.getFunderAddress())
+                        .funder(command.getFunderAddress())
                         .build();
+        Optional<PendingFund> pendingFund = pendingFundRepository.findByTransactionHash(command.getTransactionId());
+        if (pendingFund.isPresent()) {
+            fund.setCreatedBy(pendingFund.get().getUserId());
+        }
         fund = fundRepository.saveAndFlush(fund);
         cacheManager.getCache("funds").evict(fund.getRequestId());
         if (request.getStatus() == RequestStatus.OPEN) {
@@ -154,4 +161,5 @@ class FundServiceImpl implements FundService {
                                    );
 
     }
+
 }

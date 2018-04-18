@@ -25,8 +25,6 @@ public class FundsAddedCommand {
 
     private String funderAddress;
 
-    private String funder;
-
     private LocalDateTime timestamp;
 
 }

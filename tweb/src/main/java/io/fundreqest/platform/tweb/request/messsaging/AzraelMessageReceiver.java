@@ -69,7 +69,6 @@ public class AzraelMessageReceiver {
                                  .amountInWei(new BigDecimal(dto.getAmount()))
                                  .timestamp(getTimeStamp(dto.getTimestamp()))
                                  .token(dto.getToken())
-                                 .funder("//TODO")
                                  .funderAddress(dto.getFrom())
                                  .transactionId(dto.getTransactionHash())
                                  .build();
