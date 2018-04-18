@@ -121,11 +121,20 @@
 .issue-list__item {
     display: flex;
     align-items: center;
-    padding: .5rem;
-    border-radius: $border-radius;
+    padding: 1rem;
+    color: $gray-600;
+    cursor: pointer;
 
     &:nth-child(even) {
         background-color: $gray-100;
+    }
+
+    &:last-child {
+        border-radius: 0 0 $border-radius $border-radius;
+    }
+
+    &:hover {
+        background-color: $gray-200;
     }
 
     > * {
@@ -134,23 +143,44 @@
     }
 
     &__logo {
-        justify-content: center;
         width: 5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-weight: $font-weight-bold;
+        color: $gray-500;
+
+        img {
+            margin-bottom: .5rem;
+        }
     }
 
     &__info {
         flex-grow: 1;
         flex-direction: column;
+        border-left: 1px solid $gray-200;
+    }
+
+    &__header {
+        font-weight: bold;
+        font-size: 1.2rem;
     }
 
     &__title {
         color: $blue-500;
     }
 
+    &__number {
+        text-transform: capitalize;
+        color: $gray-500;
+    }
+
     &__fund {
         width: 6rem;
         padding: 0 .25rem;
         justify-content: flex-end;
+        color: $gray-700;
 
         &-amount {
             display: block;
@@ -164,6 +194,18 @@
 
     &__actions {
         flex-grow: 0;
-        padding-left: 2rem;
+        padding: .5rem 1rem .5rem 1.5rem;
+
+        .fa-2x {
+            text-align: center;
+            width: .5rem;
+            transition: font-size .3s ease-in-out;
+        }
+
+        &:hover {
+            .fa-2x {
+                font-size: 3rem;
+            }
+        }
     }
 }

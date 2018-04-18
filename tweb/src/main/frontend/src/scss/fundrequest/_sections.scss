@@ -166,6 +166,12 @@
 
     &--header {
         padding: 3rem 3rem 2rem 3rem;
+
+        &__description {
+            text-align: justify;
+            font-weight: bold;
+            color: $gray-500;
+        }
     }
 
     &--main {
