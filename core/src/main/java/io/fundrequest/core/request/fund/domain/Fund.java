@@ -22,7 +22,7 @@ public class Fund extends AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "funder")
+    @Column(name = "funder_address")
     private String funder;
 
     @Column(name = "amount_in_wei")
@@ -43,7 +43,7 @@ public class Fund extends AbstractEntity {
 
     @Builder
     Fund(String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp) {
-        this.funder = funder;
+        this.funder = funder == null ? null : funder.toLowerCase();
         this.amountInWei = amountInWei;
         this.token = token;
         this.requestId = requestId;
