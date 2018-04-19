@@ -53,18 +53,18 @@
         </div>
         <div class="issue-list__block card">
             <RequestListItem v-for="request in pendingRequests" v-bind:request="request"
-                             v-bind:key="request.title"></RequestListItem>
+                             v-bind:key="request.id"></RequestListItem>
         </div>
         <div class="issue-list__block card">
             <RequestListItem v-for="request in filteredRequests" v-bind:request="request"
-                             v-bind:key="request.title"></RequestListItem>
+                             v-bind:key="request.id"></RequestListItem>
         </div>
     </section>
 </template>
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import RequestsListDto from "../../../app/dto/RequestListDto";
+    import RequestListDto from "../../../app/dto/RequestListDto";
     import RequestListItemDto from "../../../app/dto/RequestListItemDto";
     import RequestListItem from "./RequestListItem";
 
@@ -73,59 +73,9 @@
     })
     export default class RequestList extends Vue {
         @Prop() statusFilterDefault: string;
-        //@Prop({required: true}) listItems!: ListItemRequest[];
-        requestList: RequestsListDto = new RequestsListDto([{
-            "icon": "https://github.com/FundRequest.png",
-            "owner": "FundRequest",
-            "platform": "GITHUB",
-            "title": "Create more issues",
-            "status": "PENDING",
-            "technologies": ["C#", "C", "JavaScript", "Kotlin"],
-            "fndFunds": {
-                "tokenAddress": "0x9f88c5cc76148d41a5db8d0a7e581481efc9667b",
-                "tokenSymbol": "FND",
-                "totalAmount": 1.000000
-            },
-            "otherFunds": null,
-            "starred": false
-        }, {
-            "icon": "https://github.com/FundRequest.png",
-            "owner": "FundRequest",
-            "platform": "GITHUB",
-            "title": "Add hello-world for Kotlin",
-            "status": "FUNDED",
-            "technologies": ["C#", "C", "JavaScript", "Kotlin"],
-            "fndFunds": {
-                "tokenAddress": "0x9f88c5cc76148d41a5db8d0a7e581481efc9667b",
-                "tokenSymbol": "FND",
-                "totalAmount": 263.100000
-            },
-            "otherFunds": {
-                "tokenAddress": "0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570",
-                "tokenSymbol": "ZRX",
-                "totalAmount": 0.054000
-            },
-            "starred": true
-        }, {
-            "icon": "https://github.com/FundRequest.png",
-            "owner": "FundRequest",
-            "platform": "GITHUB",
-            "title": "2 Add hello-world for Kotlin",
-            "status": "FUNDED",
-            "technologies": ["C#", "C", "JavaScript", "Kotlin"],
-            "fndFunds": {
-                "tokenAddress": "0x9f88c5cc76148d41a5db8d0a7e581481efc9667b",
-                "tokenSymbol": "FND",
-                "totalAmount": 264.100000
-            },
-            "otherFunds": {
-                "tokenAddress": "0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570",
-                "tokenSymbol": "ZRX",
-                "totalAmount": 0.050000
-            },
-            "starred": true
-        }]);
+        @Prop({required: true}) requests: RequestListItemDto[];
 
+        public requestList: RequestListDto = new RequestListDto([]);
         public filteredRequests: RequestListItemDto[] = [];
         public statusFilter: string = "all";
         public searchFilter: string = "";
@@ -133,6 +83,7 @@
 
         mounted() {
             this.sortBy = "title";
+            this.requestList = new RequestListDto(this.requests);
             this.statusFilter = this.statusFilterDefault ? this.statusFilterDefault : this.statusFilter;
             this._filterItems(this.statusFilter, this.searchFilter, this.sortBy);
         }

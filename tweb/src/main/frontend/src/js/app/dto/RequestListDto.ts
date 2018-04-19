@@ -1,7 +1,7 @@
 import RequestListItemDto from './RequestListItemDto';
 
 export default class RequestsListDto {
-    requests: RequestListItemDto[] = [];
+    private requests: RequestListItemDto[] = [];
 
     constructor(requests: RequestListItemDto[]) {
         this.requests = requests;
@@ -24,7 +24,7 @@ export default class RequestsListDto {
             requests = this.requests.filter(request => true);
         }
 
-        return this._sort(requests, sortBy);;
+        return this._sort(requests, sortBy);
     }
 
     public filterByStatus(requestStatus: string, search: string = null, sortBy: string = null): RequestListItemDto[] {
@@ -44,22 +44,39 @@ export default class RequestsListDto {
     }
 
     private _sort(requests: RequestListItemDto[], sortBy: string) {
-        if(sortBy) {
+        if (sortBy) {
             let sortFunction;
-            if (sortBy == 'FND') {
-                sortFunction = (a:RequestListItemDto, b:RequestListItemDto) => {
-                    return a.fndFunds.totalAmount - b.fndFunds.totalAmount;
-                }
-            } else {
-                sortFunction = (a:RequestListItemDto, b:RequestListItemDto) => {
-                    if(a.hasOwnProperty(sortBy) && b.hasOwnProperty(sortBy)) {
-                        if (a[sortBy] < b[sortBy])
-                            return -1;
-                        if (a[sortBy] > b[sortBy])
-                            return 1;
+            if (sortBy.toLowerCase() == 'fnd') {
+                // sort fndFunds.totalAmount from high to low
+                sortFunction = (a: RequestListItemDto, b: RequestListItemDto) => {
+                    if(a.fndFunds && b.fndFunds) {
+                        return b.fndFunds.totalAmount - a.fndFunds.totalAmount
+                    } else if (a.fndFunds) {
+                        return -1;
+                    } else if (b.fndFunds) {
+                        return 1;
                     }
+
                     return 0;
-                }
+                };
+            } else {
+                sortFunction = (a: RequestListItemDto, b: RequestListItemDto) => {
+                    if (a.hasOwnProperty(sortBy) && b.hasOwnProperty(sortBy)) {
+                        let aSortBy = a[sortBy].toLowerCase();
+                        let bSortBy = b[sortBy].toLowerCase();
+
+                        if (aSortBy < bSortBy)
+                            return -1;
+                        if (aSortBy > bSortBy)
+                            return 1;
+                    } else if (a.hasOwnProperty(sortBy)) {
+                        return 1;
+                    } else if (b.hasOwnProperty(sortBy)) {
+                        return -1;
+                    }
+
+                    return 0;
+                };
             }
             return requests.sort(sortFunction);
         } else {

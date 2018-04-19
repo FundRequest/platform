@@ -7,7 +7,7 @@
         <div class="issue-list__item__info">
             <div class="issue-list__item__header">
                 <span class="issue-list__item__title">{{req.title}}</span>
-                <span class="issue-list__item__number">#{{req.number}}</span>
+                <span class="issue-list__item__number">#{{req.issueNumber}}</span>
             </div>
             <div class="issue-list__item__status">
                 <span class="issue-list__item__badge badge" v-bind:class="`badge--${req.status.toLowerCase()}`">{{req.status}}</span>
@@ -23,7 +23,7 @@
             <span class="issue-list__item__fund-amount">{{req.otherFunds.totalAmount}}</span>
             <span class="issue-list__item__fund-currency">{{req.otherFunds.tokenSymbol}}</span>
         </div>
-        <div class="issue-list__item__fund">
+        <div class="issue-list__item__fund" v-if="req.fndFunds != null">
             <span class="issue-list__item__fund-amount">{{req.fndFunds.totalAmount}}</span>
             <span class="issue-list__item__fund-currency">{{req.fndFunds.tokenSymbol}}</span>
         </div>
