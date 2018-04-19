@@ -50,7 +50,7 @@ export class Utils {
 
     public static fetchJSON(url: string, body: any = null) {
         if (body == null) {
-            return fetch(url)
+            return fetch(url, {credentials: 'same-origin'})
                 .then(Utils._handleHttpErrors)
                 .then(res => res ? res.json() : null)
                 .catch(err => null);
@@ -58,6 +58,7 @@ export class Utils {
             return fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(body),
+                credentials: 'same-origin',
                 headers: new Headers({
                     'Content-Type': 'application/json'
                 })

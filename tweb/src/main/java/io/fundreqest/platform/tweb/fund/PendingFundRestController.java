@@ -1,7 +1,7 @@
 package io.fundreqest.platform.tweb.fund;
 
-import io.fundreqest.platform.tweb.fund.command.PendingFundDto;
 import io.fundrequest.core.request.fund.PendingFundService;
+import io.fundrequest.core.request.fund.command.PendingFundCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,10 +23,9 @@ public class PendingFundRestController {
     }
 
     @PostMapping
-    public HttpStatus postPendingFund(@RequestBody PendingFundDto pendingFundDto,
+    public HttpStatus postPendingFund(@RequestBody PendingFundCommand command,
                                       final Principal principal) {
-        log.debug(pendingFundDto.toString());
-        pendingFundService.save(pendingFundDto.toPendingFund(principal));
+        pendingFundService.save(principal, command);
         return HttpStatus.OK;
     }
 

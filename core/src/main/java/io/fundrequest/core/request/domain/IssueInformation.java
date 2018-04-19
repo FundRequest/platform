@@ -1,5 +1,8 @@
 package io.fundrequest.core.request.domain;
 
+import lombok.Builder;
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
@@ -7,6 +10,7 @@ import javax.persistence.Enumerated;
 import java.util.Objects;
 
 @Embeddable
+@Data
 public class IssueInformation {
 
     @Column(name = "owner")
@@ -28,51 +32,16 @@ public class IssueInformation {
     @Column(name = "platform_id")
     private String platformId;
 
-    public Platform getPlatform() {
-        return platform;
+    protected IssueInformation() {
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public String getRepo() {
-        return repo;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setOwner(String owner) {
+    @Builder
+    public IssueInformation(String owner, String repo, String number, String title, Platform platform, String platformId) {
         this.owner = owner;
-    }
-
-    public void setRepo(String repo) {
         this.repo = repo;
-    }
-
-    public void setNumber(String number) {
         this.number = number;
-    }
-
-    public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setPlatform(Platform platform) {
         this.platform = platform;
-    }
-
-    public String getPlatformId() {
-        return platformId;
-    }
-
-    public void setPlatformId(String platformId) {
         this.platformId = platformId;
     }
 

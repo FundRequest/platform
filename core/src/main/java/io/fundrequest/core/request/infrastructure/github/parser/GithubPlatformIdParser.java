@@ -19,7 +19,7 @@ public class GithubPlatformIdParser {
     }
 
     public IssueInformation parseIssue(String platformId) {
-        IssueInformation issueInformation = new IssueInformation();
+        IssueInformation issueInformation = IssueInformation.builder().build();
         String[] splitted = platformId.split(Pattern.quote(PLATFORM_ID_GITHUB_DELIMTER));
 
         issueInformation.setOwner(splitted[0]);
