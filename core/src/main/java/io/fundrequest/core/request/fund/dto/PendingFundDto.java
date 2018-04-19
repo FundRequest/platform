@@ -1,6 +1,7 @@
-package io.fundreqest.platform.tweb.fund.dto;
+package io.fundrequest.core.request.fund.dto;
 
-import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.view.AllFundsDto;
+import io.fundrequest.core.request.view.IssueInformationDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ public class PendingFundDto {
     private String fromAddress;
     private String amount;
     private String tokenAddress;
-    private Platform platform;
-    private String platformId;
+    private IssueInformationDto issueInformation;
+    private AllFundsDto funds = new AllFundsDto();
 
 }
