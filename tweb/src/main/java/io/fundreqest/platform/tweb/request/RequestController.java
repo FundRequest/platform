@@ -51,7 +51,7 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/user/requests")
-    public ModelAndView details(Principal principal) {
+    public ModelAndView userRequests(Principal principal) {
         List<RequestView> requests = requestService.findRequestsForUser(principal).stream()
                                                    .map(r -> RequestView
                                                            .builder()
@@ -65,8 +65,7 @@ public class RequestController extends AbstractController {
                                                            .status(r.getStatus().name())
                                                            .starred(r.isLoggedInUserIsWatcher())
                                                            .technologies(r.getTechnologies())
-                                                           .fndFunds(r.getFndFunds())
-                                                           .otherFunds(r.getOtherFunds())
+                                                           .funds(r.getFunds())
                                                            .build()
                                                        )
                                                    .collect(Collectors.toList());

@@ -1,7 +1,7 @@
-package io.fundrequest.core.fund.repository;
+package io.fundrequest.core.request.fund.infrastructure;
 
-import io.fundrequest.core.fund.domain.PendingFund;
 import io.fundrequest.core.infrastructure.repository.JpaRepository;
+import io.fundrequest.core.request.fund.domain.PendingFund;
 
 import java.util.Optional;
 

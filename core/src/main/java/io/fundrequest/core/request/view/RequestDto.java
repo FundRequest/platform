@@ -2,7 +2,6 @@ package io.fundrequest.core.request.view;
 
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import lombok.Data;
 
 import java.util.HashSet;
@@ -25,9 +24,6 @@ public class RequestDto {
 
     private Set<String> watchers = new HashSet<>();
 
-    private TotalFundDto fndFunds;
-
-    private TotalFundDto otherFunds;
-
+    private AllFundsDto funds = new AllFundsDto();
 
 }

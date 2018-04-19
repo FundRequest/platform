@@ -1,6 +1,6 @@
 package io.fundreqest.platform.tweb.request.dto;
 
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
+import io.fundrequest.core.request.view.AllFundsDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +22,6 @@ public class RequestView {
     private String title;
     private String status;
     private Set<String> technologies;
-    private TotalFundDto fndFunds;
-    private TotalFundDto otherFunds;
+    private AllFundsDto funds;
     private Boolean starred;
 }

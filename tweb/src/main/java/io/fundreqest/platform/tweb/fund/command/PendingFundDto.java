@@ -1,7 +1,7 @@
 package io.fundreqest.platform.tweb.fund.command;
 
-import io.fundrequest.core.fund.domain.PendingFund;
 import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.fund.domain.PendingFund;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

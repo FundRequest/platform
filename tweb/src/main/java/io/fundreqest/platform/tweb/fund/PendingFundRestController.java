@@ -1,7 +1,7 @@
 package io.fundreqest.platform.tweb.fund;
 
 import io.fundreqest.platform.tweb.fund.command.PendingFundDto;
-import io.fundrequest.core.fund.PendingFundService;
+import io.fundrequest.core.request.fund.PendingFundService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
