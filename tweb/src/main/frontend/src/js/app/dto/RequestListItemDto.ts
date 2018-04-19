@@ -1,4 +1,4 @@
-import FundsDto from './FundsDto';
+import RequestFundsDto from './RequestFundsDto';
 
 export default class RequestsListItemDto {
     id: number;
@@ -9,7 +9,6 @@ export default class RequestsListItemDto {
     title: string;
     status: string;
     technologies: string[];
-    fndFunds: FundsDto;
-    otherFunds: FundsDto;
+    funds: RequestFundsDto;
     starred: boolean;
 }

@@ -190,18 +190,25 @@
         flex-shrink: 1;
         flex-direction: column;
         border-left: 1px solid $gray-200;
+        max-width: calc(100% - 24rem);
     }
 
     &__header {
         font-weight: bold;
         font-size: 1.2rem;
+        display: flex;
     }
 
     &__title {
         color: $blue-500;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
     }
 
     &__number {
+        flex-shrink: 0;
+        margin-left: .5rem;
         text-transform: capitalize;
         color: $gray-500;
     }
@@ -209,12 +216,15 @@
     &__price {
         color: $green-500;
         font-size: 1.5rem;
+        width: 7rem;
+        justify-content: flex-end;
     }
 
     &__fund {
         display: flex;
         justify-content: flex-end;
         color: $gray-700;
+
 
         &-amount {
             display: block;
@@ -237,6 +247,8 @@
     &__actions {
         flex-grow: 0;
         padding: .5rem 2rem .5rem 1.5rem;
+        width: 4rem;
+        justify-content: center;
 
         .fa-2x {
             text-align: center;

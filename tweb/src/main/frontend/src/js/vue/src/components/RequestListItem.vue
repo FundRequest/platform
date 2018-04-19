@@ -19,22 +19,18 @@
                 <i class="fa fa-message"></i>
             </div>
         </div>
-        <div class="issue-list__item__price">
-            <span class="issue-list__item__fund-currency">~ $</span>
-            <span class="issue-list__item__fund-amount">50</span>
-        </div>
-        <div class="issue-list__item__price" v-if="req.priceUsd != null">
-            <span class="issue-list__item__fund-currency">~ $</span>
-            <span class="issue-list__item__fund-amount">{{req.priceUsd}}</span>
+        <div class="issue-list__item__price" v-if="req.funds.usdFunds != null">
+            <span class="issue-list__item__fund-currency">~$</span>
+            <span class="issue-list__item__fund-amount">{{formatPrice(req.funds.usdFunds, 0)}}</span>
         </div>
         <div class="issue-list__item__crypto">
-            <div class="issue-list__item__fund" v-if="req.fndFunds != null">
-                <span class="issue-list__item__fund-amount">{{formatPrice(req.fndFunds.totalAmount)}}</span>
-                <span class="issue-list__item__fund-currency">{{req.fndFunds.tokenSymbol}}</span>
+            <div class="issue-list__item__fund" v-if="req.funds.fndFunds != null">
+                <span class="issue-list__item__fund-amount">{{formatPrice(req.funds.fndFunds.totalAmount)}}</span>
+                <span class="issue-list__item__fund-currency">{{req.funds.fndFunds.tokenSymbol}}</span>
             </div>
-            <div class="issue-list__item__fund" v-if="req.otherFunds != null">
-                <span class="issue-list__item__fund-amount">{{formatPrice(req.otherFunds.totalAmount)}}</span>
-                <span class="issue-list__item__fund-currency">{{req.otherFunds.tokenSymbol}}</span>
+            <div class="issue-list__item__fund" v-if="req.funds.otherFunds != null">
+                <span class="issue-list__item__fund-amount">{{formatPrice(req.funds.otherFunds.totalAmount)}}</span>
+                <span class="issue-list__item__fund-currency">{{req.funds.otherFunds.tokenSymbol}}</span>
             </div>
         </div>
 
@@ -61,15 +57,13 @@
             return Object.assign(new RequestListItemDto(), this.request);
         }
 
-        public formatPrice(value) {
-            return Utils.formatTokenPrice(value);
+        public formatPrice(value, decimals: number = 2) {
+            return Utils.formatTokenPrice(value, decimals);
         }
 
         private _resizeText(el: HTMLElement) {
             if (el) {
                 el.style.fontSize = (parseInt(el.style.fontSize.slice(0, -2)) - 1) + "px";
-
-                console.log(el.offsetWidth, el.parentElement.offsetWidth);
                 if (el.offsetWidth > el.parentElement.offsetWidth) {
                     this._resizeText(el);
                 }
