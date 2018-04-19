@@ -38,7 +38,7 @@
     </section>
 
     <section class="mb-5">
-        <request-list status-filter-default="funded" th:attr="'v-bind:requests'=${requests}"></request-list>
+        <request-list status-filter-default="funded" th:attr="'v-bind:requests'=${requests},'v-bind:pending-requests'=${pendingFunds}"></request-list>
     </section>
 
     <section class="mb-2" id="faq">

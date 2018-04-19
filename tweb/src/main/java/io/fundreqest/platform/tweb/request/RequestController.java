@@ -7,6 +7,9 @@ import io.fundreqest.platform.tweb.request.dto.ERC67FundDto;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
+import io.fundrequest.core.request.fund.PendingFundService;
+import io.fundrequest.core.request.fund.dto.PendingFundDto;
+import io.fundrequest.core.request.view.RequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -27,10 +30,12 @@ import java.util.stream.Collectors;
 public class RequestController extends AbstractController {
 
     private RequestService requestService;
+    private PendingFundService pendingFundService;
     private ObjectMapper objectMapper;
 
-    public RequestController(RequestService requestService, ObjectMapper objectMapper) {
+    public RequestController(RequestService requestService, PendingFundService pendingFundService, ObjectMapper objectMapper) {
         this.requestService = requestService;
+        this.pendingFundService = pendingFundService;
         this.objectMapper = objectMapper;
     }
 
@@ -53,31 +58,37 @@ public class RequestController extends AbstractController {
     @GetMapping("/user/requests")
     public ModelAndView userRequests(Principal principal) {
         List<RequestView> requests = requestService.findRequestsForUser(principal).stream()
-                                                   .map(r -> RequestView
-                                                           .builder()
-                                                           .id(r.getId())
-                                                           .icon("https://github.com/" + r.getIssueInformation().getOwner() + ".png")
-                                                           .owner(r.getIssueInformation().getOwner())
-                                                           .repo(r.getIssueInformation().getRepo())
-                                                           .issueNumber(r.getIssueInformation().getNumber())
-                                                           .platform(r.getIssueInformation().getPlatform().name())
-                                                           .title(r.getIssueInformation().getTitle())
-                                                           .status(r.getStatus().name())
-                                                           .starred(r.isLoggedInUserIsWatcher())
-                                                           .technologies(r.getTechnologies())
-                                                           .funds(r.getFunds())
-                                                           .build()
-                                                       )
+                                                   .map(this::mapToRequestView)
                                                    .collect(Collectors.toList());
+
+        List<PendingFundDto> pendingFunds = pendingFundService.findByUser(principal);
         return modelAndView()
                 .withObject("requests", getAsJson(requests))
+                .withObject("pendingFunds", getAsJson(pendingFunds))
                 .withView("pages/user/requests")
                 .build();
     }
 
-    private String getAsJson(List<RequestView> requests) {
+    private RequestView mapToRequestView(RequestDto r) {
+        return RequestView
+                .builder()
+                .id(r.getId())
+                .icon("https://github.com/" + r.getIssueInformation().getOwner() + ".png")
+                .owner(r.getIssueInformation().getOwner())
+                .repo(r.getIssueInformation().getRepo())
+                .issueNumber(r.getIssueInformation().getNumber())
+                .platform(r.getIssueInformation().getPlatform().name())
+                .title(r.getIssueInformation().getTitle())
+                .status(r.getStatus().name())
+                .starred(r.isLoggedInUserIsWatcher())
+                .technologies(r.getTechnologies())
+                .funds(r.getFunds())
+                .build();
+    }
+
+    private String getAsJson(Object value) {
         try {
-            return objectMapper.writeValueAsString(requests);
+            return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
             log.error("Error creating json", e);
             return "";
