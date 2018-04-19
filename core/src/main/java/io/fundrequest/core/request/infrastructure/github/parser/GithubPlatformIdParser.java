@@ -3,6 +3,7 @@ package io.fundrequest.core.request.infrastructure.github.parser;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.infrastructure.github.GithubClient;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
@@ -17,7 +18,7 @@ public class GithubPlatformIdParser {
         this.githubClient = githubClient;
 
     }
-
+    @Cacheable(value = "dayttl_issue_info_parsed", key = "#platformId")
     public IssueInformation parseIssue(String platformId) {
         IssueInformation issueInformation = IssueInformation.builder().build();
         String[] splitted = platformId.split(Pattern.quote(PLATFORM_ID_GITHUB_DELIMTER));

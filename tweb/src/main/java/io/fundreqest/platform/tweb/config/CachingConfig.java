@@ -32,6 +32,9 @@ public class CachingConfig {
         final CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
         if (cacheName != null && cacheName.startsWith("shortlived")) {
             return cacheBuilder.expireAfterWrite(5, TimeUnit.MINUTES);
+        }
+        if (cacheName != null && cacheName.startsWith("dayttl")) {
+            return cacheBuilder.expireAfterWrite(24, TimeUnit.HOURS);
         } else {
             return cacheBuilder;
         }
