@@ -43,10 +43,10 @@
                                 id="list-sort"
                                 v-bind:value="sortBy"
                                 v-on:input="setSortBy($event.target.value)">
+                            <option value="" selected="selected" disabled="disabled">Sort by</option>
                             <option value="title" selected="selected">Title</option>
                             <option value="fnd">FND</option>
                         </select>
-                        <label for="list-sort" class="active"><span>Sort By</span></label>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,6 @@
         public sortBy: string = "";
 
         mounted() {
-            this.sortBy = "title";
             this.requestList = new RequestListDto(this.requests);
             this.statusFilter = this.statusFilterDefault ? this.statusFilterDefault : this.statusFilter;
             this._filterItems(this.statusFilter, this.searchFilter, this.sortBy);

@@ -127,7 +127,6 @@ gulp.task('copy-dependencies', function() {
     copy.push(gulp.src(['node_modules/mdbootstrap/js/mdb.*']).pipe(gulp.dest(`${target}/vendors/mdbootstrap/js`)));
     copy.push(gulp.src(['node_modules/mdbootstrap/font/**/*']).pipe(gulp.dest(`${target}/vendors/mdbootstrap/font`)));
     copy.push(gulp.src(['node_modules/mdbootstrap/img/**/*']).pipe(gulp.dest(`${target}/vendors/mdbootstrap/img`)));
-    copy.push(gulp.src(['node_modules/font-awesome-5-css/+(css|webfonts)/*']).pipe(gulp.dest(`${target}/vendors/font-awesome`)));
     copy.push(gulp.src(['node_modules/clipboard/dist/**/*']).pipe(gulp.dest(`${target}/vendors/clipboard/js`)));
     copy.push(gulp.src(['node_modules/headroom.js/dist/headroom.*']).pipe(gulp.dest(`${target}/vendors/headroom.js`)));
     copy.push(gulp.src(['node_modules/node-waves/dist/*']).pipe(gulp.dest(`${target}/vendors/node-waves`)));

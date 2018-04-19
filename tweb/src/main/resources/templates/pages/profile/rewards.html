@@ -21,7 +21,7 @@
                 </h5>
                 <div class="card-footer text-center">
                     <div class="font-weight-bold">Rewards will be transferred 7th of May.</div>
-                    <div class="text-warning font-weight-bold"
+                    <div class="text-secondary font-weight-bold"
                          th:classappend="${profile.hadEtherAddress() ? 'd-none' : ''}"
                          th:if="${bounty.getTotalRewards() > 0}"
                          data-edit-empty-message="eth-address">
@@ -58,7 +58,7 @@
                                   th:text="${T(io.fundrequest.platform.profile.bounty.domain.BountyType).LINK_GITHUB.getReward() + ' FND'}">15 FND</span>
                             </div>
                             <div th:if="${githubVerification != null and !githubVerification.isApproved()}">
-                                <span class="text-warning">Account created after 2018-01-01 </span>
+                                <span class="text-secondary">Account created after 2018-01-01 </span>
                             </div>
                             <div th:if="${githubVerification == null}">
                                 <a class="rewards-list__link" th:href="@{/profile#verify-developer}"
@@ -84,7 +84,7 @@
                                   th:text="${T(io.fundrequest.platform.profile.bounty.domain.BountyType).LINK_STACK_OVERFLOW.getReward() + ' FND'}">10 FND</span>
                             </div>
                             <div th:if="${stackOverflowVerification != null and !stackOverflowVerification.isApproved()}">
-                                <span class="text-warning">Account created after 2018-01-01 </span>
+                                <span class="text-secondary">Account created after 2018-01-01 </span>
                             </div>
                             <div th:if="${stackOverflowVerification == null}">
                                 <a class="rewards-list__link" th:href="@{/profile#verify-developer}"

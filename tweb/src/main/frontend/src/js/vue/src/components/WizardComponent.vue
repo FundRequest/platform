@@ -102,7 +102,7 @@
                     });
                 });
             } else {
-                PaymentMethods.getInstance().dapp.disabledMsg = "Please initialize your dapp browser correctly, no accounts available.";
+                PaymentMethods.getInstance().dapp.disabledMsg = "DApp not available, no accounts available.";
             }
         }
 

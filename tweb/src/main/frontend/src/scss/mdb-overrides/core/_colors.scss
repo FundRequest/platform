@@ -369,16 +369,16 @@ $stylish-rgba: (
 // Material colors
 $primary-color: map-get($blue, "base");
 $primary-color-dark: $blue-900;
-$secondary-color: $gray-600;
-$secondary-color-dark: $gray-900;
+$secondary-color: $orange-500;
+$secondary-color-dark: $orange-900;
 $default-color: $teal-500;
 $default-color-dark: $teal-900;
 $info-color: map-get($cyan, "base");
 $info-color-dark: map-get($cyan, "900");
 $success-color: $green-500;
 $success-color-dark: $green-900;
-$warning-color: $orange-500;
-$warning-color-dark: $orange-900;
+$warning-color: $yellow-600;
+$warning-color-dark: $yellow-900;
 $danger-color: #ff3547;
 $danger-color-dark: #cc0000;
 $elegant-color: #2e2e2e;

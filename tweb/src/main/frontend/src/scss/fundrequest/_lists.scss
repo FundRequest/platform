@@ -121,7 +121,7 @@
 .issue-list__item {
     display: flex;
     align-items: center;
-    padding: 1rem;
+    padding: 1rem 0;
     color: $gray-600;
     cursor: pointer;
 
@@ -139,6 +139,8 @@
 
     > * {
         display: flex;
+        flex-grow: 0;
+        flex-shrink: 0;
         padding: 0 1rem;
     }
 
@@ -150,14 +152,42 @@
         justify-content: center;
         font-weight: $font-weight-bold;
         color: $gray-500;
+        text-align: center;
+        padding: 0;
+        margin: 0 1rem;
+
+
 
         img {
             margin-bottom: .5rem;
         }
     }
 
+    &__owner {
+        white-space: nowrap;
+    }
+
+    &__tech {
+        padding-right: .75rem;
+        margin-right: .25rem;
+        position: relative;
+        &::after {
+            content: "/";
+            display: inline;
+            position: absolute;
+            right: 0;
+        }
+
+        &:last-child::after {
+            padding-right: 0;
+            margin-right: 0;
+            display: none;
+        }
+    }
+
     &__info {
         flex-grow: 1;
+        flex-shrink: 1;
         flex-direction: column;
         border-left: 1px solid $gray-200;
     }
@@ -176,9 +206,13 @@
         color: $gray-500;
     }
 
+    &__price {
+        color: $green-500;
+        font-size: 1.5rem;
+    }
+
     &__fund {
-        width: 6rem;
-        padding: 0 .25rem;
+        display: flex;
         justify-content: flex-end;
         color: $gray-700;
 
@@ -192,9 +226,17 @@
         }
     }
 
+    &__crypto {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 6rem;
+        padding: 0 .25rem;
+    }
+
     &__actions {
         flex-grow: 0;
-        padding: .5rem 1rem .5rem 1.5rem;
+        padding: .5rem 2rem .5rem 1.5rem;
 
         .fa-2x {
             text-align: center;

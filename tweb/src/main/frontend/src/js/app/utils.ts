@@ -25,6 +25,18 @@ export class Utils {
         return newWindow;
     }
 
+    public static formatTokenPrice(value) {
+        let val = (value / 1).toFixed(2).replace('.', ',');
+        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    public static arrayContainsRegex(stringArray: string[], regex: RegExp): boolean {
+        for (let i = 0; i < stringArray.length; i++) {
+            if (stringArray[i].match(regex)) return true;
+        }
+        return false;
+    }
+
     public static loadOnPageReady(readyFunction) {
         $(() => readyFunction());
     }

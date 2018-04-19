@@ -1,4 +1,5 @@
 import RequestListItemDto from './RequestListItemDto';
+import {Utils} from '../utils';
 
 export default class RequestsListDto {
     private requests: RequestListItemDto[] = [];
@@ -13,32 +14,36 @@ export default class RequestsListDto {
         });
     }
 
-    public getAllRequests(search: string = null, sortBy: string = null): RequestListItemDto[] {
-        let requests;
-
+    private _search(requests: RequestListItemDto[], search: string) {
         if (search && search.length >= 3) {
-            requests = this.requests.filter((request: RequestListItemDto) => {
-                return request.title.match(new RegExp(search, 'i'));
+            return requests.filter((request: RequestListItemDto) => {
+                if(request.title.match(new RegExp(search, 'i'))) {
+                    return true;
+                } else if (request.issueNumber.match(new RegExp(search, 'i'))) {
+                    return true;
+                } else if (Utils.arrayContainsRegex(request.technologies, new RegExp(search, 'i'))) {
+                    return true;
+                } else {
+                    return false;
+                }
             });
         } else {
-            requests = this.requests.filter(request => true);
+            return requests.filter(x => true);
         }
+    }
 
+    public getAllRequests(search: string = null, sortBy: string = null): RequestListItemDto[] {
+        let requests = this._search(this.requests, search);
         return this._sort(requests, sortBy);
     }
 
     public filterByStatus(requestStatus: string, search: string = null, sortBy: string = null): RequestListItemDto[] {
-        let requests;
+        let requests = this._search(this.requests, search);
         let status = requestStatus.toLowerCase();
-        if (search && search.length >= 3) {
-            requests = this.requests.filter((request: RequestListItemDto) => {
-                return request.status.toLowerCase() == status && request.title.match(new RegExp(search, 'i'));
-            });
-        } else {
-            requests = this.requests.filter((request: RequestListItemDto) => {
-                return request.status.toLowerCase() == status;
-            });
-        }
+
+        requests = requests.filter((request: RequestListItemDto) => {
+            return request.status.toLowerCase() == status;
+        });
 
         return this._sort(requests, sortBy);
     }
@@ -49,8 +54,8 @@ export default class RequestsListDto {
             if (sortBy.toLowerCase() == 'fnd') {
                 // sort fndFunds.totalAmount from high to low
                 sortFunction = (a: RequestListItemDto, b: RequestListItemDto) => {
-                    if(a.fndFunds && b.fndFunds) {
-                        return b.fndFunds.totalAmount - a.fndFunds.totalAmount
+                    if (a.fndFunds && b.fndFunds) {
+                        return b.fndFunds.totalAmount - a.fndFunds.totalAmount;
                     } else if (a.fndFunds) {
                         return -1;
                     } else if (b.fndFunds) {
