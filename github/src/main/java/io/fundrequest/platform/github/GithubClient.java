@@ -1,8 +1,8 @@
-package io.fundrequest.core.request.infrastructure.github;
+package io.fundrequest.platform.github;
 
-import io.fundrequest.core.request.infrastructure.github.parser.GithubIssueCommentsResult;
-import io.fundrequest.core.request.infrastructure.github.parser.GithubResult;
-import io.fundrequest.core.request.infrastructure.github.parser.GithubUser;
+import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
+import io.fundrequest.platform.github.parser.GithubResult;
+import io.fundrequest.platform.github.parser.GithubUser;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

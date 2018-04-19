@@ -1,8 +1,5 @@
 package io.fundrequest.core.request.claim.github;
 
-import io.fundrequest.core.keycloak.KeycloakRepository;
-import io.fundrequest.core.keycloak.Provider;
-import io.fundrequest.core.keycloak.UserIdentity;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
@@ -10,6 +7,9 @@ import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
 import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
+import io.fundrequest.platform.keycloak.KeycloakRepository;
+import io.fundrequest.platform.keycloak.Provider;
+import io.fundrequest.platform.keycloak.UserIdentity;
 import org.junit.Before;
 import org.junit.Test;
 

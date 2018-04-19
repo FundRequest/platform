@@ -1,7 +1,7 @@
 package io.fundrequest.core.user.dto;
 
-import io.fundrequest.core.keycloak.KeycloakRepository;
 import io.fundrequest.core.user.domain.User;
+import io.fundrequest.platform.keycloak.KeycloakRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 

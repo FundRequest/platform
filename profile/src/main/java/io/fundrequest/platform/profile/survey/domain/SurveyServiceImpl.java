@@ -7,7 +7,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import io.fundrequest.core.keycloak.KeycloakRepository;
+import io.fundrequest.platform.keycloak.KeycloakRepository;
 import io.fundrequest.platform.profile.survey.infrastructue.SurveyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

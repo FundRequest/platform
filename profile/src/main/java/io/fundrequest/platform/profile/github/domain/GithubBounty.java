@@ -1,6 +1,6 @@
 package io.fundrequest.platform.profile.github.domain;
 
-import io.fundrequest.core.infrastructure.repository.AbstractEntity;
+import io.fundrequest.db.infrastructure.AbstractEntity;
 import lombok.Builder;
 
 import javax.persistence.Column;

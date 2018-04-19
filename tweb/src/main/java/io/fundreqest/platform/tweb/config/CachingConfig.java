@@ -33,7 +33,8 @@ public class CachingConfig {
                         buildCache("funds", 7, DAYS),
                         buildCache("github_issue_info", 1, DAYS),
                         buildCache("loginUserData", 1, DAYS),
-                        buildCache("ref_links", 30, DAYS)
+                        buildCache("ref_links", 30, DAYS),
+                        buildCache("user_profile", 1, DAYS)
                              )
                          );
         return manager;

@@ -1,7 +1,8 @@
-package io.fundrequest.platform.profile.profile;
+package io.fundreqest.platform.tweb.profile;
 
-import io.fundrequest.core.keycloak.Provider;
+import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.profile.linkedin.LinkedInService;
+import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import io.fundrequest.platform.profile.profile.dto.UserProfileProvider;
 import io.fundrequest.platform.profile.ref.RefSignupEvent;

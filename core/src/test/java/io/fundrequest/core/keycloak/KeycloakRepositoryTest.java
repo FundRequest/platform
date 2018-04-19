@@ -1,5 +1,8 @@
 package io.fundrequest.core.keycloak;
 
+import io.fundrequest.platform.keycloak.KeycloakRepository;
+import io.fundrequest.platform.keycloak.Provider;
+import io.fundrequest.platform.keycloak.UserIdentity;
 import org.junit.Before;
 import org.junit.Test;
 import org.keycloak.admin.client.resource.RealmResource;

@@ -1,4 +1,4 @@
-package io.fundrequest.core.request.infrastructure.github;
+package io.fundrequest.platform.github;
 
 public class CreateGithubComment {
 

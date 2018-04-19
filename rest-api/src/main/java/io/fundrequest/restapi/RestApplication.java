@@ -1,7 +1,7 @@
 package io.fundrequest.restapi;
 
 import io.fundrequest.core.FundRequestCore;
-import io.fundrequest.core.infrastructure.IgnoreDuringComponentScan;
+import io.fundrequest.db.infrastructure.IgnoreDuringComponentScan;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

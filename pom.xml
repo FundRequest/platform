@@ -20,6 +20,8 @@
 
     <modules>
         <module>db</module>
+        <module>keycloak</module>
+        <module>github</module>
         <module>core</module>
         <module>profile</module>
         <module>rest-api</module>

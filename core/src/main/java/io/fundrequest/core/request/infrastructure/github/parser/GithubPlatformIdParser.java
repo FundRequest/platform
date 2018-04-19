@@ -2,7 +2,8 @@ package io.fundrequest.core.request.infrastructure.github.parser;
 
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Platform;
-import io.fundrequest.core.request.infrastructure.github.GithubClient;
+import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.github.parser.GithubResult;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 

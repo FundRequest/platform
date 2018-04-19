@@ -1,4 +1,4 @@
-package io.fundrequest.core.request.infrastructure.github.parser;
+package io.fundrequest.platform.github.parser;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

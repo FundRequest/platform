@@ -1,8 +1,8 @@
-package io.fundrequest.core.keycloak;
+package io.fundrequest.platform.keycloak;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundrequest.core.keycloak.dto.LinkedInTokenResult;
+import io.fundrequest.platform.keycloak.dto.LinkedInTokenResult;
 import lombok.NonNull;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpResponse;

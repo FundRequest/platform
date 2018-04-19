@@ -1,5 +1,7 @@
 package io.fundrequest.core.request.infrastructure.github.parser;
 
+import io.fundrequest.platform.github.parser.GithubResult;
+
 public final class GithubResultBuilder {
     private String id;
     private String number;
