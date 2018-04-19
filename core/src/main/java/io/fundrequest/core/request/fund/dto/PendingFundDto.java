@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PendingFundDto {
-
+    private Long id;
     private String description;
     private String transactionId;
     private String fromAddress;
