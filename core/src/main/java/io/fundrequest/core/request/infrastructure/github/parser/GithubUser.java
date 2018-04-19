@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.infrastructure.github.parser;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 public class GithubUser {
     private Long id;
     private String login;
+    @JsonProperty("created_at")
     private LocalDateTime createdAt;
     private String location;
 

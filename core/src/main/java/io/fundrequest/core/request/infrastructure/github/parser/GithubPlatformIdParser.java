@@ -18,7 +18,7 @@ public class GithubPlatformIdParser {
         this.githubClient = githubClient;
 
     }
-    @Cacheable(value = "dayttl_issue_info_parsed", key = "#platformId")
+    @Cacheable(value = "github_issue_info", key = "#platformId")
     public IssueInformation parseIssue(String platformId) {
         IssueInformation issueInformation = IssueInformation.builder().build();
         String[] splitted = platformId.split(Pattern.quote(PLATFORM_ID_GITHUB_DELIMTER));

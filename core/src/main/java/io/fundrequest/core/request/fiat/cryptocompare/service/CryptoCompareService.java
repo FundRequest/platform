@@ -13,7 +13,7 @@ public class CryptoCompareService {
         this.client = client;
     }
 
-    @Cacheable(value = "shortlived_token_price", key = "#symbol")
+    @Cacheable(value = "token_price", key = "#symbol")
     public Double getCurrentPriceInUsd(final String symbol) {
         String price = client.getPrice(symbol).getUSD();
         return price == null ? null : Double.valueOf(price);
