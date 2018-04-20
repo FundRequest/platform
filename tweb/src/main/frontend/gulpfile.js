@@ -172,7 +172,7 @@ gulp.task('run-watch', function() {
     gulp.watch([`${origin}/js/*.js`], ['copy-assets']);
     gulp.watch([`${origin}/scss/bootstrap.scss`, `${origin}/scss/fundrequest/+(_variables|_colors).scss`], ['styles-bootstrap']);
     gulp.watch([`${origin}/scss/mdb.scss`, `${origin}/scss/mdb-overrides/*.scss`, `${origin}/scss/fundrequest/+(_variables|_colors).scss`], ['styles-mdb']);
-    gulp.watch([`${origin}/scss/core.scss`, `${origin}/scss/fundrequest/*.scss`, `!${origin}/scss/fundrequest/website/*.scss`], ['styles-core']);
+    gulp.watch([`${origin}/scss/core.scss`, `${origin}/scss/fundrequest/**/*.scss`, `!${origin}/scss/fundrequest/website/*.scss`], ['styles-core']);
     gulp.watch([`${origin}/scss/website.scss`, `${origin}/scss/fundrequest/website/*.scss`], ['styles-website']);
     gulp.watch([`${origin}/js/app/*.ts`], ['scripts']);
 });

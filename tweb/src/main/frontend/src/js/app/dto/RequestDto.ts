@@ -1,6 +1,6 @@
 import RequestFundsDto from './RequestFundsDto';
 
-export default class RequestsListItemDto {
+export default class RequestDto {
     id: number;
     issueNumber: string;
     icon: string;

@@ -26,8 +26,12 @@ export class Utils {
     }
 
     public static formatTokenPrice(value, decimals: number = 2) {
-        let val = (value / 1).toFixed(decimals).replace('.', ',');
-        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        if(value) {
+            let val = (value / 1).toFixed(decimals).replace('.', ',');
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        } else {
+            return value;
+        }
     }
 
     public static arrayContainsRegex(stringArray: string[], regex: RegExp): boolean {

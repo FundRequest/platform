@@ -57,7 +57,7 @@
     export default class RequestList extends Vue {
         @Prop() filters: [{ value: string, title: string, description: string }];
         @Prop() statusFilterDefault: string;
-        @Prop({required: true}) requests: RequestDto[];
+        @Prop() request: RequestDto[];
 
         public requestList: RequestListDto = new RequestListDto([]);
         public filteredRequests: RequestDto[] = [];

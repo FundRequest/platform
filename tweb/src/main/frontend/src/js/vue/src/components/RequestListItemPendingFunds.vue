@@ -1,17 +1,16 @@
 <template>
-    <div class="request-details" v-if="req != null" v-on:click="gotoRequestDetail($event, req.id)">
+    <div class="request-details" v-if="req != null" v-on:click="gotoDetails($event.target, req.id)">
         <div class="request-details__logo">
             <div><img v-bind:src="`${req.icon}?size=35`" /></div>
-            <div class="request-details__owner" ref="fontSizeFit" style="font-size: 15px">{{req.owner}}</div>
+            <div class="request-details__owner" ref="fontSizeFit" style="font-size: 15px">{{req.issueInformation.owner}}</div>
         </div>
         <div class="request-details__info">
             <div class="request-details__header">
-                <span class="request-details__title">{{req.title}}</span>
-                <span class="request-details__number">#{{req.issueNumber}}</span>
+                <span class="request-details__title">{{req.issueInformation.title}}</span>
+                <span class="request-details__number">#{{req.issueInformation.number}}</span>
             </div>
             <div class="request-details__status">
-                <span class="request-details__badge badge" v-bind:class="`badge--${req.status.toLowerCase()}`">{{req.status}}</span>
-                <span class="request-details__tech" v-for="tech in req.technologies">{{tech}}</span>
+                <span class="request-details__badge badge badge--pending">pending</span>
             </div>
             <div class="request-details__icons">
                 <i class="fab fa-github"></i>
@@ -34,7 +33,7 @@
             </div>
         </div>
 
-        <div class="request-details__actions" v-on:click.stop="showActions($event)">
+        <div class="request-details__actions" v-on:click="showActions($event.target)">
             <i class="fal fa-ellipsis-v fa-2x text-secondary"></i>
         </div>
     </div>
@@ -42,32 +41,27 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import RequestDto from "../../../app/dto/RequestDto";
     import {Utils} from '../../../app/Utils';
-    import {Locations} from '../../../app/Locations';
+    import {RequestListItemPendingFundDto} from '../../../app/dto/RequestListItemPendingFundDto';
 
     @Component
-    export default class RequestListItem extends Vue {
+    export default class RequestListItemPendingFund extends Vue {
         @Prop({required: true}) request!: any;
 
         mounted() {
             this._resizeText(this.$refs["fontSizeFit"] as HTMLElement);
         }
 
-        public get req() {
-            return Object.assign(new RequestDto(), this.request);
+        public get req(): RequestListItemPendingFundDto {
+            return Object.assign(new RequestListItemPendingFundDto(), this.request);
         }
 
         public formatPrice(value, decimals: number = 2) {
             return Utils.formatTokenPrice(value, decimals);
         }
 
-        public showActions(event: Event) {
-            console.log('show actions');
-        }
-
-        public gotoRequestDetail(event, id) {
-            Locations.gotoRequestDetail(id);
+        public showActions(e) {
+            null;
         }
 
         private _resizeText(el: HTMLElement) {

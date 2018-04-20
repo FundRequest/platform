@@ -1,11 +1,11 @@
 import Vue from 'vue';
 
 import RequestList from './components/RequestList.vue';
+import RequestListPendingFunds from './components/RequestListPendingFunds.vue';
 import StatisticTile from './components/StatisticTile.vue';
 import WizardComponent from './components/WizardComponent.vue';
-import Router from 'vue-router';
 
-Vue.use(Router);
+import './filters';
 
 let v = new Vue({
     el: '#vue-app',
@@ -14,6 +14,7 @@ let v = new Vue({
     },
     components: {
         'request-list': RequestList,
+        'request-list-pending-funds': RequestListPendingFunds,
         'statistic-tile': StatisticTile,
         'wizard-component': WizardComponent
     },
