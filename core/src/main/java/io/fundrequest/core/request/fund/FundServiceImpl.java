@@ -110,6 +110,13 @@ class FundServiceImpl implements FundService {
         }
     }
 
+
+    @Override
+    @Transactional
+    public void removePendingFund(String transactionHash) {
+        pendingFundRepository.findByTransactionHash(transactionHash).ifPresent(pf -> pendingFundRepository.delete(pf));
+    }
+
     @Override
     @CacheEvict(value = "funds", key = "#requestId")
     public void clearTotalFundsCache(Long requestId) {

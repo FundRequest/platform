@@ -59,6 +59,7 @@ public class AzraelMessageReceiver {
             fundRequest(result, newRequestId);
             processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
             fundService.clearTotalFundsCache(newRequestId);
+            fundService.removePendingFund(result.getTransactionHash());
         }
     }
 

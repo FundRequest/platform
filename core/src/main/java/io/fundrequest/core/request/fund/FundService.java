@@ -15,6 +15,8 @@ public interface FundService {
 
     List<TotalFundDto> getTotalFundsForRequest(Long requestId);
 
+    void removePendingFund(String transactionHash);
+
     void clearTotalFundsCache(Long requestId);
 
     void addFunds(FundsAddedCommand command);
