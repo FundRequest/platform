@@ -10,24 +10,24 @@
             <div class="collapse navbar-collapse" id="sec-menu">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item" v-bind:class="{active: statusFilter==='all'}">
-                        <a class="nav-link" v-on:click="setStatusFilter('all')">All</a>
+                        <a class="nav-link" href="#all" v-on:click="setStatusFilter('all')">All</a>
                     </li>
                     <li class="nav-item" v-bind:class="{active: statusFilter==='funded'}">
-                        <a class="nav-link" v-on:click="setStatusFilter('funded')">Funded</a>
+                        <a class="nav-link" href="#funded" v-on:click="setStatusFilter('funded')">Funded</a>
                     </li>
                     <li class="nav-item" v-bind:class="{active: statusFilter==='starred'}">
-                        <a class="nav-link" v-on:click="setStatusFilter('starred')">Starred</a>
+                        <a class="nav-link" href="#starred" v-on:click="setStatusFilter('starred')">Starred</a>
                     </li>
                     <li class="nav-item" v-bind:class="{active: statusFilter==='claimed'}">
-                        <a class="nav-link" v-on:click="setStatusFilter('claimed')">Claimed</a>
+                        <a class="nav-link" href="#claimed" v-on:click="setStatusFilter('claimed')">Claimed</a>
                     </li>
                     <li class="nav-item" v-bind:class="{active: statusFilter==='failed'}">
-                        <a class="nav-link" v-on:click="setStatusFilter('failed')">Failed</a>
+                        <a class="nav-link" href="#failed" v-on:click="setStatusFilter('failed')">Failed</a>
                     </li>
                 </ul>
             </div>
         </nav>
-        <div class="issue-list__block card" v-if="statusFilter==='funded'">
+        <div class="issue-list__block card" v-if="statusFilter==='funded' || statusFilter==='all'">
             <RequestListItemPendingFund v-for="request in pendingRequests" v-bind:request="request"
                                         v-bind:key="request.id"></RequestListItemPendingFund>
         </div>
@@ -49,7 +49,7 @@
                                 v-on:input="setSortBy($event.target.value)">
                             <option value="" selected="selected" disabled="disabled">Sort by</option>
                             <option value="title" selected="selected">Title</option>
-                            <option value="fnd">FND</option>
+                            <option value="fundings">Fundings</option>
                         </select>
                     </div>
                 </div>
@@ -87,6 +87,7 @@
 
         mounted() {
             this.requestList = new RequestListDto(this.requests);
+            console.log(this.statusFilterDefault);
             this.statusFilter = this.statusFilterDefault ? this.statusFilterDefault : this.statusFilter;
             this._filterItems(this.statusFilter, this.searchFilter, this.sortBy);
         }

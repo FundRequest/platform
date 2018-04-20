@@ -1,5 +1,5 @@
 <template>
-    <div class="issue-list__item" v-if="req != null" v-on:click="gotoDetails($event.target, req.id)">
+    <div class="issue-list__item" v-if="req != null" v-on:click="gotoRequestDetail($event, req.id)">
         <div class="issue-list__item__logo">
             <div><img v-bind:src="`${req.icon}?size=35`" /></div>
             <div class="issue-list__item__owner" ref="fontSizeFit" style="font-size: 15px">{{req.owner}}</div>
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div class="issue-list__item__actions" v-on:click="showActions($event.target)">
+        <div class="issue-list__item__actions" v-on:click.stop="showActions($event)">
             <i class="fal fa-ellipsis-v fa-2x text-secondary"></i>
         </div>
     </div>
@@ -44,6 +44,7 @@
     import {Component, Prop, Vue} from "vue-property-decorator";
     import RequestListItemDto from "../../../app/dto/RequestListItemDto";
     import {Utils} from '../../../app/utils';
+    import {Locations} from '../../../app/Locations';
 
     @Component
     export default class RequestListItem extends Vue {
@@ -61,8 +62,12 @@
             return Utils.formatTokenPrice(value, decimals);
         }
 
-        public showActions(e) {
-            null;
+        public showActions(event: Event) {
+            console.log('show actions');
+        }
+
+        public gotoRequestDetail(event, id) {
+            Locations.gotoRequestDetail(id);
         }
 
         private _resizeText(el: HTMLElement) {

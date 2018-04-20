@@ -46,7 +46,7 @@ export default class RequestsListDto {
     private _sort(requests: RequestListItemDto[], sortBy: string) {
         if (sortBy) {
             let sortFunction;
-            if (sortBy.toLowerCase() == 'price') {
+            if (sortBy.toLowerCase() == 'fundings') {
                 // sort fndFunds.totalAmount from high to low
                 sortFunction = (a: RequestListItemDto, b: RequestListItemDto) => {
                     if (a.funds.usdFunds && a.funds.usdFunds) {

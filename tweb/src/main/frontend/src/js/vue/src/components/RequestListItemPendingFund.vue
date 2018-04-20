@@ -1,6 +1,6 @@
 <template>
     <div class="issue-list__item" v-if="req != null" v-on:click="gotoDetails($event.target, req.id)">
-        <div class="issue-list__item__logo" v-if="req.icon">
+        <div class="issue-list__item__logo">
             <div><img v-bind:src="`${req.icon}?size=35`" /></div>
             <div class="issue-list__item__owner" ref="fontSizeFit" style="font-size: 15px">{{req.issueInformation.owner}}</div>
         </div>
