@@ -46,6 +46,7 @@
 
     import RequestListDto from "../../../app/dto/RequestListDto";
     import RequestDto from "../../../app/dto/RequestDto";
+    import ListFilterDto from '../../../app/dto/ListFilterDto';
 
     @Component({
         components: {
@@ -55,7 +56,7 @@
         }
     })
     export default class RequestList extends Vue {
-        @Prop() filters: [{ value: string, title: string, description: string }];
+        @Prop() filters: ListFilterDto[];
         @Prop() statusFilterDefault: string;
         @Prop({required: true}) requests: RequestDto[];
 

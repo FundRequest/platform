@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import RequestDetail from './components/RequestDetail.vue';
 import RequestList from './components/RequestList.vue';
 import RequestListPendingFunds from './components/RequestListPendingFunds.vue';
 import StatisticTile from './components/StatisticTile.vue';
@@ -13,6 +14,7 @@ let v = new Vue({
         hash: window.location.hash ? window.location.hash.split('#')[1] : ''
     },
     components: {
+        'request-detail': RequestDetail,
         'request-list': RequestList,
         'request-list-pending-funds': RequestListPendingFunds,
         'statistic-tile': StatisticTile,

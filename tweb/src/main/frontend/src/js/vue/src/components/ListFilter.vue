@@ -10,8 +10,8 @@
             <div class="collapse navbar-collapse" id="sec-menu">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item" v-for="filter in filters" v-bind:class="{active: filter.value === active}">
-                        <a class="nav-link" v-bind:href="`#${filter.value}`" v-on:click="$emit('update', filter.value)">
-                            {{filter.title}}
+                        <a class="nav-link" v-bind:href="getUrl(filter)" v-on:click="$emit('update', filter.value)" v-html="filter.title">
+                            Filter by
                         </a>
                     </li>
                 </ul>
@@ -27,17 +27,20 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-
-    class ListFilter {
-        value: string;
-        title: string;
-        description: string;
-    }
+    import ListFilterDto from '../../../app/dto/ListFilterDto';
 
     @Component
-    export default class RequestListFilter extends Vue {
+    export default class ListFilter extends Vue {
         @Prop() active: string;
-        @Prop() filters: ListFilter[];
+        @Prop() filters: ListFilterDto[];
+
+        public getUrl(filter: ListFilterDto) {
+            if(filter.url) {
+                return filter.url;
+            } else {
+                return `#${filter.value}`;
+            }
+        }
     }
 </script>
 

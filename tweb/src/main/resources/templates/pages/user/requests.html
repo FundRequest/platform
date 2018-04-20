@@ -39,8 +39,8 @@
 
     <section class="mb-5">
         <request-list
-                :status-filter-default="hash ? hash : 'funded'"
-                th:attr="':requests'=${requests},':pending-requests'=${pendingFunds}"
+                v-bind:status-filter-default="hash ? hash : 'funded'"
+                th:attr="'v-bind:requests'=${requests},'v-bind:pending-requests'=${pendingFunds}"
                 :filters="[
                     { value: 'all', title: 'All', description: 'Showing an overview of all your requests, including funds that are pending.' },
                     { value: 'funded', title: 'Funded', description: 'Showing an overview of all your funded requests, including funds that are pending.' },
@@ -51,7 +51,7 @@
         >
             <template slot-scope="{statusFilter}">
                 <request-list-pending-funds
-                     th:attr="':funds'=${pendingFunds}"
+                     th:attr="'v-bind:funds'=${pendingFunds}"
                      v-if="(statusFilter==='funded' || statusFilter==='all')">
                 </request-list-pending-funds>
             </template>
