@@ -17,4 +17,8 @@ public class PendingFundDto {
     private IssueInformationDto issueInformation;
     private AllFundsDto funds = new AllFundsDto();
 
+    public String getIcon() {
+        return "https://github.com/" + getIssueInformation().getOwner() + ".png";
+    }
+
 }
