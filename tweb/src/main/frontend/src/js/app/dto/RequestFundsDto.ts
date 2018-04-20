@@ -5,3 +5,4 @@ export default class RequestFundsDto {
     otherFunds: FundsDto;
     usdFunds: number;
 }
+

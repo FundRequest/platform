@@ -8,12 +8,6 @@ export default class RequestsListDto {
         this.requests = requests;
     }
 
-    public getPendingRequests(): RequestListItemDto[] {
-        return this.requests.filter((request: RequestListItemDto) => {
-            return request.status.toLowerCase() == 'pending';
-        });
-    }
-
     private _search(requests: RequestListItemDto[], search: string) {
         if (search && search.length >= 3) {
             return requests.filter((request: RequestListItemDto) => {
@@ -37,7 +31,8 @@ export default class RequestsListDto {
         return this._sort(requests, sortBy);
     }
 
-    public filterByStatus(requestStatus: string, search: string = null, sortBy: string = null): RequestListItemDto[] {
+    public
+    filterByStatus(requestStatus: string, search: string = null, sortBy: string = null): RequestListItemDto[] {
         let requests = this._search(this.requests, search);
         let status = requestStatus.toLowerCase();
 
@@ -51,14 +46,14 @@ export default class RequestsListDto {
     private _sort(requests: RequestListItemDto[], sortBy: string) {
         if (sortBy) {
             let sortFunction;
-            if (sortBy.toLowerCase() == 'fnd') {
+            if (sortBy.toLowerCase() == 'price') {
                 // sort fndFunds.totalAmount from high to low
                 sortFunction = (a: RequestListItemDto, b: RequestListItemDto) => {
-                    if (a.fndFunds && b.fndFunds) {
-                        return b.fndFunds.totalAmount - a.fndFunds.totalAmount;
-                    } else if (a.fndFunds) {
+                    if (a.funds.usdFunds && a.funds.usdFunds) {
+                        return b.funds.usdFunds - a.funds.usdFunds;
+                    } else if (a.funds.usdFunds) {
                         return -1;
-                    } else if (b.fndFunds) {
+                    } else if (b.funds.usdFunds) {
                         return 1;
                     }
 

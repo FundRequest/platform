@@ -1,6 +1,6 @@
 <template>
     <section class="issue-lists">
-        <nav class="navbar navbar-expand navbar--fnd-filter mb-4">
+        <nav class="navbar navbar-expand navbar--fnd-filter mb-5">
             <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#sec-menu" aria-controls="sec-menu"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,11 @@
                 </ul>
             </div>
         </nav>
-        <div class="issue-list__options">
+        <div class="issue-list__block card" v-if="statusFilter==='funded'">
+            <RequestListItemPendingFund v-for="request in pendingRequests" v-bind:request="request"
+                                        v-bind:key="request.id"></RequestListItemPendingFund>
+        </div>
+        <div class="issue-list__options" v-if="!isEmpty">
             <div class="row">
                 <div class="col-12 col-md-4 col-lg-3">
                     <div class="md-form">
@@ -51,11 +55,7 @@
                 </div>
             </div>
         </div>
-        <div class="issue-list__block card">
-            <RequestListItem v-for="request in pendingRequests" v-bind:request="request"
-                             v-bind:key="request.id"></RequestListItem>
-        </div>
-        <div class="issue-list__block card">
+        <div class="issue-list__block card" v-if="!isEmpty">
             <RequestListItem v-for="request in filteredRequests" v-bind:request="request"
                              v-bind:key="request.id"></RequestListItem>
         </div>
@@ -67,19 +67,23 @@
     import RequestListDto from "../../../app/dto/RequestListDto";
     import RequestListItemDto from "../../../app/dto/RequestListItemDto";
     import RequestListItem from "./RequestListItem";
+    import RequestListItemPendingFund from "./RequestListItemPendingFund";
+    import {RequestListItemPendingFundDto} from '../../../app/dto/RequestListItemPendingFundDto';
 
     @Component({
-        components: {RequestListItem}
+        components: {RequestListItem, RequestListItemPendingFund}
     })
     export default class RequestList extends Vue {
         @Prop() statusFilterDefault: string;
         @Prop({required: true}) requests: RequestListItemDto[];
+        @Prop() pendingRequests: RequestListItemPendingFundDto[];
 
         public requestList: RequestListDto = new RequestListDto([]);
         public filteredRequests: RequestListItemDto[] = [];
         public statusFilter: string = "all";
         public searchFilter: string = "";
         public sortBy: string = "";
+        public isEmpty: boolean = false;
 
         mounted() {
             this.requestList = new RequestListDto(this.requests);
@@ -108,10 +112,7 @@
             } else {
                 this.filteredRequests = this.requestList.filterByStatus(statusFilter, searchFilter, sortBy);
             }
-        }
-
-        public get pendingRequests(): RequestListItemDto[] {
-            return this.requestList.getPendingRequests();
+            this.isEmpty = this.filteredRequests.length <= 0;
         }
 
     }

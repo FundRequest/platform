@@ -1,17 +1,16 @@
 <template>
     <div class="issue-list__item" v-if="req != null" v-on:click="gotoDetails($event.target, req.id)">
-        <div class="issue-list__item__logo">
+        <div class="issue-list__item__logo" v-if="req.icon">
             <div><img v-bind:src="`${req.icon}?size=35`" /></div>
-            <div class="issue-list__item__owner" ref="fontSizeFit" style="font-size: 15px">{{req.owner}}</div>
+            <div class="issue-list__item__owner" ref="fontSizeFit" style="font-size: 15px">{{req.issueInformation.owner}}</div>
         </div>
         <div class="issue-list__item__info">
             <div class="issue-list__item__header">
-                <span class="issue-list__item__title">{{req.title}}</span>
-                <span class="issue-list__item__number">#{{req.issueNumber}}</span>
+                <span class="issue-list__item__title">{{req.issueInformation.title}}</span>
+                <span class="issue-list__item__number">#{{req.issueInformation.number}}</span>
             </div>
             <div class="issue-list__item__status">
-                <span class="issue-list__item__badge badge" v-bind:class="`badge--${req.status.toLowerCase()}`">{{req.status}}</span>
-                <span class="issue-list__item__tech" v-for="tech in req.technologies">{{tech}}</span>
+                <span class="issue-list__item__badge badge badge--pending">pending</span>
             </div>
             <div class="issue-list__item__icons">
                 <i class="fab fa-github"></i>
@@ -42,19 +41,19 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import RequestListItemDto from "../../../app/dto/RequestListItemDto";
     import {Utils} from '../../../app/utils';
+    import {RequestListItemPendingFundDto} from '../../../app/dto/RequestListItemPendingFundDto';
 
     @Component
-    export default class RequestListItem extends Vue {
+    export default class RequestListItemPendingFund extends Vue {
         @Prop({required: true}) request!: any;
 
         mounted() {
             this._resizeText(this.$refs["fontSizeFit"] as HTMLElement);
         }
 
-        public get req() {
-            return Object.assign(new RequestListItemDto(), this.request);
+        public get req(): RequestListItemPendingFundDto {
+            return Object.assign(new RequestListItemPendingFundDto(), this.request);
         }
 
         public formatPrice(value, decimals: number = 2) {
