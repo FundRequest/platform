@@ -98,17 +98,6 @@
         .fa, label {
             color: $gray-500;
         }
-
-        select.form-control {
-            background-color: $gray-300;
-            border-color: $gray-300;
-            color: $gray-600;
-            box-shadow: none;
-            &:active, &:focus {
-                background-color: $gray-300;
-                border-width: 1px;
-            }
-        }
     }
 }
 
