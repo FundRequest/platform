@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundreqest.platform.tweb.infrastructure.mav.AbstractController;
 import io.fundreqest.platform.tweb.request.dto.ERC67FundDto;
+import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
+import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.PendingFundService;
@@ -32,11 +34,16 @@ public class RequestController extends AbstractController {
     private RequestService requestService;
     private PendingFundService pendingFundService;
     private ObjectMapper objectMapper;
+    private Mappers mappers;
 
-    public RequestController(RequestService requestService, PendingFundService pendingFundService, ObjectMapper objectMapper) {
+    public RequestController(RequestService requestService,
+                             PendingFundService pendingFundService,
+                             ObjectMapper objectMapper,
+                             Mappers mappers) {
         this.requestService = requestService;
         this.pendingFundService = pendingFundService;
         this.objectMapper = objectMapper;
+        this.mappers = mappers;
     }
 
     @GetMapping("/requests")
@@ -50,7 +57,8 @@ public class RequestController extends AbstractController {
     @GetMapping("/requests/{id}")
     public ModelAndView details(@PathVariable Long id) {
         return modelAndView()
-                .withObject("request", requestService.findRequest(id))
+
+                .withObject("request", mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id)))
                 .withView("pages/requests/detail")
                 .build();
     }

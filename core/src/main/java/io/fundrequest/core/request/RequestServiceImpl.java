@@ -23,7 +23,7 @@ import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
@@ -45,7 +45,7 @@ class RequestServiceImpl implements RequestService {
     private GithubPlatformIdParser githubLinkParser;
     private ProfileService profileService;
     private ClaimRepository claimRepository;
-    private GithubClient githubClient;
+    private GithubGateway githubGateway;
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
 
@@ -54,7 +54,7 @@ class RequestServiceImpl implements RequestService {
                               GithubPlatformIdParser githubLinkParser,
                               ProfileService profileService,
                               ClaimRepository claimRepository,
-                              GithubClient githubClient,
+                              GithubGateway githubGateway,
                               GithubClaimResolver githubClaimResolver,
                               ApplicationEventPublisher eventPublisher) {
         this.requestRepository = requestRepository;
@@ -62,7 +62,7 @@ class RequestServiceImpl implements RequestService {
         this.githubLinkParser = githubLinkParser;
         this.profileService = profileService;
         this.claimRepository = claimRepository;
-        this.githubClient = githubClient;
+        this.githubGateway = githubGateway;
         this.githubClaimResolver = githubClaimResolver;
         this.eventPublisher = eventPublisher;
     }
@@ -192,7 +192,7 @@ class RequestServiceImpl implements RequestService {
     }
 
     private Set<String> getTechnologies(IssueInformation issueInformation) {
-        Map<String, Long> languages = githubClient.getLanguages(issueInformation.getOwner(), issueInformation.getRepo());
+        Map<String, Long> languages = githubGateway.getLanguages(issueInformation.getOwner(), issueInformation.getRepo());
         return languages.keySet();
     }
 }

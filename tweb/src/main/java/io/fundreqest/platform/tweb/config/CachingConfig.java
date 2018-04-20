@@ -31,10 +31,11 @@ public class CachingConfig {
                         buildCache("erc20.tokens.symbol", 30, DAYS),
                         buildCache("token_price", 15, MINUTES),
                         buildCache("funds", 7, DAYS),
-                        buildCache("github_issue_info", 1, DAYS),
+                        buildCache("github_issue", 1, DAYS),
                         buildCache("loginUserData", 1, DAYS),
                         buildCache("ref_links", 30, DAYS),
-                        buildCache("user_profile", 1, DAYS)
+                        buildCache("user_profile", 1, DAYS),
+                        buildCache("github_repo_languages", 1, DAYS)
                              )
                          );
         return manager;

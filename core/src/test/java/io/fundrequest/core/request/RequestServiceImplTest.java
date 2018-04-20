@@ -22,7 +22,7 @@ import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformId
 import io.fundrequest.core.request.view.ClaimDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
-import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class RequestServiceImplTest {
     private Mappers mappers;
     private GithubPlatformIdParser githubLinkParser;
     private ClaimRepository claimRepository;
-    private GithubClient githubClient;
+    private GithubGateway githubGateway;
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
     private ProfileService profileService;
@@ -66,7 +66,7 @@ public class RequestServiceImplTest {
         mappers = mock(Mappers.class);
         githubLinkParser = mock(GithubPlatformIdParser.class);
         profileService = mock(ProfileService.class, RETURNS_DEEP_STUBS);
-        githubClient = mock(GithubClient.class);
+        githubGateway = mock(GithubGateway.class);
         githubClaimResolver = mock(GithubClaimResolver.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
         claimRepository = mock(ClaimRepository.class);
@@ -75,7 +75,7 @@ public class RequestServiceImplTest {
                 mappers,
                 githubLinkParser,
                 profileService,
-                claimRepository, githubClient, githubClaimResolver, eventPublisher);
+                claimRepository, githubGateway, githubClaimResolver, eventPublisher);
     }
 
     @Test

@@ -2,7 +2,7 @@ package io.fundrequest.core.request.infrastructure.github.parser;
 
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Platform;
-import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.parser.GithubResult;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,12 +15,12 @@ import static org.mockito.Mockito.when;
 public class GithubPlatformIdParserTest {
 
     private GithubPlatformIdParser parser;
-    private GithubClient githubClient;
+    private GithubGateway githubGateway;
 
     @Before
     public void setUp() throws Exception {
-        githubClient = mock(GithubClient.class);
-        parser = new GithubPlatformIdParser(githubClient);
+        githubGateway = mock(GithubGateway.class);
+        parser = new GithubPlatformIdParser(githubGateway);
     }
 
     @Test
@@ -29,7 +29,7 @@ public class GithubPlatformIdParserTest {
         String owner = "kazuki43zoo";
         String repo = "api-stub";
         String number = "42";
-        when(githubClient.getIssue(owner, repo, number))
+        when(githubGateway.getIssue(owner, repo, number))
                 .thenReturn(githubResult);
         String platformId = owner + PLATFORM_ID_GITHUB_DELIMTER + repo + PLATFORM_ID_GITHUB_DELIMTER + number;
 

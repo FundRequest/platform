@@ -19,7 +19,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
         url = "https://api.github.com/",
         configuration = GithubFeignConfiguration.class
 )
-public interface GithubClient {
+interface GithubClient {
 
     @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}", method = GET)
     GithubResult getIssue(

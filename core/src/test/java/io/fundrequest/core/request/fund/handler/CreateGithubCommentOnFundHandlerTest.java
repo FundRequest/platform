@@ -5,7 +5,7 @@ import io.fundrequest.core.request.view.FundDtoMother;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.CreateGithubComment;
-import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.github.GithubGateway;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -21,21 +21,21 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 public class CreateGithubCommentOnFundHandlerTest {
 
     private CreateGithubCommentOnFundHandler handler;
-    private GithubClient githubClient;
+    private GithubGateway githubGateway;
 
     @Before
     public void setUp() throws Exception {
-        githubClient = mock(GithubClient.class);
-        handler = new CreateGithubCommentOnFundHandler(githubClient, true, "fundrequest-notifier");
+        githubGateway = mock(GithubGateway.class);
+        handler = new CreateGithubCommentOnFundHandler(githubGateway, true, "fundrequest-notifier");
     }
 
     @Test
     public void ignoresGithubComment() throws Exception {
-        handler = new CreateGithubCommentOnFundHandler(githubClient, false, "fundrequest-notifier");
+        handler = new CreateGithubCommentOnFundHandler(githubGateway, false, "fundrequest-notifier");
 
         handler.createGithubCommentOnRequestFunded(createEvent());
 
-        verifyZeroInteractions(githubClient);
+        verifyZeroInteractions(githubGateway);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class CreateGithubCommentOnFundHandlerTest {
 
         ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
         IssueInformationDto issueInformation = event.getRequestDto().getIssueInformation();
-        verify(githubClient).createCommentOnIssue(eq(issueInformation.getOwner()), eq(issueInformation.getRepo()), eq(issueInformation.getNumber()), createGithubCommentArgumentCaptor.capture());
+        verify(githubGateway).createCommentOnIssue(eq(issueInformation.getOwner()), eq(issueInformation.getRepo()), eq(issueInformation.getNumber()), createGithubCommentArgumentCaptor.capture());
         assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo("Great, this issue is now funded on FundRequest: https://alpha.fundrequest.io!  \n" +
                 "\n" +
                 "50.33 FND was funded on 2017-12-27");

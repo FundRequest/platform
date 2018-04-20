@@ -1,99 +1,24 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layouts/default">
-<!--/*@thymesVar id="request" type="io.fundrequest.core.request.view.RequestDto"*/-->
 <head>
-    <title th:text="${'FundRequest - ' + request.issueInformation.title}">FundRequest - Request XYZ</title>
+  <title>FundRequest - Request Details</title>
 </head>
 
 <th:block layout:fragment="content">
-    <div class="row">
-        <div class="col-12 mb-4">
-            <div class="card card--primary">
-                <div class="row">
-                    <div class="col-12 col-md-6 d-flex align-items-center">
-                        <div class="card-body">
-                            <h4 class="mb-0 text-center text-md-left">
-                                <a href="#" class="watch-link">
-                                    <i class="far fa-sm fa-star"></i>
-                                    <small><strong th:text="${#sets.size(request.watchers)}">0</strong></small>
-                                </a>
-                                <span class="ml-3" th:text="${request.issueInformation.title}">
-                                Add hello world for c++
-                            </span>
-                            </h4>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="card-body text-center text-md-right">
-                            <button class="btn btn-outline-secondary mb-0">Other actions</button>
-                            <button class="btn btn-success mb-0">Claim</button>
-                            <button class="btn btn-primary mb-0" data-toggle="modal" data-target="#fund-request">Fund
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div th:utext="${request.description}"></div>
+</th:block>
 
-        <div class="col-12 col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <dl class="row">
-                        <dt class="col-4 col-md-3">Source</dt>
-                        <dd class="col-8 col-md-9"><a th:href="${request.issueInformation.url}" href="#github"><i class="fab fa-github fa-2x"></i></a></dd>
 
-                        <dt class="col-4 col-md-3">Owner</dt>
-                        <dd class="col-8 col-md-9" th:text="${request.issueInformation.owner}">FundRequest</dd>
-
-                        <dt class="col-4 col-md-3">Repo</dt>
-                        <dd class="col-8 col-md-9" th:text="${request.issueInformation.repo}">area51</dd>
-
-                        <dt class="col-4 col-md-3">Issue</dt>
-                        <dd class="col-8 col-md-9" th:text="${request.issueInformation.number}">60</dd>
-
-                        <dt class="col-4 col-md-3">Type</dt>
-                        <dd class="col-8 col-md-9" th:text="${#messages.msg('enum.RequestType.'+request.type)}">ISSUE</dd>
-
-                        <dt class="col-4 col-md-3">Technologies</dt>
-                        <dd class="col-8 col-md-9">
-                        <span th:each="t : ${request.technologies}" th:remove="tag">
-                            <span class="badge badge-primary" th:text="${t}">Java</span>
-                        </span>
-                        </dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-6 mb-4">
-            <div class="card card--outline-primary h-100">
-                <div class="card-body">
-                    <dl class="row">
-                        <dt class="col-4 col-md-3">Status</dt>
-                        <dd class="col-8 col-md-9">
-                            <span class="badge badge-primary" th:text="${#messages.msg('enum.RequestStatus.'+request.status)}">FUNDED</span>
-                        </dd>
-
-                        <dt class="col-4 col-md-3">Total Funding</dt>
-                        <dd class="col-8 col-md-9">
-                            <div>- FND</div>
-                            <div>- XYZ</div>
-                        </dd>
-
-                        <dt class="col-4 col-md-3">#Funders</dt>
-                        <dd class="col-8 col-md-9">-</dd>
-
-                        <dt class="col-4 col-md-3">My Funding</dt>
-                        <dd class="col-8 col-md-9">
-                            <div>-</div>
-                            <div>-</div>
-                        </dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-
+<th:block layout:fragment="css">
+  <link type="text/css" rel="stylesheet"
+        th:href="@{/assets/vendors/datatables.net-bs4/css/dataTables.bootstrap4.css}"/>
+  <link type="text/css" rel="stylesheet"
+        th:href="@{/assets/vendors/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css}"/>
+</th:block>
+<th:block layout:fragment="scripts">
+  <script>require(['app/dataTables'])</script>
+  <script>require(['app/requests'])</script>
 </th:block>
 
 </html>

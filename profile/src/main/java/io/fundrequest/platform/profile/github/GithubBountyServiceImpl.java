@@ -1,6 +1,6 @@
 package io.fundrequest.platform.profile.github;
 
-import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.parser.GithubUser;
 import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.profile.bounty.domain.BountyType;
@@ -35,18 +35,18 @@ public class GithubBountyServiceImpl implements GithubBountyService, Application
     private ProfileService profileService;
     private GithubBountyRepository githubBountyRepository;
     private BountyService bountyService;
-    private GithubClient githubClient;
+    private GithubGateway githubGateway;
     private ApplicationEventPublisher eventPublisher;
 
     public GithubBountyServiceImpl(ProfileService profileService,
                                    GithubBountyRepository githubBountyRepository,
                                    BountyService bountyService,
-                                   GithubClient githubClient,
+                                   GithubGateway githubGateway,
                                    ApplicationEventPublisher eventPublisher) {
         this.profileService = profileService;
         this.githubBountyRepository = githubBountyRepository;
         this.bountyService = bountyService;
-        this.githubClient = githubClient;
+        this.githubGateway = githubGateway;
         this.eventPublisher = eventPublisher;
     }
 
@@ -79,7 +79,7 @@ public class GithubBountyServiceImpl implements GithubBountyService, Application
     private void createBountyWhenNecessary(Principal principal, UserProfile userProfile) {
         try {
             if (!githubBountyRepository.existsByUserId(principal.getName())) {
-                GithubUser githubUser = githubClient.getUser(userProfile.getGithub().getUsername());
+                GithubUser githubUser = githubGateway.getUser(userProfile.getGithub().getUsername());
                 boolean validForBounty = isValidForBounty(githubUser);
                 saveGithubBounty(principal, githubUser, validForBounty);
                 if (validForBounty) {
