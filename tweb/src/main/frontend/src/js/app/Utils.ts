@@ -25,8 +25,8 @@ export class Utils {
         return newWindow;
     }
 
-    public static formatTokenPrice(value) {
-        let val = (value / 1).toFixed(2).replace('.', ',');
+    public static formatTokenPrice(value, decimals: number = 2) {
+        let val = (value / 1).toFixed(decimals).replace('.', ',');
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
 

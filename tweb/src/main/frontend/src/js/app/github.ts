@@ -1,4 +1,4 @@
-import {Utils} from './utils';
+import {Utils} from './Utils';
 
 import {Contracts} from "./contracts";
 import {FundRepository} from "../contracts/FundRepository";

@@ -1,6 +1,6 @@
 import {FundRequestToken} from '../contracts/FundRequestToken';
 import {FundRequestContract} from '../contracts/FundRequestContract';
-import {Utils} from './utils';
+import {Utils} from './Utils';
 import {Web3} from './web3';
 import {Contracts} from "./contracts";
 

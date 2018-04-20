@@ -1,33 +1,23 @@
 <template>
     <section class="issue-lists">
-        <nav class="navbar navbar-expand navbar--fnd-filter mb-4">
-            <button class="navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#sec-menu" aria-controls="sec-menu"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <list-filter
+                v-bind:active="statusFilter"
+                v-bind:filters="[
+                    { value: 'all', title: 'All', description: 'Show All' },
+                    { value: 'funded', title: 'Funded' description: 'Show Funded' },
+                    { value: 'starred', title: 'Starred', description: 'Show Starred' },
+                    { value: 'claimed', title: 'Claimed', description: 'Show Claimed' },
+                    { value: 'failed', title: 'Failed', description: 'Show Failed' }
+                 ]"
+                v-on:update="setStatusFilter"
+        />
 
-            <div class="collapse navbar-collapse" id="sec-menu">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item" v-bind:class="{active: statusFilter==='all'}">
-                        <a class="nav-link" v-on:click="setStatusFilter('all')">All</a>
-                    </li>
-                    <li class="nav-item" v-bind:class="{active: statusFilter==='funded'}">
-                        <a class="nav-link" v-on:click="setStatusFilter('funded')">Funded</a>
-                    </li>
-                    <li class="nav-item" v-bind:class="{active: statusFilter==='starred'}">
-                        <a class="nav-link" v-on:click="setStatusFilter('starred')">Starred</a>
-                    </li>
-                    <li class="nav-item" v-bind:class="{active: statusFilter==='claimed'}">
-                        <a class="nav-link" v-on:click="setStatusFilter('claimed')">Claimed</a>
-                    </li>
-                    <li class="nav-item" v-bind:class="{active: statusFilter==='failed'}">
-                        <a class="nav-link" v-on:click="setStatusFilter('failed')">Failed</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <div class="issue-list__options">
+        <div class="issue-list__block card" v-if="statusFilter==='funded' || statusFilter==='all'">
+            <RequestListItemPendingFund v-for="request in pendingRequests" v-bind:request="request"
+                                        v-bind:key="request.id"></RequestListItemPendingFund>
+        </div>
+
+        <div class="issue-list__options" v-if="!isEmpty">
             <div class="row">
                 <div class="col-12 col-md-4 col-lg-3">
                     <div class="md-form">
@@ -39,23 +29,18 @@
                 </div>
                 <div class="col-12 col-md-4 offset-md-4 col-lg-3 offset-lg-6">
                     <div class="md-form">
-                        <select class="form-control"
-                                id="list-sort"
-                                v-bind:value="sortBy"
-                                v-on:input="setSortBy($event.target.value)">
+                        <fnd-select v-bind:id="'list-sort'"
+                                    v-bind:value="sortBy"
+                                    v-on:input="setSortBy">
                             <option value="" selected="selected" disabled="disabled">Sort by</option>
                             <option value="title" selected="selected">Title</option>
-                            <option value="fnd">FND</option>
-                        </select>
+                            <option value="fundings">Fundings</option>
+                        </fnd-select>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="issue-list__block card">
-            <RequestListItem v-for="request in pendingRequests" v-bind:request="request"
-                             v-bind:key="request.id"></RequestListItem>
-        </div>
-        <div class="issue-list__block card">
+        <div class="issue-list__block card" v-if="!isEmpty">
             <RequestListItem v-for="request in filteredRequests" v-bind:request="request"
                              v-bind:key="request.id"></RequestListItem>
         </div>
@@ -64,22 +49,34 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
+    import FndSelect from "./form/FndSelect";
+    import ListFilter from "./ListFilter";
+    import RequestListItem from "./RequestListItem";
+    import RequestListItemPendingFund from "./RequestListItemPendingFund";
+
     import RequestListDto from "../../../app/dto/RequestListDto";
     import RequestListItemDto from "../../../app/dto/RequestListItemDto";
-    import RequestListItem from "./RequestListItem";
+    import {RequestListItemPendingFundDto} from "../../../app/dto/RequestListItemPendingFundDto";
 
     @Component({
-        components: {RequestListItem}
+        components: {
+            FndSelect,
+            ListFilter,
+            RequestListItem,
+            RequestListItemPendingFund
+        }
     })
     export default class RequestList extends Vue {
         @Prop() statusFilterDefault: string;
         @Prop({required: true}) requests: RequestListItemDto[];
+        @Prop() pendingRequests: RequestListItemPendingFundDto[];
 
         public requestList: RequestListDto = new RequestListDto([]);
         public filteredRequests: RequestListItemDto[] = [];
         public statusFilter: string = "all";
         public searchFilter: string = "";
         public sortBy: string = "";
+        public isEmpty: boolean = false;
 
         mounted() {
             this.requestList = new RequestListDto(this.requests);
@@ -108,10 +105,7 @@
             } else {
                 this.filteredRequests = this.requestList.filterByStatus(statusFilter, searchFilter, sortBy);
             }
-        }
-
-        public get pendingRequests(): RequestListItemDto[] {
-            return this.requestList.getPendingRequests();
+            this.isEmpty = this.filteredRequests.length <= 0;
         }
 
     }
