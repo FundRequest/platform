@@ -1,8 +1,8 @@
 package io.fundrequest.platform.profile.profile;
 
-import io.fundrequest.core.keycloak.KeycloakRepository;
-import io.fundrequest.core.keycloak.Provider;
-import io.fundrequest.core.keycloak.UserIdentity;
+import io.fundrequest.platform.keycloak.KeycloakRepository;
+import io.fundrequest.platform.keycloak.Provider;
+import io.fundrequest.platform.keycloak.UserIdentity;
 import io.fundrequest.platform.profile.developer.verification.event.DeveloperVerified;
 import io.fundrequest.platform.profile.profile.dto.UserLinkedProviderEvent;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
@@ -15,6 +15,8 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.IDToken;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -44,11 +46,19 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    @CacheEvict(value = "user_profile", key = "#principal.name")
     public void userProviderIdentityLinked(Principal principal, Provider provider) {
         eventPublisher.publishEvent(UserLinkedProviderEvent.builder().principal(principal).provider(provider).build());
     }
 
     @Override
+    @Cacheable(value = "user_profile", key = "#principal.name")
+    public UserProfile getUserProfile(Principal principal) {
+        return getUserProfile(null, principal);
+    }
+
+    @Override
+    @Cacheable(value = "user_profile", key = "#principal.name")
     public UserProfile getUserProfile(HttpServletRequest request, Principal principal) {
         IDToken idToken = ((KeycloakAuthenticationToken) principal).getAccount().getKeycloakSecurityContext().getIdToken();
         Map<Provider, UserProfileProvider> providers = keycloakRepository.getUserIdentities(principal.getName())
@@ -78,6 +88,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @EventListener
+    @CacheEvict(value = "user_profile", key = "#event.userId")
     public void onDeveloperVerified(DeveloperVerified event) {
         keycloakRepository.updateVerifiedDeveloper(event.getUserId(), true);
     }
@@ -91,16 +102,19 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    @CacheEvict(value = "user_profile", key = "#principal.name")
     public void updateEtherAddress(Principal principal, String etherAddress) {
         keycloakRepository.updateEtherAddress(principal.getName(), etherAddress);
     }
 
     @Override
+    @CacheEvict(value = "user_profile", key = "#principal.name")
     public void updateTelegramName(Principal principal, String telegramName) {
         keycloakRepository.updateTelegramName(principal.getName(), telegramName);
     }
 
     @Override
+    @CacheEvict(value = "user_profile", key = "#principal.name")
     public void updateHeadline(Principal principal, String headline) {
         keycloakRepository.updateHeadline(principal.getName(), headline);
     }

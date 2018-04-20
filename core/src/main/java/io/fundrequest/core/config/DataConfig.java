@@ -1,7 +1,7 @@
 package io.fundrequest.core.config;
 
 import io.fundrequest.core.FundRequestCore;
-import io.fundrequest.core.infrastructure.repository.SpringSecurityAuditorAware;
+import io.fundrequest.db.infrastructure.SpringSecurityAuditorAware;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

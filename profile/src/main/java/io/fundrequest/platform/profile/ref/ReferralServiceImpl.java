@@ -2,7 +2,7 @@ package io.fundrequest.platform.profile.ref;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundrequest.core.keycloak.KeycloakRepository;
+import io.fundrequest.platform.keycloak.KeycloakRepository;
 import io.fundrequest.platform.profile.bounty.event.CreateBountyCommand;
 import io.fundrequest.platform.profile.bounty.service.BountyService;
 import io.fundrequest.platform.profile.profile.dto.UserLinkedProviderEvent;

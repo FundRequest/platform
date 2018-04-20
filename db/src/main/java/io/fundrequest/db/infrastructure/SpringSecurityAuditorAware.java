@@ -1,4 +1,4 @@
-package io.fundrequest.core.infrastructure.repository;
+package io.fundrequest.db.infrastructure;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.context.SecurityContextHolder;

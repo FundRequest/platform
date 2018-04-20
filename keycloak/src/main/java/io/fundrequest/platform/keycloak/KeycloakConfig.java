@@ -1,4 +1,4 @@
-package io.fundrequest.core.keycloak;
+package io.fundrequest.platform.keycloak;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;

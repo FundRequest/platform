@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @Cacheable("loginUserData")
+    @Deprecated
     public UserAuthentication login(UserLoginCommand loginCommand) {
         User user = userRepository.findOne(loginCommand.getUserId())
                                   .map(u -> updateUser(loginCommand, u))

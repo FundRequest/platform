@@ -1,4 +1,4 @@
-package io.fundrequest.core.request.infrastructure.github.parser;
+package io.fundrequest.platform.github.parser;
 
 public class GithubIssueCommentsResult {
     private Long id;

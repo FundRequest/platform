@@ -1,4 +1,4 @@
-package io.fundrequest.core.keycloak.dto;
+package io.fundrequest.platform.keycloak.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

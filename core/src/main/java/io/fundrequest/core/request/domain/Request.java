@@ -1,6 +1,6 @@
 package io.fundrequest.core.request.domain;
 
-import io.fundrequest.core.infrastructure.repository.AbstractEntity;
+import io.fundrequest.db.infrastructure.AbstractEntity;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;

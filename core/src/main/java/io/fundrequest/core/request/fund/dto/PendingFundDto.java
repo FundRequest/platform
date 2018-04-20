@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PendingFundDto {
-
+    private Long id;
     private String description;
     private String transactionId;
     private String fromAddress;
@@ -16,5 +16,9 @@ public class PendingFundDto {
     private String tokenAddress;
     private IssueInformationDto issueInformation;
     private AllFundsDto funds = new AllFundsDto();
+
+    public String getIcon() {
+        return "https://github.com/" + getIssueInformation().getOwner() + ".png";
+    }
 
 }

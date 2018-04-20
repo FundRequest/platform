@@ -1,4 +1,4 @@
-package io.fundrequest.core.keycloak;
+package io.fundrequest.platform.keycloak;
 
 import lombok.Builder;
 import lombok.Data;

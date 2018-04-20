@@ -1,39 +1,51 @@
 package io.fundreqest.platform.tweb.config;
 
-import com.google.common.cache.CacheBuilder;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.Ticker;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCache;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.TimeUnit.DAYS;
+import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 @Configuration
 @EnableCaching
 public class CachingConfig {
 
     @Bean
-    public ConcurrentMapCacheManager cacheManager() {
-        return new ConcurrentMapCacheManager() {
-
-            @Override
-            protected Cache createConcurrentMapCache(final String name) {
-                return new ConcurrentMapCache(name,
-                                              cacheBuilder(name).build().asMap(), false);
-            }
-        };
+    public CacheManager cacheManager() {
+        SimpleCacheManager manager = new SimpleCacheManager();
+        manager.setCaches(
+                Arrays.asList(
+                        buildCache("possible_tokens", 1, HOURS),
+                        buildCache("erc20.tokens.decimals", 30, DAYS),
+                        buildCache("erc20.tokens.name", 30, DAYS),
+                        buildCache("erc20.tokens.symbol", 30, DAYS),
+                        buildCache("token_price", 15, MINUTES),
+                        buildCache("funds", 7, DAYS),
+                        buildCache("github_issue_info", 1, DAYS),
+                        buildCache("loginUserData", 1, DAYS),
+                        buildCache("ref_links", 30, DAYS),
+                        buildCache("user_profile", 1, DAYS)
+                             )
+                         );
+        return manager;
     }
 
-    @NotNull
-    private CacheBuilder<Object, Object> cacheBuilder(final String cacheName) {
-        final CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
-        if (cacheName != null && cacheName.startsWith("shortlived")) {
-            return cacheBuilder.expireAfterWrite(5, TimeUnit.MINUTES);
-        } else {
-            return cacheBuilder;
-        }
+    private CaffeineCache buildCache(String name, int ttl, TimeUnit ttlUnit) {
+        return new CaffeineCache(name, Caffeine.newBuilder()
+                                               .expireAfterWrite(ttl, ttlUnit)
+                                               .maximumSize(1000000)
+                                               .ticker(Ticker.systemTicker())
+                                               .build());
     }
+
 }

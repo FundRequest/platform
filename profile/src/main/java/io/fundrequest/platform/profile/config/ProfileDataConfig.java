@@ -1,6 +1,6 @@
 package io.fundrequest.platform.profile.config;
 
-import io.fundrequest.core.infrastructure.repository.SpringSecurityAuditorAware;
+import io.fundrequest.db.infrastructure.SpringSecurityAuditorAware;
 import io.fundrequest.platform.profile.ProfileApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;

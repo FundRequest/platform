@@ -2,7 +2,9 @@ package io.fundrequest.core.request.infrastructure.github.parser;
 
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Platform;
-import io.fundrequest.core.request.infrastructure.github.GithubClient;
+import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.github.parser.GithubResult;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
@@ -17,7 +19,7 @@ public class GithubPlatformIdParser {
         this.githubClient = githubClient;
 
     }
-
+    @Cacheable(value = "github_issue_info", key = "#platformId")
     public IssueInformation parseIssue(String platformId) {
         IssueInformation issueInformation = IssueInformation.builder().build();
         String[] splitted = platformId.split(Pattern.quote(PLATFORM_ID_GITHUB_DELIMTER));

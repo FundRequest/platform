@@ -1,4 +1,4 @@
-package io.fundrequest.core.infrastructure;
+package io.fundrequest.db.infrastructure;
 
 public @interface IgnoreDuringComponentScan {
 }

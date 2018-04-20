@@ -1,4 +1,4 @@
-package io.fundrequest.core.keycloak;
+package io.fundrequest.platform.keycloak;
 
 import java.util.Arrays;
 import java.util.Map;

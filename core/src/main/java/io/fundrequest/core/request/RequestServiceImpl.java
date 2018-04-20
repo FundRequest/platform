@@ -2,7 +2,6 @@ package io.fundrequest.core.request;
 
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
-import io.fundrequest.core.keycloak.KeycloakRepository;
 import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
@@ -22,9 +21,10 @@ import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
-import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.profile.profile.ProfileService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ class RequestServiceImpl implements RequestService {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private GithubPlatformIdParser githubLinkParser;
-    private KeycloakRepository keycloakRepository;
+    private ProfileService profileService;
     private ClaimRepository claimRepository;
     private GithubClient githubClient;
     private GithubClaimResolver githubClaimResolver;
@@ -52,7 +52,7 @@ class RequestServiceImpl implements RequestService {
     public RequestServiceImpl(RequestRepository requestRepository,
                               Mappers mappers,
                               GithubPlatformIdParser githubLinkParser,
-                              KeycloakRepository keycloakRepository,
+                              ProfileService profileService,
                               ClaimRepository claimRepository,
                               GithubClient githubClient,
                               GithubClaimResolver githubClaimResolver,
@@ -60,7 +60,7 @@ class RequestServiceImpl implements RequestService {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
-        this.keycloakRepository = keycloakRepository;
+        this.profileService = profileService;
         this.claimRepository = claimRepository;
         this.githubClient = githubClient;
         this.githubClaimResolver = githubClaimResolver;
@@ -83,7 +83,7 @@ class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<RequestDto> findRequestsForUser(Principal principal) {
         Set<Request> result = new HashSet<>();
-        String etherAddress = keycloakRepository.getEtherAddress(principal.getName());
+        String etherAddress = profileService.getUserProfile(principal).getEtherAddress();
         result.addAll(requestRepository.findRequestsUserIsWatching(principal.getName()));
         result.addAll(requestRepository.findRequestsUserHasFunded(principal.getName(), etherAddress));
         return mappers.mapList(Request.class, RequestDto.class, result);

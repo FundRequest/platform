@@ -1,6 +1,6 @@
 package io.fundrequest.platform.profile.telegram.service;
 
-import io.fundrequest.core.keycloak.KeycloakRepository;
+import io.fundrequest.platform.keycloak.KeycloakRepository;
 import io.fundrequest.platform.profile.bounty.domain.BountyType;
 import io.fundrequest.platform.profile.bounty.event.CreateBountyCommand;
 import io.fundrequest.platform.profile.bounty.service.BountyService;

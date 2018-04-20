@@ -1,6 +1,6 @@
 package io.fundrequest.core.user.dto;
 
-import io.fundrequest.core.keycloak.UserIdentity;
+import io.fundrequest.platform.keycloak.UserIdentity;
 
 import java.util.List;
 

@@ -67,7 +67,7 @@ public class FundRequestContractsService {
         }
     }
 
-    @Cacheable(value = "shortlived_possible_tokens", key = "#platform + '-' + #platformId")
+    @Cacheable(value = "possible_tokens", key = "#platform + '-' + #platformId")
     public List<TokenInfoDto> getAllPossibleTokens(final String platform, final String platformId) {
         return getAllPossibleTokens()
                 .stream()

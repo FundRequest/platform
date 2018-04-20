@@ -1,8 +1,8 @@
 package io.fundrequest.platform.profile.github;
 
-import io.fundrequest.core.keycloak.Provider;
-import io.fundrequest.core.request.infrastructure.github.GithubClient;
-import io.fundrequest.core.request.infrastructure.github.parser.GithubUser;
+import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.github.parser.GithubUser;
+import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.profile.bounty.domain.BountyType;
 import io.fundrequest.platform.profile.bounty.event.CreateBountyCommand;
 import io.fundrequest.platform.profile.bounty.service.BountyService;
