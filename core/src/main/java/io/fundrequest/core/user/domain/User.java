@@ -1,6 +1,6 @@
 package io.fundrequest.core.user.domain;
 
-import io.fundrequest.core.infrastructure.repository.AbstractEntity;
+import io.fundrequest.db.infrastructure.AbstractEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,8 +39,12 @@ public class User extends AbstractEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         User user = (User) o;
         return Objects.equals(userId, user.userId);
     }

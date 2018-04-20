@@ -2,11 +2,11 @@ package io.fundrequest.core.request.fund.handler;
 
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
-import io.fundrequest.core.request.infrastructure.github.CreateGithubComment;
-import io.fundrequest.core.request.infrastructure.github.GithubClient;
-import io.fundrequest.core.request.infrastructure.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.platform.github.CreateGithubComment;
+import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;

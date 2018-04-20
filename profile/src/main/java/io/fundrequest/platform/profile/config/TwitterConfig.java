@@ -18,10 +18,10 @@ public class TwitterConfig {
                                          @Value("${io.fundrequest.twitter.access-token-secret}") final String accessTokenSecret) {
         val cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true)
-                .setOAuthConsumerKey(consumerKey)
-                .setOAuthConsumerSecret(consumerSecret)
-                .setOAuthAccessToken(accessToken)
-                .setOAuthAccessTokenSecret(accessTokenSecret);
+          .setOAuthConsumerKey(consumerKey)
+          .setOAuthConsumerSecret(consumerSecret)
+          .setOAuthAccessToken(accessToken)
+          .setOAuthAccessTokenSecret(accessTokenSecret);
         val tf = new TwitterFactory(cb.build());
         return tf.getInstance();
     }

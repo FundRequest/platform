@@ -1,11 +1,11 @@
 package io.fundrequest.core.request.fund.handler;
 
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
-import io.fundrequest.core.request.infrastructure.github.CreateGithubComment;
-import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.request.view.FundDtoMother;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
+import io.fundrequest.platform.github.CreateGithubComment;
+import io.fundrequest.platform.github.GithubClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

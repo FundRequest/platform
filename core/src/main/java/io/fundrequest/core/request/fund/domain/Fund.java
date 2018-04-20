@@ -1,6 +1,6 @@
 package io.fundrequest.core.request.fund.domain;
 
-import io.fundrequest.core.infrastructure.repository.AbstractEntity;
+import io.fundrequest.db.infrastructure.AbstractEntity;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -22,7 +22,7 @@ public class Fund extends AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "funder")
+    @Column(name = "funder_address")
     private String funder;
 
     @Column(name = "amount_in_wei")
@@ -31,18 +31,19 @@ public class Fund extends AbstractEntity {
     @Column(name = "token")
     private String token;
 
-    @Column(name = "time_stamp")
-    private LocalDateTime timestamp;
-
     @Column(name = "request_id")
     private Long requestId;
+
+
+    @Column(name = "time_stamp")
+    private LocalDateTime timestamp;
 
     protected Fund() {
     }
 
     @Builder
     Fund(String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp) {
-        this.funder = funder;
+        this.funder = funder == null ? null : funder.toLowerCase();
         this.amountInWei = amountInWei;
         this.token = token;
         this.requestId = requestId;

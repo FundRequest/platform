@@ -51,7 +51,7 @@ public class RequestRepositoryTest extends AbstractRepositoryTest {
         String watcher = request.getWatchers().iterator().next();
 
         assertThat(
-                requestRepository.findRequestsForUser(watcher)
+                requestRepository.findRequestsUserIsWatching(watcher)
         ).contains(request);
     }
 }

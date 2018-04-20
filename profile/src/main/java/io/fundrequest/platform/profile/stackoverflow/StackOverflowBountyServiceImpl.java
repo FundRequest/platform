@@ -1,6 +1,6 @@
 package io.fundrequest.platform.profile.stackoverflow;
 
-import io.fundrequest.core.keycloak.Provider;
+import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.profile.bounty.domain.BountyType;
 import io.fundrequest.platform.profile.bounty.event.CreateBountyCommand;
 import io.fundrequest.platform.profile.bounty.service.BountyService;
@@ -32,7 +32,11 @@ class StackOverflowBountyServiceImpl implements StackOverflowBountyService {
     private BountyService bountyService;
     private ApplicationEventPublisher eventPublisher;
 
-    public StackOverflowBountyServiceImpl(ProfileService profileService, StackOverflowBountyRepository repository, StackOverflowClient client, BountyService bountyService, ApplicationEventPublisher eventPublisher) {
+    public StackOverflowBountyServiceImpl(ProfileService profileService,
+                                          StackOverflowBountyRepository repository,
+                                          StackOverflowClient client,
+                                          BountyService bountyService,
+                                          ApplicationEventPublisher eventPublisher) {
         this.profileService = profileService;
         this.repository = repository;
         this.client = client;
@@ -53,7 +57,7 @@ class StackOverflowBountyServiceImpl implements StackOverflowBountyService {
     @Transactional(readOnly = true)
     public StackOverflowVerificationDto getVerification(Principal principal) {
         return repository.findByUserId(principal.getName()).map(b -> StackOverflowVerificationDto.builder().approved(b.getValid()).createdAt(b.getCreatedAt()).build())
-                .orElse(null);
+                         .orElse(null);
     }
 
     private void createBountyWhenNecessary(Principal principal, UserProfile userProfile) {
@@ -77,20 +81,20 @@ class StackOverflowBountyServiceImpl implements StackOverflowBountyService {
 
     private void saveBounty(Principal principal) {
         bountyService.createBounty(CreateBountyCommand.builder()
-                .userId(principal.getName())
-                .type(BountyType.LINK_STACK_OVERFLOW).build());
+                                                      .userId(principal.getName())
+                                                      .type(BountyType.LINK_STACK_OVERFLOW).build());
     }
 
     private void saveGithubBounty(Principal principal, StackOverflowUser user, boolean validForBounty) {
         StackOverflowBounty bounty = StackOverflowBounty.builder()
-                .userId(principal.getName())
-                .createdAt(user.getCreationDateTime())
-                .displayName(user.getDisplayName())
-                .image(user.getProfileImage())
-                .reputation(user.getReputation())
-                .stackOverflowId(user.getUserId())
-                .valid(validForBounty)
-                .build();
+                                                        .userId(principal.getName())
+                                                        .createdAt(user.getCreationDateTime())
+                                                        .displayName(user.getDisplayName())
+                                                        .image(user.getProfileImage())
+                                                        .reputation(user.getReputation())
+                                                        .stackOverflowId(user.getUserId())
+                                                        .valid(validForBounty)
+                                                        .build();
         repository.save(bounty);
     }
 }

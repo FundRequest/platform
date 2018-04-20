@@ -1,13 +1,13 @@
 import {FundRequestToken} from '../contracts/FundRequestToken';
 import {FundRequestContract} from '../contracts/FundRequestContract';
-import {Utils} from './utils';
+import {Utils} from './Utils';
 import {Web3} from './web3';
 import {Contracts} from "./contracts";
 
 class Requests {
     private _account = '0xc31Eb6E317054A79bb5E442D686CB9b225670c1D';
     private _tokenContractZRXAddress = '0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570';
-    private _frContractAddress = Contracts.frContractAddress;
+    private _frContractAddress = Contracts.getInstance().frContractAddress;
 
     private _tokenContract: FundRequestToken = null;
     private _tokenContractZRX: FundRequestToken = null;

@@ -15,7 +15,7 @@ public class MessageHolder {
 
     public MessageHolder(MessageSource messageSource) {
         this.messageSource = messageSource;
-        this.locale =  LocaleContextHolder.getLocale();
+        this.locale = LocaleContextHolder.getLocale();
     }
 
     public String getMessagesAttributeName() {
@@ -46,21 +46,22 @@ public class MessageHolder {
         addMessage(MessageType.INFO, code);
     }
 
-    public void addSuccessMessage(String code, String ... args) {
+    public void addSuccessMessage(String code, String... args) {
         addMessage(MessageType.SUCCESS, code, args);
     }
 
-    public void addErrorMessage(String code, String ... args) {
+    public void addErrorMessage(String code, String... args) {
         addMessage(MessageType.ERROR, code, args);
     }
 
-    public void addAlertMessage(String code, String ... args) {
+    public void addAlertMessage(String code, String... args) {
         addMessage(MessageType.ALERT, code, args);
     }
 
-    public void addInfoMessage(String code, String ... args) {
+    public void addInfoMessage(String code, String... args) {
         addMessage(MessageType.INFO, code, args);
     }
+
     public void addMessages(Messages messages) {
         getMessages().addExistingMessages(messages);
     }

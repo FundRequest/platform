@@ -8,8 +8,8 @@
     import {Contracts} from "../../../app/contracts";
     import {PaymentMethod, PaymentMethods} from "../../../app/payment-method";
     import {Web3} from "../../../app/web3";
-    import {Utils} from "../../../app/utils";
-    import {PendingFund} from "../../../app/PendingFund";
+    import {Utils} from "../../../app/Utils";
+    import {PendingFundCommand} from "../../../app/PendingFundCommand";
 
     Vue.component("qrcode-vue", QrcodeVue);
 
@@ -102,7 +102,7 @@
                     });
                 });
             } else {
-                PaymentMethods.getInstance().dapp.disabledMsg = "Please initialize your dapp browser correctly, no accounts available.";
+                PaymentMethods.getInstance().dapp.disabledMsg = "DApp not available, no accounts available.";
             }
         }
 
@@ -141,13 +141,15 @@
             try {
                 let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, weiAmount)
                     .send({}).catch(rej => {throw new Error(rej);}) as string;
-                let pendingFund = new PendingFund();
-                pendingFund.transactionId = response;
-                pendingFund.amount = this.fundAmount.toString();
-                pendingFund.description = this.description;
-                pendingFund.fromAddress = account;
-                pendingFund.tokenAddress = this.selectedToken.address;
-                await Utils.fetchJSON(`/rest/pending-fund`, pendingFund);
+                let pendingFundCommand = new PendingFundCommand();
+                pendingFundCommand.transactionId = response;
+                pendingFundCommand.amount = this.fundAmount.toString();
+                pendingFundCommand.description = this.description;
+                pendingFundCommand.fromAddress = account;
+                pendingFundCommand.tokenAddress = this.selectedToken.address;
+                pendingFundCommand.platform = this.githubIssue.platform;
+                pendingFundCommand.platformId = this.githubIssue.platformId
+                await Utils.fetchJSON(`/rest/pending-fund`, pendingFundCommand);
             } catch (err) {
                 console.log(err);
             }

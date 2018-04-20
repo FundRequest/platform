@@ -14,6 +14,23 @@
     100% {border-color: $input-border-color;}
 }
 
+.md-form {
+    input[type=date],
+    input[type=datetime-local],
+    input[type=email],
+    input[type=number],
+    input[type=password],
+    input[type=search-md],
+    input[type=search],
+    input[type=tel],
+    input[type=text],
+    input[type=time],
+    input[type=url],
+    textarea.md-textarea {
+        border-bottom: 2px solid $gray-300;
+    }
+}
+
 .form-control {
 
 
@@ -68,6 +85,19 @@
 
         user-select: none;
         cursor: not-allowed;
+    }
+
+    &--search {
+        + label {
+            width: 100%;
+
+            .fa {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 0;
+            }
+        }
     }
 }
 

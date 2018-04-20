@@ -7,7 +7,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import io.fundrequest.platform.profile.profile.infrastructure.ProfileKeycloakRepository;
+import io.fundrequest.platform.keycloak.KeycloakRepository;
 import io.fundrequest.platform.profile.survey.infrastructue.SurveyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,24 +36,24 @@ public class SurveyServiceImpl implements SurveyService, ApplicationListener<Aut
     private String spreadsheetId;
     private String googleClientSecret;
     private static final String SHEET_RANGE = "A2:D";
-    private ProfileKeycloakRepository profileKeycloakRepository;
+    private KeycloakRepository keycloakRepository;
 
     public SurveyServiceImpl(SurveyRepository repository, @Value("${io.fundrequest.tokensale.status.spreadsheet-id}") String spreadsheetId,
-                             @Value("${io.fundrequest.tokensale.status.google-sheets-client-secret}") String googleClientSecret, ProfileKeycloakRepository profileKeycloakRepository) {
+                             @Value("${io.fundrequest.tokensale.status.google-sheets-client-secret}") String googleClientSecret, KeycloakRepository keycloakRepository) {
         this.repository = repository;
         this.spreadsheetId = spreadsheetId;
         this.googleClientSecret = googleClientSecret;
-        this.profileKeycloakRepository = profileKeycloakRepository;
+        this.keycloakRepository = keycloakRepository;
     }
 
     @Override
     @Transactional(readOnly = true)
     public SurveyDto getSurveyResult(Principal principal) {
         return repository.findByUserId(principal.getName())
-                .map(s -> SurveyDto.builder()
-                        .status(s.getStatus())
-                        .build()
-                ).orElse(null);
+                         .map(s -> SurveyDto.builder()
+                                            .status(s.getStatus())
+                                            .build()
+                             ).orElse(null);
     }
 
     @Transactional
@@ -64,8 +64,8 @@ public class SurveyServiceImpl implements SurveyService, ApplicationListener<Aut
                 if (StringUtils.isBlank(s.getUserId())) {
                     String userId = event.getAuthentication().getName();
                     s.setUserId(userId);
-                    if (StringUtils.isNotBlank(profileKeycloakRepository.getEtherAddress(userId))) {
-                        profileKeycloakRepository.updateEtherAddress(userId, s.getEtherAddress());
+                    if (StringUtils.isNotBlank(keycloakRepository.getEtherAddress(userId))) {
+                        keycloakRepository.updateEtherAddress(userId, s.getEtherAddress());
                     }
                     repository.save(s);
                 }
@@ -80,8 +80,8 @@ public class SurveyServiceImpl implements SurveyService, ApplicationListener<Aut
         final ValueRange response;
         try {
             response = getSheetsService().spreadsheets().values()
-                    .get(spreadsheetId, SHEET_RANGE)
-                    .execute();
+                                         .get(spreadsheetId, SHEET_RANGE)
+                                         .execute();
             final List<List<Object>> values = response.getValues();
             Set<Survey> surveysToSave = new HashSet<>();
             values.forEach(v -> {
@@ -90,10 +90,10 @@ public class SurveyServiceImpl implements SurveyService, ApplicationListener<Aut
                     String email = fieldValue.toLowerCase();
                     if (!repository.findByEmail(email).isPresent()) {
                         Survey survey = Survey.builder()
-                                .email(email.toLowerCase().trim())
-                                .etherAddress(getEtherAddress(v))
-                                .status(SurveyStatus.UNVERIFIED)
-                                .build();
+                                              .email(email.toLowerCase().trim())
+                                              .etherAddress(getEtherAddress(v))
+                                              .status(SurveyStatus.UNVERIFIED)
+                                              .build();
                         surveysToSave.add(survey);
                     }
                 }

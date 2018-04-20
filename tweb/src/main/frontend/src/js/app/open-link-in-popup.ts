@@ -1,4 +1,4 @@
-import {Utils} from "./utils";
+import {Utils} from "./Utils";
 
 export class OpenLinkInPopup {
     private _document: HTMLDocument = document;

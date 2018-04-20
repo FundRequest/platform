@@ -48,12 +48,12 @@ public class RequestController extends AbstractRestController {
         return requestService.findRequest(id);
     }
 
-    @GetMapping({PUBLIC_PATH + "/requests/{id}/watchers", "/requests/{id}/watchlink"})
+    @GetMapping( {PUBLIC_PATH + "/requests/{id}/watchers", "/requests/{id}/watchlink"})
     public RequestDto findWatchers(@PathVariable("id") Long id) {
         return requestService.findRequest(id);
     }
 
-    @GetMapping({PRIVATE_PATH + "/requests/{id}/can-claim"})
+    @GetMapping( {PRIVATE_PATH + "/requests/{id}/can-claim"})
     public Boolean claimRequest(Principal principal, @PathVariable("id") Long id, @RequestParam("platform") String platform, @RequestParam("platformId") String platformId) {
         CanClaimRequest canClaimRequest = new CanClaimRequest();
         canClaimRequest.setPlatform(Platform.getPlatform(platform).get());

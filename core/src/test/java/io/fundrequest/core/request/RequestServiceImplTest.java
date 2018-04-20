@@ -17,13 +17,13 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
-import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
-import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.ClaimDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
+import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.profile.profile.ProfileService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -31,6 +31,8 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -52,18 +54,18 @@ public class RequestServiceImplTest {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private GithubPlatformIdParser githubLinkParser;
-    private FundService fundService;
     private ClaimRepository claimRepository;
     private GithubClient githubClient;
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
+    private ProfileService profileService;
 
     @Before
     public void setUp() throws Exception {
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
         githubLinkParser = mock(GithubPlatformIdParser.class);
-        fundService = mock(FundService.class);
+        profileService = mock(ProfileService.class, RETURNS_DEEP_STUBS);
         githubClient = mock(GithubClient.class);
         githubClaimResolver = mock(GithubClaimResolver.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
@@ -72,7 +74,7 @@ public class RequestServiceImplTest {
                 requestRepository,
                 mappers,
                 githubLinkParser,
-                fundService,
+                profileService,
                 claimRepository, githubClient, githubClaimResolver, eventPublisher);
     }
 
@@ -120,10 +122,19 @@ public class RequestServiceImplTest {
         Principal user = mock(Principal.class, RETURNS_DEEP_STUBS);
 
         List<Request> requests = singletonList(RequestMother.freeCodeCampNoUserStories().build());
-        when(requestRepository.findRequestsForUser(user.getName())).thenReturn(requests);
+        when(requestRepository.findRequestsUserIsWatching(user.getName())).thenReturn(requests);
 
-        List<RequestDto> expectedRequests = singletonList(RequestDtoMother.freeCodeCampNoUserStories());
-        when(mappers.mapList(Request.class, RequestDto.class, requests)).thenReturn(expectedRequests);
+        String address = "0x0";
+        when(profileService.getUserProfile(user).getEtherAddress()).thenReturn(address);
+
+        List<Request> fundedRequests = singletonList(RequestMother.fundRequestArea51().build());
+        when(requestRepository.findRequestsUserHasFunded(user.getName(), address)).thenReturn(fundedRequests);
+        HashSet<Request> userRequets = new HashSet<>();
+        userRequets.addAll(requests);
+        userRequets.addAll(fundedRequests);
+        List<RequestDto> expectedRequests = Arrays.asList(RequestDtoMother.freeCodeCampNoUserStories(), RequestDtoMother.fundRequestArea51());
+        when(mappers.mapList(Request.class, RequestDto.class, userRequets)).thenReturn(expectedRequests);
+
 
         List<RequestDto> result = requestService.findRequestsForUser(user);
 
@@ -194,9 +205,9 @@ public class RequestServiceImplTest {
     @Test
     public void signClaimRequest() {
         UserClaimRequest command = UserClaimRequest.builder()
-                .platform(Platform.GITHUB)
-                .platformId("1")
-                .build();
+                                                   .platform(Platform.GITHUB)
+                                                   .platformId("1")
+                                                   .build();
         Principal principal = () -> "davyvanroy";
         Request request = RequestMother.freeCodeCampNoUserStories().build();
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();

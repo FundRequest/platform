@@ -1,6 +1,6 @@
 package io.fundrequest.core;
 
-import io.fundrequest.core.infrastructure.IgnoreDuringComponentScan;
+import io.fundrequest.db.infrastructure.IgnoreDuringComponentScan;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

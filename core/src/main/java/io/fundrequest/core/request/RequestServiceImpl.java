@@ -20,17 +20,18 @@ import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
-import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
-import io.fundrequest.core.request.infrastructure.github.GithubClient;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.platform.github.GithubClient;
+import io.fundrequest.platform.profile.profile.ProfileService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,17 +43,24 @@ class RequestServiceImpl implements RequestService {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private GithubPlatformIdParser githubLinkParser;
-    private FundService fundService;
+    private ProfileService profileService;
     private ClaimRepository claimRepository;
     private GithubClient githubClient;
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
 
-    public RequestServiceImpl(RequestRepository requestRepository, Mappers mappers, GithubPlatformIdParser githubLinkParser, FundService fundService, ClaimRepository claimRepository, GithubClient githubClient, GithubClaimResolver githubClaimResolver, ApplicationEventPublisher eventPublisher) {
+    public RequestServiceImpl(RequestRepository requestRepository,
+                              Mappers mappers,
+                              GithubPlatformIdParser githubLinkParser,
+                              ProfileService profileService,
+                              ClaimRepository claimRepository,
+                              GithubClient githubClient,
+                              GithubClaimResolver githubClaimResolver,
+                              ApplicationEventPublisher eventPublisher) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
-        this.fundService = fundService;
+        this.profileService = profileService;
         this.claimRepository = claimRepository;
         this.githubClient = githubClient;
         this.githubClaimResolver = githubClaimResolver;
@@ -74,7 +82,11 @@ class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public List<RequestDto> findRequestsForUser(Principal principal) {
-        return mappers.mapList(Request.class, RequestDto.class, requestRepository.findRequestsForUser(principal.getName()));
+        Set<Request> result = new HashSet<>();
+        String etherAddress = profileService.getUserProfile(principal).getEtherAddress();
+        result.addAll(requestRepository.findRequestsUserIsWatching(principal.getName()));
+        result.addAll(requestRepository.findRequestsUserHasFunded(principal.getName(), etherAddress));
+        return mappers.mapList(Request.class, RequestDto.class, result);
     }
 
     @Override
@@ -88,7 +100,7 @@ class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public RequestDto findRequest(Platform platform, String platformId) {
         Request request = requestRepository.findByPlatformAndPlatformId(platform, platformId)
-                .orElseThrow(ResourceNotFoundException::new);
+                                           .orElseThrow(ResourceNotFoundException::new);
         return mappers.map(Request.class, RequestDto.class, request);
     }
 
@@ -104,15 +116,15 @@ class RequestServiceImpl implements RequestService {
     @Transactional
     public void requestClaimed(RequestClaimedCommand command) {
         Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
-                .orElseThrow(ResourceNotFoundException::new);
+                                           .orElseThrow(ResourceNotFoundException::new);
         request.setStatus(RequestStatus.CLAIMED);
         request = requestRepository.save(request);
         Claim claim = claimRepository.save(ClaimBuilder.aClaim()
-                .withRequestId(request.getId())
-                .withSolver(command.getSolver())
-                .withTimestamp(command.getTimestamp())
-                .withAmountInWei(command.getAmountInWei())
-                .build());
+                                                       .withRequestId(request.getId())
+                                                       .withSolver(command.getSolver())
+                                                       .withTimestamp(command.getTimestamp())
+                                                       .withAmountInWei(command.getAmountInWei())
+                                                       .build());
         eventPublisher.publishEvent(new RequestClaimedEvent(
                 command.getTransactionId(), mappers.map(Request.class, RequestDto.class, request),
                 mappers.map(Claim.class, ClaimDto.class, claim),
@@ -173,9 +185,9 @@ class RequestServiceImpl implements RequestService {
     private Request createNewRequest(CreateRequestCommand command) {
         IssueInformation issueInformation = githubLinkParser.parseIssue(command.getPlatformId());
         Request request = RequestBuilder.aRequest()
-                .withIssueInformation(issueInformation)
-                .withTechnologies(getTechnologies(issueInformation))
-                .build();
+                                        .withIssueInformation(issueInformation)
+                                        .withTechnologies(getTechnologies(issueInformation))
+                                        .build();
         return requestRepository.save(request);
     }
 

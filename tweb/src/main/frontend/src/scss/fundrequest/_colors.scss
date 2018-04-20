@@ -84,11 +84,12 @@ $teal: $teal-500;
 $green: $green-500;
 $yellow: $yellow-500;
 $orange: $orange-500;
+$text-muted: #9e9e9e;
 
 $primary: $blue;
-$secondary: #6c757d;
+$secondary: $orange;
 $success: $green;
-$warning: $orange;
+$warning: $yellow;
 
 $mastery-levels: (
         novice: $green,
@@ -100,6 +101,7 @@ $mastery-levels: (
 $theme-colors: ();
 $theme-colors: map-merge((
         primary: $blue,
+        secondary: $orange,
         success: $green,
-        warning: $orange,
+        warning: $yellow,
 ), $theme-colors);

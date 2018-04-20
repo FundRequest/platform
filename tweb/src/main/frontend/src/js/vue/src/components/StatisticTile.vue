@@ -14,7 +14,7 @@
 
 <script lang="ts">
     import { Vue, Component, Prop } from "vue-property-decorator";
-    //import {Utils} from '../../../app/utils';
+    //import {Utils} from '../../../app/Utils';
    // import {FundRequestToken} from '../../../contracts/FundRequestToken';
    // import * as Web3 from 'web3';
 
