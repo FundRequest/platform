@@ -147,7 +147,6 @@ body {
             border-bottom-color: $primary-color;
         }
 
-
     }
 
     .nav-link {
@@ -185,6 +184,9 @@ body {
         margin: 0 .5rem;
         &:first-child {
             margin-left: 0;
+            .nav-link {
+                padding-left: 0;
+            }
         }
         &:last-child {
             margin-right: 0;
@@ -199,15 +201,12 @@ body {
     }
 }
 
-
-
 a.anchor {
     display: block;
     position: relative;
     top: 0;
     visibility: hidden;
 }
-
 
 .dropdown-menu {
     box-shadow: $z-depth-2;
