@@ -18,7 +18,6 @@ public class PendingFund {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "transaction_hash")
