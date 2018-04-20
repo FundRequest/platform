@@ -1,5 +1,5 @@
 import RequestListItemDto from './RequestListItemDto';
-import {Utils} from '../utils';
+import {Utils} from '../Utils';
 
 export default class RequestsListDto {
     private requests: RequestListItemDto[] = [];

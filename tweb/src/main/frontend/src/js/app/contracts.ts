@@ -2,7 +2,7 @@ import {Web3} from "./web3";
 import {FundRequestContract} from "../contracts/FundRequestContract";
 import {FundRequestToken} from "../contracts/FundRequestToken";
 import {FundRepository} from "../contracts/FundRepository";
-import {Utils} from "./utils";
+import {Utils} from "./Utils";
 import {TokenInfo} from "./token-info";
 import {ERC20} from "../contracts/ERC20";
 

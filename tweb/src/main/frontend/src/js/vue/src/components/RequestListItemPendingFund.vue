@@ -41,7 +41,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import {Utils} from '../../../app/utils';
+    import {Utils} from '../../../app/Utils';
     import {RequestListItemPendingFundDto} from '../../../app/dto/RequestListItemPendingFundDto';
 
     @Component
