@@ -38,7 +38,24 @@
     </section>
 
     <section class="mb-5">
-        <request-list :status-filter-default="hash ? hash : 'funded'" th:attr="':requests'=${requests},':pending-requests'=${pendingFunds}"></request-list>
+        <request-list
+                v-bind:status-filter-default="hash ? hash : 'funded'"
+                th:attr="'v-bind:requests'=${requests},'v-bind:pending-requests'=${pendingFunds}"
+                :filters="[
+                    { value: 'all', title: 'All', description: 'Showing an overview of all your requests, including funds that are pending.' },
+                    { value: 'funded', title: 'Funded', description: 'Showing an overview of all your funded requests, including funds that are pending.' },
+                    { value: 'starred', title: 'Starred', description: 'Showing an overview of all the requests that you have starred.' },
+                    { value: 'claimed', title: 'Claimed', description: 'Showing an overview of all your claimed requests.' },
+                    { value: 'failed', title: 'Failed', description: 'Showing an overview of all your failed requests' }
+                 ]"
+        >
+            <template slot-scope="{statusFilter}">
+                <request-list-pending-funds
+                     th:attr="'v-bind:funds'=${pendingFunds}"
+                     v-if="(statusFilter==='funded' || statusFilter==='all')">
+                </request-list-pending-funds>
+            </template>
+        </request-list>
     </section>
 
     <section class="mb-2" id="faq">
@@ -92,3 +109,13 @@
 
 </body>
 </html>
+<script>
+    import Vue from "vue";
+    import {Component} from "vue-class-component";
+    import RequestListPendingFunds from "../../../../frontend/src/js/vue/src/components/RequestListPendingFunds";
+    @Component({
+        components: {RequestListPendingFunds}
+    })
+    export default class requests extends Vue {
+    }
+</script>

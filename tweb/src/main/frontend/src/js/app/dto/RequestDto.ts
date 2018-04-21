@@ -1,12 +1,14 @@
 import RequestFundsDto from './RequestFundsDto';
 
-export default class RequestsListItemDto {
+export default class RequestDto {
     id: number;
-    issueNumber: string;
     icon: string;
     owner: string;
     platform: string;
+    repo: string;
+    issueNumber: string;
     title: string;
+    description: string;
     status: string;
     technologies: string[];
     funds: RequestFundsDto;

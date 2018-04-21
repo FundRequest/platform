@@ -1,21 +1,24 @@
-import RequestListItemDto from './RequestListItemDto';
+import RequestDto from './RequestDto';
 import {Utils} from '../Utils';
 
 export default class RequestsListDto {
-    private requests: RequestListItemDto[] = [];
+    private requests: RequestDto[] = [];
 
-    constructor(requests: RequestListItemDto[]) {
+    constructor(requests: RequestDto[]) {
         this.requests = requests;
     }
 
-    private _search(requests: RequestListItemDto[], search: string) {
+    private _search(requests: RequestDto[], search: string) {
         if (search && search.length >= 3) {
-            return requests.filter((request: RequestListItemDto) => {
-                if(request.title.match(new RegExp(search, 'i'))) {
+            let regex = new RegExp(search, 'i');
+            return requests.filter((request: RequestDto) => {
+                if(request.title.match(regex)) {
                     return true;
-                } else if (request.issueNumber.match(new RegExp(search, 'i'))) {
+                } else if(request.owner.match(regex)) {
                     return true;
-                } else if (Utils.arrayContainsRegex(request.technologies, new RegExp(search, 'i'))) {
+                } else if (request.issueNumber.match(regex)) {
+                    return true;
+                } else if (Utils.arrayContainsRegex(request.technologies, regex)) {
                     return true;
                 } else {
                     return false;
@@ -26,29 +29,28 @@ export default class RequestsListDto {
         }
     }
 
-    public getAllRequests(search: string = null, sortBy: string = null): RequestListItemDto[] {
+    public getAllRequests(search: string = null, sortBy: string = null): RequestDto[] {
         let requests = this._search(this.requests, search);
         return this._sort(requests, sortBy);
     }
 
-    public
-    filterByStatus(requestStatus: string, search: string = null, sortBy: string = null): RequestListItemDto[] {
+    public filterByStatus(requestStatus: string, search: string = null, sortBy: string = null): RequestDto[] {
         let requests = this._search(this.requests, search);
         let status = requestStatus.toLowerCase();
 
-        requests = requests.filter((request: RequestListItemDto) => {
+        requests = requests.filter((request: RequestDto) => {
             return request.status.toLowerCase() == status;
         });
 
         return this._sort(requests, sortBy);
     }
 
-    private _sort(requests: RequestListItemDto[], sortBy: string) {
+    private _sort(requests: RequestDto[], sortBy: string) {
         if (sortBy) {
             let sortFunction;
             if (sortBy.toLowerCase() == 'fundings') {
                 // sort fndFunds.totalAmount from high to low
-                sortFunction = (a: RequestListItemDto, b: RequestListItemDto) => {
+                sortFunction = (a: RequestDto, b: RequestDto) => {
                     if (a.funds.usdFunds && a.funds.usdFunds) {
                         return b.funds.usdFunds - a.funds.usdFunds;
                     } else if (a.funds.usdFunds) {
@@ -60,7 +62,7 @@ export default class RequestsListDto {
                     return 0;
                 };
             } else {
-                sortFunction = (a: RequestListItemDto, b: RequestListItemDto) => {
+                sortFunction = (a: RequestDto, b: RequestDto) => {
                     if (a.hasOwnProperty(sortBy) && b.hasOwnProperty(sortBy)) {
                         let aSortBy = a[sortBy].toLowerCase();
                         let bSortBy = b[sortBy].toLowerCase();

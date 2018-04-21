@@ -1,23 +1,14 @@
 <template>
-    <section class="issue-lists">
+    <section class="request-list">
         <list-filter
                 v-bind:active="statusFilter"
-                v-bind:filters="[
-                    { value: 'all', title: 'All', description: 'Show All' },
-                    { value: 'funded', title: 'Funded' description: 'Show Funded' },
-                    { value: 'starred', title: 'Starred', description: 'Show Starred' },
-                    { value: 'claimed', title: 'Claimed', description: 'Show Claimed' },
-                    { value: 'failed', title: 'Failed', description: 'Show Failed' }
-                 ]"
+                v-bind:filters="filters"
                 v-on:update="setStatusFilter"
         />
 
-        <div class="issue-list__block card" v-if="statusFilter==='funded' || statusFilter==='all'">
-            <RequestListItemPendingFund v-for="request in pendingRequests" v-bind:request="request"
-                                        v-bind:key="request.id"></RequestListItemPendingFund>
-        </div>
+        <slot v-bind:statusFilter="statusFilter"></slot>
 
-        <div class="issue-list__options" v-if="!isEmpty">
+        <div class="request-list__options" v-if="!isEmpty">
             <div class="row">
                 <div class="col-12 col-md-4 col-lg-3">
                     <div class="md-form">
@@ -40,7 +31,7 @@
                 </div>
             </div>
         </div>
-        <div class="issue-list__block card" v-if="!isEmpty">
+        <div class="request-list__block card" v-if="!isEmpty">
             <RequestListItem v-for="request in filteredRequests" v-bind:request="request"
                              v-bind:key="request.id"></RequestListItem>
         </div>
@@ -52,27 +43,25 @@
     import FndSelect from "./form/FndSelect";
     import ListFilter from "./ListFilter";
     import RequestListItem from "./RequestListItem";
-    import RequestListItemPendingFund from "./RequestListItemPendingFund";
 
     import RequestListDto from "../../../app/dto/RequestListDto";
-    import RequestListItemDto from "../../../app/dto/RequestListItemDto";
-    import {RequestListItemPendingFundDto} from "../../../app/dto/RequestListItemPendingFundDto";
+    import RequestDto from "../../../app/dto/RequestDto";
+    import ListFilterDto from '../../../app/dto/ListFilterDto';
 
     @Component({
         components: {
             FndSelect,
             ListFilter,
-            RequestListItem,
-            RequestListItemPendingFund
+            RequestListItem
         }
     })
     export default class RequestList extends Vue {
+        @Prop() filters: ListFilterDto[];
         @Prop() statusFilterDefault: string;
-        @Prop({required: true}) requests: RequestListItemDto[];
-        @Prop() pendingRequests: RequestListItemPendingFundDto[];
+        @Prop({required: true}) requests: RequestDto[];
 
         public requestList: RequestListDto = new RequestListDto([]);
-        public filteredRequests: RequestListItemDto[] = [];
+        public filteredRequests: RequestDto[] = [];
         public statusFilter: string = "all";
         public searchFilter: string = "";
         public sortBy: string = "";
@@ -99,13 +88,17 @@
             this._filterItems(this.statusFilter, this.searchFilter, sortBy);
         }
 
+        private _setIsEmpty(isEmpty: boolean) {
+            this.isEmpty = this.searchFilter.length == 0 && this.sortBy.length == 0 && isEmpty;
+        }
+
         private _filterItems(statusFilter: string, searchFilter: string, sortBy: string) {
             if (statusFilter.toLowerCase() == "all") {
                 this.filteredRequests = this.requestList.getAllRequests(searchFilter, sortBy);
             } else {
                 this.filteredRequests = this.requestList.filterByStatus(statusFilter, searchFilter, sortBy);
             }
-            this.isEmpty = this.filteredRequests.length <= 0;
+            this._setIsEmpty(this.filteredRequests.length <= 0);
         }
 
     }

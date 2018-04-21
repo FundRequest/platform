@@ -6,19 +6,108 @@
 </head>
 
 <th:block layout:fragment="content">
-  <div th:utext="${request.description}"></div>
+  <section class="section section--header mb-5">
+    <div class="row">
+      <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
+        <img th:src="@{${request.icon}(size=160)}" th:alt-title="${request.owner}"/>
+      </div>
+      <div class="col-12 col-md-8">
+        <h1 class="text-secondary">
+          <span class="d-inline-block d-md-none">
+              <img th:src="@{${request.icon}(size=32)}" th:alt-title="${request.owner}"/>
+          </span>
+          <span>
+            <span th:text="${request.owner}">FundRequest</span> /
+            <span th:text="${request.repo}">new plugin</span> #<span th:text="${request.issueNumber}">948</span>
+          </span>
+        </h1>
+
+          <div class="request-details">
+              <div class="request-details__info mb-4">
+                  <div class="request-details__header">
+                      <span class="request-details__title" th:text="${request.title}">Request title</span>
+                  </div>
+                  <div class="request-details__status">
+                      <span class="request-details__badge badge" th:classappend="'badge--' + ${#strings.toLowerCase(request.status)}" th:text="${#strings.toLowerCase(request.status)}">Claimed</span>
+                      <span class="request-details__icons">
+                          <i class="fab fa-linkedin-in"></i>
+                          <i class="fab fa-twitter"></i>
+                      </span>
+                  </div>
+              </div>
+              <div class="request-details__funding-details">
+                  <div class="request-details__price" th:if="${request.funds != null and request.funds.usdFunds != null}">
+                      <span class="request-details__fund-currency">$</span>
+                      <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,2,'COMMA')}">-</span>
+                  </div>
+                  <div class="request-details__crypto">
+                      <div class="request-details__fund" th:if="${request.funds.fndFunds != null}">
+                          <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(request.funds.fndFunds.totalAmount,1,2,'COMMA')}">-</span>
+                          <span class="request-details__fund-currency" th:text="${request.funds.fndFunds.tokenSymbol}">FND</span>
+                      </div>
+                      <div class="request-details__fund" th:if="${request.funds.otherFunds != null}">
+                          <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(request.funds.otherFunds.totalAmount,1,2,'COMMA')}">-</span>
+                          <span class="request-details__fund-currency" th:text="${request.funds.otherFunds.tokenSymbol}">FND</span>
+                      </div>
+                  </div>
+
+                  <div class="request-details__actions">
+                      <a class="btn btn-secondary mb-0" th:href="@{/fund/github/{id}(id=${request.id})}">
+                          Add Funds
+                      </a>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-5">
+      <request-detail th:attr="'v-bind:request'=${requestJson}"
+                      v-bind:status-filter-default="hash ? hash : 'info'"
+                      v-bind:filters="[
+                    { value: 'info', title: 'Info', description: 'Detailed description of the request' },
+                    { value: 'comments', title: 'Comments', description: 'Comments posted on the request' },
+                    { value: 'funded-by', title: 'Funded By', description: 'An overview of the funders and funds.' }
+                 ]">
+          <template slot-scope="{statusFilter}">
+              <div class="card" v-if="statusFilter === 'info'">
+                  <div class="card-header">
+                      Info
+                  </div>
+                  <div class="card-body">
+                      <div class="markdown" th:utext="${request.description}"></div>
+                  </div>
+              </div>
+              <div class="card" v-if="statusFilter === 'comments'">
+                  <div class="card-header">
+                      Comments
+                  </div>
+                  <div class="card-body">
+                      Comments
+                  </div>
+              </div>
+              <div class="card" v-if="statusFilter === 'funded-by'">
+                  <div class="card-header">
+                      Funders
+                  </div>
+                  <div class="card-body">
+                      Overview
+                  </div>
+                  <div class="card-footer bg-white text-muted">
+                      * Disclaimer: Token values are fetched from <strong>CryptoCompare</strong>
+                  </div>
+              </div>
+          </template>
+      </request-detail>
+  </section>
+
 </th:block>
 
 
 <th:block layout:fragment="css">
-  <link type="text/css" rel="stylesheet"
-        th:href="@{/assets/vendors/datatables.net-bs4/css/dataTables.bootstrap4.css}"/>
-  <link type="text/css" rel="stylesheet"
-        th:href="@{/assets/vendors/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css}"/>
 </th:block>
 <th:block layout:fragment="scripts">
-  <script>require(['app/dataTables'])</script>
-  <script>require(['app/requests'])</script>
 </th:block>
 
 </html>
