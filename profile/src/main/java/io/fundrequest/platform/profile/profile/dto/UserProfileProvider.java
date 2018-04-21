@@ -8,5 +8,4 @@ import lombok.Data;
 public class UserProfileProvider {
     private String username;
     private String userId;
-    private String signupLink;
 }

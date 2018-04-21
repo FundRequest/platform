@@ -42,7 +42,8 @@ public class Fund extends AbstractEntity {
     }
 
     @Builder
-    Fund(String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp) {
+    Fund(String createdBy, String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp) {
+        super.setCreatedBy(createdBy);
         this.funder = funder == null ? null : funder.toLowerCase();
         this.amountInWei = amountInWei;
         this.token = token;

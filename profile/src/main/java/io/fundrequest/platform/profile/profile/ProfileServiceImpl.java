@@ -12,7 +12,6 @@ import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.common.util.Base64Url;
 import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.representations.AccessToken;
-import org.keycloak.representations.IDToken;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -52,29 +51,19 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @Cacheable(value = "user_profile", key = "#principal.name")
-    public UserProfile getUserProfile(Principal principal) {
-        return getUserProfile(null, principal);
-    }
-
-    @Override
-    @Cacheable(value = "user_profile", key = "#principal.name")
-    public UserProfile getUserProfile(HttpServletRequest request, Principal principal) {
-        IDToken idToken = ((KeycloakAuthenticationToken) principal).getAccount().getKeycloakSecurityContext().getIdToken();
-        Map<Provider, UserProfileProvider> providers = keycloakRepository.getUserIdentities(principal.getName())
+    @Cacheable(value = "user_profile", key = "#userId")
+    public UserProfile getUserProfile(String userId) {
+        Map<Provider, UserProfileProvider> providers = keycloakRepository.getUserIdentities(userId)
                                                                          .collect(Collectors.toMap(UserIdentity::getProvider,
                                                                                                    x -> UserProfileProvider.builder()
                                                                                                                            .userId(x.getUserId())
                                                                                                                            .username(x.getUsername())
                                                                                                                            .build()));
-        if (request != null) {
-            addMissingProviders(request, principal, providers);
-        }
-        UserRepresentation user = keycloakRepository.getUser(principal.getName());
+        UserRepresentation user = keycloakRepository.getUser(userId);
         return UserProfile.builder()
-                          .name(idToken.getName())
-                          .email(idToken.getEmail())
-                          .picture(getPicture(idToken))
+                          .name(user.getFirstName() + " " + user.getLastName())
+                          .email(user.getEmail())
+                          .picture(getPicture(user))
                           .verifiedDeveloper(keycloakRepository.isVerifiedDeveloper(user))
                           .etherAddress(keycloakRepository.getEtherAddress(user))
                           .telegramName(keycloakRepository.getTelegramName(user))
@@ -87,14 +76,20 @@ public class ProfileServiceImpl implements ProfileService {
                           .build();
     }
 
+    @Override
+    @Cacheable(value = "user_profile", key = "#principal.name")
+    public UserProfile getUserProfile(Principal principal) {
+        return getUserProfile(principal.getName());
+    }
+
     @EventListener
     @CacheEvict(value = "user_profile", key = "#event.userId")
     public void onDeveloperVerified(DeveloperVerified event) {
         keycloakRepository.updateVerifiedDeveloper(event.getUserId(), true);
     }
 
-    private String getPicture(IDToken idToken) {
-        String picture = idToken.getPicture();
+    private String getPicture(UserRepresentation ur) {
+        String picture = keycloakRepository.getPicture(ur);
         if (StringUtils.isNotBlank(picture) && picture.endsWith("?sz=50")) {
             picture += "0";
         }
@@ -119,23 +114,6 @@ public class ProfileServiceImpl implements ProfileService {
         keycloakRepository.updateHeadline(principal.getName(), headline);
     }
 
-    private void addMissingProviders(HttpServletRequest request, Principal principal, Map<Provider, UserProfileProvider> providers) {
-        for (Provider provider : Provider.values()) {
-            addProviderToProviders(request, principal, providers, provider);
-        }
-    }
-
-    private void addProviderToProviders(HttpServletRequest request, Principal principal, Map<Provider, UserProfileProvider> providers, Provider provider) {
-        if (!providers.containsKey(provider)) {
-            providers.put(
-                    provider,
-                    UserProfileProvider.builder()
-                                       .signupLink(createLink(request, principal, provider.toString().toLowerCase()))
-                                       .build()
-                         );
-        }
-    }
-
     private String createLink(HttpServletRequest request, Principal principal, String provider) {
         AccessToken token = ((KeycloakAuthenticationToken) principal).getAccount().getKeycloakSecurityContext().getToken();
         String clientId = token.getIssuedFor();
@@ -149,7 +127,6 @@ public class ProfileServiceImpl implements ProfileService {
         String input = nonce + token.getSessionState() + clientId + provider;
         byte[] check = md.digest(input.getBytes(StandardCharsets.UTF_8));
         String hash = Base64Url.encode(check);
-        request.getSession().setAttribute("hash", hash);
         return KeycloakUriBuilder.fromUri(keycloakUrl)
                                  .path("/realms/{realm}/broker/{provider}/link")
                                  .queryParam("nonce", nonce)

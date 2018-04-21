@@ -9,6 +9,7 @@ import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
+import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.view.RequestDto;
@@ -33,15 +34,17 @@ public class RequestController extends AbstractController {
 
     private RequestService requestService;
     private PendingFundService pendingFundService;
+    private FundService fundService;
     private ObjectMapper objectMapper;
     private Mappers mappers;
 
     public RequestController(RequestService requestService,
                              PendingFundService pendingFundService,
-                             ObjectMapper objectMapper,
+                             FundService fundService, ObjectMapper objectMapper,
                              Mappers mappers) {
         this.requestService = requestService;
         this.pendingFundService = pendingFundService;
+        this.fundService = fundService;
         this.objectMapper = objectMapper;
         this.mappers = mappers;
     }
@@ -59,6 +62,7 @@ public class RequestController extends AbstractController {
         return modelAndView()
 
                 .withObject("request", mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id)))
+                .withObject("fundedBy", fundService.getFundedBy(id))
                 .withView("pages/requests/detail")
                 .build();
     }

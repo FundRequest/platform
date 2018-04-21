@@ -107,6 +107,10 @@ public class KeycloakRepository {
         return getAttribute(userRepresentation, "telegram_name");
     }
 
+    public String getPicture(UserRepresentation userRepresentation) {
+        return getAttribute(userRepresentation, "picture");
+    }
+
     public String getHeadline(UserRepresentation userRepresentation) {
         return getAttribute(userRepresentation, "headline");
     }
