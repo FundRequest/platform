@@ -217,7 +217,7 @@ class FundServiceImpl implements FundService {
         return totalFundDto == null
                ? null
                : FunderDto.builder()
-                          .funder(StringUtils.isNotBlank(f.getCreatedBy()) ? profileService.getUserProfile(f.getCreatedBy()).getName() : f.getFunder())
+                          .funder(StringUtils.isNotBlank(f.getFunderUserId()) ? profileService.getUserProfile(f.getFunderUserId()).getName() : f.getFunder())
                           .fndFunds("FND".equalsIgnoreCase(totalFundDto.getTokenSymbol()) ? totalFundDto : null)
                           .otherFunds(!"FND".equalsIgnoreCase(totalFundDto.getTokenSymbol()) ? totalFundDto : null)
                           .build();
@@ -268,7 +268,7 @@ class FundServiceImpl implements FundService {
                         .build();
         Optional<PendingFund> pendingFund = pendingFundRepository.findByTransactionHash(command.getTransactionId());
         if (pendingFund.isPresent()) {
-            fund.setCreatedBy(pendingFund.get().getUserId());
+            fund.setFunderUserId(pendingFund.get().getUserId());
         }
         fund = fundRepository.saveAndFlush(fund);
         cacheManager.getCache("funds").evict(fund.getRequestId());
