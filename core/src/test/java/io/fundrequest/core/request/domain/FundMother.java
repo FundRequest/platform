@@ -12,7 +12,7 @@ public final class FundMother {
                    .amountInWei(
                            new BigDecimal("3870000000000000000")
                                )
-                   .createdBy("e7356d6a-4eff-4003-8736-557c36ce6e0c")
+                   .funderUserId("e7356d6a-4eff-4003-8736-557c36ce6e0c")
                    .funder("0xd24400ae8BfEBb18cA49Be86258a3C749cf46853")
                    .requestId(1L)
                    .token(TokenInfoDtoMother.fnd().getAddress());
@@ -33,7 +33,7 @@ public final class FundMother {
                    .amountInWei(
                            new BigDecimal("2767000000000000000")
                                )
-                   .createdBy("e7356d6a-4eff-4003-8736-557c36ce6e0c")
+                   .funderUserId("e7356d6a-4eff-4003-8736-557c36ce6e0c")
                    .funder("0xd24400ae8BfEBb18cA49Be86258a3C749cf46853")
                    .requestId(1L)
                    .token(TokenInfoDtoMother.zrx().getAddress());

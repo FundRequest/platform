@@ -49,7 +49,7 @@ public class CreateGithubCommentOnFundHandlerTest {
         verify(githubGateway).createCommentOnIssue(eq(issueInformation.getOwner()), eq(issueInformation.getRepo()), eq(issueInformation.getNumber()), createGithubCommentArgumentCaptor.capture());
         assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo("Great, this issue is now funded on FundRequest: https://alpha.fundrequest.io!  \n" +
                 "\n" +
-                "50.33 FND was funded on 2017-12-27");
+                "3.87 FND was funded on 2017-12-27");
 
     }
 
