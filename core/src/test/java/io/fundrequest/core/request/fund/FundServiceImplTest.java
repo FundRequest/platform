@@ -6,10 +6,12 @@ import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
+import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.domain.Fund;
 import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.fund.dto.FundDto;
+import io.fundrequest.core.request.fund.dto.FundersDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
@@ -17,6 +19,11 @@ import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.view.FundDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.token.TokenInfoService;
+import io.fundrequest.core.token.dto.TokenInfoDto;
+import io.fundrequest.core.token.dto.TokenInfoDtoMother;
+import io.fundrequest.platform.profile.profile.ProfileService;
+import io.fundrequest.platform.profile.profile.dto.UserProfile;
+import io.fundrequest.platform.profile.profile.dto.UserProfileMother;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,6 +34,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -53,6 +62,8 @@ public class FundServiceImplTest {
     private CacheManager cacheManager;
     private FundRequestContractsService fundRequestContractsService;
     private PendingFundRepository pendingFundRepository;
+    private ProfileService profileService;
+    private FiatService fiatService;
 
     @Before
     public void setUp() {
@@ -64,7 +75,8 @@ public class FundServiceImplTest {
         cacheManager = mock(CacheManager.class, RETURNS_DEEP_STUBS);
         tokenInfoService = mock(TokenInfoService.class);
         fundRequestContractsService = mock(FundRequestContractsService.class);
-
+        profileService = mock(ProfileService.class);
+        fiatService = mock(FiatService.class);
         when(fundRepository.saveAndFlush(any(Fund.class))).then(returnsFirstArg());
         fundService = new FundServiceImpl(
                 fundRepository,
@@ -74,12 +86,14 @@ public class FundServiceImplTest {
                 eventPublisher,
                 cacheManager,
                 tokenInfoService,
-                fundRequestContractsService);
+                fundRequestContractsService,
+                profileService,
+                fiatService);
     }
 
     @Test
     public void findAll() {
-        List<Fund> funds = singletonList(FundMother.aFund().build());
+        List<Fund> funds = singletonList(FundMother.fndFundFunderKnown().build());
         when(fundRepository.findAll()).thenReturn(funds);
         List<FundDto> expecedFunds = singletonList(FundDtoMother.aFundDto());
         when(mappers.mapList(Fund.class, FundDto.class, funds)).thenReturn(expecedFunds);
@@ -91,7 +105,7 @@ public class FundServiceImplTest {
 
     @Test
     public void findAllByIterable() {
-        List<Fund> funds = singletonList(FundMother.aFund().build());
+        List<Fund> funds = singletonList(FundMother.fndFundFunderKnown().build());
         Set<Long> ids = funds.stream().map(Fund::getId).collect(Collectors.toSet());
         when(fundRepository.findAll(ids)).thenReturn(funds);
         List<FundDto> expecedFunds = singletonList(FundDtoMother.aFundDto());
@@ -138,6 +152,88 @@ public class FundServiceImplTest {
         verifyEventCreated(requestDto, fundDto);
         verify(cache).evict(request.getId());
     }
+
+    @Test
+    public void fundedByHasNameFunder() {
+        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        UserProfile davy = UserProfileMother.davy();
+        when(profileService.getUserProfile(funds.get(0).getCreatedBy())).thenReturn(davy);
+
+        FundersDto result = fundService.getFundedBy(1L);
+
+        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
+    }
+
+    @Test
+    public void fundedByHasNameFunderAddress() {
+        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderNotKnown().build());
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        FundersDto result = fundService.getFundedBy(1L);
+
+        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(funds.get(0).getFunder());
+    }
+
+    @Test
+    public void fundedByHasTotalFnd() {
+        List<Fund> funds = Arrays.asList(
+                FundMother.fndFundFunderNotKnown().amountInWei(new BigDecimal("1000000000000000000")).build(),
+                FundMother.fndFundFunderNotKnown().amountInWei(new BigDecimal("2000000000000000000")).build()
+                                        );
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        FundersDto result = fundService.getFundedBy(1L);
+
+        assertThat(result.getOtherFunds()).isNull();
+        assertThat(result.getFndFunds().getTokenSymbol()).isEqualTo("FND");
+        assertThat(result.getFndFunds().getTokenAddress()).isEqualTo(funds.get(0).getToken());
+        assertThat(result.getFndFunds().getTotalAmount()).isEqualByComparingTo("3");
+    }
+
+    @Test
+    public void fundedByHasTotalOther() {
+        List<Fund> funds = Arrays.asList(
+                FundMother.zrxFundFunderNotKnown().amountInWei(new BigDecimal("1000000000000000000")).build(),
+                FundMother.zrxFundFunderNotKnown().amountInWei(new BigDecimal("2000000000000000000")).build()
+                                        );
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        FundersDto result = fundService.getFundedBy(1L);
+
+        assertThat(result.getFndFunds()).isNull();
+        assertThat(result.getOtherFunds().getTokenSymbol()).isEqualTo("ZRX");
+        assertThat(result.getOtherFunds().getTokenAddress()).isEqualTo(funds.get(0).getToken());
+        assertThat(result.getOtherFunds().getTotalAmount()).isEqualByComparingTo("3");
+    }
+
+    @Test
+    public void fundByEnrichedWithZeroes() {
+        List<Fund> funds = Arrays.asList(
+                FundMother.fndFundFunderNotKnown().amountInWei(new BigDecimal("1000000000000000000")).build(),
+                FundMother.zrxFundFunderNotKnown().amountInWei(new BigDecimal("2000000000000000000")).build()
+                                        );
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        FundersDto result = fundService.getFundedBy(1L);
+
+        assertThat(result.getFunders().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(result.getFunders().get(1).getFndFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    private void mockTokenInfo() {
+        TokenInfoDto fndTokenInfo = TokenInfoDtoMother.fnd();
+        TokenInfoDto zrxTokenInfo = TokenInfoDtoMother.zrx();
+        when(tokenInfoService.getTokenInfo(fndTokenInfo.getAddress())).thenReturn(fndTokenInfo);
+        when(tokenInfoService.getTokenInfo(zrxTokenInfo.getAddress())).thenReturn(zrxTokenInfo);
+    }
+
 
     private void verifyEventCreated(RequestDto requestDto, FundDto fundDto) {
         ArgumentCaptor<RequestFundedEvent> requestFundedEventArgumentCaptor = ArgumentCaptor.forClass(RequestFundedEvent.class);

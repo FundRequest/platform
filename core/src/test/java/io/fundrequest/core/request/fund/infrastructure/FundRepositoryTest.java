@@ -24,7 +24,7 @@ public class FundRepositoryTest extends AbstractRepositoryTest {
     public void save() throws Exception {
         Request request = requestRepository.saveAndFlush(RequestMother.freeCodeCampNoUserStories().build());
 
-        Fund fund = FundMother.aFund().amountInWei(new BigDecimal("30")).requestId(request.getId()).build();
+        Fund fund = FundMother.fndFundFunderKnown().amountInWei(new BigDecimal("30")).requestId(request.getId()).build();
 
         fundRepository.saveAndFlush(fund);
     }

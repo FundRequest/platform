@@ -48,7 +48,7 @@ class StackOverflowBountyServiceImpl implements StackOverflowBountyService {
     @Transactional
     public void onProviderLinked(UserLinkedProviderEvent event) {
         if (event.getProvider() == Provider.STACKOVERFLOW && event.getPrincipal() != null) {
-            UserProfile userProfile = profileService.getUserProfile(null, event.getPrincipal());
+            UserProfile userProfile = profileService.getUserProfile(event.getPrincipal());
             createBountyWhenNecessary(event.getPrincipal(), userProfile);
         }
     }

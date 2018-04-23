@@ -31,11 +31,11 @@ public class TwitterBountyController {
         String message;
         boolean validated = false;
 
-        boolean isFollowing = isFollowing(request, principal);
+        boolean isFollowing = isFollowing(principal);
         if (!isFollowing) {
             message = "You are not following us yet. Please follow us before claiming.";
         } else {
-            boolean hasFulfilled = hasFullfilledCurrentBounty(request, principal);
+            boolean hasFulfilled = hasFullfilledCurrentBounty(principal);
             if (hasFulfilled) {
                 validated = true;
                 message = "Successfully validated your tweet.";
@@ -47,18 +47,18 @@ public class TwitterBountyController {
     }
 
 
-    private boolean hasFullfilledCurrentBounty(final HttpServletRequest request, final Principal principal) {
+    private boolean hasFullfilledCurrentBounty(final Principal principal) {
         try {
-            final UserProfileProvider twitterProvider = profileService.getUserProfile(request, principal).getTwitter();
+            final UserProfileProvider twitterProvider = profileService.getUserProfile(principal).getTwitter();
             return twitterbountyService.hasFullFilledCurrentBounty(twitterProvider.getUsername(), twitterProvider.getUserId(), principal);
         } catch (final Exception ex) {
             return false;
         }
     }
 
-    private boolean isFollowing(final HttpServletRequest request, final Principal principal) {
+    private boolean isFollowing(final Principal principal) {
         try {
-            return twitterbountyService.userIsFollowing(profileService.getUserProfile(request, principal).getTwitter().getUsername());
+            return twitterbountyService.userIsFollowing(profileService.getUserProfile(principal).getTwitter().getUsername());
         } catch (final Exception ex) {
             return false;
         }

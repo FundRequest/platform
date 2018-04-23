@@ -54,7 +54,7 @@ public class GithubBountyServiceImpl implements GithubBountyService, Application
     @Transactional
     public void onProviderLinked(UserLinkedProviderEvent event) {
         if (event.getProvider() == Provider.GITHUB && event.getPrincipal() != null) {
-            UserProfile userProfile = profileService.getUserProfile(null, event.getPrincipal());
+            UserProfile userProfile = profileService.getUserProfile(event.getPrincipal());
             createBountyWhenNecessary(event.getPrincipal(), userProfile);
         }
     }
@@ -63,7 +63,7 @@ public class GithubBountyServiceImpl implements GithubBountyService, Application
     @Transactional
     public void onApplicationEvent(AuthenticationSuccessEvent event) {
         Authentication principal = event.getAuthentication();
-        UserProfile userProfile = profileService.getUserProfile(null, principal);
+        UserProfile userProfile = profileService.getUserProfile(principal);
         if (userProfile.getGithub() != null && StringUtils.isNotBlank(userProfile.getGithub().getUserId())) {
             createBountyWhenNecessary(principal, userProfile);
         }
@@ -106,7 +106,7 @@ public class GithubBountyServiceImpl implements GithubBountyService, Application
     private void saveGithubBounty(Principal principal, GithubUser githubUser, boolean validForBounty) {
         GithubBounty githubBounty = GithubBounty.builder()
                                                 .userId(principal.getName())
-                                                .githubId(profileService.getUserProfile(null, principal).getGithub().getUserId())
+                                                .githubId(profileService.getUserProfile( principal).getGithub().getUserId())
                                                 .createdAt(githubUser.getCreatedAt())
                                                 .location(githubUser.getLocation())
                                                 .valid(validForBounty)
