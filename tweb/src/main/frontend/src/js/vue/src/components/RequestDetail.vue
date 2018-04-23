@@ -2,6 +2,7 @@
     <section class="request-list">
         <list-filter
                 v-bind:active="statusFilter"
+                v-bind:default="statusFilterDefault"
                 v-bind:filters="filters"
                 v-on:update="setStatusFilter"
         />
@@ -34,7 +35,6 @@
 
         mounted() {
             this._request = Object.assign(new RequestDto, this.request);
-            this.statusFilter = this.statusFilterDefault ? this.statusFilterDefault : this.statusFilter;
             if(this._request.platform.toUpperCase() == 'GITHUB') {
                 this.filters.push(Object.assign(new ListFilterDto(), {
                     value: 'view-on-github',

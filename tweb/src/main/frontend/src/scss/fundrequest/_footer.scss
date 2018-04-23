@@ -34,7 +34,7 @@
     filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.38));
     padding-bottom: 0;
 
-    transition: filter 0.2s cubic-bezier(0.4, 0, 1, 1);
+    transition: filter 0.35s cubic-bezier(0.4, 0, 1, 1);
     will-change: filter, transform;
 
     &:hover {
