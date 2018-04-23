@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="layouts/default">
+<head>
+    <title th:text="${'FundRequest - Sorry, an error has occurred - ' + status + ' ' + error}">FundRequest - Error</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="card text-center my-5">
+        <div class="card-top-image"></div>
+        <div class="card-body">
+            <div class="card-title">
+                <h1>Oops!</h1>
+                <h2 th:text="${status + ' ' + error}">404 Not Found</h2>
+            </div>
+            <div class="card-text">
+                <div class="fnd-error-template">
+
+                    <div class="fnd-error-details" th:text="${'Sorry, an error has occurred: '+ message +'!'}">
+                    </div>
+
+                    <div class="fnd-error-actions">
+                        <a href="/" class="btn btn-primary btn-lg">
+                            <span class="fa fa-home"></span>
+                            Take Me Home </a>
+                        <!--a href="#" class="btn btn-raised btn-secondary btn-lg">
+                            <span class="fa fa-envelope"></span> Contact Support
+                        </a-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fnd-error-stack" th:if="${trace}">
+                <pre class="pre-scrollable"><code th:text="${trace}">&lt;p&gt;Sample text here...&lt;/p&gt;
+                &lt;p&gt;And another line of sample text here...&lt;/p&gt;</code></pre>
+    </div>
+</div>
+</body>
+</html>
