@@ -114,7 +114,9 @@ public class ProfileServiceImpl implements ProfileService {
         keycloakRepository.updateHeadline(principal.getName(), headline);
     }
 
-    private String createLink(HttpServletRequest request, Principal principal, String provider) {
+    @Override
+    public String createSignupLink(HttpServletRequest request, Principal principal, Provider providerEnum) {
+        String provider = providerEnum.name().toLowerCase();
         AccessToken token = ((KeycloakAuthenticationToken) principal).getAccount().getKeycloakSecurityContext().getToken();
         String clientId = token.getIssuedFor();
         String nonce = UUID.randomUUID().toString();
@@ -127,6 +129,7 @@ public class ProfileServiceImpl implements ProfileService {
         String input = nonce + token.getSessionState() + clientId + provider;
         byte[] check = md.digest(input.getBytes(StandardCharsets.UTF_8));
         String hash = Base64Url.encode(check);
+        request.getSession().setAttribute("hash", hash);
         return KeycloakUriBuilder.fromUri(keycloakUrl)
                                  .path("/realms/{realm}/broker/{provider}/link")
                                  .queryParam("nonce", nonce)
