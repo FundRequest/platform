@@ -74,6 +74,13 @@ public class ProfileController {
         return mav;
     }
 
+    @GetMapping("/profile/link/{provider}")
+    public ModelAndView linkProfile(@PathVariable String provider, HttpServletRequest request, Principal principal) {
+        String link = profileService.createSignupLink(request, principal, Provider.fromString(provider.replaceAll("[^A-Za-z]", "")));
+        return new ModelAndView(new RedirectView(link, false));
+    }
+
+
     private void enrichTelegram(final ModelAndView mav, final Principal principal) {
         final Optional<TelegramVerification> telegramVerification = telegramVerificationService.getByUserId(principal);
         if (telegramVerification.isPresent() && telegramVerification.get().isVerified()) {

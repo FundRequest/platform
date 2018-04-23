@@ -160,7 +160,7 @@ public class FundServiceImplTest {
         mockTokenInfo();
 
         UserProfile davy = UserProfileMother.davy();
-        when(profileService.getUserProfile(funds.get(0).getCreatedBy())).thenReturn(davy);
+        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
 
         FundersDto result = fundService.getFundedBy(1L);
 
@@ -265,6 +265,6 @@ public class FundServiceImplTest {
         verify(fundRepository).saveAndFlush(fundArgumentCaptor.capture());
         assertThat(fundArgumentCaptor.getValue().getRequestId()).isEqualTo(command.getRequestId());
         assertThat(fundArgumentCaptor.getValue().getAmountInWei()).isEqualTo(command.getAmountInWei());
-        assertThat(fundArgumentCaptor.getValue().getCreatedBy()).isEqualTo(funder.getName());
+        assertThat(fundArgumentCaptor.getValue().getFunderUserId()).isEqualTo(funder.getName());
     }
 }

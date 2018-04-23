@@ -3,18 +3,18 @@
 >
 <body>
 
-<th:block th:fragment="social-connect-block (platform, verification)" th:if="${platform != null}">
+<th:block th:fragment="social-connect-block (platform, verification)">
     <a class="anchor" id="get-social-linkedin"></a>
-    <div class="card card--social card--social--primary" th:if="${platform.getUsername() == null}">
+    <div class="card card--social card--social--primary" th:if="${platform == null}">
         <h5 class="card-header">
             <span>LinkedIn <i class="fab fa-linkedin"></i></span>
         </h5>
         <div class="card-body">
-            <a class="btn btn-primary" th:href="${platform.getSignupLink()}">Connect</a>
+            <a class="btn btn-primary" href="/profile/link/linkedin">Connect</a>
         </div>
     </div>
 
-    <div class="card card--social card--social--success" th:if="${platform.getUsername() != null}">
+    <div class="card card--social card--social--success" th:if="${platform != null}">
         <div class="card-header">
             <div>LinkedIn <i class="fab fa-linkedin"></i></div>
             <span class="text-success" th:text="${platform.getUsername()}">User name, link to profile?</span>
