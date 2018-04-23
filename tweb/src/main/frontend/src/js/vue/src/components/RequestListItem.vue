@@ -58,7 +58,7 @@
             return Object.assign(new RequestDto(), this.request);
         }
 
-        public formatPrice(value, decimals: number = 2) {
+        public formatPrice(value, decimals: number = 2): string {
             return Utils.formatTokenPrice(value, decimals);
         }
 

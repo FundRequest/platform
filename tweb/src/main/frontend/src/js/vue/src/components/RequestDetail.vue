@@ -1,5 +1,5 @@
 <template>
-    <section class="request-list">
+    <section class="request-details">
         <list-filter
                 v-bind:active="statusFilter"
                 v-bind:default="statusFilterDefault"

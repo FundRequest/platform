@@ -1,5 +1,5 @@
 <template>
-    <div class="mb-3">
+    <div class="mb-3 d-block">
         <nav class="navbar navbar-expand navbar--fnd-filter mb-2">
             <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#sec-menu" aria-controls="sec-menu"

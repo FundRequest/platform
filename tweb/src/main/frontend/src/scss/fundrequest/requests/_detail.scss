@@ -5,6 +5,7 @@
         display: flex;
         flex-grow: 0;
         flex-shrink: 0;
+        flex-wrap: wrap;
     }
 
     &__logo {
@@ -97,16 +98,30 @@
         }
     }
 
+    &__label {
+        flex-grow: 1;
+    }
+
     &__fund {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         align-items: center;
         color: $gray-500;
         font-weight: $font-weight-bold;
 
+        &-logo {
+            height: 1rem;
+            width: 1rem;
+            object-fit: contain;
+            margin-right: .5rem;
+            justify-self: start;
+        }
+
         &-amount {
             display: block;
             margin-right: .25rem;
+            text-align: right;
+            flex-grow: 1;
         }
 
         &-currency {
@@ -128,26 +143,53 @@
         align-items: center;
         flex-grow: 1;
     }
+
+    &__disclaimer {
+        width: 100%;
+        font-size: .85rem;
+        color: $gray-500;
+    }
 }
 
 .request-funding {
-    &__label {
-
-    }
+    padding: 0 1rem;
+    font-weight: $font-weight-normal;
 
     &__transfers {
-
+        padding-bottom: .5rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid $border-color;
     }
 
+    &__subtotal,
     &__transfer {
+        display: flex;
+        margin-bottom: .5rem;
 
+        .request-details__fund {
+            font-weight: $font-weight-normal;
+            color: $body-color;
+            padding-left: 2rem;
+            display: flex;
+            width: 9rem;
+        }
     }
 
     &__subtotal {
-
+        .request-details__fund {
+            font-size: 1.2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid $border-color;
+        }
     }
 
     &__total {
-
+        display: flex;
+        align-items: center;
+        .request-details__price {
+            display: flex;
+            font-size: 3.5rem;
+            font-weight: $font-weight-normal;
+        }
     }
 }
