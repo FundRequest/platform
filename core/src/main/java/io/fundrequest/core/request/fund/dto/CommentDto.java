@@ -1,4 +1,4 @@
-package io.fundrequest.platform.github.parser;
+package io.fundrequest.core.request.fund.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GithubIssueCommentsResult {
-    private Long id;
-    private GithubUser user;
+public class CommentDto {
+    private String userName;
     private String title;
     private String body;
 }

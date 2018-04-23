@@ -20,16 +20,19 @@ import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
+import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.github.GithubGateway;
+import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
@@ -94,6 +97,16 @@ class RequestServiceImpl implements RequestService {
     public RequestDto findRequest(Long id) {
         Request request = findOne(id);
         return mappers.map(Request.class, RequestDto.class, request);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommentDto> getComments(Long requestId) {
+        Request request = requestRepository.findOne(requestId).orElseThrow(() -> new EntityNotFoundException("Request not found"));
+        return mappers.mapList(
+                GithubIssueCommentsResult.class,
+                CommentDto.class,
+                githubGateway.getCommentsForIssue(request.getIssueInformation().getOwner(), request.getIssueInformation().getRepo(), request.getIssueInformation().getNumber()));
     }
 
     @Override

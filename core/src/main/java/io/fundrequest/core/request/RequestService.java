@@ -7,6 +7,7 @@ import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
+import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.view.RequestDto;
 
 import java.security.Principal;
@@ -20,6 +21,8 @@ public interface RequestService {
     List<RequestDto> findRequestsForUser(Principal principal);
 
     RequestDto findRequest(Long id);
+
+    List<CommentDto> getComments(Long requestId);
 
     RequestDto findRequest(Platform platform, String platformId);
 
