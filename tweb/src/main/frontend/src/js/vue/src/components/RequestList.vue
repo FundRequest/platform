@@ -2,6 +2,7 @@
     <section class="request-list">
         <list-filter
                 v-bind:active="statusFilter"
+                v-bind:default="statusFilterDefault"
                 v-bind:filters="filters"
                 v-on:update="setStatusFilter"
         />
@@ -35,6 +36,20 @@
             <RequestListItem v-for="request in filteredRequests" v-bind:request="request"
                              v-bind:key="request.id"></RequestListItem>
         </div>
+        <div class="mt-5" v-if="isEmpty">
+            <div class="request-list__block request-list__block--non-found card">
+                <div class="card-body text-center">
+                    <div>
+                        <img src="/assets/img/unicorn-gray.png"
+                             alt="nothing found, gray unicorn" />
+                    </div>
+                    <h3>Oh Snap!</h3>
+                    <p>Not a single request found.</p>
+                    <p>Try to search with a different filter.</p>
+                </div>
+            </div>
+        </div>
+
     </section>
 </template>
 
@@ -46,7 +61,7 @@
 
     import RequestListDto from "../../../app/dto/RequestListDto";
     import RequestDto from "../../../app/dto/RequestDto";
-    import ListFilterDto from '../../../app/dto/ListFilterDto';
+    import ListFilterDto from "../../../app/dto/ListFilterDto";
 
     @Component({
         components: {
@@ -69,7 +84,6 @@
 
         mounted() {
             this.requestList = new RequestListDto(this.requests);
-            this.statusFilter = this.statusFilterDefault ? this.statusFilterDefault : this.statusFilter;
             this._filterItems(this.statusFilter, this.searchFilter, this.sortBy);
         }
 

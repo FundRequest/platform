@@ -7,11 +7,11 @@ import StatisticTile from './components/StatisticTile.vue';
 import WizardComponent from './components/WizardComponent.vue';
 
 import './filters';
+import {EventBus} from './EventBus';
 
 let v = new Vue({
     el: '#vue-app',
     data: {
-        hash: window.location.hash ? window.location.hash.split('#')[1] : ''
     },
     components: {
         'request-detail': RequestDetail,
@@ -26,3 +26,7 @@ let v = new Vue({
         }, 500);
     }
 });
+
+window.addEventListener("hashchange", (e: HashChangeEvent) => {
+    EventBus.$emit('hashchange');
+}, false);

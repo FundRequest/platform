@@ -1,5 +1,5 @@
 <template>
-    <div class="request-list__block card" v-if="funds">
+    <div class="request-list__block card" v-if="funds && funds.length > 0">
         <request-list-item-pending-funds v-for="fund in funds" v-bind:request="fund"
                                     v-bind:key="fund.id"></request-list-item-pending-funds>
     </div>
@@ -17,7 +17,6 @@
     })
     export default class RequestListItemPendingFund extends Vue {
         @Prop({required: true}) funds!: RequestListItemPendingFundDto[];
-        @Prop() filter: string;
     }
 </script>
 

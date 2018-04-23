@@ -1,4 +1,6 @@
 .request-list {
+    margin-bottom: 8rem;
+
     &__options {
         i, label {
             color: $gray-500;
@@ -10,139 +12,26 @@
     box-shadow: $z-depth-1;
     background-color: $white;
     margin-bottom: 1rem;
-}
 
-.request-details {
-    color: $gray-600;
-
-    > * {
-        display: flex;
-        flex-grow: 0;
-        flex-shrink: 0;
-    }
-
-    &__logo {
-        width: 5rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+    &--non-found {
+        padding: 1rem;
         font-weight: $font-weight-bold;
         color: $gray-500;
-        text-align: center;
-        padding: 0;
-        margin: 0 1rem;
 
         img {
-            margin-bottom: .5rem;
-        }
-    }
-
-    &__owner {
-        white-space: nowrap;
-    }
-
-    &__info {
-        flex-grow: 1;
-        flex-shrink: 1;
-        flex-direction: column;
-    }
-
-    &__tech {
-        padding-right: .75rem;
-        margin-right: .25rem;
-        position: relative;
-        &::after {
-            content: "/";
-            display: inline;
-            position: absolute;
-            right: 0;
+            width: 20rem;
+            margin-bottom: 2rem;
         }
 
-        &:last-child::after {
-            padding-right: 0;
-            margin-right: 0;
-            display: none;
-        }
-    }
-
-    &__header {
-        font-weight: bold;
-        font-size: 1.2rem;
-        display: flex;
-    }
-
-    &__title {
-        color: $blue-500;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-    }
-
-    &__badge {
-        text-transform: capitalize;
-        margin-right: 1rem;
-    }
-
-    &__number {
-        flex-shrink: 0;
-        margin-left: .5rem;
-        text-transform: capitalize;
-        color: $gray-500;
-    }
-
-    &__icons {
-        i {
-            margin-right: .5rem;
-        }
-    }
-
-    &__price {
-        color: $green-500;
-        font-size: 2rem;
-        justify-content: flex-end;
-        align-items: center;
-        font-weight: bold;
-    }
-
-    &__funding-details {
-        > * {
-            display: flex;
-        }
-    }
-
-    &__fund {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        color: $gray-500;
-        font-weight: $font-weight-bold;
-
-        &-amount {
-            display: block;
-            margin-right: .25rem;
+        p {
+            margin-bottom: 0;
         }
 
-        &-currency {
-            display: block;
+        .card-body h3 {
+            font-weight: $font-weight-bold;
+            font-size: 2.5rem;
         }
     }
-
-    &__crypto {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 0 1rem;
-        margin-left: 1rem;
-        border-left: 1px solid $gray-300;
-    }
-
-    &__actions {
-        justify-content: flex-end;
-        align-items: center;
-        flex-grow: 1;
-    }
-
 }
 
 .request-list {
@@ -194,7 +83,7 @@
             i {
                 text-align: center;
                 width: .5rem;
-                transition: font-size .3s ease-in-out;
+                transition: font-size .35s ease-in-out;
             }
 
             &:hover {

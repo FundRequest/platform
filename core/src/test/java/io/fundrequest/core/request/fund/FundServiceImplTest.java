@@ -215,8 +215,8 @@ public class FundServiceImplTest {
     @Test
     public void fundByEnrichedWithZeroes() {
         List<Fund> funds = Arrays.asList(
-                FundMother.fndFundFunderNotKnown().amountInWei(new BigDecimal("1000000000000000000")).build(),
-                FundMother.zrxFundFunderNotKnown().amountInWei(new BigDecimal("2000000000000000000")).build()
+                FundMother.fndFundFunderNotKnown().funder("0x0").amountInWei(new BigDecimal("1000000000000000000")).build(),
+                FundMother.zrxFundFunderNotKnown().funder("0x1").amountInWei(new BigDecimal("2000000000000000000")).build()
                                         );
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
         mockTokenInfo();
@@ -225,6 +225,24 @@ public class FundServiceImplTest {
 
         assertThat(result.getFunders().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(result.getFunders().get(1).getFndFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    public void mergesSameFunderData() {
+        List<Fund> funds = Arrays.asList(
+                FundMother.fndFundFunderNotKnown().amountInWei(new BigDecimal("1000000000000000000")).build(),
+                FundMother.zrxFundFunderNotKnown().amountInWei(new BigDecimal("2000000000000000000")).build(),
+                FundMother.zrxFundFunderNotKnown().amountInWei(new BigDecimal("3000000000000000000")).build(),
+                FundMother.fndFundFunderNotKnown().amountInWei(new BigDecimal("2000000000000000000")).build()
+                                        );
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        FundersDto result = fundService.getFundedBy(1L);
+
+        assertThat(result.getFunders()).hasSize(1);
+        assertThat(result.getFunders().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(new BigDecimal("5"));
+        assertThat(result.getFunders().get(0).getFndFunds().getTotalAmount()).isEqualByComparingTo(new BigDecimal("3"));
     }
 
     private void mockTokenInfo() {

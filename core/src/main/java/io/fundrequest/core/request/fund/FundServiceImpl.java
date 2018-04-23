@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -135,6 +136,7 @@ class FundServiceImpl implements FundService {
                                              .map(this::mapToFunderDto)
                                              .filter(Objects::nonNull)
                                              .collect(Collectors.toList());
+        list = groupByFunder(list);
         enrichFundsWithZeroValues(list);
         TotalFundDto fndFunds = totalFndFunds(list);
         TotalFundDto otherFunds = totalOtherFunds(list);
@@ -144,6 +146,36 @@ class FundServiceImpl implements FundService {
                          .otherFunds(otherFunds)
                          .usdFunds(fiatService.getUsdPrice(fndFunds, otherFunds))
                          .build();
+    }
+
+    private List<FunderDto> groupByFunder(List<FunderDto> list) {
+        return list.stream().collect(Collectors.groupingBy(FunderDto::getFunder, Collectors.reducing(new BinaryOperator<FunderDto>() {
+            @Override
+            public FunderDto apply(FunderDto a1, FunderDto b1) {
+                if (a1 == null && b1 == null) {
+                    return null;
+                } else if (a1 == null) {
+                    return b1;
+                } else if (b1 == null) {
+                    return a1;
+                }
+                a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
+                a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
+                return a1;
+            }
+        }))).values().stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+    }
+
+    private TotalFundDto mergeFunds(TotalFundDto bFunds, TotalFundDto aFunds) {
+        if (bFunds != null) {
+            if (aFunds == null) {
+                return bFunds;
+            } else {
+                aFunds.setTotalAmount(aFunds.getTotalAmount().add(bFunds.getTotalAmount()));
+            }
+        }
+
+        return aFunds;
     }
 
     private void enrichFundsWithZeroValues(List<FunderDto> list) {
