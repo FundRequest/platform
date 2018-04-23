@@ -64,6 +64,7 @@ public class RequestController extends AbstractController {
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
                 .withObject("fundedBy", fundService.getFundedBy(id))
+                .withObject("githubComments", requestService.getComments(id))
                 .withView("pages/requests/detail")
                 .build();
     }
