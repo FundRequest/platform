@@ -2,19 +2,18 @@
       xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<th:block th:fragment="social-connect-block (platform, bountyResult, activeBounty, claimedTwitterBounty)"
-          th:if="${platform != null}">
+<th:block th:fragment="social-connect-block (platform, bountyResult, activeBounty, claimedTwitterBounty)">
     <a class="anchor" id="get-social-twitter"></a>
-    <div class="card card--social card--social--primary" th:if="${platform.getUsername() == null}">
+    <div class="card card--social card--social--primary" th:if="${platform == null}">
         <h5 class="card-header">
             <span>Twitter <i class="fab fa-twitter"></i></span>
         </h5>
         <div class="card-body">
-            <a class="btn btn-primary" th:href="${platform.getSignupLink()}">Connect</a>
+            <a class="btn btn-primary" href="/profile/link/twitter">Connect</a>
         </div>
     </div>
 
-    <div class="card card--social card--social--success" th:if="${platform.getUsername() != null}">
+    <div class="card card--social card--social--success" th:if="${platform != null}">
         <div class="card-header">
             <div>Twitter <i class="fab fa-twitter"></i></div>
             <span class="text-success" th:text="${platform.getUsername()}">User name, link to profile?</span>
