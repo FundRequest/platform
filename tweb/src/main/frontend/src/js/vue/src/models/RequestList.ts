@@ -1,5 +1,5 @@
-import RequestDto from './RequestDto';
-import {Utils} from '../Utils';
+import RequestDto from '../dtos/RequestDto';
+import {Utils} from '../../../app/Utils';
 
 export default class RequestsListDto {
     private requests: RequestDto[] = [];
