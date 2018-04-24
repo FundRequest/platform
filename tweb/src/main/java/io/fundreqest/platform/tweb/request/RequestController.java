@@ -62,6 +62,8 @@ public class RequestController extends AbstractController {
         return modelAndView()
                 .withObject("requests", getAsJson(requests))
                 .withObject("statistics", statisticsService.getStatistics())
+                .withObject("projects", requestService.findAllProjects())
+                .withObject("technologies", requestService.findAllTechnologies())
                 .withView("pages/requests/index")
                 .build();
     }
