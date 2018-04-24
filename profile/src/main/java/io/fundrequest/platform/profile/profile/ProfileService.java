@@ -20,4 +20,6 @@ public interface ProfileService {
     void updateHeadline(Principal principal, String headline);
 
     String createSignupLink(HttpServletRequest request, Principal principal, Provider provider);
+
+    void logout(Principal principal);
 }
