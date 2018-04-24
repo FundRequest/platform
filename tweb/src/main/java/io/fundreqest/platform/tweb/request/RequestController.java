@@ -51,8 +51,12 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/requests")
     public ModelAndView requests() {
+        List<RequestView> requests = requestService.findAll().stream()
+                .map(this::mapToRequestView)
+                .collect(Collectors.toList());
+
         return modelAndView()
-                .withObject("requests", requestService.findAll())
+                .withObject("requests", getAsJson(requests))
                 .withView("pages/requests/index")
                 .build();
     }

@@ -1,56 +1,36 @@
 import RequestDto from '../dtos/RequestDto';
 import {Utils} from '../../../app/Utils';
+import RequestListFilter from './RequestListFilter';
 
-export default class RequestsListDto {
+export default class RequestsList {
     private requests: RequestDto[] = [];
 
     constructor(requests: RequestDto[]) {
         this.requests = requests;
     }
 
-    private _search(requests: RequestDto[], search: string) {
-        if (search && search.length >= 3) {
-            let regex = new RegExp(search, 'i');
-            return requests.filter((request: RequestDto) => {
-                if(request.title.match(regex)) {
-                    return true;
-                } else if(request.owner.match(regex)) {
-                    return true;
-                } else if (request.issueNumber.match(regex)) {
-                    return true;
-                } else if (Utils.arrayContainsRegex(request.technologies, regex)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            });
-        } else {
-            return requests.filter(x => true);
-        }
-    }
-
-    public getAllRequests(search: string = null, sortBy: string = null): RequestDto[] {
-        let requests = this._search(this.requests, search);
+    public getRequests(filter: RequestListFilter, sortBy: string = null): RequestDto[] {
+        let requests = this._filter(this.requests, filter);
         return this._sort(requests, sortBy);
     }
 
-    public getStarredRequests(search: string = null, sortBy: string = null): RequestDto[] {
-        let requests = this._search(this.requests, search);
-        requests = requests.filter((request: RequestDto) => {
-            return request.starred;
+    private _filter(requests: RequestDto[], filter: RequestListFilter) {
+        let isSearchAlwaysValid = (!filter.search || filter.search.length < 3);
+        let isProjectAlwaysValid = !filter.project;
+        let isTechAlwaysValid = !filter.tech || filter.tech.length == 0;
+        return requests.filter((request: RequestDto) => {
+            let regex = new RegExp(filter.search, 'i');
+            let valid;
+            valid = filter.status == 'all';
+            valid = valid || (filter.status == 'starred' && request.starred);
+            valid = valid || filter.status == request.status.toLowerCase();
+            valid = valid && (isProjectAlwaysValid || filter.project.toLowerCase() == request.owner.toLowerCase());
+            valid = valid && (isSearchAlwaysValid || request.title.match(regex));
+            valid = valid && (isTechAlwaysValid || filter.tech.some((f: string) => {
+                return request.technologies.some((t: string) => new RegExp(t, 'i').test(f));
+            }));
+            return valid;
         });
-        return this._sort(requests, sortBy);
-    }
-
-    public filterByStatus(requestStatus: string, search: string = null, sortBy: string = null): RequestDto[] {
-        let requests = this._search(this.requests, search);
-        let status = requestStatus.toLowerCase();
-
-        requests = requests.filter((request: RequestDto) => {
-            return request.status.toLowerCase() == status;
-        });
-
-        return this._sort(requests, sortBy);
     }
 
     private _sort(requests: RequestDto[], sortBy: string) {

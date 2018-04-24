@@ -42,7 +42,7 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
     import {Utils} from '../../../app/Utils';
-    import {RequestListItemPendingFundDto} from '../../../app/dto/RequestListItemPendingFundDto';
+    import {RequestListItemPendingFundDto} from '../dtos/RequestListItemPendingFundDto';
 
     @Component
     export default class RequestListItemPendingFund extends Vue {

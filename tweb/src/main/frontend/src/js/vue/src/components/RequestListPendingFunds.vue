@@ -8,7 +8,7 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
     import RequestListItemPendingFunds from './RequestListItemPendingFunds';
-    import {RequestListItemPendingFundDto} from '../../../app/dto/RequestListItemPendingFundDto';
+    import {RequestListItemPendingFundDto} from '../dtos/RequestListItemPendingFundDto';
 
     @Component({
         components: {

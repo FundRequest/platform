@@ -90,6 +90,10 @@
         justify-content: flex-end;
         align-items: center;
         font-weight: bold;
+
+        .request-details__fund-amount {
+            flex-grow: 0;
+        }
     }
 
     &__funding-details {

@@ -1,27 +1,40 @@
 .md-form {
     .v-select {
+        z-index: 1;
+
         &.dropdown {
-            &.open {
+            + label {
+                width: 100%;
+
+                i {
+
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    right: 0;
+                }
+            }
+
+            &.open,
+            &.filled {
                 + label {
                     font-size: .8rem;
                     transform: translateY(-140%);
+                }
+            }
+
+            &.open {
+                + label {
                     color: $primary;
                 }
             }
-
         }
 
         .dropdown-toggle {
+            overflow: hidden;
             display: flex;
             border: 0 none;
             border-radius: 0;
-
-            .selected-tag {
-                display: flex;
-                .close {
-                    margin-left: .25rem;
-                }
-            }
         }
 
         .form-control,
@@ -36,21 +49,57 @@
         }
 
         .dropdown-menu {
-            margin-top: -.5rem;
+            margin-top: calc(-.5rem + 1px);
+        }
+
+        .clear {
+            right: 0 !important;
+            height: 100%;
+            color: $gray-500 !important;
         }
 
         .selected-tag {
+            color: $gray-700;
+            font-weight: $font-weight-normal;
+            font-family: $font-family-sans-serif;
+            display: flex;
+            position: relative;
             border-radius: 0;
-            border: 0 none;
             background: none;
             height: auto;
             font-size: .75rem;
             margin: 0 .5rem .5rem 0;
-            padding: .3rem 0 .55rem 0;
+            padding: .3rem .75rem .55rem 0;
             align-items: center;
+            border: 0 none;
+            border-bottom: 2px solid $primary !important;
 
             .close {
+                color: $gray-500;
+                opacity: 1;
+                font-size: 1rem;
+                position: absolute;
+                width: 100%;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                padding: .3rem 0 .55rem 0;
+                margin-left: 0;
+                text-align: right;
+            }
+        }
 
+        .open-indicator {
+            display: none;
+        }
+
+        &.single {
+            .selected-tag {
+                font-size: 1rem;
+                margin: 0 0 .5rem 0;
+                padding: .3rem .75rem .55rem 0;
+                border-color: $gray-300 !important;
             }
         }
     }

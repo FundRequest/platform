@@ -14,60 +14,32 @@
                 <button type="button" id="tempFund" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i> Fund</button>
                 <button type="button" id="tempZrxFund" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i> Fund ZRX</button>
             </div>
-            <table class="table table-striped dt-responsive w-100" data-order="[[ 5, &quot;desc&quot;]]">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Summary</th>
-                    <th>Status</th>
-                    <th class="text-center">Platform</th>
-                    <th>Type</th>
-                    <th class="d-none d-md-table-cell">Technologies</th>
-                    <th class="text-right">FND</th>
-                    <th class="text-right">Other</th>
-                    <th data-orderable="false" class="text-right">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="r : ${requests}" th:attr="data-request-id=${r.getId()}">
-                    <!--/*@thymesVar id="r" type="io.fundrequest.core.request.view.RequestDto"*/-->
-                    <td>
-                        <a href="#" class="watch-link float-right">
-                            <i class="far fa-star"></i>
-                            <small><strong th:text="${#sets.size(r.watchers)}">0</strong></small>
-                        </a>
-                    </td>
-                    <td>
-                        <a class="line-clamp line-clamp--3"
-                        th:href="@{/requests/{id}(id=${r.id})}"
-                        th:text="${r.issueInformation.title}">Nico retest 20180115</a>
-                    </td>
-                    <td th:text="${#messages.msg('enum.RequestStatus.'+r.status)}">FUNDED</td>
-                    <td class="text-center">
-                        <a target="_blank" href="https://github.com" th:href="${r.issueInformation.url}">
-                            <i class="fab fa-2x fa-github"></i>
-                        </a>
-                    </td>
-                    <td th:text="${#messages.msg('enum.RequestType.'+r.type)}">ISSUE</td>
-                    <td class="d-none d-md-table-cell">
-                        <span th:each="t : ${r.technologies}" th:remove="tag">
-                            <span class="badge badge-primary" th:text="${t}">Java</span>
-                        </span>
-                    </td>
-                    <td class="text-right"><span th:if="${r.fndFunds}" th:text="${#numbers.formatDecimal(r.fndFunds.totalAmount,1,3,'POINT')}">-</span></td>
-                    <td class="text-right"><span th:if="${r.otherFunds}" th:text="|${#numbers.formatDecimal(r.otherFunds.totalAmount,1,3,'POINT')} ${r.otherFunds.tokenSymbol}|">-</span></td>
-                    <td class="text-right">
-                        <button class="btn btn-primary" title="Fund" data-toggle="modal" data-target="#fund-request">
-                            <i class="fa fa-exchange-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+
+            <button class="btn btn-primary" title="Fund" data-toggle="modal" data-target="#fund-request">
+                <i class="fa fa-exchange-alt"></i>
+            </button>
         </div>
+
+        <div th:replace="fragments/modals/fund :: default('fund-request')"></div>
     </div>
 
-    <div th:replace="fragments/modals/fund :: default('fund-request')"></div>
+    <section>
+
+        <request-list
+                th:attr="'v-bind:requests'=${requests}"
+                :filters="[
+                    { value: 'funded', title: 'Funded', description: 'Showing an overview of all funded requests.' },
+                    { value: 'claimed', title: 'Claimed', description: 'Showing an overview of all claimed requests.' },
+                 ]"
+                :status-filter-default="'funded'"
+                :technologies="['Java', 'Javascript', 'CSS', 'HTML']"
+                :projects="['fundrequest', 'trust wallet']"
+        >
+            <template slot-scope="{statusFilter}">
+            </template>
+        </request-list>
+    </section>
+
 </th:block>
 
 
