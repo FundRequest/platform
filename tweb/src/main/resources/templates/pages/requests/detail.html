@@ -110,26 +110,15 @@
                     <div class="card-body">
                         <div class="request-funding">
                             <div class="request-funding__transfers">
-                                <div class="request-funding__transfer">
-                                    <div class="request-details__label">Karel Striegel</div>
-                                    <div class="request-details__fund">
-                                        <div class="request-details__fund-amount">100,00</div>
-                                        <div class="request-details__fund-currency">FND</div>
+                                <div class="request-funding__transfer" th:each="transfer : ${fundedBy.funders}">
+                                    <div class="request-details__label" th:text="${transfer.funder}">Karel Striegel</div>
+                                    <div class="request-details__fund" th:if="${transfer.fndFunds != null}">
+                                        <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(transfer.fndFunds.totalAmount,1,2,'COMMA')}">100,00</span>
+                                        <span class="request-details__fund-currency" th:text="${transfer.fndFunds.tokenSymbol}">FND</span>
                                     </div>
-                                    <div class="request-details__fund">
-                                        <div class="request-details__fund-amount">5,00</div>
-                                        <div class="request-details__fund-currency">IND</div>
-                                    </div>
-                                </div>
-                                <div class="request-funding__transfer">
-                                    <div class="request-details__label">Karel Striegel <span class="badge badge-primary">You</span></div>
-                                    <div class="request-details__fund">
-                                        <div class="request-details__fund-amount">10,00</div>
-                                        <div class="request-details__fund-currency">FND</div>
-                                    </div>
-                                    <div class="request-details__fund">
-                                        <div class="request-details__fund-amount">500,00</div>
-                                        <div class="request-details__fund-currency">IND</div>
+                                    <div class="request-details__fund" th:if="${transfer.otherFunds != null}">
+                                        <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(transfer.otherFunds.totalAmount,1,2,'COMMA')}">100,00</span>
+                                        <span class="request-details__fund-currency" th:text="${transfer.otherFunds.tokenSymbol}">XYZ</span>
                                     </div>
                                 </div>
                             </div>
@@ -138,12 +127,12 @@
                                     Subtotal
                                 </div>
                                 <div class="request-details__fund">
-                                    <div class="request-details__fund-amount">110,00</div>
-                                    <div class="request-details__fund-currency">FND</div>
+                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(fundedBy.fndFunds.totalAmount,1,2,'COMMA')}">100,00</span>
+                                    <span class="request-details__fund-currency" th:text="${fundedBy.fndFunds.tokenSymbol}">FND</span>
                                 </div>
                                 <div class="request-details__fund">
-                                    <div class="request-details__fund-amount">505,00</div>
-                                    <div class="request-details__fund-currency">IND</div>
+                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(fundedBy.otherFunds.totalAmount,1,2,'COMMA')}">100,00</span>
+                                    <span class="request-details__fund-currency" th:text="${fundedBy.otherFunds.tokenSymbol}">XYZ</span>
                                 </div>
                             </div>
                             <div class="request-funding__total">
@@ -152,8 +141,9 @@
                                     <span class="small">*Currently valued at</span>
                                 </div>
                                 <div class="request-details__price">
-                                    <div class="request-details__fund-amount">53</div>
-                                    <div class="request-details__fund-currency">USD</div>
+                                    <span class="request-details__fund-amount"
+                                          th:text="${#numbers.formatDecimal(fundedBy.usdFunds,1,2,'COMMA')}">58</span>
+                                    <span class="request-details__fund-currency">USD</span>
                                 </div>
                             </div>
                         </div>
