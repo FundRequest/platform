@@ -12,11 +12,16 @@ import io.fundrequest.core.request.view.RequestDto;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 public interface RequestService {
     List<RequestDto> findAll();
 
     List<RequestDto> findAll(Iterable<Long> ids);
+
+    Set<String> findAllTechnologies();
+
+    Set<String> findAllProjects();
 
     List<RequestDto> findRequestsForUser(Principal principal);
 
