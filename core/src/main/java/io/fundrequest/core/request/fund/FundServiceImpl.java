@@ -31,7 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +39,8 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+
+import static io.fundrequest.core.request.fund.EthUtil.fromWei;
 
 @Service
 class FundServiceImpl implements FundService {
@@ -277,13 +278,8 @@ class FundServiceImpl implements FundService {
                : TotalFundDto.builder()
                              .tokenAddress(tokenInfo.getAddress())
                              .tokenSymbol(tokenInfo.getSymbol())
-                             .totalAmount(fromWei(tokenInfo, rawBalance))
+                             .totalAmount(fromWei(rawBalance, tokenInfo.getDecimals()))
                              .build();
-    }
-
-    private BigDecimal fromWei(TokenInfoDto tokenInfo, BigDecimal rawBalance) {
-        final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
-        return rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN);
     }
 
     @Transactional
