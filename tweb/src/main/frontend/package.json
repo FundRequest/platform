@@ -90,6 +90,7 @@
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^6.0.0",
     "vue-router": "^3.0.1",
+    "vue-select": "^2.4.0",
     "web3": "^0.20.6"
   }
 }
