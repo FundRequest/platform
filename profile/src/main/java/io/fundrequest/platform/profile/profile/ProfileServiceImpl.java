@@ -7,6 +7,7 @@ import io.fundrequest.platform.profile.developer.verification.event.DeveloperVer
 import io.fundrequest.platform.profile.profile.dto.UserLinkedProviderEvent;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import io.fundrequest.platform.profile.profile.dto.UserProfileProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.common.util.Base64Url;
@@ -30,6 +31,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ProfileServiceImpl implements ProfileService {
 
     private final KeycloakRepository keycloakRepository;
@@ -112,6 +114,12 @@ public class ProfileServiceImpl implements ProfileService {
     @CacheEvict(value = "user_profile", key = "#principal.name")
     public void updateHeadline(Principal principal, String headline) {
         keycloakRepository.updateHeadline(principal.getName(), headline);
+    }
+
+    @Override
+    @CacheEvict(value = "user_profile", key = "#principal.name")
+    public void logout(Principal principal) {
+        log.info("User " + principal.getName() + " has logged out");
     }
 
     @Override

@@ -1,7 +1,7 @@
 package io.fundreqest.platform.tweb;
 
 import io.fundrequest.core.contract.service.FundRequestContractsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.fundrequest.platform.profile.profile.ProfileService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,12 +9,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 @Controller
 public class HomeController {
 
-    @Autowired
     private FundRequestContractsService contractsService;
+    private ProfileService profileService;
+
+    public HomeController(FundRequestContractsService contractsService, ProfileService profileService) {
+        this.contractsService = contractsService;
+        this.profileService = profileService;
+    }
 
     @RequestMapping("/")
     public ModelAndView home() {
@@ -24,7 +30,10 @@ public class HomeController {
     }
 
     @GetMapping(path = "/logout")
-    public String logout(HttpServletRequest request) throws ServletException {
+    public String logout(Principal principal, HttpServletRequest request) throws ServletException {
+        if (principal != null) {
+            profileService.logout(principal);
+        }
         request.logout();
         return "redirect:/";
     }
