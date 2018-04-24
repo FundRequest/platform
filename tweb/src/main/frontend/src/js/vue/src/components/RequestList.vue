@@ -107,10 +107,16 @@
         }
 
         private _filterItems(statusFilter: string, searchFilter: string, sortBy: string) {
-            if (statusFilter.toLowerCase() == "all") {
-                this.filteredRequests = this.requestList.getAllRequests(searchFilter, sortBy);
-            } else {
-                this.filteredRequests = this.requestList.filterByStatus(statusFilter, searchFilter, sortBy);
+            switch(statusFilter.toLowerCase()) {
+                case "all":
+                    this.filteredRequests = this.requestList.getAllRequests(searchFilter, sortBy);
+                    break;
+                case "starred":
+                    this.filteredRequests = this.requestList.getStarredRequests(searchFilter, sortBy);
+                    break;
+                default:
+                    this.filteredRequests = this.requestList.filterByStatus(statusFilter, searchFilter, sortBy);
+                    break;
             }
             this._setIsEmpty(this.filteredRequests.length <= 0);
         }

@@ -61,7 +61,6 @@
                     this.$emit("update", value);
                 }
             }
-            console.log(value);
         }
     }
 </script>

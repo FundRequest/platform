@@ -34,6 +34,14 @@ export default class RequestsListDto {
         return this._sort(requests, sortBy);
     }
 
+    public getStarredRequests(search: string = null, sortBy: string = null): RequestDto[] {
+        let requests = this._search(this.requests, search);
+        requests = requests.filter((request: RequestDto) => {
+            return request.starred;
+        });
+        return this._sort(requests, sortBy);
+    }
+
     public filterByStatus(requestStatus: string, search: string = null, sortBy: string = null): RequestDto[] {
         let requests = this._search(this.requests, search);
         let status = requestStatus.toLowerCase();
