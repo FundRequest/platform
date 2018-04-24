@@ -9,7 +9,7 @@
     import {PaymentMethod, PaymentMethods} from "../../../app/payment-method";
     import {Web3} from "../../../app/web3";
     import {Utils} from "../../../app/Utils";
-    import {PendingFundCommand} from "../../../app/PendingFundCommand";
+    import {PendingFundCommand} from "../models/PendingFundCommand";
 
     Vue.component("qrcode-vue", QrcodeVue);
 

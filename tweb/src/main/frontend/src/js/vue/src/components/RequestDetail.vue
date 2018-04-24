@@ -16,8 +16,8 @@
     import FndSelect from "./form/FndSelect";
     import ListFilter from "./ListFilter";
 
-    import RequestDto from "../../../app/dto/RequestDto";
-    import ListFilterDto from '../../../app/dto/ListFilterDto';
+    import RequestDto from "../dtos/RequestDto";
+    import ListFilterDto from '../dtos/ListFilterDto';
 
     @Component({
         components: {

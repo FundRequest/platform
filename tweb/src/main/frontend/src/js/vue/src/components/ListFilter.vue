@@ -34,7 +34,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import ListFilterDto from "../../../app/dto/ListFilterDto";
+    import ListFilterDto from "../dtos/ListFilterDto";
     import {EventBus} from "../EventBus";
     import {Utils} from "../../../app/Utils";
 
@@ -61,7 +61,6 @@
                     this.$emit("update", value);
                 }
             }
-            console.log(value);
         }
     }
 </script>
