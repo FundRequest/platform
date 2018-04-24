@@ -12,6 +12,7 @@ import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
+import io.fundrequest.core.request.statistics.StatisticsService;
 import io.fundrequest.core.request.view.RequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -34,16 +35,19 @@ public class RequestController extends AbstractController {
 
     private RequestService requestService;
     private PendingFundService pendingFundService;
+    private StatisticsService statisticsService;
     private FundService fundService;
     private ObjectMapper objectMapper;
     private Mappers mappers;
 
     public RequestController(RequestService requestService,
                              PendingFundService pendingFundService,
+                             StatisticsService statisticsService,
                              FundService fundService, ObjectMapper objectMapper,
                              Mappers mappers) {
         this.requestService = requestService;
         this.pendingFundService = pendingFundService;
+        this.statisticsService = statisticsService;
         this.fundService = fundService;
         this.objectMapper = objectMapper;
         this.mappers = mappers;
@@ -57,6 +61,7 @@ public class RequestController extends AbstractController {
 
         return modelAndView()
                 .withObject("requests", getAsJson(requests))
+                .withObject("statistics", statisticsService.getStatistics())
                 .withView("pages/requests/index")
                 .build();
     }
