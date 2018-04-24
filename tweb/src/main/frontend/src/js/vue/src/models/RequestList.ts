@@ -26,8 +26,9 @@ export default class RequestsList {
             valid = valid || filter.status == request.status.toLowerCase();
             valid = valid && (isProjectAlwaysValid || filter.project.toLowerCase() == request.owner.toLowerCase());
             valid = valid && (isSearchAlwaysValid || request.title.match(regex));
-            valid = valid && (isTechAlwaysValid || filter.tech.some((f: string) => {
-                return request.technologies.some((t: string) => new RegExp(t, 'i').test(f));
+            valid = valid && (isTechAlwaysValid || filter.tech.every((f: string) => {
+                let regex = new RegExp(`^${f}$`, 'i');
+                return request.technologies.some((t: string) => regex.test(t));
             }));
             return valid;
         });

@@ -109,9 +109,9 @@
         public isEmpty: boolean = false;
 
         public listFilter: RequestListFilter = Object.assign(new RequestListFilter(), {
-            search: "",
+            search: null,
             tech: [],
-            project: "FundRequest",
+            project: null,
             status: "all",
         });
 
