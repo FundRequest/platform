@@ -36,6 +36,24 @@
                 :projects="['fundrequest', 'trust wallet']"
         >
             <template slot-scope="{statusFilter}">
+                <div class="card mb-5" v-if="statusFilter === 'funded'">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-stretch text-center">
+                            <div>
+                                <div>Total funding</div>
+                                <div>$<span th:text="${statistics.totalAvailableFunding}">-</span></div>
+                            </div>
+                            <div>
+                                <div>Most funded project</div>
+                                <div><span th:text="${statistics.mostFundedProject}">-</span></div>
+                            </div>
+                            <div>
+                                <div>Most active technology</div>
+                                <div><span th:text="${statistics.mostFundedTechnology}">-</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </template>
         </request-list>
     </section>
