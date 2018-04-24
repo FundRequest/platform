@@ -160,7 +160,7 @@
             this.isEmpty = !this.listFilter.isFiltered && isEmpty;
         }
 
-        private _filterItems(filter: ListFilter, sortBy: string) {
+        private _filterItems(filter: RequestListFilter, sortBy: string) {
             this.filteredRequests = this.requestList.getRequests(filter, sortBy);
             this._setIsEmpty(this.filteredRequests.length <= 0);
         }
