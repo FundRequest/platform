@@ -42,7 +42,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import RequestDto from "../../../app/dto/RequestDto";
+    import RequestDto from "../dtos/RequestDto";
     import {Utils} from '../../../app/Utils';
     import {Locations} from '../../../app/Locations';
 

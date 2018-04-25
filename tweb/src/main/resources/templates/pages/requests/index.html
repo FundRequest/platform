@@ -6,80 +6,131 @@
 </head>
 
 <th:block layout:fragment="content">
-    <div class="card mb-5">
-        <div class="card-body">
-            <div class="form-inline mb-3">
-                <input type="text" class="form-control" id="tempFundNumber" placeholder="IssueNumber" />
-                <input type="text" class="form-control" id="tempFundAmount" placeholder="Amount" />
-                <button type="button" id="tempFund" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i> Fund</button>
-                <button type="button" id="tempZrxFund" class="btn btn-success btn-xs approve"><i class="fas fa-check"></i> Fund ZRX</button>
+    <section class="section section--header mb-5">
+        <div class="row">
+            <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
+                <i class="fa fa-list fa-10x text-secondary"></i>
             </div>
-            <table class="table table-striped dt-responsive w-100" data-order="[[ 5, &quot;desc&quot;]]">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Summary</th>
-                    <th>Status</th>
-                    <th class="text-center">Platform</th>
-                    <th>Type</th>
-                    <th class="d-none d-md-table-cell">Technologies</th>
-                    <th class="text-right">FND</th>
-                    <th class="text-right">Other</th>
-                    <th data-orderable="false" class="text-right">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="r : ${requests}" th:attr="data-request-id=${r.getId()}">
-                    <!--/*@thymesVar id="r" type="io.fundrequest.core.request.view.RequestDto"*/-->
-                    <td>
-                        <a href="#" class="watch-link float-right">
-                            <i class="far fa-star"></i>
-                            <small><strong th:text="${#sets.size(r.watchers)}">0</strong></small>
-                        </a>
-                    </td>
-                    <td>
-                        <a class="line-clamp line-clamp--3"
-                        th:href="@{/requests/{id}(id=${r.id})}"
-                        th:text="${r.issueInformation.title}">Nico retest 20180115</a>
-                    </td>
-                    <td th:text="${#messages.msg('enum.RequestStatus.'+r.status)}">FUNDED</td>
-                    <td class="text-center">
-                        <a target="_blank" href="https://github.com" th:href="${r.issueInformation.url}">
-                            <i class="fab fa-2x fa-github"></i>
-                        </a>
-                    </td>
-                    <td th:text="${#messages.msg('enum.RequestType.'+r.type)}">ISSUE</td>
-                    <td class="d-none d-md-table-cell">
-                        <span th:each="t : ${r.technologies}" th:remove="tag">
-                            <span class="badge badge-primary" th:text="${t}">Java</span>
-                        </span>
-                    </td>
-                    <td class="text-right"><span th:if="${r.fndFunds}" th:text="${#numbers.formatDecimal(r.fndFunds.totalAmount,1,3,'POINT')}">-</span></td>
-                    <td class="text-right"><span th:if="${r.otherFunds}" th:text="|${#numbers.formatDecimal(r.otherFunds.totalAmount,1,3,'POINT')} ${r.otherFunds.tokenSymbol}|">-</span></td>
-                    <td class="text-right">
-                        <button class="btn btn-primary" title="Fund" data-toggle="modal" data-target="#fund-request">
-                            <i class="fa fa-exchange-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="col-12 col-md-8">
+                <h1 class="text-secondary">
+                    <span class="d-inline-block d-md-none">
+                        <i class="fa fa-list fa-1x text-secondary"></i>
+                    </span>
+                    Browse all requests
+                </h1>
+
+                <div class="description text-muted">
+                    <p>
+                        The best way to deep dive into all requests.
+                        Filter on technology or on a specific project so you can find the perfect request that fits your needs.
+                    </p>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a class="text-secondary text-transform-normal" th:href="@{'#faq'}">
+                        How it works...
+                    </a>
+                    <a class="btn btn-secondary" th:href="@{/fund/github}">
+                        Start new
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <section class="mb-5">
+        <request-list
+                th:attr="'v-bind:requests'=${requests},
+                'v-bind:projects'=${projects},
+                'v-bind:technologies'=${technologies},
+                'v-bind:filters'='[
+                    { value: &quot;funded&quot;, count: '+${requestsFunded}+', title: &quot;Funded&quot;, description: &quot;Showing an overview of all funded requests.&quot; },
+                    { value: &quot;claimed&quot;, count: '+${requestsClaimed}+', title: &quot;Claimed&quot;, description: &quot;Showing an overview of all claimed requests.&quot; },
+                 ]' "
+                :status-filter-default="'funded'"
+        >
+            <template slot-scope="{statusFilter}">
+                <div class="card mb-5" v-if="statusFilter === 'funded'">
+                    <div class="card-body">
+                        <div class="row request-list__statistics">
+                            <div class="col-12 col-md-4 request-list__statistic">
+                                <div class="request-list__statistic-title">Total funding</div>
+                                <div class="request-list__statistic-value">
+                                    $<span th:text="${#numbers.formatDecimal(statistics.totalAvailableFunding,1,2,'COMMA')}">2873</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 request-list__statistic">
+                                <div class="request-list__statistic-title">Most funded project</div>
+                                <div class="request-list__statistic-value">
+                                    <span th:text="${statistics.mostFundedProject}">xyz</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 request-list__statistic">
+                                <div class="request-list__statistic-title">Most funded technology</div>
+                                <div class="request-list__statistic-value">
+                                    <span th:text="${statistics.mostFundedTechnology}">Java</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </request-list>
+    </section>
+
+    <section class="mb-2" ref="faq" id="faq">
+        <div class="row">
+            <div class="col-12">
+                <h4 class="section-title text-primary">Frequently Asked Questions</h4>
+                <h5 class="section-subtitle text-muted">
+                    <small>Your funding existing requests FAQ's, answered.</small>
+                </h5>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body faq">
+                        <div class="faq__title">
+                            This is a first question, will other follow, what do you think?
+                        </div>
+                        <div class="faq__answer">
+                            Hmm I'm not sure, one question is of course not a lot, so I
+                            guess the chance is very high that others will follow. My
+                            answer is Yes.
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="faq__title">
+                            This is a first question, will other follow, what do you think?
+                        </div>
+                        <div class="faq__answer">
+                            Hmm I'm not sure, one question is of course not a lot, so I
+                            guess the chance is very high that others will follow. My
+                            answer is Yes.
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="faq__title">
+                            This is a first question, will other follow, what do you think?
+                        </div>
+                        <div class="faq__answer">
+                            Hmm I'm not sure, one question is of course not a lot, so I
+                            guess the chance is very high that others will follow. My
+                            answer is Yes.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <div th:replace="fragments/modals/fund :: default('fund-request')"></div>
+
 </th:block>
 
 
 <th:block layout:fragment="css">
-    <link type="text/css" rel="stylesheet"
-          th:href="@{/assets/vendors/datatables.net-bs4/css/dataTables.bootstrap4.css}"/>
-    <link type="text/css" rel="stylesheet"
-          th:href="@{/assets/vendors/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css}"/>
 </th:block>
 <th:block layout:fragment="scripts">
-    <script>require(['app/dataTables'])</script>
-    <script>require(['app/requests'])</script>
 </th:block>
 
 </html>

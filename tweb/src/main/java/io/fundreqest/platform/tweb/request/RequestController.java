@@ -8,10 +8,12 @@ import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
+import io.fundrequest.core.request.statistics.StatisticsService;
 import io.fundrequest.core.request.view.RequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -34,16 +36,19 @@ public class RequestController extends AbstractController {
 
     private RequestService requestService;
     private PendingFundService pendingFundService;
+    private StatisticsService statisticsService;
     private FundService fundService;
     private ObjectMapper objectMapper;
     private Mappers mappers;
 
     public RequestController(RequestService requestService,
                              PendingFundService pendingFundService,
+                             StatisticsService statisticsService,
                              FundService fundService, ObjectMapper objectMapper,
                              Mappers mappers) {
         this.requestService = requestService;
         this.pendingFundService = pendingFundService;
+        this.statisticsService = statisticsService;
         this.fundService = fundService;
         this.objectMapper = objectMapper;
         this.mappers = mappers;
@@ -51,8 +56,29 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/requests")
     public ModelAndView requests() {
+        List<RequestView> requests = requestService.findAll().stream().map(this::mapToRequestView).collect(Collectors.toList());
+        int noOfFundedRequests = 0;
+        int noOfClaimedRequests = 0;
+        for (RequestView r : requests) {
+            switch (RequestStatus.valueOf(r.getStatus())) {
+                case FUNDED:
+                    noOfFundedRequests += 1;
+                    break;
+                case CLAIMED:
+                case CLAIM_APPROVED:
+                case CLAIM_REQUESTED:
+                    noOfClaimedRequests += 1;
+                    break;
+                default:
+            }
+        }
         return modelAndView()
-                .withObject("requests", requestService.findAll())
+                .withObject("requestsFunded", noOfFundedRequests)
+                .withObject("requestsClaimed", noOfClaimedRequests)
+                .withObject("requests", getAsJson(requests))
+                .withObject("statistics", statisticsService.getStatistics())
+                .withObject("projects", getAsJson(requestService.findAllProjects()))
+                .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
                 .withView("pages/requests/index")
                 .build();
     }

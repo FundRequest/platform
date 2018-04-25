@@ -28,6 +28,8 @@ import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +86,20 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "technologies")
+    public Set<String> findAllTechnologies() {
+        return requestRepository.findAllTechnologies();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "projects")
+    public Set<String> findAllProjects() {
+        return requestRepository.findAllProjects();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<RequestDto> findRequestsForUser(Principal principal) {
         Set<Request> result = new HashSet<>();
         String etherAddress = profileService.getUserProfile(principal).getEtherAddress();
@@ -119,6 +135,7 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"projects", "technologies"})
     public Long createRequest(CreateRequestCommand command) {
         Optional<Request> request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId());
         Request r = request.orElseGet(() -> createNewRequest(command));
@@ -127,6 +144,7 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"projects", "technologies"})
     public void requestClaimed(RequestClaimedCommand command) {
         Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
                                            .orElseThrow(ResourceNotFoundException::new);
