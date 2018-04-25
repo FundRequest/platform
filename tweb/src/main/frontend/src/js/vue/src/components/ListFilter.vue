@@ -16,8 +16,9 @@
                             Filter by
                         </a>
                         <a v-if="!filter.url" class="nav-link" v-bind:href="`#${filter.value}`"
-                           v-on:click="updateFilter(filter.value)" v-html="filter.title">
-                            Filter by
+                           v-on:click="updateFilter(filter.value)">
+                            <span v-html="filter.title"></span>
+                            <span class="badge badge--filter" v-if="filter.count > 0">{{filter.count}}</span>
                         </a>
                     </li>
                 </ul>
