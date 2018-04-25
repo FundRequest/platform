@@ -1,5 +1,5 @@
-.fnd-error-template {
-    padding: 40px 15px;
+.fnd-error-page {
+    padding: 10rem;
 }
 
 .fnd-error-stack {
@@ -16,4 +16,18 @@
 
 .fnd-error-actions .btn {
     margin-right: 10px;
+}
+
+.fnd-error-image {
+    background-image: url('../img/error.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+    width: 100%;
+    height: auto;
+    min-height: 10rem;
+
+    @include media-breakpoint-up(md) {
+        background-position: left center;
+    }
 }
