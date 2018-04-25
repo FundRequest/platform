@@ -55,7 +55,9 @@ public final class RequestBuilder {
         Request request = new Request();
         request.setId(id);
         request.setIssueInformation(issueInformation);
-        request.setStatus(status);
+        if (status != null) {
+            request.setStatus(status);
+        }
         watchers.forEach(request::addWatcher);
         technologies.forEach(request::addTechnology);
         return request;
