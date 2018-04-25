@@ -56,10 +56,7 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/requests")
     public ModelAndView requests() {
-        List<RequestView> requests = requestService.findAll().stream()
-                                                   .map(this::mapToRequestView)
-                                                   .collect(Collectors.toList());
-
+        List<RequestView> requests = requestService.findAll().stream().map(this::mapToRequestView).collect(Collectors.toList());
         int noOfFundedRequests = 0;
         int noOfClaimedRequests = 0;
         for (RequestView r : requests) {
@@ -75,7 +72,6 @@ public class RequestController extends AbstractController {
                 default:
             }
         }
-
         return modelAndView()
                 .withObject("requestsFunded", noOfFundedRequests)
                 .withObject("requestsClaimed", noOfClaimedRequests)
