@@ -109,9 +109,9 @@
         public isEmpty: boolean = false;
 
         public listFilter: RequestListFilter = Object.assign(new RequestListFilter(), {
-            search: "",
+            search: null,
             tech: [],
-            project: "FundRequest",
+            project: null,
             status: "all",
         });
 
@@ -160,7 +160,7 @@
             this.isEmpty = !this.listFilter.isFiltered && isEmpty;
         }
 
-        private _filterItems(filter: ListFilter, sortBy: string) {
+        private _filterItems(filter: RequestListFilter, sortBy: string) {
             this.filteredRequests = this.requestList.getRequests(filter, sortBy);
             this._setIsEmpty(this.filteredRequests.length <= 0);
         }

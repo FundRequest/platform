@@ -81,8 +81,8 @@ public class RequestController extends AbstractController {
                 .withObject("requestsClaimed", noOfClaimedRequests)
                 .withObject("requests", getAsJson(requests))
                 .withObject("statistics", statisticsService.getStatistics())
-                .withObject("projects", requestService.findAllProjects())
-                .withObject("technologies", requestService.findAllTechnologies())
+                .withObject("projects", getAsJson(requestService.findAllProjects()))
+                .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
                 .withView("pages/requests/index")
                 .build();
     }
