@@ -8,6 +8,7 @@ import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
@@ -56,10 +57,28 @@ public class RequestController extends AbstractController {
     @GetMapping("/requests")
     public ModelAndView requests() {
         List<RequestView> requests = requestService.findAll().stream()
-                .map(this::mapToRequestView)
-                .collect(Collectors.toList());
+                                                   .map(this::mapToRequestView)
+                                                   .collect(Collectors.toList());
+
+        int noOfFundedRequests = 0;
+        int noOfClaimedRequests = 0;
+        for (RequestView r : requests) {
+            switch (RequestStatus.valueOf(r.getStatus())) {
+                case FUNDED:
+                    noOfFundedRequests += 1;
+                    break;
+                case CLAIMED:
+                case CLAIM_APPROVED:
+                case CLAIM_REQUESTED:
+                    noOfClaimedRequests += 1;
+                    break;
+                default:
+            }
+        }
 
         return modelAndView()
+                .withObject("requestsFunded", noOfFundedRequests)
+                .withObject("requestsClaimed", noOfClaimedRequests)
                 .withObject("requests", getAsJson(requests))
                 .withObject("statistics", statisticsService.getStatistics())
                 .withObject("projects", requestService.findAllProjects())
