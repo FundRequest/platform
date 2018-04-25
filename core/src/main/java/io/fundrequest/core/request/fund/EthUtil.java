@@ -8,4 +8,9 @@ public class EthUtil {
         final BigDecimal divider = BigDecimal.valueOf(10).pow(noOfDecimals);
         return rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN);
     }
+
+    public static BigDecimal toWei(BigDecimal rawBalance, int noOfDecimals) {
+        final BigDecimal multiplier = BigDecimal.valueOf(10).pow(noOfDecimals);
+        return rawBalance.multiply(multiplier);
+    }
 }
