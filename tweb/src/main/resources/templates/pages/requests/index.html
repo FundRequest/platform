@@ -40,11 +40,13 @@
 
     <section class="mb-5">
         <request-list
-                th:attr="'v-bind:requests'=${requests},'v-bind:projects'=${projects},'v-bind:technologies'=${technologies}"
-                :filters="[
-                    { value: 'funded', title: 'Funded', description: 'Showing an overview of all funded requests.' },
-                    { value: 'claimed', title: 'Claimed', description: 'Showing an overview of all claimed requests.' },
-                 ]"
+                th:attr="'v-bind:requests'=${requests},
+                'v-bind:projects'=${projects},
+                'v-bind:technologies'=${technologies},
+                'v-bind:filters'='[
+                    { value: &quot;funded&quot;, count: &quot;'+${requestsFunded}+'&quot;, title: &quot;Funded&quot;, description: &quot;Showing an overview of all funded requests.&quot; },
+                    { value: &quot;claimed&quot;, count: &quot;'+${requestsClaimed}+'&quot;, title: &quot;Claimed&quot;, description: &quot;Showing an overview of all claimed requests.&quot; },
+                 ]' "
                 :status-filter-default="'funded'"
         >
             <template slot-scope="{statusFilter}">
