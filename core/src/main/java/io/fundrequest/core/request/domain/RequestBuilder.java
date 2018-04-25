@@ -10,6 +10,7 @@ public final class RequestBuilder {
     private List<String> watchers = new ArrayList<>();
     private Set<String> technologies = new HashSet<>();
     private Long id;
+    private RequestStatus status;
 
     private RequestBuilder() {
     }
@@ -38,16 +39,25 @@ public final class RequestBuilder {
         return this;
     }
 
+    public RequestBuilder withStatus(RequestStatus status) {
+        this.status = status;
+        return this;
+    }
+
     public RequestBuilder but() {
         return aRequest().withWatchers(watchers)
-                .withTechnologies(technologies)
-                .withIssueInformation(issueInformation);
+                         .withTechnologies(technologies)
+                         .withStatus(status)
+                         .withIssueInformation(issueInformation);
     }
 
     public Request build() {
         Request request = new Request();
         request.setId(id);
         request.setIssueInformation(issueInformation);
+        if (status != null) {
+            request.setStatus(status);
+        }
         watchers.forEach(request::addWatcher);
         technologies.forEach(request::addTechnology);
         return request;

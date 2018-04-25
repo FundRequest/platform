@@ -1,21 +1,66 @@
 @keyframes rainbow {
-    0% {border-color: $yellow-500;}
-    20% {border-color: $green-500;}
-    40% {border-color: $teal-500;}
-    80% {border-color: $orange-500;}
-    100% {border-color: $yellow-500;}
+    0% {
+        border-color: $yellow-500;
+    }
+    20% {
+        border-color: $green-500;
+    }
+    40% {
+        border-color: $teal-500;
+    }
+    80% {
+        border-color: $orange-500;
+    }
+    100% {
+        border-color: $yellow-500;
+    }
 }
 
 @keyframes valid {
-    0% {border-color: $input-border-color;}
-    25% {border-color: $teal-500;}
-    50% {border-color: $green-500;}
-    75% {border-color: $teal-500;}
-    100% {border-color: $input-border-color;}
+    0% {
+        border-color: $input-border-color;
+    }
+    25% {
+        border-color: $teal-500;
+    }
+    50% {
+        border-color: $green-500;
+    }
+    75% {
+        border-color: $teal-500;
+    }
+    100% {
+        border-color: $input-border-color;
+    }
+}
+
+.md-form {
+    input[type=date],
+    input[type=datetime-local],
+    input[type=email],
+    input[type=number],
+    input[type=password],
+    input[type=search-md],
+    input[type=search],
+    input[type=tel],
+    input[type=text],
+    input[type=time],
+    input[type=url],
+    textarea.md-textarea {
+        border-bottom: 2px solid $gray-300;
+    }
+
+    select.form-control--fnd {
+        background-color: $gray-300;
+        border-color: $gray-300;
+        color: $gray-600;
+        &:active, &:focus {
+            background-color: $gray-300;
+        }
+    }
 }
 
 .form-control {
-
 
     &.is-loading {
         border-color: $yellow-500;
@@ -68,6 +113,19 @@
 
         user-select: none;
         cursor: not-allowed;
+    }
+
+    &--search {
+        + label {
+            width: 100%;
+
+            i {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 0;
+            }
+        }
     }
 }
 

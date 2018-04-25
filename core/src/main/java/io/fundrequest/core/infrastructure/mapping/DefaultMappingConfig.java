@@ -4,8 +4,8 @@ import org.mapstruct.MapperConfig;
 import org.mapstruct.ReportingPolicy;
 
 @MapperConfig(
-    unmappedTargetPolicy = ReportingPolicy.ERROR,
-    componentModel = "spring"
+        unmappedTargetPolicy = ReportingPolicy.ERROR,
+        componentModel = "spring"
 )
 public interface DefaultMappingConfig {
 }

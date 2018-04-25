@@ -33,7 +33,7 @@ public class StackOverflowUser {
 
     public LocalDateTime getCreationDateTime() {
         return createdAt == null
-                ? null
-                : LocalDateTime.ofInstant(Instant.ofEpochMilli(createdAt * 1000), ZoneId.systemDefault());
+               ? null
+               : LocalDateTime.ofInstant(Instant.ofEpochMilli(createdAt * 1000), ZoneId.systemDefault());
     }
 }

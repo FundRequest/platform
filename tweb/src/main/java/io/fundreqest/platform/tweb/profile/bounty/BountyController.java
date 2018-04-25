@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 @Controller
@@ -38,13 +37,13 @@ public class BountyController {
     }
 
     @RequestMapping("/profile/rewards")
-    public ModelAndView rewards(Principal principal, HttpServletRequest request) {
+    public ModelAndView rewards(Principal principal) {
         ModelAndView mav = new ModelAndView("pages/profile/rewards");
         mav.addObject("survey", surveyService.getSurveyResult(principal));
         mav.addObject("githubVerification", githubBountyService.getVerification(principal));
         mav.addObject("stackOverflowVerification", stackOverflowBountyService.getVerification(principal));
         mav.addObject("linkedInVerification", linkedInService.getVerification(principal));
-        mav.addObject("profile", profileService.getUserProfile(request, principal));
+        mav.addObject("profile", profileService.getUserProfile(principal));
         mav.addObject("bounty", bountyService.getBounties(principal));
         return mav;
     }

@@ -31,11 +31,11 @@ public abstract class RequestClaimDtoDecorator implements RequestClaimDtoMapper 
 
     private String createLink(IssueInformationDto issueInformation) {
         return "https://github.com/"
-                + issueInformation.getOwner()
-                + "/"
-                + issueInformation.getRepo()
-                + "/issues/"
-                + issueInformation.getNumber();
+               + issueInformation.getOwner()
+               + "/"
+               + issueInformation.getRepo()
+               + "/issues/"
+               + issueInformation.getNumber();
     }
 
 }

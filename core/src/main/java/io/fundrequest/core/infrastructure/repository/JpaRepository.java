@@ -17,8 +17,8 @@ import java.util.List;
 public interface JpaRepository<T, ID extends Serializable> extends PagingAndSortingRepository<T, ID> {
     /*
      * (non-Javadoc)
-	 * @see org.springframework.data.repository.CrudRepository#findAll()
-	 */
+     * @see org.springframework.data.repository.CrudRepository#findAll()
+     */
     List<T> findAll();
 
     /*

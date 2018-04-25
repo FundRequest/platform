@@ -1,7 +1,7 @@
 package io.fundrequest.restapi;
 
 import io.fundrequest.core.FundRequestCore;
-import io.fundrequest.core.infrastructure.IgnoreDuringComponentScan;
+import io.fundrequest.db.infrastructure.IgnoreDuringComponentScan;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,15 +34,15 @@ public class RestApplication {
         final ApplicationContext app = configureApplication(new SpringApplicationBuilder()).run(args);
         final Environment env = app.getEnvironment();
         logger.info("\n----------------------------------------------------------\n\t" +
-                        "Application '{}' is running! Access URLs:\n\t" +
-                        "Local: \t\thttp://localhost:{}\n\t" +
-                        "External: \thttp://{}:{}\n\t" +
-                        "Profile(s): \t{}\n----------------------------------------------------------",
-                env.getProperty("spring.application.name"),
-                env.getProperty("server.port"),
-                InetAddress.getLocalHost().getHostAddress(),
-                env.getProperty("server.port"),
-                env.getActiveProfiles());
+                    "Application '{}' is running! Access URLs:\n\t" +
+                    "Local: \t\thttp://localhost:{}\n\t" +
+                    "External: \thttp://{}:{}\n\t" +
+                    "Profile(s): \t{}\n----------------------------------------------------------",
+                    env.getProperty("spring.application.name"),
+                    env.getProperty("server.port"),
+                    InetAddress.getLocalHost().getHostAddress(),
+                    env.getProperty("server.port"),
+                    env.getActiveProfiles());
     }
 
     private static SpringApplicationBuilder configureApplication(final SpringApplicationBuilder builder) {

@@ -60,8 +60,7 @@ public class RestSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception
-    {
+    protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

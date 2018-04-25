@@ -8,8 +8,9 @@
     import {Contracts} from "../../../app/contracts";
     import {PaymentMethod, PaymentMethods} from "../../../app/payment-method";
     import {Web3} from "../../../app/web3";
-    import {Utils} from "../../../app/utils";
-    import {PendingFund} from "../../../app/PendingFund";
+    import {Utils} from "../../../app/Utils";
+    import {PendingFundCommand} from "../models/PendingFundCommand";
+    import {Alert} from "../../../app/alert";
 
     Vue.component("qrcode-vue", QrcodeVue);
 
@@ -102,15 +103,22 @@
                     });
                 });
             } else {
-                PaymentMethods.getInstance().dapp.disabledMsg = "Please initialize your dapp browser correctly, no accounts available.";
+                PaymentMethods.getInstance().dapp.disabledMsg = "DApp not available, no accounts available.";
             }
         }
 
         private async fund() {
             switch (this.paymentMethod) {
                 case PaymentMethods.getInstance().dapp:
-                    await this.fundUsingDapp();
-                    window.location.href = "/user/requests";
+                    try {
+                        Utils.showLoading();
+                        await this.fundUsingDapp();
+                        window.location.href = "/user/requests";
+                    } catch(err) {
+                        Alert.show('<div class="text-center">Something went wrong when funding, please try again. <br/> If the problem remains, please contact the FundRequest team.</div>', 'danger')
+                    } finally {
+                        Utils.hideLoading();
+                    }
                     break;
                 case PaymentMethods.getInstance().trustWallet:
                     this.fundUsingTrustWallet();
@@ -137,20 +145,17 @@
                 console.log("You will need to allow the FundRequest contrac to access this token");
                 await erc20.approveTx(frContractAddress, new BigNumber("1.157920892e77").minus(1)).send({});
             }
-            console.log("funding");
-            try {
-                let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, weiAmount)
-                    .send({}).catch(rej => {throw new Error(rej);}) as string;
-                let pendingFund = new PendingFund();
-                pendingFund.transactionId = response;
-                pendingFund.amount = this.fundAmount.toString();
-                pendingFund.description = this.description;
-                pendingFund.fromAddress = account;
-                pendingFund.tokenAddress = this.selectedToken.address;
-                await Utils.fetchJSON(`/rest/pending-fund`, pendingFund);
-            } catch (err) {
-                console.log(err);
-            }
+            let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, weiAmount)
+                .send({}).catch(rej => {throw new Error(rej);}) as string;
+            let pendingFundCommand = new PendingFundCommand();
+            pendingFundCommand.transactionId = response;
+            pendingFundCommand.amount = this.fundAmount.toString();
+            pendingFundCommand.description = this.description;
+            pendingFundCommand.fromAddress = account;
+            pendingFundCommand.tokenAddress = this.selectedToken.address;
+            pendingFundCommand.platform = this.githubIssue.platform;
+            pendingFundCommand.platformId = this.githubIssue.platformId
+            await Utils.fetchJSON(`/rest/pending-fund`, pendingFundCommand);
         }
 
         public fundUsingTrustWallet() {

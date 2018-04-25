@@ -17,19 +17,19 @@ public class GithubSolverResolver {
         Document doc = null;
         try {
             doc = Jsoup.connect("https://github.com/" +
-                    request.getIssueInformation().getOwner() +
-                    "/" + request.getIssueInformation().getRepo() +
-                    "/issues/" + request.getIssueInformation().getNumber()
-            ).get();
+                                request.getIssueInformation().getOwner() +
+                                "/" + request.getIssueInformation().getRepo() +
+                                "/issues/" + request.getIssueInformation().getNumber()
+                               ).get();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         Elements discussionItems = doc.select(".discussion-item");
         return discussionItems.stream()
-                .filter(this::isPullRequest)
-                .filter(this::isMerged)
-                .map(this::getAuthor)
-                .findFirst();
+                              .filter(this::isPullRequest)
+                              .filter(this::isMerged)
+                              .map(this::getAuthor)
+                              .findFirst();
     }
 
     private String getAuthor(Element di) {

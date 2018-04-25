@@ -2,34 +2,105 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layouts/default">
 <head>
-    <title>FundRequest - Fund Existing GitHub Request</title>
+    <title>FundRequest - Your Request</title>
 </head>
 <body>
 <th:block layout:fragment="content">
-    <section class="section section--header">
+    <section class="section section--header mb-5">
         <div class="row">
             <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
-                <i class="fa fa-bars fa-10x text-warning"></i>
+                <i class="fa fa-list fa-10x text-secondary"></i>
             </div>
             <div class="col-12 col-md-8">
-                <h1 class="text-warning">
+                <h1 class="text-secondary">
                     <span class="d-inline-block d-md-none">
-                        <i class="fa fa-bars fa-1x text-warning"></i>
+                        <i class="fa fa-list fa-1x text-secondary"></i>
                     </span>
-                    Your requests
+                    Overview of your requests
                 </h1>
 
-                <div class="description text-muted">
+                <div class="section--header__description">
                     <p>
-                        This page contains all your requests
+                        Quick and easy way to filter through your issues, view completed, ongoing or even pending
+                        requests.
                     </p>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a class="text-secondary text-transform-normal" th:href="@{'#faq'}">
+                        How it works...
+                    </a>
+                    <a class="btn btn-secondary" th:href="@{/fund/github}">
+                        Start new
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="mb-2">
-        Show requests
+    <section>
+        <request-list
+                :status-filter-default="'funded'"
+                th:attr="'v-bind:requests'=${requests}"
+                :filters="[
+                    { value: 'all', title: 'All', description: 'Showing an overview of all your requests, including funds that are pending.' },
+                    { value: 'funded', title: 'Funded', description: 'Showing an overview of all your funded requests, including funds that are pending.' },
+                    { value: 'starred', title: 'Starred', description: 'Showing an overview of all the requests that you have starred.' },
+                    { value: 'claimed', title: 'Claimed', description: 'Showing an overview of all your claimed requests.' },
+                    { value: 'failed', title: 'Failed', description: 'Showing an overview of all your failed requests' }
+                 ]"
+        >
+            <template slot-scope="{statusFilter}">
+                <request-list-pending-funds
+                     th:attr="'v-bind:funds'=${pendingFunds}"
+                     v-if="(statusFilter==='funded' || statusFilter==='all')">
+                </request-list-pending-funds>
+            </template>
+        </request-list>
+    </section>
+
+    <section class="mb-2" id="faq">
+        <div class="row">
+            <div class="col-12">
+                <h4 class="section-title text-primary">Frequently Asked Questions</h4>
+                <h5 class="section-subtitle text-muted">
+                    <small>Your funding existing requests FAQ's, answered.</small>
+                </h5>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body faq">
+                        <div class="faq__title">
+                            This is a first question, will other follow, what do you think?
+                        </div>
+                        <div class="faq__answer">
+                            Hmm I'm not sure, one question is of course not a lot, so I
+                            guess the chance is very high that others will follow. My
+                            answer is Yes.
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="faq__title">
+                            This is a first question, will other follow, what do you think?
+                        </div>
+                        <div class="faq__answer">
+                            Hmm I'm not sure, one question is of course not a lot, so I
+                            guess the chance is very high that others will follow. My
+                            answer is Yes.
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="faq__title">
+                            This is a first question, will other follow, what do you think?
+                        </div>
+                        <div class="faq__answer">
+                            Hmm I'm not sure, one question is of course not a lot, so I
+                            guess the chance is very high that others will follow. My
+                            answer is Yes.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </th:block>
 

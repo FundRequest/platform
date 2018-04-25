@@ -1,5 +1,5 @@
 import {Alert} from './alert';
-import {Utils} from "./utils";
+import {Utils} from "./Utils";
 import * as $ from 'jquery';
 
 interface VerifyResponse {

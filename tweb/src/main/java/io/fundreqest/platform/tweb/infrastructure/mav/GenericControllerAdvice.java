@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 @ControllerAdvice
@@ -19,9 +18,9 @@ public class GenericControllerAdvice {
     }
 
     @ModelAttribute
-    public void addAttributes(Model model, HttpServletRequest request, Principal principal) {
+    public void addAttributes(Model model, Principal principal) {
         if (principal != null) {
-            final UserProfile userProfile = profileService.getUserProfile(request, principal);
+            final UserProfile userProfile = profileService.getUserProfile(principal);
             model.addAttribute("profile", userProfile);
         }
     }

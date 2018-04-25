@@ -27,9 +27,9 @@ public interface BaseMapper<IN, OUT> {
 
     default Page<OUT> mapToPage(final Page<? extends IN> pageIn) {
         final List<OUT> collect = pageIn.getContent()
-            .stream()
-            .map(this::map)
-            .collect(Collectors.toList());
+                                        .stream()
+                                        .map(this::map)
+                                        .collect(Collectors.toList());
 
         return new PageImpl<>(collect, null, pageIn.getTotalElements());
     }

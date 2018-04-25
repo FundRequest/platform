@@ -23,7 +23,7 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "type",insertable = false, updatable = false)
+    @Column(name = "type", insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
@@ -61,11 +61,15 @@ public class Notification {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Notification that = (Notification) o;
         return type == that.type &&
-                Objects.equals(date, that.date);
+               Objects.equals(date, that.date);
     }
 
     @Override

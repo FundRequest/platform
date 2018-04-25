@@ -1,18 +1,18 @@
 import * as $ from 'jquery';
 
 export class Alert {
-    private static _container: HTMLElement = document.getElementById('alert-container') as HTMLElement;
-    private static _options: any = {
+    private static readonly _container: HTMLElement = document.getElementById('alert-container') as HTMLElement;
+    private static readonly _options: any = {
         type: 'success',
         timeout: 3000
     };
 
     public static show(message: string, type: string = ''): void {
-        this._options.type = type ? type : this._options.type ;
+        let optionType = type ? type : this._options.type;
         let newAlert = this._getAlertElement();
         let innerNewAlert = newAlert.querySelector('.alert-content');
         innerNewAlert ? innerNewAlert.innerHTML = message : null;
-        newAlert.classList.add(`alert-${this._options.type}`);
+        newAlert.classList.add(`alert-${optionType}`);
 
         while (this._container.children.length > 3) {
             this._container.removeChild(this._container.lastChild);

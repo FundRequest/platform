@@ -27,9 +27,9 @@ class BountyServiceImpl implements BountyService {
     @Override
     public void createBounty(CreateBountyCommand createBountyCommand) {
         final Bounty bounty = Bounty.builder()
-                .userId(createBountyCommand.getUserId())
-                .type(createBountyCommand.getType())
-                .build();
+                                    .userId(createBountyCommand.getUserId())
+                                    .type(createBountyCommand.getType())
+                                    .build();
 
         bountyRepository.save(bounty);
     }
@@ -38,7 +38,7 @@ class BountyServiceImpl implements BountyService {
     public BountyDTO getBounties(final Principal principal) {
         final List<Bounty> byUser = bountyRepository.findByUserId(principal.getName());
         Map<BountyType, List<Bounty>> byType = byUser.stream()
-                .collect(Collectors.groupingBy(Bounty::getType));
+                                                     .collect(Collectors.groupingBy(Bounty::getType));
 
         int referralRewards = byType.getOrDefault(BountyType.REFERRAL, new ArrayList<>()).size() * BountyType.REFERRAL.getReward();
         int twitterRewards = byType.getOrDefault(BountyType.TWITTER_TWEET_FOLLOW, new ArrayList<>()).size() * BountyType.TWITTER_TWEET_FOLLOW.getReward();
@@ -46,19 +46,19 @@ class BountyServiceImpl implements BountyService {
         int telegramRewards = byType.getOrDefault(BountyType.LINK_TELEGRAM, new ArrayList<>()).size() * BountyType.LINK_TELEGRAM.getReward();
         int otherRewards =
                 byType.getOrDefault(BountyType.LINK_GITHUB, new ArrayList<>()).size() * BountyType.LINK_GITHUB.getReward()
-                        + byType.getOrDefault(BountyType.LINK_STACK_OVERFLOW, new ArrayList<>()).size() * BountyType.LINK_STACK_OVERFLOW.getReward()
-                        + linkedInRewards
-                        + twitterRewards
-                        + telegramRewards;
+                + byType.getOrDefault(BountyType.LINK_STACK_OVERFLOW, new ArrayList<>()).size() * BountyType.LINK_STACK_OVERFLOW.getReward()
+                + linkedInRewards
+                + twitterRewards
+                + telegramRewards;
 
         return BountyDTO.builder()
-                .referralRewards(referralRewards)
-                .otherRewards(otherRewards)
-                .totalRewards(referralRewards + otherRewards)
-                .twitterRewards(twitterRewards)
-                .linkedInRewards(linkedInRewards)
-                .telegramRewards(telegramRewards)
-                .build();
+                        .referralRewards(referralRewards)
+                        .otherRewards(otherRewards)
+                        .totalRewards(referralRewards + otherRewards)
+                        .twitterRewards(twitterRewards)
+                        .linkedInRewards(linkedInRewards)
+                        .telegramRewards(telegramRewards)
+                        .build();
     }
 
 

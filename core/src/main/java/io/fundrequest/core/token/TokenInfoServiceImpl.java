@@ -19,10 +19,10 @@ public class TokenInfoServiceImpl implements TokenInfoService {
     @Transactional(readOnly = true)
     public TokenInfoDto getTokenInfo(final String tokenAddress) {
         return TokenInfoDto.builder()
-                .address(tokenAddress)
-                .decimals(erc20Service.decimals(tokenAddress))
-                .name(erc20Service.name(tokenAddress))
-                .symbol(erc20Service.symbol(tokenAddress))
-                .build();
+                           .address(tokenAddress)
+                           .decimals(erc20Service.decimals(tokenAddress))
+                           .name(erc20Service.name(tokenAddress))
+                           .symbol(erc20Service.symbol(tokenAddress))
+                           .build();
     }
 }

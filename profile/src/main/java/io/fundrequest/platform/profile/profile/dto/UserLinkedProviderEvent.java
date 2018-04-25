@@ -1,6 +1,6 @@
 package io.fundrequest.platform.profile.profile.dto;
 
-import io.fundrequest.core.keycloak.Provider;
+import io.fundrequest.platform.keycloak.Provider;
 import lombok.Builder;
 import lombok.Data;
 

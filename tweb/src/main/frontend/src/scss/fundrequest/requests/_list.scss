@@ -1,0 +1,144 @@
+.request-list {
+    margin-bottom: 8rem;
+
+    &__options {
+        i, label {
+            color: $gray-500;
+        }
+    }
+
+    &__block {
+        box-shadow: $z-depth-1;
+        background-color: $white;
+        margin-bottom: 1rem;
+
+        &--non-found {
+            padding: 1rem;
+            font-weight: $font-weight-bold;
+            color: $gray-500;
+
+            img {
+                width: 20rem;
+                margin-bottom: 2rem;
+            }
+
+            p {
+                margin-bottom: 0;
+            }
+
+            .card-body h3 {
+                font-weight: $font-weight-bold;
+                font-size: 2.5rem;
+            }
+        }
+    }
+
+    &__statistics {
+        align-items: center;
+
+        > * {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    }
+
+    &__statistic {
+        text-align: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+
+        border-bottom: 1px solid $gray-300;
+
+        > * {
+            width: 100%;
+        }
+
+        &-title {
+            font-size: 1.2rem;
+            font-weight: $font-weight-bold;
+        }
+
+        &-value {
+            color: $secondary;
+            font-size: 1.5rem;
+        }
+
+        &:last-child {
+            border-bottom: 0 none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        @include media-breakpoint-up(md) {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: 0 none;
+            border-right: 1px solid $gray-300;
+
+            &:nth-child(3n) {
+                border-right: 0 none;
+            }
+        }
+    }
+}
+
+.request-list {
+    .request-details {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        cursor: pointer;
+
+        > * {
+            padding: 0 1rem;
+        }
+
+        &:nth-child(even) {
+            background-color: $gray-100;
+        }
+
+        &:last-child {
+            border-radius: 0 0 $border-radius $border-radius;
+        }
+
+        &:hover {
+            background-color: $gray-200;
+        }
+
+        &__info {
+            border-left: 1px solid $gray-200;
+            max-width: calc(100% - 24rem);
+        }
+
+        &__price {
+            font-size: 1.5rem;
+            width: 7rem;
+        }
+
+        &__crypto {
+            margin-left: 0;
+            border-left: 0 none;
+            width: 6rem;
+            padding: 0 .25rem;
+        }
+
+        &__actions {
+            flex-grow: 0;
+            justify-content: center;
+            padding: .5rem 2rem .5rem 1.5rem;
+            width: 4rem;
+
+            i {
+                text-align: center;
+                width: .5rem;
+                transition: font-size .35s ease-in-out;
+            }
+
+            &:hover {
+                i {
+                    font-size: 3rem;
+                }
+            }
+        }
+    }
+}

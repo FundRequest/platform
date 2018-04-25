@@ -34,8 +34,8 @@ public class CreateERC67FundRequest {
         final Function function = new Function(
                 "approveAndCall",
                 asList(new org.web3j.abi.datatypes.Address(fundrequestAddress),
-                        new org.web3j.abi.datatypes.generated.Uint256(amount),
-                        new DynamicBytes(getData().getBytes())),
+                       new org.web3j.abi.datatypes.generated.Uint256(amount),
+                       new DynamicBytes(getData().getBytes())),
                 emptyList());
         return FunctionEncoder.encode(function);
     }
