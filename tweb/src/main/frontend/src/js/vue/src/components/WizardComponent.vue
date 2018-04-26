@@ -33,6 +33,10 @@
         public description: string = "";
 
         mounted() {
+            this.githubUrl = (this.$refs.requestUrl as HTMLElement).dataset.value;
+            if(this.githubUrl) {
+                this.updateUrl(this.githubUrl);
+            }
             let metaNetwork = document.head.querySelector("[name=\"ethereum:network\"]");
             this._network = metaNetwork ? metaNetwork.getAttribute("content") : "";
             this.updateDappPaymentMethod();

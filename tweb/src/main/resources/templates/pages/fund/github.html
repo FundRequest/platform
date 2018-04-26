@@ -125,10 +125,14 @@
                                         </div>
                                         <div class="card-body">
                                             <input class="form-control" type="text"
+                                                   ref="requestUrl"
+                                                   name="request-url"
                                                    data-form-validation="required;github"
                                                    placeholder="ex.: https://github.com/repoXYZ/issues/1"
                                                    v-bind:value="githubUrl"
-                                                   v-on:input="updateUrl($event.target.value)" />
+                                                   v-on:input="updateUrl($event.target.value)"
+                                                   th:readonly="${url != null}"
+                                                    th:attr="'data-value'=${url}"/>
                                             <div class="invalid-feedback">Please enter a valid github issue</div>
                                         </div>
                                     </div>

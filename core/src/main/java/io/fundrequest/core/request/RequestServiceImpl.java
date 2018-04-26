@@ -18,6 +18,7 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.domain.RequestStatus;
+import io.fundrequest.core.request.domain.RequestTechnology;
 import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
@@ -36,11 +37,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 class RequestServiceImpl implements RequestService {
@@ -86,14 +89,14 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "technologies")
+    @Cacheable(value = "technologies", key = "'all'")
     public Set<String> findAllTechnologies() {
         return requestRepository.findAllTechnologies();
     }
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "projects")
+    @Cacheable(value = "projects", key = "'all'")
     public Set<String> findAllProjects() {
         return requestRepository.findAllProjects();
     }
@@ -135,7 +138,7 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"projects", "technologies"})
+    @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
     public Long createRequest(CreateRequestCommand command) {
         Optional<Request> request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId());
         Request r = request.orElseGet(() -> createNewRequest(command));
@@ -144,7 +147,7 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"projects", "technologies"})
+    @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
     public void requestClaimed(RequestClaimedCommand command) {
         Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
                                            .orElseThrow(ResourceNotFoundException::new);
@@ -222,8 +225,13 @@ class RequestServiceImpl implements RequestService {
         return requestRepository.save(request);
     }
 
-    private Set<String> getTechnologies(IssueInformation issueInformation) {
+    private Set<RequestTechnology> getTechnologies(IssueInformation issueInformation) {
         Map<String, Long> languages = githubGateway.getLanguages(issueInformation.getOwner(), issueInformation.getRepo());
-        return languages.keySet();
+        return languages.entrySet()
+                        .stream()
+                        .map(l -> RequestTechnology.builder().technology(l.getKey()).weight(l.getValue()).build())
+                        .sorted(Comparator.comparingLong(RequestTechnology::getWeight).reversed())
+                        .limit(4)
+                        .collect(Collectors.toSet());
     }
 }
