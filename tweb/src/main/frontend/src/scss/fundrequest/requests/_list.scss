@@ -3,7 +3,7 @@
 
     &__options {
         i, label {
-            color: $gray-500;
+            color: $gray-400;
         }
     }
 
@@ -15,7 +15,7 @@
         &--non-found {
             font-weight: $font-weight-bold;
             padding: 3rem;
-            color: $gray-500;
+            color: $gray-400;
 
             img {
                 width: 20rem;
@@ -54,13 +54,15 @@
         }
 
         &-title {
-            font-size: 1.2rem;
+            color: $gray-500;
+            font-size: $font-size-lg;
             font-weight: $font-weight-bold;
         }
 
         &-value {
             color: $secondary;
             font-size: 1.5rem;
+            font-weight: $font-weight-normal;
         }
 
         &:last-child {

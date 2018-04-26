@@ -4,6 +4,7 @@
 
         &.dropdown {
             + label {
+                color: $gray-400;
                 width: 100%;
 
                 i {
@@ -45,7 +46,7 @@
             line-height: 1.5rem;
             margin: 0 0 .5rem;
             padding: .3rem 0 .55rem;
-            border-bottom: 2px solid $gray-300;
+            border-bottom: 2px solid $gray-a200;
         }
 
         .dropdown-menu {
@@ -60,7 +61,7 @@
 
         .selected-tag {
             color: $gray-700;
-            font-weight: $font-weight-normal;
+            font-weight: $font-weight-bold;
             font-family: $font-family-sans-serif;
             display: flex;
             position: relative;
@@ -98,8 +99,8 @@
             .selected-tag {
                 font-size: 1rem;
                 margin: 0 0 .5rem 0;
-                padding: .3rem .75rem .55rem 0;
-                border-color: $gray-300 !important;
+                padding: .3rem 0 .55rem 0;
+                border-color: $gray-a200 !important;
             }
         }
     }

@@ -1,16 +1,14 @@
-$border-radius: 0.25rem;
-$btn-border-radius: 0.25rem;
-$card-border-radius: 0.25rem;
+$border-radius-base: .325rem;
+$border-radius: 0.325rem;
+$btn-border-radius: 0.325rem;
+$card-border-radius: 0.325rem;
 
 $enable-caret: false;
 
 $font-family-sans-serif: "Roboto", Arial, sans-serif;
-$font-family-base: "Roboto", sans-serif;
+$font-family-base: "Roboto", Arial, sans-serif;
 
-$font-weight-light: 200;
 $enable-shadows: true;
-
-$border-radius-base: .25rem;
 
 $btn-margin-basic: 0 0 .375rem 0;
 $btn-padding-y-basic: .5rem;
@@ -36,3 +34,18 @@ $btn-outline-padding-y-small: calc(#{$btn-padding-y-small} - 2px);
 $input-group-form-control-pt: .5rem;
 $input-group-form-control-pb: .5rem;
 
+$font-weight-light: 200;
+$font-weight-normal: 300;
+$font-weight-semi-bold: 400;
+$font-weight-bold: 500;
+
+$font-size-base: 1rem; // Assumes the browser default, typically `16px`
+$font-size-lg: ($font-size-base * 1.125); //18px
+$font-size-sm: ($font-size-base * .975); //14px;
+
+$h1-font-size: $font-size-base * 3; //48px;
+//$h2-font-size: $font-size-base * 2 !default;
+//$h3-font-size: $font-size-base * 1.75 !default;
+//$h4-font-size: $font-size-base * 1.5 !default;
+//$h5-font-size: $font-size-base * 1.25 !default;
+//$h6-font-size: $font-size-base !default;

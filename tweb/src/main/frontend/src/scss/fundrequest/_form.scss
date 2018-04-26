@@ -47,16 +47,21 @@
     input[type=time],
     input[type=url],
     textarea.md-textarea {
-        border-bottom: 2px solid $gray-300;
+        color: $gray-600;
+        border-bottom: 2px solid $gray-a200;
     }
 
     select.form-control--fnd {
-        background-color: $gray-300;
-        border-color: $gray-300;
+        background-color: $gray-a100;
+        border-color: $gray-a200;
         color: $gray-600;
         &:active, &:focus {
             background-color: $gray-300;
         }
+    }
+
+    label {
+        font-weight: $font-weight-bold;
     }
 }
 

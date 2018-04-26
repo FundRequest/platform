@@ -2,34 +2,25 @@
 $light-bg-color: #f4f9fb;
 
 // colors
-$body-bg: #f7f7f7;
 
-$gray-500: #adb5bd;
+$gray-100: #f7f7f7;
+$gray-200: #ebebeb;
+$gray-300: #bcbcbc;
+$gray-400: #a8a8a8;
+$gray-500: #9b9b9b;
 $gray-600: #7c7c7c;
 
-$headings-color: #9b9b9b;
-$text-muted: #9b9b9b;
-
-$body-color: $gray-600;
-
-/*
-$gray-100: #f8f9fa;
-$gray-200: #e9ecef;
-$gray-300: #dee2e6;
-$gray-400: #ced4da;
-$gray-500: #adb5bd;
-$gray-600: #6c757d;
-$gray-700: #495057;
-$gray-800: #343a40;
-$gray-900: #212529;
-*/
+$gray-a100: #e4e4e4;
+$gray-a200: #d9d9d9;
+$gray-a400: #757575;
 
 $blue-50: #e7f4fb;
 $blue-100: #c4e4f5;
 $blue-200: #9cd2ee;
 $blue-300: #74bfe7;
 $blue-400: #57b2e1;
-$blue-500: #39a4dc;
+//$blue-500: #39a4dc;
+$blue-500: #49b2e1;
 $blue-600: #339cd8;
 $blue-700: #2c92d3;
 $blue-800: #2489ce;
@@ -104,7 +95,10 @@ $teal: $teal-500;
 $green: $green-500;
 $yellow: $yellow-500;
 $orange: $orange-500;
-$text-muted: #9e9e9e;
+$text-muted: #c5c5c5;
+
+$body-color: $gray-600;
+$body-bg: $gray-100;
 
 $primary: $blue;
 $secondary: $orange;

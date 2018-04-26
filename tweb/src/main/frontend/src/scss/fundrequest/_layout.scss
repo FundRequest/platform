@@ -5,6 +5,7 @@ body {
     justify-content: space-between;
     align-items: center;
     font-family: $font-family-base;
+    font-weight: $font-weight-normal;
 }
 
 .fnd-page-container {
@@ -167,10 +168,10 @@ body {
     font-family: "jaf-domus", sans-serif;
 }
 
-.navbar--fnd-filter {
+.navbar--filter {
     padding: 0;
     box-shadow: none;
-    border-bottom: 2px solid $gray-300;
+    border-bottom: 2px solid $gray-a100;
 
     .nav-link {
         font-weight: $font-weight-bold;
@@ -182,7 +183,7 @@ body {
         transition: border-color .35s ease, color .35s ease;
 
         &:hover {
-            color: $gray-600;
+            color: $gray-a400;
         }
     }
 
@@ -208,6 +209,10 @@ body {
             color: $gray-600;
             border-bottom: 3px solid $blue-500;
         }
+    }
+
+    &__description {
+        color: $gray-500;
     }
 }
 

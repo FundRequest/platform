@@ -16,6 +16,7 @@
     padding: 0;
     position: relative;
     transition: all .35s ease-in-out;
+    color: $primary;
 
     &::after {
         position: absolute;
@@ -43,8 +44,13 @@
         margin: 0;
     }
 
+    &__title {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-semi-bold;
+    }
+
     &__description {
-        font-family: $font-family-sans-serif;
+        font-weight: $font-weight-light;
     }
 
     &:hover,
@@ -55,7 +61,7 @@
     }
 
     &:active {
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: $gray-200;
     }
 
     &--disabled {
@@ -64,10 +70,12 @@
         color: $gray-500;
 
         .main-feature__icon {
+            color: $gray-300;
             padding-bottom: .2rem;
         }
 
         .main-feature__content {
+            font-weight: $font-weight-light;
             font-style: italic;
             padding-top: .2rem;
         }
