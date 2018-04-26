@@ -89,14 +89,14 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "technologies")
+    @Cacheable(value = "technologies", key = "'all'")
     public Set<String> findAllTechnologies() {
         return requestRepository.findAllTechnologies();
     }
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "projects")
+    @Cacheable(value = "projects", key = "'all'")
     public Set<String> findAllProjects() {
         return requestRepository.findAllProjects();
     }
@@ -138,7 +138,7 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"projects", "technologies"})
+    @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
     public Long createRequest(CreateRequestCommand command) {
         Optional<Request> request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId());
         Request r = request.orElseGet(() -> createNewRequest(command));
@@ -147,7 +147,7 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"projects", "technologies"})
+    @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
     public void requestClaimed(RequestClaimedCommand command) {
         Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
                                            .orElseThrow(ResourceNotFoundException::new);
