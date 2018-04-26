@@ -1,3 +1,5 @@
+import Web3Dist from 'web3';
+
 export class Web3 {
     private _web3: any;
 
@@ -7,7 +9,8 @@ export class Web3 {
         if (typeof (<any>window).web3 !== 'undefined') {
             this._web3 = new (<any>window).Web3((<any>window).web3.currentProvider);
         } else {
-            this._web3 = new (<any>window).Web3(new (<any>window).Web3.providers.HttpProvider('https://kovan.fundrequest.io'));
+            (<any>window).web3 = new Web3Dist();
+            this._web3 = new (<any>window).Web3(new (<any>window).web3.providers.HttpProvider('https://kovan.fundrequest.io'));
             // TODO: make app readonly, no transactions are possible
         }
     }
