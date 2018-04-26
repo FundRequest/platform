@@ -12,14 +12,14 @@ public final class RequestMother {
                 .withIssueInformation(
                         IssueInformationMother.kazuki43zooApiStub().build()
                                      )
-                .withTechnologies(Collections.singleton("java"))
+                .withTechnologies(Collections.singleton(RequestTechnology.builder().technology("java").weight(100L).build()))
                 .withWatchers(Collections.singletonList("somebody@mailinator.com"));
     }
 
     public static RequestBuilder fundRequestArea51() {
-        Set<String> technologies = new HashSet<>();
-        technologies.add("python");
-        technologies.add("kotlin");
+        Set<RequestTechnology> technologies = new HashSet<>();
+        technologies.add(RequestTechnology.builder().technology("python").weight(40L).build());
+        technologies.add(RequestTechnology.builder().technology("kotlin").weight(60L).build());
         return RequestBuilder
                 .aRequest()
                 .withIssueInformation(

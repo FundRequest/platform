@@ -8,7 +8,7 @@ import java.util.Set;
 public final class RequestBuilder {
     private IssueInformation issueInformation;
     private List<String> watchers = new ArrayList<>();
-    private Set<String> technologies = new HashSet<>();
+    private Set<RequestTechnology> technologies = new HashSet<>();
     private Long id;
     private RequestStatus status;
 
@@ -34,7 +34,7 @@ public final class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder withTechnologies(Set<String> technologies) {
+    public RequestBuilder withTechnologies(Set<RequestTechnology> technologies) {
         this.technologies = technologies;
         return this;
     }
