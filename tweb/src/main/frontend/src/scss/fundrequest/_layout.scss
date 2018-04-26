@@ -20,6 +20,7 @@ body {
     z-index: $zindex-dropdown;
     box-shadow: none;
     margin: 0 auto;
+    padding-top: 1rem;
 
     &.navbar-light {
         background-color: $white !important;
@@ -186,15 +187,19 @@ body {
     }
 
     .nav-item {
-        margin: 0 .5rem;
+        margin: 0 .75rem;
+
         &:first-child {
             margin-left: 0;
-            .nav-link {
-                padding-left: 0;
-            }
         }
+
         &:last-child {
             margin-right: 0;
+        }
+
+        .nav-link {
+            padding-left: 0;
+            padding-right: 0;
         }
     }
 

@@ -97,7 +97,7 @@
                 await new Promise((resolve, reject) => {
                     web3.version.getNetwork((err, res) => {
                         if (!err && res != this._network) {
-                            PaymentMethods.getInstance().dapp.disabledMsg = "Not connected to the correct network.";
+                            PaymentMethods.getInstance().dapp.disabledMsg = "Not connected to main network.";
                         }
                         resolve("not connected");
                     });

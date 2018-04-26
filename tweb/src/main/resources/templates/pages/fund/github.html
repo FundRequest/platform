@@ -11,7 +11,7 @@
             <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
                 <i class="fab fa-github-alt fa-10x text-secondary"></i>
             </div>
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-7">
                 <h1 class="text-secondary">
                     <span class="d-inline-block d-md-none">
                         <i class="fab fa-github-alt fa-1x text-secondary"></i>
@@ -148,7 +148,7 @@
                             </div>
                             <div class="wizard__footer text-right">
                                 <button class="btn btn-secondary" v-on:click="gotoStep(2)">
-                                    continue to funding details
+                                    Continue to funding details
                                 </button>
                             </div>
                         </div>
@@ -214,7 +214,10 @@
                                                        id="paymentMethod-trustwallet"
                                                        v-bind:value="paymentMethods.trustWallet" />
                                                 <label class="form-check-label" for="paymentMethod-trustwallet">
-                                                    Trust Wallet {{ paymentMethods.trustWallet.disabledMsg }}
+                                                    Trust Wallet / QR Code (EIP67)
+                                                    <small v-if="paymentMethods.trustWallet.disabledMsg">
+                                                        (<span class="text-warning">{{paymentMethods.trustWallet.disabledMsg}}</span>)
+                                                    </small>
                                                 </label>
                                             </div>
                                             <div class="form-check mb-2">
@@ -253,11 +256,11 @@
                             </div>
                             <div class="wizard__footer text-right">
                                 <button class="btn btn-link text-secondary" v-on:click="gotoStep(1)">
-                                    back to issue details
+                                    Back to issue details
                                 </button>
 
                                 <button class="btn btn-secondary" v-on:click="gotoStep(3)">
-                                    continue to last step
+                                    Continue to last step
                                 </button>
                             </div>
                         </div>
@@ -295,7 +298,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card-footer bg-white">
+                                        <div class="card-footer bg-white text-muted">
                                             Selected payment method: <strong>{{paymentMethod.text}}</strong>
                                         </div>
                                     </div>
@@ -303,7 +306,7 @@
                             </div>
                             <div class="wizard__footer text-right">
                                 <button class="btn btn-link text-secondary" v-on:click="gotoStep(2)">
-                                    back to funding details
+                                    Back to funding details
                                 </button>
 
                                 <button class="btn btn-secondary" v-on:click="fund()">
@@ -369,9 +372,9 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body faq">
-                                <div class="faq__title">
+                                <h4 class="faq__title">
                                     This is a first question, will other follow, what do you think?
-                                </div>
+                                </h4>
                                 <div class="faq__answer">
                                     Hmm I'm not sure, one question is of course not a lot, so I
                                     guess the chance is very high that others will follow. My
@@ -379,9 +382,9 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="faq__title">
+                                <h4 class="faq__title">
                                     This is a first question, will other follow, what do you think?
-                                </div>
+                                </h4>
                                 <div class="faq__answer">
                                     Hmm I'm not sure, one question is of course not a lot, so I
                                     guess the chance is very high that others will follow. My
@@ -389,9 +392,9 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="faq__title">
+                                <h4 class="faq__title">
                                     This is a first question, will other follow, what do you think?
-                                </div>
+                                </h4>
                                 <div class="faq__answer">
                                     Hmm I'm not sure, one question is of course not a lot, so I
                                     guess the chance is very high that others will follow. My

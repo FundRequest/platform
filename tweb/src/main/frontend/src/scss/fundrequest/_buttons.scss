@@ -20,4 +20,28 @@
     }
 }
 
+.btn-link {
+    padding: .15rem 0;
+    margin: 0 1rem .375rem 1rem;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color .35s ease-in-out;
+
+    &:hover {
+        text-decoration: none;
+    }
+
+    &.text-secondary {
+        &:hover {
+            border-bottom-color: $secondary;
+        }
+    }
+
+    &.text-white {
+        &:hover {
+            border-bottom-color: $white;
+        }
+    }
+}
+
 @import "../social-buttons/imports";
