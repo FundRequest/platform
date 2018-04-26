@@ -18,6 +18,7 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.domain.RequestStatus;
+import io.fundrequest.core.request.domain.RequestTechnology;
 import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
@@ -36,11 +37,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 class RequestServiceImpl implements RequestService {
@@ -222,8 +225,13 @@ class RequestServiceImpl implements RequestService {
         return requestRepository.save(request);
     }
 
-    private Set<String> getTechnologies(IssueInformation issueInformation) {
+    private Set<RequestTechnology> getTechnologies(IssueInformation issueInformation) {
         Map<String, Long> languages = githubGateway.getLanguages(issueInformation.getOwner(), issueInformation.getRepo());
-        return languages.keySet();
+        return languages.entrySet()
+                        .stream()
+                        .map(l -> RequestTechnology.builder().technology(l.getKey()).weight(l.getValue()).build())
+                        .sorted(Comparator.comparingLong(RequestTechnology::getWeight).reversed())
+                        .limit(4)
+                        .collect(Collectors.toSet());
     }
 }
