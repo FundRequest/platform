@@ -4,7 +4,6 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -24,7 +23,6 @@ public class FundControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         principal = mock(Principal.class);
         when(principal.getName()).thenReturn("davyvanroy@fundrequest.io");
         requestService = mock(RequestService.class);
@@ -40,5 +38,12 @@ public class FundControllerTest {
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.view().name("pages/fund/github"))
                     .andExpect(MockMvcResultMatchers.model().attribute("url", "https://github.com/kazuki43zoo/api-stub/issues/42"));
+    }
+
+    @Test
+    public void fund() throws Exception {
+        this.mockMvc.perform(get("/fund/{type}", "github").principal(principal))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.view().name("pages/fund/github"));
     }
 }
