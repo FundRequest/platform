@@ -11,6 +11,8 @@ node_js: "8.7.0"
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
-  - docker build -t fundrequestio/platform:"$TRAVIS_BRANCH" tweb
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - docker build -t fundrequestio/platform:"$TRAVIS_BRANCH" tweb
   - docker push fundrequestio/platform:"$TRAVIS_BRANCH"
+  - docker build -t fundrequestio/admin:"$TRAVIS_BRANCH" admin-web
+  - docker push fundrequestio/admin:"$TRAVIS_BRANCH"
