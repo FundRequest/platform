@@ -25,7 +25,7 @@ public class FundController extends AbstractController {
     }
 
     @RequestMapping("/requests/{request-id}/fund")
-    public ModelAndView details(@PathVariable("request-id") Long requestId) {
+    public ModelAndView fundRequestById(@PathVariable("request-id") Long requestId) {
         RequestDto request = requestService.findRequest(requestId);
         return modelAndView()
                 .withObject("url", request.getIssueInformation().getUrl())
