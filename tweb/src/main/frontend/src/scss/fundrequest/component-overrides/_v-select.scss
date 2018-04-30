@@ -46,7 +46,8 @@
             line-height: 1.5rem;
             margin: 0 0 .5rem;
             padding: .3rem 0 .55rem;
-            border-bottom: 2px solid $gray-a200;
+            box-shadow: 0 1px 0 0 $gray-a200;
+            border-bottom: 1px solid $gray-a200;
         }
 
         .dropdown-menu {
@@ -60,8 +61,8 @@
         }
 
         .selected-tag {
-            color: $gray-700;
-            font-weight: $font-weight-bold;
+            color: $gray-600;
+            font-weight: $font-weight-semi-bold;
             font-family: $font-family-sans-serif;
             display: flex;
             position: relative;
@@ -70,13 +71,15 @@
             height: auto;
             font-size: .75rem;
             margin: 0 .5rem .5rem 0;
+
             padding: .3rem .75rem .55rem 0;
             align-items: center;
             border: 0 none;
-            border-bottom: 2px solid $primary !important;
+            box-shadow: 0 1px 0 0 $primary !important;
+            border-bottom: 1px solid $primary !important;
 
             .close {
-                color: $gray-500;
+                color: $gray-400;
                 opacity: 1;
                 font-size: 1rem;
                 position: absolute;
@@ -85,7 +88,7 @@
                 right: 0;
                 top: 0;
                 bottom: 0;
-                padding: .3rem 0 .55rem 0;
+                padding: .3rem 0 .55rem;
                 margin-left: 0;
                 text-align: right;
             }
@@ -99,8 +102,9 @@
             .selected-tag {
                 font-size: 1rem;
                 margin: 0 0 .5rem 0;
-                padding: .3rem 0 .55rem 0;
-                border-color: $gray-a200 !important;
+                padding: .3rem 0 .55rem;
+                box-shadow: 0 1px 0 0 $gray-a200 !important;
+                border-bottom: 1px solid $gray-a200 !important;
             }
         }
     }

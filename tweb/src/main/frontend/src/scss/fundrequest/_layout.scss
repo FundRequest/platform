@@ -226,3 +226,11 @@ a.anchor {
 .dropdown-menu {
     box-shadow: $z-depth-2;
 }
+
+.disclaimer-asterix {
+    color: $gray-500;
+    display: inline-block;
+    font-size: $font-size-sm;
+    vertical-align: super;
+    margin-right: .25rem;
+}

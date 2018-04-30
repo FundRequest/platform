@@ -5,6 +5,10 @@
         i, label {
             color: $gray-400;
         }
+
+        > .row {
+            align-items: flex-end;
+        }
     }
 
     &__block {
@@ -14,8 +18,7 @@
 
         &--non-found {
             font-weight: $font-weight-bold;
-            padding: 3rem;
-            color: $gray-400;
+            padding: 4rem 2rem;
 
             img {
                 width: 20rem;
@@ -26,9 +29,18 @@
                 margin-bottom: 0;
             }
 
-            .card-body h3 {
-                font-weight: $font-weight-bold;
-                font-size: 2.5rem;
+            .card-body {
+                h3, p {
+                    font-weight: $font-weight-bold;
+                    color: #c7c7c7;
+                }
+                h3 {
+                    font-size: 3.25rem;
+                }
+
+                p {
+                    font-size: 1.5rem;
+                }
             }
         }
     }
@@ -79,67 +91,6 @@
 
             &:nth-child(3n) {
                 border-right: 0 none;
-            }
-        }
-    }
-}
-
-.request-list {
-    .request-details {
-        display: flex;
-        align-items: center;
-        padding: 1rem 0;
-        cursor: pointer;
-
-        > * {
-            padding: 0 1rem;
-        }
-
-        &:nth-child(even) {
-            background-color: $gray-100;
-        }
-
-        &:last-child {
-            border-radius: 0 0 $border-radius $border-radius;
-        }
-
-        &:hover {
-            background-color: $gray-200;
-        }
-
-        &__info {
-            border-left: 1px solid $gray-200;
-            max-width: calc(100% - 24rem);
-        }
-
-        &__price {
-            font-size: 1.5rem;
-            width: 7rem;
-        }
-
-        &__crypto {
-            margin-left: 0;
-            border-left: 0 none;
-            width: 6rem;
-            padding: 0 .25rem;
-        }
-
-        &__actions {
-            flex-grow: 0;
-            justify-content: center;
-            padding: .5rem 2rem .5rem 1.5rem;
-            width: 4rem;
-
-            i {
-                text-align: center;
-                width: .5rem;
-                transition: font-size .35s ease-in-out;
-            }
-
-            &:hover {
-                i {
-                    font-size: 3rem;
-                }
             }
         }
     }

@@ -45,6 +45,7 @@
     margin: 0;
     width: 100%;
     border-bottom: $alert-border-width solid rgba($success, .85);
+    border-radius: 0;
 }
 
 .alert--top + .alert-container {

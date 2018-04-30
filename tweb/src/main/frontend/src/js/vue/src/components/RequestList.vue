@@ -46,7 +46,7 @@
                         <fnd-select v-bind:id="'list-sort'"
                                     v-bind:value="sortBy"
                                     v-on:input="setSortBy">
-                            <option value="" selected="selected" disabled="disabled">Sort by</option>
+                            <option value="" selected="selected" disabled="disabled">SORT BY</option>
                             <option value="title" selected="selected">Title</option>
                             <option value="fundings">Fundings</option>
                         </fnd-select>
@@ -65,7 +65,7 @@
                         <img src="/assets/img/unicorn-gray.png"
                              alt="nothing found, gray unicorn" />
                     </div>
-                    <h3>Oh Snap!</h3>
+                    <h3>Oh snap!</h3>
                     <p>Not a single request found.</p>
                     <p>Try to search with a different filter.</p>
                 </div>
@@ -157,6 +157,7 @@
 
         private _setIsEmpty(isEmpty: boolean) {
             this.hasNoResults = isEmpty;
+            console.log(this.listFilter.isFiltered, this.hasNoResults);
             this.isEmpty = !this.listFilter.isFiltered && isEmpty;
         }
 

@@ -47,25 +47,35 @@
     input[type=time],
     input[type=url],
     textarea.md-textarea {
-        color: $gray-600;
-        border-bottom: 2px solid $gray-a200;
+        box-shadow: 0 1px 0 0 $gray-a200;
+        border-bottom: 1px solid $gray-a200;
     }
 
     select.form-control--fnd {
         background-color: $gray-a100;
-        border-color: $gray-a200;
+        border-color: $gray-a100;
         color: $gray-600;
         &:active, &:focus {
-            background-color: $gray-300;
+            background-color: $gray-200;
         }
     }
 
     label {
         font-weight: $font-weight-bold;
+        top: .4rem;
+        &.active {
+            transform: translateY(-120%);
+        }
+    }
+
+    .form-control {
+        //padding: .3rem 0 .15rem;
     }
 }
 
 .form-control {
+    color: $gray-600;
+    font-weight: $font-weight-semi-bold;
 
     &.is-loading {
         border-color: $yellow-500;
