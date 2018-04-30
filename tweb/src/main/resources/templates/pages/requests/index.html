@@ -53,7 +53,7 @@
                             <div class="col-12 col-md-4 request-list__statistic">
                                 <div class="request-list__statistic-title">Total funding</div>
                                 <div class="request-list__statistic-value">
-                                    $<span th:text="${#numbers.formatDecimal(statistics.totalAvailableFunding,1,2,'COMMA')}">2873</span>
+                                    $<span th:text="${#numbers.formatDecimal(statistics.totalAvailableFunding,1,2,'POINT')}">2873</span>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 request-list__statistic">
@@ -78,10 +78,10 @@
     <section class="mb-2" ref="faq" id="faq">
         <div class="row">
             <div class="col-12">
-                <h4 class="section-title text-primary">Frequently Asked Questions</h4>
-                <h5 class="section-subtitle text-muted">
-                    <small>Your funding existing requests FAQ's, answered.</small>
-                </h5>
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <h3 class="section-subtitle">
+                    Your funding existing requests FAQ's, answered.
+                </h3>
             </div>
             <div class="col-12">
                 <div class="card">
