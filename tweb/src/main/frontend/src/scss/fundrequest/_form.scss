@@ -75,6 +75,7 @@
 
 .form-control {
     color: $gray-600;
+    border-color: $gray-200;
     font-weight: $font-weight-semi-bold;
 
     &.is-loading {

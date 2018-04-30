@@ -1,4 +1,4 @@
-$circle-size: 30px;
+$circle-size: .75rem;
 
 $animation-time: .5s;
 $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
@@ -12,6 +12,24 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
 .wizard {
     &__header {
         position: relative;
+    }
+
+    &__step-title {
+        transition: .5s transform;
+        position: absolute;
+        width: 100%;
+
+        &.movingOutBackward {
+            transform: translateX(100% * -1);
+        }
+
+        &.movingOutForward {
+            transform: translateX(100%);
+        }
+
+        &.movingIn {
+            transform: translateX(0);
+        }
     }
 
     &__steps {
@@ -33,12 +51,21 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
             margin: 1rem 0 .5rem 0;
         }
     }
+
+    &__footer {
+        text-align: right;
+
+        .btn {
+            margin-left: 1rem;
+        }
+    }
 }
 
 // Lines
 .line {
     position: absolute;
-    top: $circle-size / 2;
+    top: 50%;
+    transform: translateY(-50%);
     left: 0;
     z-index: -1;
     height: 2px;
@@ -46,52 +73,54 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
 
     &.-start {
         left: 0;
-        background: $blue-500;
+        background: $blue-400;
         width: 50%;
     }
 
     &.-end {
         left: 50%;
-        background: $blue-500;
+        background: $blue-400;
         width: 50%;
     }
 
     &.-background {
-        background: $gray-300;
+        background: $gray-200;
         width: 100%;
     }
 
     &.-overlay {
         background: $body-bg;
-        width: $circle-size + 10px;
+        width: $circle-size + .625rem;
         left: -5px;
     }
 
     &.-progress {
         background: $blue-500;
         width: 100%;
-        transform: scaleX(0);
+        transform: translateY(-50%) scaleX(0);
         transform-origin: left center;
     }
 
     &.-in-progress {
-        transform: scaleX(1);
+        transform: translateY(-50%) scaleX(1);
     }
 }
 
 // Panels
+.wizard__step-titles,
 .panels {
     position: relative;
     overflow: hidden;
     margin: 0 -2rem;
 }
 
+.wizard__step-title,
 .panel {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 2rem;
+    padding: 0 2rem;
     transition: .5s all;
 
     &.movingOutBackward {
@@ -105,6 +134,10 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     &.movingIn {
         transform: translateX(0);
     }
+}
+
+.panel {
+    padding: 2rem;
 }
 
 // Steps
@@ -139,45 +172,84 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     }
 
     &__number {
-        background: $white;
+        position: relative;
+        background-color: transparent;
         font-weight: 800;
         width: $circle-size;
         height: $circle-size;
         line-height: $circle-size;
         margin: 0;
         border-radius: 50%;
-        border: 2px solid $gray-300;
+        border: 2px solid $green-400;
 
         transition: opacity .5s;
         opacity: 1;
         z-index: 5;
+
+        &::after {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            border-radius: 50%;
+            display: block;
+            content: '';
+            width: 0;
+            height: 0;
+            background-color: $green-400;
+            transform: translateX(-50%) translateY(-50%);
+            transition: width .35s ease-in-out, height .35s ease-in-out;
+        }
+
+        &--blue {
+            border-color: $blue-400;
+
+            &::after {
+                background-color: $blue-400;
+            }
+        }
+
+        &--yellow {
+            border-color: $yellow-400;
+
+            &::after {
+                background-color: $yellow-400;
+            }
+        }
     }
 
     &.-active {
         .step__number {
-            border-color: $green-400;
-            background-color: $green-50;
+            border-width: 1px;
+
+            &::after {
+                width: $circle-size / 2;
+                height: $circle-size / 2;
+            }
         }
     }
 
     &.-completed {
         .step__number {
-            opacity: 0;
+            &::after {
+                width: $circle-size;
+                height: $circle-size;
+            }
         }
 
         .step__link {
             cursor: pointer;
             pointer-events: auto;
 
+            /*
             &:hover .checkmark {
-                width: $circle-size + 6px;
-                height: $circle-size + 6px;
-                margin-left: -3px;
-                margin-top: -3px;
-            }
+                width: $circle-size + .375rem;
+                height: $circle-size + .375rem;
+                margin-left: -.375rem / 2;
+                margin-top: -.375rem / 2;
+            }*/
         }
 
-        .checkmark {
+        /*.checkmark {
             z-index: 0;
             animation: fill .4s ease-in-out forwards,
             scale .3s ease-in-out .6s both;
@@ -185,10 +257,10 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
 
         .checkmark__check {
             animation: stroke .5s linear .4s forwards;
-        }
+        }*/
 
         .line {
-            transform: scaleX(1);
+            transform: translateY(-50%) scaleX(1);
         }
     }
 
@@ -197,6 +269,7 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     }
 }
 
+/*
 // Checkmark
 .checkmark {
     position: absolute;
@@ -272,4 +345,4 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     100% {
         opacity: 1;
     }
-}
+}*/

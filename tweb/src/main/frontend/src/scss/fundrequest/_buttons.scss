@@ -1,4 +1,6 @@
 .btn {
+    font-weight: $font-weight-semi-bold;
+
     &--profile {
         .top-nav-item & {
             margin: 10px 0 10px 10px;
