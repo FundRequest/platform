@@ -45,8 +45,15 @@ body {
     }
 
     &.navbar-dark {
-        .navbar-nav .nav-item .nav-link:not(:active):not(.active):not(:hover) {
-            color: rgba($white, .5);
+        .navbar-nav .nav-item .nav-link {
+            &:active,
+            &:focus,
+            &:hover {
+                color: $white;
+            }
+            &:not(:active):not(.active):not(:hover) {
+                color: $blue-a200
+            }
         }
     }
 
@@ -225,6 +232,10 @@ a.anchor {
 
 .dropdown-menu {
     box-shadow: $z-depth-2;
+}
+
+.disclaimer-footer {
+    font-size: $font-size-sm;
 }
 
 .disclaimer-asterix {

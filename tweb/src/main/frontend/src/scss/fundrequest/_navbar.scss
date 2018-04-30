@@ -2,13 +2,13 @@
     //text-transform: uppercase;
 }
 
-.dropdown-menu {
+.navbar .dropdown-menu {
     &--main {
         border: 0 none;
         padding: 10px;
-        background-color: $blue-100;
+        background-color: $blue-a200;
         .dropdown-divider {
-            border-color: $gray-500;
+            border-color: #bad5e2;
         }
 
         &::before {
@@ -25,6 +25,9 @@
         }
 
         .dropdown-item {
+            color: #394348 !important; //override mdb
+            font-size: $font-size-sm !important; //override mdb
+            font-weight: $font-weight-bold !important; //override mdb
             padding-left: .5rem;
             padding-right: .5rem;
             border-radius: $border-radius-sm;
