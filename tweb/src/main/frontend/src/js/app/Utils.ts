@@ -56,7 +56,7 @@ export class Utils {
         return response;
     }
 
-    public static fetchJSON(url: string, body: any = null) {
+    public static fetchJSON(url: string, body: any = null): Promise<any> {
         if (body == null) {
             return fetch(url, {credentials: 'same-origin'})
                 .then(Utils._handleHttpErrors)
@@ -73,7 +73,25 @@ export class Utils {
             }).then(res => res ? res.json() : null
             ).catch(err => null);
         }
+    }
 
+    public static fetchHTML(url: string, body: any = null): Promise<any> {
+        if (body == null) {
+            return fetch(url, {credentials: 'same-origin'})
+                .then(Utils._handleHttpErrors)
+                .then(res => res ? res.text() : null)
+                .catch(err => null);
+        } else {
+            return fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(body),
+                credentials: 'same-origin',
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                })
+            }).then(res => res ? res.text() : null
+            ).catch(err => null);
+        }
     }
 
     public static async validateHTMLElement(element: HTMLElement, validations: string[], callback = null): Promise<boolean> {
