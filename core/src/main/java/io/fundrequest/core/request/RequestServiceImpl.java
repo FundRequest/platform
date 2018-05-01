@@ -18,24 +18,32 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.domain.RequestStatus;
+import io.fundrequest.core.request.domain.RequestTechnology;
 import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
+import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.github.GithubGateway;
+import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 class RequestServiceImpl implements RequestService {
@@ -81,6 +89,20 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "technologies", key = "'all'")
+    public Set<String> findAllTechnologies() {
+        return requestRepository.findAllTechnologies();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "projects", key = "'all'")
+    public Set<String> findAllProjects() {
+        return requestRepository.findAllProjects();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<RequestDto> findRequestsForUser(Principal principal) {
         Set<Request> result = new HashSet<>();
         String etherAddress = profileService.getUserProfile(principal).getEtherAddress();
@@ -98,6 +120,16 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<CommentDto> getComments(Long requestId) {
+        Request request = requestRepository.findOne(requestId).orElseThrow(() -> new EntityNotFoundException("Request not found"));
+        return mappers.mapList(
+                GithubIssueCommentsResult.class,
+                CommentDto.class,
+                githubGateway.getCommentsForIssue(request.getIssueInformation().getOwner(), request.getIssueInformation().getRepo(), request.getIssueInformation().getNumber()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public RequestDto findRequest(Platform platform, String platformId) {
         Request request = requestRepository.findByPlatformAndPlatformId(platform, platformId)
                                            .orElseThrow(ResourceNotFoundException::new);
@@ -106,6 +138,7 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
     public Long createRequest(CreateRequestCommand command) {
         Optional<Request> request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId());
         Request r = request.orElseGet(() -> createNewRequest(command));
@@ -114,6 +147,7 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
     public void requestClaimed(RequestClaimedCommand command) {
         Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
                                            .orElseThrow(ResourceNotFoundException::new);
@@ -191,8 +225,13 @@ class RequestServiceImpl implements RequestService {
         return requestRepository.save(request);
     }
 
-    private Set<String> getTechnologies(IssueInformation issueInformation) {
+    private Set<RequestTechnology> getTechnologies(IssueInformation issueInformation) {
         Map<String, Long> languages = githubGateway.getLanguages(issueInformation.getOwner(), issueInformation.getRepo());
-        return languages.keySet();
+        return languages.entrySet()
+                        .stream()
+                        .map(l -> RequestTechnology.builder().technology(l.getKey()).weight(l.getValue()).build())
+                        .sorted(Comparator.comparingLong(RequestTechnology::getWeight).reversed())
+                        .limit(4)
+                        .collect(Collectors.toSet());
     }
 }

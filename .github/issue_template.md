@@ -1,8 +1,8 @@
-### Expected behavior
+### Expected behaviour
 
 
-### Actual behavior
+### Actual behaviour
 
 
-### Steps to reproduce the behavior
+### Steps to reproduce the behaviour
 - 

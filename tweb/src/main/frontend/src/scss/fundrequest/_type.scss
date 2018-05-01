@@ -1,0 +1,23 @@
+.h1, .h2,
+h1, h2 {
+    font-weight: $font-weight-bold;
+}
+
+.h3, .h4, .h5, .h6,
+h3, h4, h5, h6 {
+    font-weight: $font-weight-normal;
+}
+
+.h1, h1 {
+    color: $secondary;
+    margin-bottom: 2rem;
+}
+
+.h2, h2 {
+    color: $primary;
+}
+
+.h3, h3 {
+    color: $gray-500;
+    margin-bottom: 1rem;
+}

@@ -1,7 +1,7 @@
 <template>
-    <div class="request-details" v-if="req != null" v-on:click="gotoDetails($event.target, req.id)">
+    <div class="request-details request-details--list" v-if="req != null" v-on:click="gotoDetails($event.target, req.id)">
         <div class="request-details__logo">
-            <div><img v-bind:src="`${req.icon}?size=35`" /></div>
+            <div><img v-bind:src="`${req.icon}?size=30`" /></div>
             <div class="request-details__owner" ref="fontSizeFit" style="font-size: 15px">{{req.issueInformation.owner}}</div>
         </div>
         <div class="request-details__info">
@@ -42,7 +42,7 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
     import {Utils} from '../../../app/Utils';
-    import {RequestListItemPendingFundDto} from '../../../app/dto/RequestListItemPendingFundDto';
+    import {RequestListItemPendingFundDto} from '../dtos/RequestListItemPendingFundDto';
 
     @Component
     export default class RequestListItemPendingFund extends Vue {

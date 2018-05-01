@@ -1,7 +1,7 @@
 <template>
-    <div class="request-details" v-if="req != null" v-on:click="gotoRequestDetail($event, req.id)">
+    <div class="request-details request-details--list" v-if="req != null" v-on:click="gotoRequestDetail($event, req.id)">
         <div class="request-details__logo">
-            <div><img v-bind:src="`${req.icon}?size=35`" /></div>
+            <div><img v-bind:src="`${req.icon}?size=30`" /></div>
             <div class="request-details__owner" ref="fontSizeFit" style="font-size: 15px">{{req.owner}}</div>
         </div>
         <div class="request-details__info">
@@ -10,7 +10,7 @@
                 <span class="request-details__number">#{{req.issueNumber}}</span>
             </div>
             <div class="request-details__status">
-                <span class="request-details__badge badge" v-bind:class="`badge--${req.status.toLowerCase()}`">{{req.status}}</span>
+                <span class="request-details__badge badge" v-bind:class="`badge--${req.status.toLowerCase()}`">{{req.status.toLowerCase()}}</span>
                 <span class="request-details__tech" v-for="tech in req.technologies">{{tech}}</span>
             </div>
             <div class="request-details__icons">
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="request-details__price" v-if="req.funds.usdFunds != null">
-            <span class="request-details__fund-currency">~$</span>
+            <span class="request-details__fund-currency"><span class="disclaimer-asterix">*</span>$</span>
             <span class="request-details__fund-amount">{{formatPrice(req.funds.usdFunds, 0)}}</span>
         </div>
         <div class="request-details__crypto">
@@ -42,7 +42,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import RequestDto from "../../../app/dto/RequestDto";
+    import RequestDto from "../dtos/RequestDto";
     import {Utils} from '../../../app/Utils';
     import {Locations} from '../../../app/Locations';
 
@@ -58,7 +58,7 @@
             return Object.assign(new RequestDto(), this.request);
         }
 
-        public formatPrice(value, decimals: number = 2) {
+        public formatPrice(value, decimals: number = 2): string {
             return Utils.formatTokenPrice(value, decimals);
         }
 

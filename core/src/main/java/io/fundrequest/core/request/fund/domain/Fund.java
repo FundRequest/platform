@@ -25,6 +25,9 @@ public class Fund extends AbstractEntity {
     @Column(name = "funder_address")
     private String funder;
 
+    @Column(name = "funder_user_id")
+    private String funderUserId;
+
     @Column(name = "amount_in_wei")
     private BigDecimal amountInWei;
 
@@ -42,8 +45,8 @@ public class Fund extends AbstractEntity {
     }
 
     @Builder
-    Fund(String createdBy, String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp) {
-        super.setCreatedBy(createdBy);
+    Fund(String funderUserId, String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp) {
+        this.funderUserId = funderUserId;
         this.funder = funder == null ? null : funder.toLowerCase();
         this.amountInWei = amountInWei;
         this.token = token;
@@ -55,4 +58,7 @@ public class Fund extends AbstractEntity {
         this.id = id;
     }
 
+    public void setFunderUserId(String funderUserId) {
+        this.funderUserId = funderUserId;
+    }
 }

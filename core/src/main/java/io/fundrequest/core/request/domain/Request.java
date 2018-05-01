@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Table(name = "request")
 @Entity
@@ -52,8 +53,7 @@ public class Request extends AbstractEntity {
             name = "request_technology",
             joinColumns = @JoinColumn(name = "request_id")
     )
-    @Column(name = "technology")
-    private Set<String> technologies = new HashSet<>();
+    private Set<RequestTechnology> technologies = new HashSet<>();
 
     protected Request() {
     }
@@ -98,16 +98,16 @@ public class Request extends AbstractEntity {
         return Collections.unmodifiableSet(watchers);
     }
 
-    public void addTechnology(String technology) {
-        this.technologies.add(technology);
-    }
-
-    public void removeTechnology(String technology) {
-        this.technologies.remove(technology);
+    public void addTechnology(RequestTechnology requestTechnology) {
+        this.technologies.add(requestTechnology);
     }
 
     public Set<String> getTechnologies() {
-        return Collections.unmodifiableSet(technologies);
+        return this.technologies != null && this.technologies.size() > 0
+               ? this.technologies.stream()
+                                  .map(RequestTechnology::getTechnology)
+                                  .collect(Collectors.toSet())
+               : new HashSet<>();
     }
 
     @Override

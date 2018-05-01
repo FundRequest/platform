@@ -1,0 +1,111 @@
+.md-form {
+    .v-select {
+        z-index: 1;
+
+        &.dropdown {
+            + label {
+                color: $gray-400;
+                width: 100%;
+
+                i {
+
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    right: 0;
+                }
+            }
+
+            &.open,
+            &.filled {
+                + label {
+                    font-size: .8rem;
+                    transform: translateY(-140%);
+                }
+            }
+
+            &.open {
+                + label {
+                    color: $primary;
+                }
+            }
+        }
+
+        .dropdown-toggle {
+            overflow: hidden;
+            display: flex;
+            border: 0 none;
+            border-radius: 0;
+        }
+
+        .form-control,
+        .form-control:focus {
+            height: auto;
+            width: 0 !important;
+            flex-grow: 1 !important;
+            line-height: 1.5rem;
+            margin: 0 0 .5rem;
+            padding: .3rem 0 .55rem;
+            box-shadow: 0 1px 0 0 $gray-a200;
+            border-bottom: 1px solid $gray-a200;
+        }
+
+        .dropdown-menu {
+            margin-top: calc(-.5rem + 1px);
+        }
+
+        .clear {
+            right: 0 !important;
+            height: 100%;
+            color: $gray-500 !important;
+        }
+
+        .selected-tag {
+            color: $gray-600;
+            font-weight: $font-weight-semi-bold;
+            font-family: $font-family-sans-serif;
+            display: flex;
+            position: relative;
+            border-radius: 0;
+            background: none;
+            height: auto;
+            font-size: .75rem;
+            margin: 0 .5rem .5rem 0;
+
+            padding: .3rem .75rem .55rem 0;
+            align-items: center;
+            border: 0 none;
+            box-shadow: 0 1px 0 0 $primary !important;
+            border-bottom: 1px solid $primary !important;
+
+            .close {
+                color: $gray-400;
+                opacity: 1;
+                font-size: 1rem;
+                position: absolute;
+                width: 100%;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                padding: .3rem 0 .55rem;
+                margin-left: 0;
+                text-align: right;
+            }
+        }
+
+        .open-indicator {
+            display: none;
+        }
+
+        &.single {
+            .selected-tag {
+                font-size: 1rem;
+                margin: 0 0 .5rem 0;
+                padding: .3rem 0 .55rem;
+                box-shadow: 0 1px 0 0 $gray-a200 !important;
+                border-bottom: 1px solid $gray-a200 !important;
+            }
+        }
+    }
+}

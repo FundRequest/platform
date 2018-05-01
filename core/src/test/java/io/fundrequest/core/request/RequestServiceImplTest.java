@@ -17,12 +17,14 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
+import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.ClaimDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.GithubGateway;
+import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -241,6 +244,23 @@ public class RequestServiceImplTest {
         requestService.requestClaimed(command);
 
         verifyClaimEventPublished(command, requestDto, claimDto);
+    }
+
+    @Test
+    public void getComments() {
+        Request request = RequestMother.fundRequestArea51().build();
+        when(requestRepository.findOne(1L)).thenReturn(Optional.of(request));
+
+        List<GithubIssueCommentsResult> githubComments = Collections.singletonList(GithubIssueCommentsResult.builder().title("title").body("#body").build());
+        when(githubGateway.getCommentsForIssue(request.getIssueInformation().getOwner(), request.getIssueInformation().getRepo(), request.getIssueInformation().getNumber()))
+                .thenReturn(githubComments);
+
+        CommentDto expected = CommentDto.builder().userName("davyvanroy").title("title").body("#body").build();
+        when(mappers.mapList(GithubIssueCommentsResult.class, CommentDto.class, githubComments)).thenReturn(Collections.singletonList(expected));
+
+        List<CommentDto> comments = requestService.getComments(1L);
+
+        assertThat(comments.get(0)).isEqualTo(expected);
     }
 
     private void verifyClaimEventPublished(RequestClaimedCommand command, RequestDto requestDto, ClaimDto claimDto) {

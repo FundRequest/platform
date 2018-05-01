@@ -17,25 +17,25 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/user/requests}">Your Requests</a>
                 </li>
-                <li class="nav-item">
+                <!--li class="nav-item">
                     <a class="nav-link" th:href="@{/}">Developers</a>
-                </li>
+                </li-->
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/}">Browse</a>
+                    <a class="nav-link" th:href="@{/requests}">Browse</a>
                 </li>
             </ul>
             <ul class="navbar-nav text-center ml-md-auto">
                 <!--/* TODO: Make list of pages in header dynamic */-->
                 <!--/* TODO: Highlight active page (add .active class to link */-->
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/requests}">Help needed?</a>
+                    <a class="nav-link" th:href="@{https://help.fundrequest.io}">Help needed?</a>
                 </li>
-                <li class="nav-item">
+                <!--li class="nav-item">
                     <a class="nav-link" th:href="@{/requests}">
                         <i class="fa fa-comment"></i>
                     </a>
-                </li>
-                <li class="nav-item dropdown">
+                </li-->
+                <li class="nav-item dropdown" sec:authorize="isFullyAuthenticated()">
                     <a class="nav-link dropdown-toggle"
                             title="Profile"
                             id="user-profile-menu"
@@ -45,17 +45,24 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu--main" aria-labelledby="user-profile-menu">
+                        <!--span class="dropdown-item">
+                            Hi <span sec:authentication="name"></span>
+                        </span-->
                         <a class="dropdown-item d-flex flex-nowrap" th:href="@{/profile}">
                             <div class="mr-2"><i class="fa fa-id-card"></i></div> <span>Profile</span>
                         </a>
-                        <a class="dropdown-item d-flex flex-nowrap" th:href="@{/settings}">
+                        <!--/* TODO: Create settings page */-->
+                        <!--a class="dropdown-item d-flex flex-nowrap" th:href="@{/settings}">
                             <div class="mr-2"><i class="fa fa-cogs"></i></div> <span>Settings</span>
-                        </a>
+                        </a-->
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item d-flex flex-nowrap" th:href="@{/logout}">
                             <div class="mr-2"><i class="fa fa-sign-out-alt"></i></div> <span>Logout</span>
                         </a>
                     </div>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/user/requests}">Login</a>
                 </li>
             </ul>
         </div>

@@ -1,8 +1,10 @@
 .faq__title {
     font-size: $font-size-sm;
-    color: $gray-600;
+    font-weight: $font-weight-bold !important; //important for overriding mdb
+    color: $gray-500;
+    margin-bottom: 0;
 }
 
-.faq__description {
-
+.faq__answer {
+    font-weight: $font-weight-normal;
 }

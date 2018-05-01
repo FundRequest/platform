@@ -1,31 +1,17 @@
 package io.fundrequest.platform.github.parser;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class GithubIssueCommentsResult {
     private Long id;
     private GithubUser user;
+    private String title;
     private String body;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public GithubUser getUser() {
-        return user;
-    }
-
-    public void setUser(GithubUser user) {
-        this.user = user;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
 }

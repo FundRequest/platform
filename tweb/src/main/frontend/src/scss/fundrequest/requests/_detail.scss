@@ -1,0 +1,284 @@
+.request-details {
+    color: $gray-600;
+
+    > * {
+        display: flex;
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+
+    &__logo {
+        width: 5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-weight: $font-weight-bold;
+        color: $gray-500;
+        text-align: center;
+        padding: 0;
+        margin: 0 1rem;
+
+        img {
+            margin-bottom: .5rem;
+        }
+    }
+
+    &__header-logo {
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    &__owner {
+        white-space: nowrap;
+    }
+
+    &__info {
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-direction: column;
+    }
+
+    &__tech {
+        padding-right: .75rem;
+        margin-right: .25rem;
+        position: relative;
+        color: $gray-500;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-bold;
+
+        &::after {
+            content: "/";
+            display: inline;
+            position: absolute;
+            right: 0;
+        }
+
+        &:last-child::after {
+            padding-right: 0;
+            margin-right: 0;
+            display: none;
+        }
+    }
+
+    &__header {
+        font-weight: $font-weight-bold;
+        font-size: $font-size-lg;
+        display: flex;
+    }
+
+    &__status {
+        display: flex;
+        align-items: center;
+        margin-bottom: .25rem;
+    }
+
+    &__title {
+        color: $blue-500;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    &__badge {
+        text-transform: capitalize;
+        margin-right: 1rem;
+    }
+
+    &__number {
+        flex-shrink: 0;
+        margin-left: .5rem;
+        text-transform: capitalize;
+        color: $gray-500;
+    }
+
+    &__icons {
+        color: $gray-500;
+        i {
+            font-size: 1.25rem;
+            margin-right: .5rem;
+        }
+    }
+
+    &__price {
+        color: $green-500;
+        font-size: 3.75rem;
+        justify-content: flex-end;
+        font-weight: bold;
+        align-items: center;
+
+        .request-details__fund-amount {
+            flex-grow: 0;
+        }
+    }
+
+    &__funding-details {
+        > * {
+            display: flex;
+        }
+    }
+
+    &__label {
+        flex-grow: 1;
+    }
+
+    &__fund {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: $gray-500;
+        font-weight: $font-weight-bold;
+        font-size: 1.5rem;
+
+        &-logo {
+            height: 1rem;
+            width: 1rem;
+            object-fit: contain;
+            margin-right: .5rem;
+            justify-self: start;
+        }
+
+        &-amount {
+            display: block;
+            margin-right: .25rem;
+            text-align: right;
+            flex-grow: 1;
+        }
+
+        &-currency {
+            display: block;
+        }
+    }
+
+    &__crypto {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 1rem;
+        margin-left: 1rem;
+        border-left: 1px solid $gray-a100;
+    }
+
+    &__actions {
+        justify-content: flex-end;
+        align-items: center;
+        flex-grow: 1;
+    }
+
+    &__disclaimer {
+        width: 100%;
+        font-size: .75rem;
+        color: $gray-500;
+    }
+}
+
+.request-details--list {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    cursor: pointer;
+
+    > * {
+        padding: 0 1rem;
+    }
+
+    &:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    &:last-child {
+        border-radius: 0 0 $border-radius $border-radius;
+    }
+
+    &:hover {
+        background-color: $gray-200;
+    }
+
+    .request-details__info {
+        border-left: 1px solid $gray-200;
+        max-width: calc(100% - 24rem);
+    }
+
+    .request-details__price {
+        color: $green-500;
+        font-size: 1.5rem;
+        font-weight: $font-weight-normal;
+        width: 7rem;
+    }
+
+    .request-details__fund {
+        color: $gray-600;
+        font-size: $font-size-lg;
+        font-weight: $font-weight-normal;
+    }
+
+    .request-details__crypto {
+        margin-left: 0;
+        border-left: 0 none;
+        width: 6rem;
+        padding: 0 .25rem;
+    }
+
+    .request-details__actions {
+        flex-grow: 0;
+        justify-content: center;
+        padding: .5rem 2rem .5rem 1.5rem;
+        width: 4rem;
+
+        i {
+            text-align: center;
+            width: .5rem;
+            transition: font-size .35s ease-in-out;
+        }
+
+        &:hover {
+            i {
+                font-size: 3rem;
+            }
+        }
+    }
+}
+
+.request-funding {
+    padding: 0 1rem;
+    font-weight: $font-weight-normal;
+
+    &__transfers {
+        padding-bottom: .5rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid $border-color;
+    }
+
+    &__subtotal,
+    &__transfer {
+        display: flex;
+        margin-bottom: .5rem;
+
+        .request-details__fund {
+            font-weight: $font-weight-normal;
+            color: $body-color;
+            padding-left: 2rem;
+            display: flex;
+            width: 9rem;
+        }
+    }
+
+    &__subtotal {
+        .request-details__fund {
+            font-size: 1.2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid $border-color;
+        }
+    }
+
+    &__total {
+        display: flex;
+        align-items: center;
+        .request-details__price {
+            display: flex;
+            font-size: 3.5rem;
+            font-weight: $font-weight-normal;
+        }
+    }
+}

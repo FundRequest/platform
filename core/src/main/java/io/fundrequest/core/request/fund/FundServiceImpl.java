@@ -31,14 +31,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+
+import static io.fundrequest.core.request.fund.EthUtil.fromWei;
 
 @Service
 class FundServiceImpl implements FundService {
@@ -135,6 +137,7 @@ class FundServiceImpl implements FundService {
                                              .map(this::mapToFunderDto)
                                              .filter(Objects::nonNull)
                                              .collect(Collectors.toList());
+        list = groupByFunder(list);
         enrichFundsWithZeroValues(list);
         TotalFundDto fndFunds = totalFndFunds(list);
         TotalFundDto otherFunds = totalOtherFunds(list);
@@ -144,6 +147,36 @@ class FundServiceImpl implements FundService {
                          .otherFunds(otherFunds)
                          .usdFunds(fiatService.getUsdPrice(fndFunds, otherFunds))
                          .build();
+    }
+
+    private List<FunderDto> groupByFunder(List<FunderDto> list) {
+        return list.stream().collect(Collectors.groupingBy(FunderDto::getFunder, Collectors.reducing(new BinaryOperator<FunderDto>() {
+            @Override
+            public FunderDto apply(FunderDto a1, FunderDto b1) {
+                if (a1 == null && b1 == null) {
+                    return null;
+                } else if (a1 == null) {
+                    return b1;
+                } else if (b1 == null) {
+                    return a1;
+                }
+                a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
+                a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
+                return a1;
+            }
+        }))).values().stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+    }
+
+    private TotalFundDto mergeFunds(TotalFundDto bFunds, TotalFundDto aFunds) {
+        if (bFunds != null) {
+            if (aFunds == null) {
+                return bFunds;
+            } else {
+                aFunds.setTotalAmount(aFunds.getTotalAmount().add(bFunds.getTotalAmount()));
+            }
+        }
+
+        return aFunds;
     }
 
     private void enrichFundsWithZeroValues(List<FunderDto> list) {
@@ -217,7 +250,7 @@ class FundServiceImpl implements FundService {
         return totalFundDto == null
                ? null
                : FunderDto.builder()
-                          .funder(StringUtils.isNotBlank(f.getCreatedBy()) ? profileService.getUserProfile(f.getCreatedBy()).getName() : f.getFunder())
+                          .funder(StringUtils.isNotBlank(f.getFunderUserId()) ? profileService.getUserProfile(f.getFunderUserId()).getName() : f.getFunder())
                           .fndFunds("FND".equalsIgnoreCase(totalFundDto.getTokenSymbol()) ? totalFundDto : null)
                           .otherFunds(!"FND".equalsIgnoreCase(totalFundDto.getTokenSymbol()) ? totalFundDto : null)
                           .build();
@@ -245,13 +278,8 @@ class FundServiceImpl implements FundService {
                : TotalFundDto.builder()
                              .tokenAddress(tokenInfo.getAddress())
                              .tokenSymbol(tokenInfo.getSymbol())
-                             .totalAmount(fromWei(tokenInfo, rawBalance))
+                             .totalAmount(fromWei(rawBalance, tokenInfo.getDecimals()))
                              .build();
-    }
-
-    private BigDecimal fromWei(TokenInfoDto tokenInfo, BigDecimal rawBalance) {
-        final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
-        return rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN);
     }
 
     @Transactional
@@ -268,7 +296,7 @@ class FundServiceImpl implements FundService {
                         .build();
         Optional<PendingFund> pendingFund = pendingFundRepository.findByTransactionHash(command.getTransactionId());
         if (pendingFund.isPresent()) {
-            fund.setCreatedBy(pendingFund.get().getUserId());
+            fund.setFunderUserId(pendingFund.get().getUserId());
         }
         fund = fundRepository.saveAndFlush(fund);
         cacheManager.getCache("funds").evict(fund.getRequestId());

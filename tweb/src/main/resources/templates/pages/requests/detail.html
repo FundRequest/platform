@@ -2,105 +2,159 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layouts/default">
 <head>
-  <title>FundRequest - Request Details</title>
+    <title>FundRequest - Request Details</title>
 </head>
 
 <th:block layout:fragment="content">
-  <section class="section section--header mb-5">
-    <div class="row">
-      <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
-        <img th:src="@{${request.icon}(size=160)}" th:alt-title="${request.owner}"/>
-      </div>
-      <div class="col-12 col-md-8">
-        <h1 class="text-secondary">
-          <span class="d-inline-block d-md-none">
-              <img th:src="@{${request.icon}(size=32)}" th:alt-title="${request.owner}"/>
-          </span>
-          <span>
-            <span th:text="${request.owner}">FundRequest</span> /
-            <span th:text="${request.repo}">new plugin</span> #<span th:text="${request.issueNumber}">948</span>
-          </span>
-        </h1>
+    <section class="section section--header mb-5">
+        <div class="row">
+            <div class="col-12 col-md-4 d-none d-md-flex request-details__header-logo">
+                <img th:src="@{${request.icon}(size=200)}" th:alt-title="${request.owner}" />
+            </div>
+            <div class="col-12 col-md-7">
+                <h1 class="mb-2">
+                    <span class="d-inline-block d-md-none">
+                        <img th:src="@{${request.icon}(size=32)}" th:alt-title="${request.owner}" />
+                    </span>
+                    <span>
+                        <span th:text="${request.owner}">FundRequest</span> /
+                        <span th:text="${request.repo}">new plugin</span> <span class="text-muted">#<span th:text="${request.issueNumber}">948</span></span>
+                    </span>
+                </h1>
 
-          <div class="request-details">
-              <div class="request-details__info mb-4">
-                  <div class="request-details__header">
-                      <span class="request-details__title" th:text="${request.title}">Request title</span>
-                  </div>
-                  <div class="request-details__status">
-                      <span class="request-details__badge badge" th:classappend="'badge--' + ${#strings.toLowerCase(request.status)}" th:text="${#strings.toLowerCase(request.status)}">Claimed</span>
-                      <span class="request-details__icons">
-                          <i class="fab fa-linkedin-in"></i>
-                          <i class="fab fa-twitter"></i>
+                <div class="request-details">
+                    <div class="request-details__info mb-4">
+                        <div class="request-details__header">
+                            <span class="request-details__title" th:text="${request.title}">Request title</span>
+                        </div>
+                        <div class="request-details__status">
+                            <span class="request-details__badge badge"
+                                  th:classappend="'badge--' + ${#strings.toLowerCase(request.status)}"
+                                  th:text="${#strings.toLowerCase(request.status)}">Claimed</span>
+                            <span class="request-details__icons">
+                          <!--<i class="fab fa-linkedin-in"></i>-->
+                          <!--<i class="fab fa-twitter"></i>-->
                       </span>
-                  </div>
-              </div>
-              <div class="request-details__funding-details">
-                  <div class="request-details__price" th:if="${request.funds != null and request.funds.usdFunds != null}">
-                      <span class="request-details__fund-currency">$</span>
-                      <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,2,'COMMA')}">-</span>
-                  </div>
-                  <div class="request-details__crypto">
-                      <div class="request-details__fund" th:if="${request.funds.fndFunds != null}">
-                          <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(request.funds.fndFunds.totalAmount,1,2,'COMMA')}">-</span>
-                          <span class="request-details__fund-currency" th:text="${request.funds.fndFunds.tokenSymbol}">FND</span>
-                      </div>
-                      <div class="request-details__fund" th:if="${request.funds.otherFunds != null}">
-                          <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(request.funds.otherFunds.totalAmount,1,2,'COMMA')}">-</span>
-                          <span class="request-details__fund-currency" th:text="${request.funds.otherFunds.tokenSymbol}">FND</span>
-                      </div>
-                  </div>
+                        </div>
+                    </div>
+                    <div class="request-details__funding-details">
+                        <div class="request-details__price"
+                             th:if="${request.funds != null and request.funds.usdFunds != null}">
+                            <span class="request-details__fund-currency">$</span>
+                            <span class="request-details__fund-amount"
+                                  th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,2,'POINT')}">-</span>
+                        </div>
+                        <div class="request-details__crypto">
+                            <div class="request-details__fund" th:if="${request.funds.fndFunds != null}">
+                                <img class="request-details__fund-logo"
+                                      th:src="${request.funds.fndFunds.tokenImage}" />
+                                <span class="request-details__fund-amount"
+                                      th:text="${#numbers.formatDecimal(request.funds.fndFunds.totalAmount,1,2,'POINT')}">-</span>
+                                <span class="request-details__fund-currency"
+                                      th:text="${request.funds.fndFunds.tokenSymbol}">FND</span>
+                            </div>
+                            <div class="request-details__fund" th:if="${request.funds.otherFunds != null}">
+                                <img class="request-details__fund-logo"
+                                     th:src="${request.funds.otherFunds.tokenImage}" />
+                                <span class="request-details__fund-amount"
+                                      th:text="${#numbers.formatDecimal(request.funds.otherFunds.totalAmount,1,2,'POINT')}">-</span>
+                                <span class="request-details__fund-currency"
+                                      th:text="${request.funds.otherFunds.tokenSymbol}">FND</span>
+                            </div>
+                        </div>
 
-                  <div class="request-details__actions">
-                      <a class="btn btn-secondary mb-0" th:href="@{/fund/github/{id}(id=${request.id})}">
-                          Add Funds
-                      </a>
-                  </div>
-              </div>
-          </div>
-      </div>
-    </div>
-  </section>
+                        <div class="request-details__actions">
+                            <a class="btn btn-secondary mb-0" th:href="@{/requests/{id}/fund(id=${request.id})}">
+                                Add Funds
+                            </a>
+                        </div>
 
-  <section class="mb-5">
-      <request-detail th:attr="'v-bind:request'=${requestJson}"
-                      v-bind:status-filter-default="hash ? hash : 'info'"
-                      v-bind:filters="[
+                        <div class="request-details__disclaimer"><span class="disclaimer-asterix">*</span> Present total token valuation in USD</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <request-detail th:attr="'v-bind:request'=${requestJson}"
+                        v-bind:status-filter-default="'info'"
+                        v-bind:filters="[
                     { value: 'info', title: 'Info', description: 'Detailed description of the request' },
-                    { value: 'comments', title: 'Comments', description: 'Comments posted on the request' },
                     { value: 'funded-by', title: 'Funded By', description: 'An overview of the funders and funds.' }
                  ]">
-          <template slot-scope="{statusFilter}">
-              <div class="card" v-if="statusFilter === 'info'">
-                  <div class="card-header">
-                      Info
-                  </div>
-                  <div class="card-body">
-                      <div class="markdown" th:utext="${request.description}"></div>
-                  </div>
-              </div>
-              <div class="card" v-if="statusFilter === 'comments'">
-                  <div class="card-header">
-                      Comments
-                  </div>
-                  <div class="card-body">
-                      Comments
-                  </div>
-              </div>
-              <div class="card" v-if="statusFilter === 'funded-by'">
-                  <div class="card-header">
-                      Funders
-                  </div>
-                  <div class="card-body">
-                      Overview
-                  </div>
-                  <div class="card-footer bg-white text-muted">
-                      * Disclaimer: Token values are fetched from <strong>CryptoCompare</strong>
-                  </div>
-              </div>
-          </template>
-      </request-detail>
-  </section>
+            <template slot-scope="{statusFilter}">
+                <div class="card" v-if="statusFilter === 'info'">
+                    <div class="card-header">
+                        Info
+                    </div>
+                    <div class="card-body">
+                        <div class="markdown" th:utext="${request.description}"></div>
+                    </div>
+                </div>
+                <!--
+                { value: 'comments', title: 'Comments', description: 'Comments posted on the request' },
+                <div class="card" v-if="statusFilter === 'comments'">
+                    <div class="card-header">
+                        Comments
+                    </div>
+                    <div class="card-body">
+                        Comments
+                    </div>
+                </div>
+                  -->
+                <div class="card" v-if="statusFilter === 'funded-by'">
+                    <div class="card-header">
+                        Funders
+                    </div>
+                    <div class="card-body">
+                        <div class="request-funding">
+                            <div class="request-funding__transfers">
+                                <div class="request-funding__transfer" th:each="transfer : ${fundedBy.funders}">
+                                    <div class="request-details__label" th:text="${transfer.funder}">Karel Striegel</div>
+                                    <div class="request-details__fund" th:if="${transfer.fndFunds != null}">
+                                        <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(transfer.fndFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                        <span class="request-details__fund-currency" th:text="${transfer.fndFunds.tokenSymbol}">FND</span>
+                                    </div>
+                                    <div class="request-details__fund" th:if="${transfer.otherFunds != null}">
+                                        <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(transfer.otherFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                        <span class="request-details__fund-currency" th:text="${transfer.otherFunds.tokenSymbol}">XYZ</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="request-funding__subtotal">
+                                <div class="request-details__label">
+                                    Subtotal
+                                </div>
+                                <div class="request-details__fund" th:if="${fundedBy.fndFunds != null}">
+                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(fundedBy.fndFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                    <span class="request-details__fund-currency" th:text="${fundedBy.fndFunds.tokenSymbol}">FND</span>
+                                </div>
+                                <div class="request-details__fund" th:if="${fundedBy.otherFunds != null}">
+                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(fundedBy.otherFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                    <span class="request-details__fund-currency" th:text="${fundedBy.otherFunds.tokenSymbol}">XYZ</span>
+                                </div>
+                            </div>
+                            <div class="request-funding__total">
+                                <div class="request-details__label">
+                                    <span>Total</span>
+                                    <span class="small">*Currently valued at</span>
+                                </div>
+                                <div class="request-details__price" th:if="${fundedBy.usdFunds != null}">
+                                    <span class="request-details__fund-amount"
+                                          th:text="${#numbers.formatDecimal(fundedBy.usdFunds,1,2,'POINT')}">58</span>
+                                    <span class="request-details__fund-currency">USD</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white text-muted">
+                        * Disclaimer: Token values are fetched from <strong>CryptoCompare</strong>
+                    </div>
+                </div>
+            </template>
+        </request-detail>
+    </section>
 
 </th:block>
 

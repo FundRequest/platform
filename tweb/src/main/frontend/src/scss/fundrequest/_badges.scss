@@ -41,7 +41,8 @@
 .badge {
     box-shadow: none;
     border-radius: 10000px;
-    padding: .1rem 1rem .15rem 1rem;
+    padding: .1rem 1rem;
+    vertical-align: middle;
 
     &--funded {
         background-color: $yellow-400;
@@ -49,5 +50,13 @@
 
     &--pending {
         background-color: map_get($purple, 'lighten-2');
+    }
+
+    &--filter {
+        vertical-align: middle;
+        background-color: $gray-300;
+        padding: .1rem .5rem;
+        margin-top: -2px;
+        display: inline-block;
     }
 }

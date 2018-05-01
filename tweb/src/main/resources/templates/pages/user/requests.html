@@ -8,10 +8,10 @@
 <th:block layout:fragment="content">
     <section class="section section--header mb-5">
         <div class="row">
-            <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
+            <div class="col-12 col-md-4 d-none d-md-flex justify-content-center">
                 <i class="fa fa-list fa-10x text-secondary"></i>
             </div>
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-7">
                 <h1 class="text-secondary">
                     <span class="d-inline-block d-md-none">
                         <i class="fa fa-list fa-1x text-secondary"></i>
@@ -26,7 +26,7 @@
                     </p>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <a class="text-secondary text-transform-normal" th:href="@{'#faq'}">
+                    <a class="btn btn-link text-secondary" th:href="@{'#faq'}">
                         How it works...
                     </a>
                     <a class="btn btn-secondary" th:href="@{/fund/github}">
@@ -37,10 +37,10 @@
         </div>
     </section>
 
-    <section class="mb-5">
+    <section>
         <request-list
-                v-bind:status-filter-default="hash ? hash : 'funded'"
-                th:attr="'v-bind:requests'=${requests},'v-bind:pending-requests'=${pendingFunds}"
+                :status-filter-default="'funded'"
+                th:attr="'v-bind:requests'=${requests}"
                 :filters="[
                     { value: 'all', title: 'All', description: 'Showing an overview of all your requests, including funds that are pending.' },
                     { value: 'funded', title: 'Funded', description: 'Showing an overview of all your funded requests, including funds that are pending.' },
@@ -61,17 +61,17 @@
     <section class="mb-2" id="faq">
         <div class="row">
             <div class="col-12">
-                <h4 class="section-title text-primary">Frequently Asked Questions</h4>
-                <h5 class="section-subtitle text-muted">
-                    <small>Your funding existing requests FAQ's, answered.</small>
-                </h5>
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <h3 class="section-subtitle">
+                    Your funding existing requests FAQ's, answered.
+                </h3>
             </div>
             <div class="col-12">
                 <div class="card">
                     <div class="card-body faq">
-                        <div class="faq__title">
+                        <h4 class="faq__title">
                             This is a first question, will other follow, what do you think?
-                        </div>
+                        </h4>
                         <div class="faq__answer">
                             Hmm I'm not sure, one question is of course not a lot, so I
                             guess the chance is very high that others will follow. My
@@ -79,9 +79,9 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="faq__title">
+                        <h4 class="faq__title">
                             This is a first question, will other follow, what do you think?
-                        </div>
+                        </h4>
                         <div class="faq__answer">
                             Hmm I'm not sure, one question is of course not a lot, so I
                             guess the chance is very high that others will follow. My
@@ -89,9 +89,9 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="faq__title">
+                        <h4 class="faq__title">
                             This is a first question, will other follow, what do you think?
-                        </div>
+                        </h4>
                         <div class="faq__answer">
                             Hmm I'm not sure, one question is of course not a lot, so I
                             guess the chance is very high that others will follow. My
@@ -109,13 +109,3 @@
 
 </body>
 </html>
-<script>
-    import Vue from "vue";
-    import {Component} from "vue-class-component";
-    import RequestListPendingFunds from "../../../../frontend/src/js/vue/src/components/RequestListPendingFunds";
-    @Component({
-        components: {RequestListPendingFunds}
-    })
-    export default class requests extends Vue {
-    }
-</script>

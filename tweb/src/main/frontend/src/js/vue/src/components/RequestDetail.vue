@@ -1,7 +1,8 @@
 <template>
-    <section class="request-list">
+    <section class="request-details">
         <list-filter
                 v-bind:active="statusFilter"
+                v-bind:default="statusFilterDefault"
                 v-bind:filters="filters"
                 v-on:update="setStatusFilter"
         />
@@ -15,8 +16,8 @@
     import FndSelect from "./form/FndSelect";
     import ListFilter from "./ListFilter";
 
-    import RequestDto from "../../../app/dto/RequestDto";
-    import ListFilterDto from '../../../app/dto/ListFilterDto';
+    import RequestDto from "../dtos/RequestDto";
+    import ListFilterDto from '../dtos/ListFilterDto';
 
     @Component({
         components: {
@@ -34,7 +35,6 @@
 
         mounted() {
             this._request = Object.assign(new RequestDto, this.request);
-            this.statusFilter = this.statusFilterDefault ? this.statusFilterDefault : this.statusFilter;
             if(this._request.platform.toUpperCase() == 'GITHUB') {
                 this.filters.push(Object.assign(new ListFilterDto(), {
                     value: 'view-on-github',

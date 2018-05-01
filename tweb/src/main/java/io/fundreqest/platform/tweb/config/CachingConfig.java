@@ -35,7 +35,10 @@ public class CachingConfig {
                         buildCache("loginUserData", 1, DAYS),
                         buildCache("ref_links", 30, DAYS),
                         buildCache("user_profile", 1, DAYS),
-                        buildCache("github_repo_languages", 1, DAYS)
+                        buildCache("github_repo_languages", 1, DAYS),
+                        buildCache("projects", 7, DAYS),
+                        buildCache("technologies", 7, DAYS),
+                        buildCache("statistics", 7, DAYS)
                              )
                          );
         return manager;

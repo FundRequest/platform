@@ -13,6 +13,10 @@ export class Utils {
         loader ? loader.classList.add('d-none') : null;
     }
 
+    public static getLocationHashValue() {
+        return window.location.hash ? window.location.hash.split('#')[1] : '';
+    }
+
     public static getNewWindow(url, widthPopup, heightPopup) {
         let left = (screen.width / 2) - (widthPopup / 2);
         let top = (screen.height / 2) - (heightPopup / 2);
@@ -26,9 +30,9 @@ export class Utils {
     }
 
     public static formatTokenPrice(value, decimals: number = 2) {
-        if(value) {
-            let val = (value / 1).toFixed(decimals).replace('.', ',');
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        if (value) {
+            let val = (value / 1).toFixed(decimals);
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         } else {
             return value;
         }

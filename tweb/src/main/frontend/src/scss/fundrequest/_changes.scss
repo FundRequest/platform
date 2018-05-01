@@ -40,15 +40,6 @@ a.etherwallet-instructions {
     @include text-emphasis-variant(".text--#{$level}", $value);
 }
 
-.description {
-    &--header {
-        font-family: $font-family-sans-serif;
-        font-weight: $font-weight-light;
-        color: $white;
-        margin-bottom: 2rem;
-    }
-}
-
 .text-white-transparent {
     color: rgba($white, 0.7);
 }
