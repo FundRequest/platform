@@ -1,11 +1,13 @@
 package io.fundrequest.core.request;
 
+import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.dto.ClaimDto;
+import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
@@ -142,6 +144,28 @@ public class RequestServiceImplTest {
         List<RequestDto> result = requestService.findRequestsForUser(user);
 
         assertThat(result).isEqualTo(expectedRequests);
+    }
+
+    @Test
+    public void getUserClaimableResultUpdatesStatus() {
+        Principal principal = PrincipalMother.davyvanroy();
+        long requestId = 1L;
+        Request request = RequestMother.fundRequestArea51().build();
+        RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setStatus(RequestStatus.FUNDED);
+        when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
+        when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
+        UserClaimableDto expected = UserClaimableDto.builder().claimableByUser(true).claimable(true).build();
+        when(githubClaimResolver.userClaimableResult(principal, requestDto))
+                .thenReturn(expected);
+
+        UserClaimableDto result = requestService.getUserClaimableResult(principal, requestId);
+
+        assertThat(result).isEqualTo(expected);
+
+        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
+        verify(requestRepository).save(requestArgumentCaptor.capture());
+        assertThat(requestArgumentCaptor.getValue().getStatus()).isEqualTo(RequestStatus.CLAIMABLE);
     }
 
     @Test

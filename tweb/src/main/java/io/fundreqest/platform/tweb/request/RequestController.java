@@ -95,6 +95,15 @@ public class RequestController extends AbstractController {
                 .build();
     }
 
+    @GetMapping("/requests/{id}/actions")
+    public ModelAndView detailActions(Principal principal, @PathVariable Long id) {
+        return modelAndView()
+                .withObject("userClaimable", requestService.getUserClaimableResult(principal, id))
+                .withObject("requestId", id)
+                .withView("pages/requests/detail-actions")
+                .build();
+    }
+
     @GetMapping("/user/requests")
     public ModelAndView userRequests(Principal principal) {
         List<RequestView> requests = requestService.findRequestsForUser(principal).stream()

@@ -63,10 +63,8 @@
                             </div>
                         </div>
 
-                        <div class="request-details__actions">
-                            <a class="btn btn-secondary mb-0" th:href="@{/requests/{id}/fund(id=${request.id})}">
-                                Add Funds
-                            </a>
+                        <div class="request-details__actions" th:attr="'data-dynamic-content'='/requests/'+${request.id}+'/actions'">
+
                         </div>
 
                         <div class="request-details__disclaimer">*Present total token valuation in USD</div>

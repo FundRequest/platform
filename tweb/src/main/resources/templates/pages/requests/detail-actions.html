@@ -1,0 +1,18 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<a id="btnAddFunds" class="btn btn-secondary mb-0" th:href="@{/requests/{id}/fund(id=${requestId})}" th:if="${userClaimable.claimable == false}">
+  Add Funds
+</a>
+
+<span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="You are not the solver of the issue" th:if="${userClaimable.claimableByUser}">
+<a class="btn btn-success mb-0 disabled" th:if="${userClaimable.claimable == true and userClaimable.claimableByUser == false}">
+  Claim Funds
+</a>
+</span>
+
+
+<a id="btnClaimFunds" class="btn btn-success mb-0 d-none" th:href="@{/requests/{id}/fund(id=${requestId})}">
+  Claim Funds
+</a>
+
+</html>

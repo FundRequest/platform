@@ -3,7 +3,6 @@ import * as $ from 'jquery';
 import {Alert} from './alert';
 import {InstantEdit} from './instant-edit';
 import {OpenLinkInPopup} from "./open-link-in-popup";
-import {DynamicContent} from './DynamicContent';
 
 class Main {
     constructor() {
@@ -20,7 +19,6 @@ class Main {
             new InstantEdit();
             new OpenLinkInPopup();
             $('.fnd-badge[data-toggle="tooltip"]').tooltip();
-            new DynamicContent();
         });
     }
 }

@@ -9,6 +9,7 @@ import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.domain.ClaimBuilder;
 import io.fundrequest.core.request.claim.dto.ClaimDto;
+import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
@@ -99,6 +100,24 @@ class RequestServiceImpl implements RequestService {
     @Cacheable(value = "projects", key = "'all'")
     public Set<String> findAllProjects() {
         return requestRepository.findAllProjects();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserClaimableDto getUserClaimableResult(Principal principal, Long id) {
+        RequestDto request = findRequest(id);
+        UserClaimableDto result = githubClaimResolver.userClaimableResult(principal, request);
+        if(request.getStatus() == RequestStatus.FUNDED && result.isClaimable()) {
+            updateStatus(id, RequestStatus.CLAIMABLE);
+        }
+        return result;
+    }
+
+    private void updateStatus(Long requestId, RequestStatus newStatus) {
+        requestRepository.findOne(requestId).ifPresent(r -> {
+            r.setStatus(newStatus);
+            requestRepository.save(r);
+        });
     }
 
     @Override
