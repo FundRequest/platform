@@ -1,6 +1,6 @@
 <template>
     <div class="mb-3 d-block">
-        <nav class="navbar navbar-expand navbar--fnd-filter mb-2">
+        <nav class="navbar navbar-expand navbar--filter mb-2">
             <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#sec-menu" aria-controls="sec-menu"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -25,10 +25,10 @@
             </div>
         </nav>
 
-        <h5 class="section-subtitle text-muted" v-for="filter in filters"
+        <div class="navbar--filter__description" v-for="filter in filters"
             v-if="filter.value === active && filter.description">
-            <small>{{filter.description}}</small>
-        </h5>
+            {{filter.description}}
+        </div>
     </div>
 
 </template>

@@ -11,23 +11,12 @@
 
         <div class="request-list__options" v-if="!isEmpty">
             <div class="row">
-                <div class="col-12 col-md-4 col-lg-3">
+                <div class="col-12 col-md-3 col-lg-3">
                     <div class="md-form">
                         <input class="form-control form-control--search" id="list-search" type="search"
                                v-bind:value="listFilter.search"
                                v-on:input="setSearchFilter($event.target.value)" />
                         <label for="list-search"><span>Search</span><i class="fa fa-search"></i></label>
-                    </div>
-                </div>
-                <div class="col-12 col-md-3 col-lg-2">
-                    <div class="md-form" v-if="technologies && technologies.length > 0">
-                        <v-select
-                                v-bind:value="listFilter.tech"
-                                v-bind:options="technologies"
-                                v-bind:class="{filled: listFilter.tech && listFilter.tech.length > 0}"
-                                v-on:input="setTechFilter"
-                                id="technologies" inputId="technologies"  multiple></v-select>
-                        <label for="technologies"><span>Technologies</span><i class="far fa-filter"></i></label>
                     </div>
                 </div>
                 <div class="col-12 col-md-3 col-lg-2">
@@ -41,12 +30,23 @@
                         <label for="projects"><span>Projects</span><i class="far fa-filter"></i></label>
                     </div>
                 </div>
-                <div class="col-12 col-md-3 offset-md-3 col-lg-2 offset-lg-3">
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="md-form" v-if="technologies && technologies.length > 0">
+                        <v-select
+                                v-bind:value="listFilter.tech"
+                                v-bind:options="technologies"
+                                v-bind:class="{filled: listFilter.tech && listFilter.tech.length > 0}"
+                                v-on:input="setTechFilter"
+                                id="technologies" inputId="technologies"  multiple></v-select>
+                        <label for="technologies"><span>Technologies</span><i class="far fa-filter"></i></label>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 col-lg-2 offset-lg-2">
                     <div class="md-form">
                         <fnd-select v-bind:id="'list-sort'"
                                     v-bind:value="sortBy"
                                     v-on:input="setSortBy">
-                            <option value="" selected="selected" disabled="disabled">Sort by</option>
+                            <option value="" selected="selected" disabled="disabled">SORT BY</option>
                             <option value="title" selected="selected">Title</option>
                             <option value="fundings">Fundings</option>
                         </fnd-select>
@@ -65,7 +65,7 @@
                         <img src="/assets/img/unicorn-gray.png"
                              alt="nothing found, gray unicorn" />
                     </div>
-                    <h3>Oh Snap!</h3>
+                    <h3>Oh snap!</h3>
                     <p>Not a single request found.</p>
                     <p>Try to search with a different filter.</p>
                 </div>
@@ -157,6 +157,7 @@
 
         private _setIsEmpty(isEmpty: boolean) {
             this.hasNoResults = isEmpty;
+            console.log(this.listFilter.isFiltered, this.hasNoResults);
             this.isEmpty = !this.listFilter.isFiltered && isEmpty;
         }
 

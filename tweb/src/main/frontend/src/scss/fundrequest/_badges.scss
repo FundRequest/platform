@@ -53,8 +53,10 @@
     }
 
     &--filter {
-        vertical-align: text-top;
-        background-color: $gray-500;
+        vertical-align: middle;
+        background-color: $gray-300;
         padding: .1rem .5rem;
+        margin-top: -2px;
+        display: inline-block;
     }
 }
