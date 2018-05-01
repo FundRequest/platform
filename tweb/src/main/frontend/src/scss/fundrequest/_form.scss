@@ -69,14 +69,18 @@
     }
 
     .form-control {
-        //padding: .3rem 0 .15rem;
+        font-weight: $font-weight-semi-bold;
     }
 }
 
 .form-control {
     color: $gray-600;
     border-color: $gray-200;
-    font-weight: $font-weight-semi-bold;
+    font-weight: $font-weight-normal;
+
+    &::-webkit-input-placeholder {
+        color: $gray-400;
+    }
 
     &.is-loading {
         border-color: $yellow-500;

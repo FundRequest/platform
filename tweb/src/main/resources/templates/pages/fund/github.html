@@ -44,12 +44,12 @@
                                 <h3>Let's start by filling in all the information that developers need to understand your request.</h3>
                             </div>
                             <div class="wizard__step-title" ref="stepTitle2" v-bind:class="getClassesPanel(2)">
-                                <h2>Start filling in the request details</h2>
-                                <h3>Let's start by filling in all the information that developers need to understand your request.</h3>
+                                <h2>Define payment details</h2>
+                                <h3>Define the amount of funding you want to add to your request as well as your preferred payment method.</h3>
                             </div>
                             <div class="wizard__step-title" ref="stepTitle3" v-bind:class="getClassesPanel(3)">
-                                <h2>Start filling in the request details</h2>
-                                <h3>Let's start by filling in all the information that developers need to understand your request.</h3>
+                                <h2>Request Overview</h2>
+                                <h3>Overview of your request. Verify, pay and we'll add your request to our marketplace.</h3>
                             </div>
                         </div>
                         <div class="wizard__steps">
@@ -116,13 +116,13 @@
                     <div class="wizard__title">
                         <div class="row">
                             <div class="col-12">
-                                <h4 class="section-title text-muted" v-if="githubIssue == null">
+                                <h4 class="wizard__title__text" v-if="githubIssue == null">
                                     Please select a GitHub issue
                                 </h4>
-                                <h4 class="section-title text-primary" v-if="githubIssue != null" v-cloak="true">
-                                    <img v-bind:src="githubIssue.avatar + '?size=20'" height="20" width="20" />
+                                <h4 class="wizard__title__text" v-if="githubIssue != null" v-cloak="true">
+                                    <img v-bind:src="githubIssue.avatar + '?size=22'" height="22" width="22" />
                                     <a v-bind:href="githubIssue.html_url" target="_blank" rel="noopener noreferrer">
-                                        {{githubIssue.owner}}/{{githubIssue.repo}} <span class="text-muted">#{{githubIssue.number}}</span>
+                                        {{githubIssue.owner}}/{{githubIssue.repo}} <span class="wizard__title__number">#{{githubIssue.number}}</span>
                                     </a>
                                 </h4>
                             </div>
@@ -316,7 +316,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card-footer bg-white text-muted">
+                                        <div class="card-footer card-footer--light">
                                             Selected payment method: <strong>{{paymentMethod.text}}</strong>
                                         </div>
                                     </div>

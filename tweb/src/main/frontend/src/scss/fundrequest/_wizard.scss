@@ -47,8 +47,20 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
         position: relative;
         z-index: 1;
 
-        .section-title {
+        &__text {
+            display: flex;
+            align-items: center;
+            font-size: 1.375rem;
+            font-weight: $font-weight-bold;
             margin: 1rem 0 .5rem 0;
+
+            img {
+                margin-right: .25rem;
+            }
+        }
+
+        &__number {
+            color: $gray-500;
         }
     }
 
