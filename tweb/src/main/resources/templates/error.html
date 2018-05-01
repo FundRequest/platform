@@ -9,16 +9,16 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <section class="fnd-error-page">
+    <section class="error-page">
         <div class="row">
-            <div class="col-12 col-md-8 col-lg-6">
-                <h1>Oops!</h1>
-                <h2 th:text="${status + ' ' + error}">404 Not Found</h2>
-                <div class="fnd-error-template">
-                    <div class="fnd-error-details" th:text="${'Sorry, an error has occurred: '+ message +'!'}">
-                    </div>
+            <div class="col-12 col-md-8 error-page__content">
+                <h1 class="error-page__title">Oops!</h1>
+                <h2 class="error-page__subtitle" th:text="${message}">404, Not Found</h2>
+                <p class="error-page__text" th:text="${'Error code: ' + status + ' ('+ error +')'}">Error code: 404</p>
 
-                    <div class="fnd-error-actions">
+                <div class="mt-2">
+                    <p class="error-page__text mb-0">Here are some helpful links instead:</p>
+                    <div class="error-page__actions">
                         <ul class="list">
                             <li><a class="text-secondary" th:href="@{/user/requests}">Your requests</a></li>
                             <li><a class="text-secondary" th:href="@{/requests}">Browse all existing requests</a></li>
@@ -28,13 +28,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-6 d-flex">
-                <div class="fnd-error-image"></div>
+            <div class="col-12 col-md-4 d-flex">
+                <div class="error-page__image"></div>
             </div>
         </div>
     </section>
 
-    <div class="fnd-error-stack" th:if="${trace}">
+    <div class="error-page__stack" th:if="${trace}">
                 <pre class="pre-scrollable"><code th:text="${trace}">&lt;p&gt;Sample text here...&lt;/p&gt;
                 &lt;p&gt;And another line of sample text here...&lt;/p&gt;</code></pre>
     </div>

@@ -1,33 +1,77 @@
-.fnd-error-page {
-    padding: 10rem;
-}
-
-.fnd-error-stack {
-    pre {
-        margin-top: 100px;
-        max-height: 500px;
-    }
-}
-
-.fnd-error-actions {
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
-
-.fnd-error-actions .btn {
-    margin-right: 10px;
-}
-
-.fnd-error-image {
-    background-image: url('../img/error.png');
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center center;
-    width: 100%;
-    height: auto;
-    min-height: 10rem;
+.error-page {
+    padding: 5rem 2rem;
 
     @include media-breakpoint-up(md) {
-        background-position: left center;
+        padding: 10rem 2rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+        padding: 10rem;
+    }
+
+    &__content {
+        z-index: 1;
+    }
+
+    &__title {
+        color: $gray-500;
+        font-weight: $font-weight-bold;
+        font-size: 4.5rem;
+        margin-bottom: 0;
+    }
+
+    &__subtitle {
+        color: $gray-400;
+        font-weight: $font-weight-bold;
+        font-size: 2.5rem;
+    }
+
+    &__text {
+        color: $gray-400;
+        font-weight: $font-weight-bold;
+        font-size: $font-size-lg;
+    }
+
+    &__actions {
+        margin: .25rem 0 1rem 0;
+
+        .btn {
+            margin-right: .675rem;
+        }
+
+        .list {
+            list-style: none;
+            padding-left: 0;
+            font-weight: $font-weight-bold;
+        }
+    }
+
+    &__image {
+        background-image: url('../img/error.png');
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center center;
+        width: 100%;
+        height: auto;
+        min-height: 15rem;
+
+        @include media-breakpoint-up(md) {
+            background-position: right top;
+            width: 150%;
+            margin-left: -50%;
+            z-index: 0;
+        }
+
+        @include media-breakpoint-up(lg) {
+            width: 300%;
+            margin-left: -150%;
+        }
+    }
+
+    &__stack {
+        pre {
+            margin-top: 6.5rem;
+            max-height: 32rem;
+        }
     }
 }
