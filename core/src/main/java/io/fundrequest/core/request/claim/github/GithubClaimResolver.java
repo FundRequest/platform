@@ -58,7 +58,7 @@ public class GithubClaimResolver {
 
     public UserClaimableDto userClaimableResult(Principal user, RequestDto request) {
         Optional<String> solver = githubSolverResolver.solveResolver(request);
-        if (solver.isPresent() && request.getStatus() == RequestStatus.FUNDED || request.getStatus() == RequestStatus.CLAIMABLE) {
+        if (solver.isPresent() && (request.getStatus() == RequestStatus.FUNDED || request.getStatus() == RequestStatus.CLAIMABLE)) {
             return UserClaimableDto.builder()
                                    .claimable(true)
                                    .claimableByUser(isClaimalbeByUser(user, request, solver.get()))

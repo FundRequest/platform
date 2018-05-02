@@ -4,7 +4,6 @@ import com.google.common.collect.ArrayListMultimap;
 import io.fundreqest.platform.tweb.infrastructure.mav.dto.AlertDto;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.context.MessageSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -24,7 +23,7 @@ public class RedirectBuilder {
     private ArrayListMultimap<String, String> requestParams = ArrayListMultimap.create();
     private Map<String, String> pathVariables = new HashMap<>();
 
-    public RedirectBuilder(MessageSource messageSource, RedirectAttributes redirectAttributes) {
+    public RedirectBuilder(RedirectAttributes redirectAttributes) {
         this.redirectAttributes = redirectAttributes;
     }
 
