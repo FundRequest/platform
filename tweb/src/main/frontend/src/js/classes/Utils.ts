@@ -58,29 +58,20 @@ export class Utils {
 
     public static fetchJSON(url: string, body: any = null): Promise<any> {
         if (body == null) {
-            return new Promise((resolve, reject) => {
-                $.getJSON(url).done((data) => {
-                    resolve(data);
-                }).fail((error) => {
-                    reject(error);
-                });
-            });
+            return $.getJSON(url).promise()
+                .then(Utils._handleHttpErrors)
+                .then(res => res ? res.json() : null);
             //return fetch(url, {credentials: 'same-origin'})
             //    .then(Utils._handleHttpErrors)
             //    .then(res => res ? res.json() : null)
             //    .catch(err => null);
         } else {
-            return new Promise((resolve, reject) => {
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: JSON.stringify(body)
-                }).done((data) => {
-                    resolve(data);
-                }).fail((error) => {
-                    reject(error);
-                });
-            });
+            return $.ajax({
+                type: 'POST',
+                url: url,
+                data: JSON.stringify(body)
+            }).promise()
+                .then(res => res ? res.json() : null);
             //return fetch(url, {
             //    method: 'POST',
             //    body: JSON.stringify(body),

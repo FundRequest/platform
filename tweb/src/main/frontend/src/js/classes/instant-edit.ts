@@ -1,4 +1,4 @@
-import {Alert} from "./alert";
+import {Alert} from './alert';
 import {Utils} from './Utils';
 
 export class InstantEdit {
@@ -35,11 +35,11 @@ export class InstantEdit {
                     message = 'Field is required';
                     break;
                 case 'ethereum':
-                    valid = value.length > 0 ? /^0x[a-fA-F0-9]{40}$/.test(value) : true;
+                    valid = this._testEthereum(value);
                     message = 'Not a valid ethereum address';
                     break;
                 case 'telegram-handle':
-                    valid = value.length > 0 ? /^@?[a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9]$/.test(value) : false;
+                    valid = this._testTelegram(value);
                     message = 'Telegram handle is required, you can use a-z, 0-9 and underscores.';
                     break;
             }
@@ -54,9 +54,16 @@ export class InstantEdit {
         return valid;
     }
 
+    private _testEthereum(value: string): boolean {
+        return value.length > 0 ? /^0x[a-fA-F0-9]{40}$/.test(value) : true;
+    }
+
+    private _testTelegram(value: string): boolean {
+        return value.length > 0 ? /^@?[a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9]$/.test(value) : false;
+    }
+
     private _saveItem(field, name) {
         let isValid = this._validateItem(field, name);
-        let self = this;
         let title = null;
         let postAddress = null;
         let data = null;
@@ -65,33 +72,37 @@ export class InstantEdit {
             return;
         }
 
-        Utils.showLoading();
-
         switch (field.dataset.edit) {
             case 'eth-address':
                 title = 'ETH address';
                 postAddress = '/profile/etheraddress';
                 data = {etheraddress: field.value};
+                this._postItem(postAddress, data, field, name, title);
                 break;
             case 'telegram-handle':
                 title = 'Telegram handle';
                 postAddress = '/profile/telegramname';
                 data = {telegramname: field.value};
+                this._postItem(postAddress, data, field, name, title);
                 break;
-            default:
-                Utils.hideLoading();
-                return;
         }
 
-        $.post(postAddress, data).promise()
+    }
+
+    private _postItem(postAddress, data, field, name, title) {
+        const self = this;
+
+        Utils.showLoading();
+
+        Utils.fetchJSON(postAddress, data)
             .then(() => {
                 self._hideError(field, name);
                 Alert.show(`${title} saved!`);
             })
             .catch(() => {
-                self._showError(field, name, 'Something went wrong.');
+                this._showError(field, name, 'Something went wrong.');
             })
-            .always(() => {
+            .then(() => {
                 Utils.hideLoading();
                 self._showHideEmptyMessage(field, name);
             });
