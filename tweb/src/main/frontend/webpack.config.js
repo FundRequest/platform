@@ -9,8 +9,7 @@ module.exports = {
     ],
     mode: 'development',
     entry: {
-        vue: path.resolve(__dirname, './src/js/vue/index.ts'),
-        app: path.resolve(__dirname, './src/js/classes/main.ts'),
+        bundle: path.resolve(__dirname, './src/js/vue/index.ts'),
         //core: path.resolve(__dirname, './src/scss/core.scss'),
         //bootstrap: path.resolve(__dirname, './src/scss/bootstrap.scss'),
         //mdb: path.resolve(__dirname, './src/scss/mdb.scss'),
