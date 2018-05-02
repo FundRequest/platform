@@ -86,6 +86,18 @@ public class AzraelMessageReceiverTest {
         verify(requestService).requestClaimed(command);
     }
 
+    @Test
+    public void receiveClaimMessageTransactionAlreadyProcessed() throws Exception {
+        ClaimedEthDto dto = new ClaimedEthDto();
+        StringWriter w = new StringWriter();
+        objectMapper.writeValue(w, dto);
+        when(blockchainEventRepository.findOne(dto.getTransactionHash())).thenReturn(Optional.of(new ProcessedBlockchainEvent(dto.getTransactionHash())));
+
+        messageReceiver.receiveClaimedMessage(w.toString());
+
+        verifyZeroInteractions(requestService);
+    }
+
     private LocalDateTime getTimeStamp(Long time) {
         return time == null ? null : Instant.ofEpochMilli(time)
                 .atZone(ZoneOffset.UTC)

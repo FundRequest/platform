@@ -1,29 +1,30 @@
 package io.fundreqest.platform.tweb.infrastructure.mav.builder;
 
 import com.google.common.collect.ArrayListMultimap;
-import io.fundreqest.platform.tweb.infrastructure.mav.messaging.Messages;
+import io.fundreqest.platform.tweb.infrastructure.mav.dto.AlertDto;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.MessageSource;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RedirectBuilder {
 
     private String url;
     private RedirectAttributes redirectAttributes;
-    private MessageHolder messageHolder;
+    private List<AlertDto> alerts = new ArrayList<>();
     private Map<String, Object> attributes;
     private ArrayListMultimap<String, String> requestParams = ArrayListMultimap.create();
     private Map<String, String> pathVariables = new HashMap<>();
 
-    public RedirectBuilder(MessageSource messageSource, RedirectAttributes redirectAttributes) {
+    public RedirectBuilder(RedirectAttributes redirectAttributes) {
         this.redirectAttributes = redirectAttributes;
-        messageHolder = new MessageHolder(messageSource);
     }
 
     public RedirectBuilder url(String url) {
@@ -38,43 +39,18 @@ public class RedirectBuilder {
         return attributes;
     }
 
-    public RedirectBuilder withSuccessMessage(String code) {
-        messageHolder.addSuccessMessage(code);
-        return this;
+    public RedirectBuilder withDangerMessage(String msg) {
+        return addAlert(msg, "danger");
     }
 
-    public RedirectBuilder withErrorMessage(String code) {
-        messageHolder.addErrorMessage(code);
-        return this;
+    public RedirectBuilder withSuccessMessage(String msg) {
+        return addAlert(msg, "success");
+
     }
 
-    public RedirectBuilder withAlertMessage(String code) {
-        messageHolder.addAlertMessage(code);
-        return this;
-    }
-
-    public RedirectBuilder withInfoMessage(String code) {
-        messageHolder.addInfoMessage(code);
-        return this;
-    }
-
-    public RedirectBuilder withSuccessMessage(String code, String... args) {
-        messageHolder.addSuccessMessage(code, args);
-        return this;
-    }
-
-    public RedirectBuilder withErrorMessage(String code, String... args) {
-        messageHolder.addErrorMessage(code, args);
-        return this;
-    }
-
-    public RedirectBuilder withAlertMessage(String code, String... args) {
-        messageHolder.addAlertMessage(code, args);
-        return this;
-    }
-
-    public RedirectBuilder withInfoMessage(String code, String... args) {
-        messageHolder.addInfoMessage(code, args);
+    @NotNull
+    private RedirectBuilder addAlert(String msg, String success) {
+        alerts.add(new AlertDto(success, msg));
         return this;
     }
 
@@ -85,11 +61,6 @@ public class RedirectBuilder {
 
     public RedirectBuilder withBindingResult(String commandName, BindingResult result) {
         getAttributes().put(BindingResult.MODEL_KEY_PREFIX + commandName, result);
-        return this;
-    }
-
-    public RedirectBuilder withMessages(Messages messages) {
-        messageHolder.addMessages(messages);
         return this;
     }
 
@@ -106,8 +77,8 @@ public class RedirectBuilder {
     public ModelAndView build() {
         String requestParamsString = buildRequestParamsString(requestParams);
         RedirectView redirectView = new RedirectView(url + requestParamsString, true);
-        if (messageHolder.getMessages() != null) {
-            redirectAttributes.addFlashAttribute(messageHolder.getMessagesAttributeName(), messageHolder.getMessages());
+        if (alerts.size() > 0) {
+            redirectAttributes.addFlashAttribute("alerts", alerts);
         }
         if (attributes != null) {
             for (String key : getAttributes().keySet()) {

@@ -23,6 +23,7 @@ public class GithubGateway {
         return githubClient.getIssue(owner, repo, number);
     }
 
+    @Cacheable(value = "github_comments")
     public List<GithubIssueCommentsResult> getCommentsForIssue(String owner, String repo, String number) {
         return githubClient.getCommentsForIssue(owner, repo, number);
     }
