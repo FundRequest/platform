@@ -4,6 +4,7 @@ import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
 import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
@@ -56,7 +57,7 @@ public class GithubClaimResolver {
 
     public UserClaimableDto userClaimableResult(Principal user, RequestDto request) {
         Optional<String> solver = githubSolverResolver.solveResolver(request);
-        if (solver.isPresent()) {
+        if (solver.isPresent() && request.getStatus() == RequestStatus.FUNDED || request.getStatus() == RequestStatus.CLAIMABLE) {
             return UserClaimableDto.builder()
                                    .claimable(true)
                                    .claimableByUser(getUserPlatformUsername(user, request.getIssueInformation().getPlatform()).map(u -> u.equalsIgnoreCase(solver.get()))

@@ -103,7 +103,7 @@ class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public UserClaimableDto getUserClaimableResult(Principal principal, Long id) {
         RequestDto request = findRequest(id);
         UserClaimableDto result = githubClaimResolver.userClaimableResult(principal, request);

@@ -8,13 +8,10 @@ export class DynamicContent {
         console.log($elements);
         $elements.forEach((element: HTMLElement) => {
             let path = element.dataset.dynamicContent;
-            console.log(path);
-
-            if(path.length > 0) {
+            if (path.length > 0) {
                 Utils.fetchHTML(path).then((html) => {
-                    console.log(html);
-
                     element.innerHTML = html;
+                    $(element).find(".auto-tooltip").tooltip({});
                 });
             }
         })

@@ -4,6 +4,7 @@ import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
+import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
 import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
@@ -51,6 +52,21 @@ public class GithubClaimResolverTest {
 
         assertThat(result.isClaimable()).isTrue();
         assertThat(result.isClaimableByUser()).isTrue();
+    }
+
+    @Test
+    public void userClaimableResultClaimRequested() {
+        Principal principal = PrincipalMother.davyvanroy();
+        RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setStatus(RequestStatus.CLAIM_REQUESTED);
+        when(githubSolverResolver.solveResolver(requestDto)).thenReturn(Optional.of("davyvanroy"));
+        when(keycloakRepository.getUserIdentities(principal.getName()))
+                .thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
+
+        UserClaimableDto result = claimResolver.userClaimableResult(principal, requestDto);
+
+        assertThat(result.isClaimable()).isFalse();
+        assertThat(result.isClaimableByUser()).isFalse();
     }
 
     @Test

@@ -30,7 +30,7 @@
                         <div class="request-details__status">
                             <span class="request-details__badge badge"
                                   th:classappend="'badge--' + ${#strings.toLowerCase(request.status)}"
-                                  th:text="${#strings.toLowerCase(request.status)}">Claimed</span>
+                                  th:text="#{${'enum.RequestStatus.' + request.status}}">Claimed</span>
                             <span class="request-details__icons">
                           <i class="fab fa-linkedin-in"></i>
                           <i class="fab fa-twitter"></i>
