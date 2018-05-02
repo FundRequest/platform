@@ -8,5 +8,7 @@ plugins:
     enabled: true
     config:
       tests_patterns:
-        - */src/main/test/**
+        - core/src/main/test/**
+        - tweb/src/main/test/**
+        - admin-web/src/main/test/**
       sonar.java.source: 8
