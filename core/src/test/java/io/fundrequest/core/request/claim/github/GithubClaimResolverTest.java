@@ -44,6 +44,7 @@ public class GithubClaimResolverTest {
     public void userClaimableResult() {
         Principal principal = PrincipalMother.davyvanroy();
         RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setStatus(RequestStatus.FUNDED);
         when(githubSolverResolver.solveResolver(requestDto)).thenReturn(Optional.of("davyvanroy"));
         when(keycloakRepository.getUserIdentities(principal.getName()))
                 .thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
