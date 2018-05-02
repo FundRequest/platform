@@ -13,7 +13,7 @@ export class PaymentMethod {
 export class PaymentMethods {
     public static instance: PaymentMethods;
 
-    public trustWallet: PaymentMethod = new PaymentMethod('trustwallet', 'Trust Wallet (QR code / EIP67)', '');
+    public trustWallet: PaymentMethod = new PaymentMethod('trustwallet', 'Trust Wallet / QR code (EIP67)', '');
     public dapp: PaymentMethod = new PaymentMethod('dapp', 'MetaMask / Mist / DApp browser', '');
 
     public wallet: PaymentMethod = new PaymentMethod('wallet', 'Internal Wallet', '(Coming soon)');

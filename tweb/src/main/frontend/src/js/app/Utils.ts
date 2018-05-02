@@ -31,8 +31,8 @@ export class Utils {
 
     public static formatTokenPrice(value, decimals: number = 2) {
         if (value) {
-            let val = (value / 1).toFixed(decimals).replace('.', ',');
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            let val = (value / 1).toFixed(decimals);
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         } else {
             return value;
         }

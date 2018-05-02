@@ -1,31 +1,30 @@
-$border-radius: 0.25rem;
-$btn-border-radius: 0.25rem;
-$card-border-radius: 0.25rem;
+$border-radius-base: .325rem;
+$border-radius: 0.325rem;
+$btn-border-radius: 0.325rem;
+$card-border-radius: 0.325rem;
 
 $enable-caret: false;
 
 $font-family-sans-serif: "Roboto", Arial, sans-serif;
-$font-family-base: "Roboto", sans-serif;
-
-$font-weight-light: 200;
-$body-color: #6c757d;
+$font-family-base: "Roboto", Arial, sans-serif;
 
 $enable-shadows: true;
-
-$border-radius-base: .25rem;
 
 $btn-margin-basic: 0 0 .375rem 0;
 $btn-padding-y-basic: .5rem;
 $btn-padding-x-basic: 1rem;
 
-$btn-padding-y-large: 1rem;
-$btn-padding-x-large: 2rem;
+$btn-padding-y-large: .5rem;
+$btn-padding-x-large: 1rem;
+$btn-font-size-large: 1.2rem;
 
 $btn-padding-y-medium: .75rem;
 $btn-padding-x-medium: 1.5rem;
+$btn-font-size-medium: 1rem;
 
 $btn-padding-y-small: .4rem;
 $btn-padding-x-small: .8rem;
+$btn-font-size-small: .75rem;
 
 $btn-outline-padding-y-basic: calc(#{$btn-padding-y-basic} - 2px);
 $btn-outline-padding-y-large: calc(#{$btn-padding-y-large} - 2px);
@@ -35,3 +34,18 @@ $btn-outline-padding-y-small: calc(#{$btn-padding-y-small} - 2px);
 $input-group-form-control-pt: .5rem;
 $input-group-form-control-pb: .5rem;
 
+$font-weight-light: 200;
+$font-weight-normal: 300;
+$font-weight-semi-bold: 400;
+$font-weight-bold: 500;
+
+$font-size-base: 1rem; // Assumes the browser default, typically `16px`
+$font-size-lg: ($font-size-base * 1.125); //18px
+$font-size-sm: ($font-size-base * .875); //14px;
+
+$h1-font-size: $font-size-base * 3; //48px;
+$h2-font-size: $font-size-base * 1.5; //24px;
+$h3-font-size: $font-size-base; // 16px;
+//$h4-font-size: $font-size-base * 1.5 !default;
+//$h5-font-size: $font-size-base * 1.25 !default;
+//$h6-font-size: $font-size-base !default;

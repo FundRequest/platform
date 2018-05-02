@@ -25,6 +25,11 @@
         }
     }
 
+    &__header-logo {
+        justify-content: center;
+        align-items: flex-start;
+    }
+
     &__owner {
         white-space: nowrap;
     }
@@ -39,6 +44,10 @@
         padding-right: .75rem;
         margin-right: .25rem;
         position: relative;
+        color: $gray-500;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-bold;
+
         &::after {
             content: "/";
             display: inline;
@@ -54,9 +63,15 @@
     }
 
     &__header {
-        font-weight: bold;
-        font-size: 1.2rem;
+        font-weight: $font-weight-bold;
+        font-size: $font-size-lg;
         display: flex;
+    }
+
+    &__status {
+        display: flex;
+        align-items: center;
+        margin-bottom: .25rem;
     }
 
     &__title {
@@ -79,17 +94,19 @@
     }
 
     &__icons {
+        color: $gray-500;
         i {
+            font-size: 1.25rem;
             margin-right: .5rem;
         }
     }
 
     &__price {
         color: $green-500;
-        font-size: 2rem;
+        font-size: 3.75rem;
         justify-content: flex-end;
-        align-items: center;
         font-weight: bold;
+        align-items: center;
 
         .request-details__fund-amount {
             flex-grow: 0;
@@ -112,6 +129,7 @@
         align-items: center;
         color: $gray-500;
         font-weight: $font-weight-bold;
+        font-size: 1.5rem;
 
         &-logo {
             height: 1rem;
@@ -139,7 +157,7 @@
         justify-content: center;
         padding: 0 1rem;
         margin-left: 1rem;
-        border-left: 1px solid $gray-300;
+        border-left: 1px solid $gray-a100;
     }
 
     &__actions {
@@ -150,8 +168,75 @@
 
     &__disclaimer {
         width: 100%;
-        font-size: .85rem;
+        font-size: .75rem;
         color: $gray-500;
+    }
+}
+
+.request-details--list {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    cursor: pointer;
+
+    > * {
+        padding: 0 1rem;
+    }
+
+    &:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    &:last-child {
+        border-radius: 0 0 $border-radius $border-radius;
+    }
+
+    &:hover {
+        background-color: $gray-200;
+    }
+
+    .request-details__info {
+        border-left: 1px solid $gray-200;
+        max-width: calc(100% - 24rem);
+    }
+
+    .request-details__price {
+        color: $green-500;
+        font-size: 1.5rem;
+        font-weight: $font-weight-normal;
+        width: 7rem;
+    }
+
+    .request-details__fund {
+        color: $gray-600;
+        font-size: $font-size-lg;
+        font-weight: $font-weight-normal;
+    }
+
+    .request-details__crypto {
+        margin-left: 0;
+        border-left: 0 none;
+        width: 6rem;
+        padding: 0 .25rem;
+    }
+
+    .request-details__actions {
+        flex-grow: 0;
+        justify-content: center;
+        padding: .5rem 2rem .5rem 1.5rem;
+        width: 4rem;
+
+        i {
+            text-align: center;
+            width: .5rem;
+            transition: font-size .35s ease-in-out;
+        }
+
+        &:hover {
+            i {
+                font-size: 3rem;
+            }
+        }
     }
 }
 
