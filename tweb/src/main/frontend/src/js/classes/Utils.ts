@@ -58,9 +58,7 @@ export class Utils {
 
     public static fetchJSON(url: string, body: any = null): Promise<any> {
         if (body == null) {
-            return $.getJSON(url).promise()
-                .then(Utils._handleHttpErrors)
-                .then(res => res ? res.json() : null);
+            return $.getJSON(url).promise();
             //return fetch(url, {credentials: 'same-origin'})
             //    .then(Utils._handleHttpErrors)
             //    .then(res => res ? res.json() : null)
@@ -70,8 +68,7 @@ export class Utils {
                 type: 'POST',
                 url: url,
                 data: JSON.stringify(body)
-            }).promise()
-                .then(res => res ? res.json() : null);
+            }).promise();
             //return fetch(url, {
             //    method: 'POST',
             //    body: JSON.stringify(body),

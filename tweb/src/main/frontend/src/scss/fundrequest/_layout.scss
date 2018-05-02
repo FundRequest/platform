@@ -241,7 +241,7 @@ a.anchor {
 .disclaimer-asterix {
     color: $gray-500;
     display: inline-block;
-    font-size: $font-size-sm;
+    font-size: 0.875em; //use em value to stay in proportion with item's text size
     vertical-align: super;
     margin-right: .25rem;
 }
