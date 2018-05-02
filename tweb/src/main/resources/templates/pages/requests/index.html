@@ -8,26 +8,23 @@
 <th:block layout:fragment="content">
     <section class="section section--header mb-5">
         <div class="row">
-            <div class="col-12 col-md-4 d-none d-md-flex justify-content-center align-items-center">
+            <div class="col-12 col-md-4 d-none d-md-flex justify-content-center">
                 <i class="fa fa-list fa-10x text-secondary"></i>
             </div>
-            <div class="col-12 col-md-8">
-                <h1 class="text-secondary">
+            <div class="col-12 col-md-7">
+                <h1 class="page-title">
                     <span class="d-inline-block d-md-none">
                         <i class="fa fa-list fa-1x text-secondary"></i>
                     </span>
                     Browse all requests
                 </h1>
-
-                <div class="description text-muted">
-                    <p>
-                        The best way to deep dive into all requests.
-                        Filter on technology or on a specific project so you can find the perfect request that fits your needs.
-                    </p>
-                </div>
+                <p class="page-description">
+                    The best way to deep dive into all requests.
+                    Filter on technology or on a specific project so you can find the perfect request that fits your needs.
+                </p>
 
                 <div class="d-flex justify-content-between">
-                    <a class="text-secondary text-transform-normal" th:href="@{'#faq'}">
+                    <a class="btn btn-link text-secondary" th:href="@{'#faq'}">
                         How it works...
                     </a>
                     <a class="btn btn-secondary" th:href="@{/fund/github}">
@@ -56,7 +53,7 @@
                             <div class="col-12 col-md-4 request-list__statistic">
                                 <div class="request-list__statistic-title">Total funding</div>
                                 <div class="request-list__statistic-value">
-                                    $<span th:text="${#numbers.formatDecimal(statistics.totalAvailableFunding,1,2,'COMMA')}">2873</span>
+                                    <span class="disclaimer-asterix">*</span>$<span th:text="${#numbers.formatDecimal(statistics.totalAvailableFunding,1,2,'POINT')}">2873</span>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 request-list__statistic">
@@ -81,17 +78,17 @@
     <section class="mb-2" ref="faq" id="faq">
         <div class="row">
             <div class="col-12">
-                <h4 class="section-title text-primary">Frequently Asked Questions</h4>
-                <h5 class="section-subtitle text-muted">
-                    <small>Your funding existing requests FAQ's, answered.</small>
-                </h5>
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <h3 class="section-subtitle">
+                    Your funding existing requests FAQ's, answered.
+                </h3>
             </div>
             <div class="col-12">
                 <div class="card">
                     <div class="card-body faq">
-                        <div class="faq__title">
+                        <h4 class="faq__title">
                             This is a first question, will other follow, what do you think?
-                        </div>
+                        </h4>
                         <div class="faq__answer">
                             Hmm I'm not sure, one question is of course not a lot, so I
                             guess the chance is very high that others will follow. My
@@ -99,9 +96,9 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="faq__title">
+                        <h4 class="faq__title">
                             This is a first question, will other follow, what do you think?
-                        </div>
+                        </h4>
                         <div class="faq__answer">
                             Hmm I'm not sure, one question is of course not a lot, so I
                             guess the chance is very high that others will follow. My
@@ -109,9 +106,9 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="faq__title">
+                        <h4 class="faq__title">
                             This is a first question, will other follow, what do you think?
-                        </div>
+                        </h4>
                         <div class="faq__answer">
                             Hmm I'm not sure, one question is of course not a lot, so I
                             guess the chance is very high that others will follow. My

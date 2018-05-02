@@ -25,6 +25,7 @@
         public supportedTokens: TokenInfo[] = [];
         public selectedToken: TokenInfo = null;
         public panelsHeight: number = 0;
+        public stepTitlesHeight: number = 0;
         public trustWalletModalActive: boolean = false;
         public qrData: string = "";
 
@@ -81,6 +82,7 @@
                 if (onlyCompleted && step < this._activeStep || !onlyCompleted) {
                     this._activeStep = step;
                     this.panelsHeight = (<HTMLElement>this.$refs[`panelStep${step}`]).clientHeight;
+                    this.stepTitlesHeight = (<HTMLElement>this.$refs[`stepTitle${step}`]).clientHeight;
                 }
             }
             this._loading = false;
@@ -101,7 +103,7 @@
                 await new Promise((resolve, reject) => {
                     web3.version.getNetwork((err, res) => {
                         if (!err && res != this._network) {
-                            PaymentMethods.getInstance().dapp.disabledMsg = "Not connected to the correct network.";
+                            PaymentMethods.getInstance().dapp.disabledMsg = "Not connected to main network.";
                         }
                         resolve("not connected");
                     });

@@ -1,4 +1,6 @@
 .card {
+    font-weight: $font-weight-normal;
+
     .card {
         @include box-shadow($z-depth-1-half);
     }
@@ -48,6 +50,7 @@
     }
 
     &-text {
+
         &[class*='card-text--step-'] {
             position: relative;
             padding-left: 2rem;
@@ -76,7 +79,11 @@
     }
 
     &-header {
+        color: $gray-500;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-bold;
         background-color: $white;
+        border-color: $gray-a100;
 
         &--label {
             display: flex;
@@ -142,6 +149,13 @@
     &--social--success {
         justify-content: flex-end;
         border-top-color: $success-color;
+    }
+
+    &-footer {
+        &--light {
+            background-color: $white;
+            color: $gray-500;
+        }
     }
 }
 

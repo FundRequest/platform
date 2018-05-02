@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html"
+      layout:decorator="layouts/default">
+<head>
+    <title th:text="${'FundRequest - Sorry, an error has occurred - ' + status + ' ' + error}">
+        FundRequest - Error
+    </title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="error-page">
+        <div class="row">
+            <div class="col-12 col-md-8 error-page__content">
+                <h1 class="error-page__title">Oops!</h1>
+                <h2 class="error-page__subtitle" th:text="${message}">404, Not Found</h2>
+                <p class="error-page__text" th:text="${'Error code: ' + status + ' ('+ error +')'}">Error code: 404</p>
+
+                <div class="mt-2">
+                    <p class="error-page__text mb-0">Here are some helpful links instead:</p>
+                    <div class="error-page__actions">
+                        <ul class="list">
+                            <li><a class="text-secondary" th:href="@{/user/requests}">Your requests</a></li>
+                            <li><a class="text-secondary" th:href="@{/requests}">Browse all existing requests</a></li>
+                            <li><a class="text-secondary" th:href="@{/user/profile}">Your profile</a></li>
+                            <li><a class="text-secondary" th:href="@{https://help.fundrequest.io}">Help</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 d-flex">
+                <div class="error-page__image"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="error-page__stack" th:if="${trace}">
+                <pre class="pre-scrollable"><code th:text="${trace}">&lt;p&gt;Sample text here...&lt;/p&gt;
+                &lt;p&gt;And another line of sample text here...&lt;/p&gt;</code></pre>
+    </div>
+</div>
+</body>
+</html>

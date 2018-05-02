@@ -1,13 +1,27 @@
-.page-title {
-    font-size: 1.8rem;
+.home-title {
+    font-size: 2rem;
+    margin: 1rem 0;
+    padding: 0;
+}
+
+.home-title,
+.home-description {
+    color: $white;
     font-weight: $font-weight-light;
 }
 
-.page-title,
-.page-sub-title {
-    color: $white;
+.home-description {
+    text-align: justify;
+    font-size: $font-size-lg;
+    margin-bottom: 3rem;
 }
 
-.page-sub-title {
-    margin-bottom: 1.5rem;
+.page-title {
+
+}
+
+.page-description {
+    text-align: justify;
+    color: $gray-500;
+    font-size: $font-size-lg;
 }
