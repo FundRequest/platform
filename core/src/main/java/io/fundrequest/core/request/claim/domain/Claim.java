@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Table(name = "fund")
+@Table(name = "claim")
 @Entity
 public class Claim extends AbstractEntity {
 

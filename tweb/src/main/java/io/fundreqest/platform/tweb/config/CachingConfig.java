@@ -32,6 +32,7 @@ public class CachingConfig {
                         buildCache("token_price", 15, MINUTES),
                         buildCache("funds", 7, DAYS),
                         buildCache("github_issue", 1, DAYS),
+                        buildCache("github_comments", 1, DAYS),
                         buildCache("loginUserData", 1, DAYS),
                         buildCache("ref_links", 30, DAYS),
                         buildCache("user_profile", 1, DAYS),

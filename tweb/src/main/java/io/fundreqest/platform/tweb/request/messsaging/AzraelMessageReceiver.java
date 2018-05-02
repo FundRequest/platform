@@ -49,7 +49,7 @@ public class AzraelMessageReceiver {
     public void receiveFundedMessage(String message) throws IOException {
         LOGGER.debug("Recieved new message from Azrael: " + message);
         FundedEthDto result = objectMapper.readValue(message, FundedEthDto.class);
-        if (isNotProcessed(result)) {
+        if (isNotProcessed(result.getTransactionHash()) && StringUtils.isNotBlank(result.getPlatformId())) {
             CreateRequestCommand createRequestCommand = new CreateRequestCommand();
             createRequestCommand.setPlatform(getPlatform(result.getPlatform()));
             createRequestCommand.setPlatformId(result.getPlatformId());
@@ -84,13 +84,15 @@ public class AzraelMessageReceiver {
     public void receiveClaimedMessage(String message) throws IOException {
         LOGGER.debug("Recieved new message from Azrael: " + message);
         ClaimedEthDto result = objectMapper.readValue(message, ClaimedEthDto.class);
-        requestService.requestClaimed(new RequestClaimedCommand(
-                getPlatform(result.getPlatform()),
-                result.getPlatformId(),
-                result.getTransactionHash(), result.getSolver(),
-                getTimeStamp(result.getTimestamp()),
-                new BigDecimal(result.getAmount())));
-        processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
+        if (isNotProcessed(result.getTransactionHash())) {
+            requestService.requestClaimed(new RequestClaimedCommand(
+                    getPlatform(result.getPlatform()),
+                    result.getPlatformId(),
+                    result.getTransactionHash(), result.getSolver(),
+                    getTimeStamp(result.getTimestamp()),
+                    new BigDecimal(result.getAmount())));
+            processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
+        }
     }
 
     private LocalDateTime getTimeStamp(Long time) {
@@ -99,9 +101,8 @@ public class AzraelMessageReceiver {
                                             .toLocalDateTime();
     }
 
-    private boolean isNotProcessed(FundedEthDto result) {
-        return !processedBlockchainEventRepository.findOne(result.getTransactionHash()).isPresent()
-               && StringUtils.isNotBlank(result.getPlatformId());
+    private boolean isNotProcessed(String transactionHash) {
+        return !processedBlockchainEventRepository.findOne(transactionHash).isPresent();
     }
 
 }

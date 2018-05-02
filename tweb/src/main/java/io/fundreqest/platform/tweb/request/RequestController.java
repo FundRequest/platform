@@ -8,6 +8,8 @@ import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.claim.ClaimService;
+import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.FundService;
@@ -15,15 +17,19 @@ import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.platform.profile.profile.ProfileService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -37,19 +43,25 @@ public class RequestController extends AbstractController {
     private RequestService requestService;
     private PendingFundService pendingFundService;
     private StatisticsService statisticsService;
+    private ProfileService profileService;
     private FundService fundService;
+    private ClaimService claimService;
     private ObjectMapper objectMapper;
     private Mappers mappers;
 
     public RequestController(RequestService requestService,
                              PendingFundService pendingFundService,
                              StatisticsService statisticsService,
-                             FundService fundService, ObjectMapper objectMapper,
+                             ProfileService profileService, FundService fundService,
+                             ClaimService claimService,
+                             ObjectMapper objectMapper,
                              Mappers mappers) {
         this.requestService = requestService;
         this.pendingFundService = pendingFundService;
         this.statisticsService = statisticsService;
+        this.profileService = profileService;
         this.fundService = fundService;
+        this.claimService = claimService;
         this.objectMapper = objectMapper;
         this.mappers = mappers;
     }
@@ -84,14 +96,46 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests/{id}")
-    public ModelAndView details(@PathVariable Long id) {
+    public ModelAndView details(@PathVariable Long id, Model model) {
         RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id));
-        return modelAndView()
+        return modelAndView(model)
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
                 .withObject("fundedBy", fundService.getFundedBy(id))
                 .withObject("githubComments", requestService.getComments(id))
                 .withView("pages/requests/detail")
+                .build();
+    }
+
+    @PostMapping("/requests/{id}/claim")
+    public ModelAndView claimRequest(Principal principal, @PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String etherAddress = profileService.getUserProfile(principal.getName()).getEtherAddress();
+        if (StringUtils.isBlank(etherAddress)) {
+            return redirectView(redirectAttributes)
+                    .withDangerMessage("Please update your profile with a correct ether address.")
+                    .url("/requests/" + id)
+                    .build();
+        }
+        RequestDto request = requestService.findRequest(id);
+        claimService.claim(principal,
+                           UserClaimRequest.builder()
+                                           .address(etherAddress)
+                                           .platform(request.getIssueInformation().getPlatform())
+                                           .platformId(request.getIssueInformation().getPlatformId())
+                                           .build());
+        return redirectView(redirectAttributes)
+                .withSuccessMessage("Your claim has been requested and waiting for approval.")
+                .url("/requests/" + id)
+                .build();
+    }
+
+    @GetMapping("/requests/{id}/actions")
+    public ModelAndView detailActions(Principal principal, @PathVariable Long id) {
+        RequestDto request = requestService.findRequest(id);
+        return modelAndView()
+                .withObject("userClaimable", requestService.getUserClaimableResult(principal, id))
+                .withObject("request", request)
+                .withView("pages/requests/detail-actions")
                 .build();
     }
 

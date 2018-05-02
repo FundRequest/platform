@@ -39,7 +39,8 @@ class ClaimServiceImpl implements ClaimService {
                                            .orElseThrow(() -> new RuntimeException("Request not found"));
 
         RequestDto requestDto = mappers.map(Request.class, RequestDto.class, request);
-        String solver = githubClaimResolver.getUserPlatformUsername(user, request.getIssueInformation().getPlatform());
+        String solver = githubClaimResolver.getUserPlatformUsername(user, request.getIssueInformation().getPlatform())
+                                           .orElseThrow(() -> new RuntimeException("You are not linked to github"));
         RequestClaim requestClaim = RequestClaim.builder()
                                                 .address(userClaimRequest.getAddress())
                                                 .requestId(request.getId())

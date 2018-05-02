@@ -51,7 +51,7 @@ public class ClaimServiceImplTest {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
         when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
         when(githubClaimResolver.getUserPlatformUsername(solver, request.getIssueInformation().getPlatform()))
-                .thenReturn(solver.getName());
+                .thenReturn(Optional.of(solver.getName()));
         when(githubClaimResolver.canClaim(solver, requestDto)).thenReturn(true);
 
         claimService.claim(solver, userClaimRequest);
