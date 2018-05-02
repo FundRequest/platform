@@ -2,6 +2,7 @@ package io.fundrequest.core.request.infrastructure.azrael;
 
 
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 )
 public interface AzraelClient {
 
-    @RequestMapping(method = RequestMethod.POST, value = "/claims", consumes = "application/json;charset=UTF-8")
+    @RequestMapping(method = RequestMethod.POST, value = "/claims", consumes = MediaType.APPLICATION_JSON_VALUE)
     ClaimSignature getSignature(SignClaimCommand signClaimCommand);
 
 }
