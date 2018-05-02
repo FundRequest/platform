@@ -29,20 +29,8 @@ export class InstantEdit {
 
         for (let i = 0; i < validations.length && valid; i++) {
             let validation = validations[i];
-            switch (validation) {
-                case 'required':
-                    valid = value.length;
-                    message = 'Field is required';
-                    break;
-                case 'ethereum':
-                    valid = this._testEthereum(value);
-                    message = 'Not a valid ethereum address';
-                    break;
-                case 'telegram-handle':
-                    valid = this._testTelegram(value);
-                    message = 'Telegram handle is required, you can use a-z, 0-9 and underscores.';
-                    break;
-            }
+            message = this._validateValue(validation, valid, value);
+            valid = message.length <= 0;
         }
 
         if (!valid) {
@@ -54,12 +42,32 @@ export class InstantEdit {
         return valid;
     }
 
+    private _validateValue(validation, valid, value) {
+        let message = '';
+        switch (validation) {
+            case 'required':
+                valid = valid && value.length;
+                message = 'Field is required';
+                break;
+            case 'ethereum':
+                valid = valid && this._testEthereum(value);
+                message = 'Not a valid ethereum address';
+                break;
+            case 'telegram-handle':
+                valid = valid && this._testTelegram(value);
+                message = 'Telegram handle is required, you can use a-z, 0-9 and underscores.';
+                break;
+        }
+
+        return valid ? '' : message;
+    }
+
     private _testEthereum(value: string): boolean {
-        return value.length > 0 ? /^0x[a-fA-F0-9]{40}$/.test(value) : true;
+        return value.trim().length <= 0 || /^0x[a-fA-F0-9]{40}$/.test(value);
     }
 
     private _testTelegram(value: string): boolean {
-        return value.length > 0 ? /^@?[a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9]$/.test(value) : false;
+        return value.trim().length <= 0 || /^@?[a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9]$/.test(value);
     }
 
     private _saveItem(field, name) {
