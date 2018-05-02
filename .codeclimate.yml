@@ -2,7 +2,7 @@ version: "2"         # required to adjust maintainability checks
 checks:
   similar-code:
     config:
-      threshold: 6
+      threshold: 50
 plugins:
   sonar-java:
     enabled: true
