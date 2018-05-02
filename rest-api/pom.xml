@@ -22,12 +22,6 @@
             <artifactId>core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>io.fundrequest</groupId>-->
-            <!--<artifactId>web</artifactId>-->
-            <!--<version>${project.version}</version>-->
-            <!--<scope>runtime</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
