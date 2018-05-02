@@ -1,7 +1,6 @@
 package io.fundreqest.platform.tweb.config;
 
 import io.fundreqest.platform.tweb.request.messsaging.AzraelMessageReceiver;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -24,6 +23,10 @@ public class AzraelJmsListenerConfig {
     @Autowired
     private ConnectionFactory connectionFactory;
 
+    @Bean
+    TopicExchange exchange() {
+        return new TopicExchange("azrael-exchange");
+    }
 
     @Bean
     SimpleMessageListenerContainer fundedContainer(ConnectionFactory connectionFactory,
