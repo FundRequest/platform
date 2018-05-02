@@ -136,18 +136,15 @@
                             <div class="request-funding__total">
                                 <div class="request-details__label">
                                     <span>Total</span>
-                                    <span class="small">*Currently valued at</span>
                                 </div>
                                 <div class="request-details__price" th:if="${fundedBy.usdFunds != null}">
+                                    <span class="disclaimer-asterix">*</span>
                                     <span class="request-details__fund-amount"
                                           th:text="${#numbers.formatDecimal(fundedBy.usdFunds,1,2,'POINT')}">58</span>
                                     <span class="request-details__fund-currency">USD</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer bg-white text-muted">
-                        * Disclaimer: Token values are fetched from <strong>CryptoCompare</strong>
                     </div>
                 </div>
             </template>
