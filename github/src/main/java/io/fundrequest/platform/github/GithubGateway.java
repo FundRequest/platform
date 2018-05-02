@@ -1,6 +1,7 @@
 package io.fundrequest.platform.github;
 
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
+import io.fundrequest.platform.github.parser.GithubRateLimits;
 import io.fundrequest.platform.github.parser.GithubResult;
 import io.fundrequest.platform.github.parser.GithubUser;
 import org.springframework.cache.annotation.Cacheable;
@@ -43,5 +44,9 @@ public class GithubGateway {
 
     public GithubUser getUser(String username) {
         return githubClient.getUser(username);
+    }
+
+    public GithubRateLimits getRateLimit() {
+        return githubClient.getRateLimit();
     }
 }

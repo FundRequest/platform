@@ -1,6 +1,7 @@
 package io.fundrequest.platform.github;
 
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
+import io.fundrequest.platform.github.parser.GithubRateLimits;
 import io.fundrequest.platform.github.parser.GithubResult;
 import io.fundrequest.platform.github.parser.GithubUser;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -61,4 +62,7 @@ interface GithubClient {
     GithubUser getUser(
             @PathVariable("username") String username
                       );
+
+    @RequestMapping(value = "/rate_limit", method = GET)
+    GithubRateLimits getRateLimit();
 }
