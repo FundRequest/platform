@@ -56,6 +56,18 @@ public class GithubClaimResolverTest {
     }
 
     @Test
+    public void userClaimableResultNoPrincipal() {
+        RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setStatus(RequestStatus.FUNDED);
+        when(githubSolverResolver.solveResolver(requestDto)).thenReturn(Optional.of("davyvanroy"));
+
+        UserClaimableDto result = claimResolver.userClaimableResult(null, requestDto);
+
+        assertThat(result.isClaimable()).isTrue();
+        assertThat(result.isClaimableByUser()).isFalse();
+    }
+
+    @Test
     public void userClaimableResultClaimRequested() {
         Principal principal = PrincipalMother.davyvanroy();
         RequestDto requestDto = RequestDtoMother.fundRequestArea51();

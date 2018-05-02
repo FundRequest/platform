@@ -11,6 +11,7 @@ import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.keycloak.KeycloakRepository;
 import io.fundrequest.platform.keycloak.UserIdentity;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -60,11 +61,19 @@ public class GithubClaimResolver {
         if (solver.isPresent() && request.getStatus() == RequestStatus.FUNDED || request.getStatus() == RequestStatus.CLAIMABLE) {
             return UserClaimableDto.builder()
                                    .claimable(true)
-                                   .claimableByUser(getUserPlatformUsername(user, request.getIssueInformation().getPlatform()).map(u -> u.equalsIgnoreCase(solver.get()))
-                                                                                                                              .orElse(false))
+                                   .claimableByUser(isClaimalbeByUser(user, request, solver.get()))
                                    .build();
         }
         return UserClaimableDto.builder().claimable(false).claimableByUser(false).build();
+    }
+
+    @NotNull
+    private Boolean isClaimalbeByUser(Principal user, RequestDto request, String solver) {
+        return user == null
+               ? false
+               : getUserPlatformUsername(user, request.getIssueInformation().getPlatform())
+                       .map(u -> u.equalsIgnoreCase(solver))
+                       .orElse(false);
     }
 
     private String getSolver(Principal user, UserClaimRequest userClaimRequest, RequestDto request) throws IOException {
