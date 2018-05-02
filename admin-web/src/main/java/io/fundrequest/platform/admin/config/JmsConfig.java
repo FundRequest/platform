@@ -1,4 +1,4 @@
-package io.fundrequest.core.config;
+package io.fundrequest.platform.admin.config;
 
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -30,6 +30,4 @@ public class JmsConfig {
         rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         return rabbitTemplate;
     }
-
-
 }
