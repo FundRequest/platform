@@ -180,6 +180,6 @@ export class Utils {
     }
 
     private static async _validateGithub(value: string): Promise<boolean> {
-        return value.trim().length <= 0 || (await Utils.validators.github(value);
+        return value.trim().length <= 0 || await Utils.validators.github(value);
     }
 }
