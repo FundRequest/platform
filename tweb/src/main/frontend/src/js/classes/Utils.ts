@@ -151,7 +151,7 @@ export class Utils {
         }
     }
 
-    private static async _validateElementValue(validations: string[], value: string): boolean {
+    private static async _validateElementValue(validations: string[], value: string): Promise<boolean> {
         let isValid = true;
 
         for (let validation of validations) {
