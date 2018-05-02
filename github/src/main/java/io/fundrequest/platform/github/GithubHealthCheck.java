@@ -8,8 +8,8 @@ import org.springframework.boot.actuate.health.Status;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Component
 public class GithubHealthCheck implements HealthIndicator {
@@ -18,9 +18,9 @@ public class GithubHealthCheck implements HealthIndicator {
     private final int threshold;
 
     public GithubHealthCheck(final GithubGateway githubGateway,
-                             @Value("${github.api-rate-limit-threshold:1000}") final int threshold) {
+                             @Value("${io.fundrequest.github.api-rate-limit-threshold-percentage:20}") final int thresholdPercentage) {
         this.githubGateway = githubGateway;
-        this.threshold = threshold;
+        this.threshold = thresholdPercentage;
     }
 
     @Override
@@ -29,19 +29,23 @@ public class GithubHealthCheck implements HealthIndicator {
         if (rateLimit.getRemaining() == 0) {
             return addDetails(Health.down(), rateLimit).build();
         }
-        if (rateLimit.getRemaining() > threshold) {
+        if (rateLimit.getRemaining() > calculateThreshold(rateLimit.getLimit())) {
             return addDetails(Health.up(), rateLimit).build();
         }
         return addDetails(Health.status(new Status("THRESHOLD REACHED")), rateLimit).build();
     }
 
+    private int calculateThreshold(final int limit) {
+        return limit * threshold / 100;
+    }
+
     private Health.Builder addDetails(final Health.Builder healthBuilder, final GithubRateLimit rateLimit) {
         return healthBuilder.withDetail("limit", rateLimit.getLimit())
                             .withDetail("remaining", rateLimit.getRemaining())
-                            .withDetail("reset", toLocaldateTime(rateLimit.getReset()));
+                            .withDetail("reset", toZonedDateTime(rateLimit.getReset()));
     }
 
-    private LocalDateTime toLocaldateTime(final long reset) {
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(reset), ZoneId.systemDefault());
+    private ZonedDateTime toZonedDateTime(final long reset) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochSecond(reset), ZoneId.systemDefault());
     }
 }

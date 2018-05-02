@@ -8,15 +8,14 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class GithubHealthCheckTest {
-    private static final int THRESHOLD = 1000;
 
     private GithubHealthCheck githubHealthCheck;
     private GithubGateway githubGateway;
@@ -24,15 +23,15 @@ public class GithubHealthCheckTest {
     @Before
     public void setUp() throws Exception {
         githubGateway = mock(GithubGateway.class);
-        githubHealthCheck = new GithubHealthCheck(githubGateway, THRESHOLD);
+        githubHealthCheck = new GithubHealthCheck(githubGateway, 20);
     }
 
     @Test
     public void testHealth_up() {
         final int limit = 5000;
-        final int remaining = THRESHOLD + 1;
+        final int remaining = 1001;
         final long reset = 1372700873;
-        final LocalDateTime verwachteReset = LocalDateTime.ofInstant(Instant.ofEpochSecond(reset), ZoneId.systemDefault());
+        final ZonedDateTime verwachteReset = ZonedDateTime.ofInstant(Instant.ofEpochSecond(reset), ZoneId.systemDefault());
 
         when(githubGateway.getRateLimit()).thenReturn(GithubRateLimits.with()
                                                                       .core(GithubRateLimit.with()
@@ -52,11 +51,10 @@ public class GithubHealthCheckTest {
 
     @Test
     public void testHealth_thresholdReached() {
-        final int threshold = 1000;
         final int limit = 5000;
-        final int remaining = THRESHOLD;
+        final int remaining = 1000;
         final long reset = 1372700873;
-        final LocalDateTime verwachteReset = LocalDateTime.ofInstant(Instant.ofEpochSecond(reset), ZoneId.systemDefault());
+        final ZonedDateTime verwachteReset = ZonedDateTime.ofInstant(Instant.ofEpochSecond(reset), ZoneId.systemDefault());
 
         when(githubGateway.getRateLimit()).thenReturn(GithubRateLimits.with()
                                                                       .core(GithubRateLimit.with()
@@ -79,7 +77,7 @@ public class GithubHealthCheckTest {
         final int limit = 5000;
         final int remaining = 0;
         final long reset = 1372700873;
-        final LocalDateTime verwachteReset = LocalDateTime.ofInstant(Instant.ofEpochSecond(reset), ZoneId.systemDefault());
+        final ZonedDateTime verwachteReset = ZonedDateTime.ofInstant(Instant.ofEpochSecond(reset), ZoneId.systemDefault());
 
         when(githubGateway.getRateLimit()).thenReturn(GithubRateLimits.with()
                                                                       .core(GithubRateLimit.with()

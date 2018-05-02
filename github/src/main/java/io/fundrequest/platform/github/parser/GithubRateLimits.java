@@ -1,7 +1,9 @@
 package io.fundrequest.platform.github.parser;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 public class GithubRateLimits {
@@ -21,8 +23,10 @@ public class GithubRateLimits {
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Builder(builderMethodName = "with")
-    static class Resources {
+    public static class Resources {
         private GithubRateLimit core;
         private GithubRateLimit search;
     }
