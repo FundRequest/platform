@@ -8,7 +8,7 @@ import WizardComponent from './components/WizardComponent.vue';
 
 import './filters';
 import {EventBus} from './EventBus';
-import {DynamicContent} from "../../app/DynamicContent";
+import {DynamicContent} from "../app/DynamicContent";
 
 let v = new Vue({
     el: '#vue-app',
