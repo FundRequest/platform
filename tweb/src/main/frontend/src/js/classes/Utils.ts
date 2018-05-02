@@ -157,17 +157,29 @@ export class Utils {
         for (let validation of validations) {
             switch (validation) {
                 case 'required':
-                    isValid = isValid && value.trim().length > 0;
+                    isValid = isValid && Utils._validateRequired(value);
                     break;
                 case 'number':
-                    isValid = isValid && (value.trim().length <= 0 || Utils.validators.number(value));
+                    isValid = isValid && Utils._validateNumber(value);
                     break;
                 case 'github':
-                    isValid = isValid && (value.trim().length <= 0 || (await Utils.validators.github(value)));
+                    isValid = isValid && await Utils._validateGithub(value);
                     break;
             }
         }
 
         return isValid;
+    }
+
+    private static _validateRequired(value: string): boolean {
+        return value.trim().length > 0;
+    }
+
+    private static _validateNumber(value: string): boolean {
+        return value.trim().length <= 0 || Utils.validators.number(value);
+    }
+
+    private static async _validateGithub(value: string): Promise<boolean> {
+        return value.trim().length <= 0 || (await Utils.validators.github(value);
     }
 }

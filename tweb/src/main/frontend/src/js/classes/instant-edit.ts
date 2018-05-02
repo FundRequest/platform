@@ -77,15 +77,17 @@ export class InstantEdit {
                 title = 'ETH address';
                 postAddress = '/profile/etheraddress';
                 data = {etheraddress: field.value};
-                this._postItem(postAddress, data, field, name, title);
                 break;
             case 'telegram-handle':
                 title = 'Telegram handle';
                 postAddress = '/profile/telegramname';
                 data = {telegramname: field.value};
-                this._postItem(postAddress, data, field, name, title);
                 break;
+            default:
+                return;
         }
+
+        this._postItem(postAddress, data, field, name, title);
 
     }
 
