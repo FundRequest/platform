@@ -86,34 +86,8 @@ export class Utils {
     }
 
     public static async validateHTMLElement(element: HTMLElement, validations: string[], callback = null): Promise<boolean> {
-        let isValid: boolean = true;
-        let value = '';
-
-        switch (element.tagName.toLowerCase()) {
-            case 'input':
-                value = (<HTMLInputElement>element).value;
-                break;
-            case 'textarea':
-                value = (<HTMLTextAreaElement>element).value;
-                break;
-            case 'select':
-                value = (<HTMLSelectElement>element).value;
-                break;
-        }
-
-        for (let validation of validations) {
-            switch (validation) {
-                case 'required':
-                    isValid = isValid && value.trim().length > 0;
-                    break;
-                case 'number':
-                    isValid = isValid && (value.trim().length <= 0 || Utils.validators.number(value));
-                    break;
-                case 'github':
-                    isValid = isValid && (value.trim().length <= 0 || (await Utils.validators.github(value)));
-                    break;
-            }
-        }
+        let value = Utils._getElementValue(element);
+        let isValid = await Utils._validateElementValue(validations, value);
 
         if (isValid) {
             element.classList.add('is-valid');
@@ -164,5 +138,36 @@ export class Utils {
         }
     };
 
+    private static _getElementValue(element) {
+        switch (element.tagName.toLowerCase()) {
+            case 'input':
+                return (<HTMLInputElement>element).value;
+            case 'textarea':
+                return (<HTMLTextAreaElement>element).value;
+            case 'select':
+                return (<HTMLSelectElement>element).value;
+            default:
+                return '';
+        }
+    }
 
+    private static async _validateElementValue(validations: string[], value: string): boolean {
+        let isValid = true;
+
+        for (let validation of validations) {
+            switch (validation) {
+                case 'required':
+                    isValid = isValid && value.trim().length > 0;
+                    break;
+                case 'number':
+                    isValid = isValid && (value.trim().length <= 0 || Utils.validators.number(value));
+                    break;
+                case 'github':
+                    isValid = isValid && (value.trim().length <= 0 || (await Utils.validators.github(value)));
+                    break;
+            }
+        }
+
+        return isValid;
+    }
 }
