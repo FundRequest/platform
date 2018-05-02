@@ -1,7 +1,10 @@
 package io.fundrequest.core.request.claim.github;
 
+import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
+import io.fundrequest.core.request.claim.dto.UserClaimableDto;
+import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
 import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
@@ -14,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -33,19 +37,74 @@ public class GithubClaimResolverTest {
         githubSolverResolver = mock(GithubSolverResolver.class);
         azraelClient = mock(AzraelClient.class);
         keycloakRepository = mock(KeycloakRepository.class);
+        claimResolver = new GithubClaimResolver(githubSolverResolver, azraelClient, keycloakRepository);
+    }
+
+    @Test
+    public void userClaimableResult() {
+        Principal principal = PrincipalMother.davyvanroy();
+        RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setStatus(RequestStatus.FUNDED);
+        when(githubSolverResolver.solveResolver(requestDto)).thenReturn(Optional.of("davyvanroy"));
+        when(keycloakRepository.getUserIdentities(principal.getName()))
+                .thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
+
+        UserClaimableDto result = claimResolver.userClaimableResult(principal, requestDto);
+
+        assertThat(result.isClaimable()).isTrue();
+        assertThat(result.isClaimableByUser()).isTrue();
+    }
+
+    @Test
+    public void userClaimableResultNoPrincipal() {
+        RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setStatus(RequestStatus.FUNDED);
+        when(githubSolverResolver.solveResolver(requestDto)).thenReturn(Optional.of("davyvanroy"));
+
+        UserClaimableDto result = claimResolver.userClaimableResult(null, requestDto);
+
+        assertThat(result.isClaimable()).isTrue();
+        assertThat(result.isClaimableByUser()).isFalse();
+    }
+
+    @Test
+    public void userClaimableResultClaimRequested() {
+        Principal principal = PrincipalMother.davyvanroy();
+        RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setStatus(RequestStatus.CLAIM_REQUESTED);
+        when(githubSolverResolver.solveResolver(requestDto)).thenReturn(Optional.of("davyvanroy"));
+        when(keycloakRepository.getUserIdentities(principal.getName()))
+                .thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
+
+        UserClaimableDto result = claimResolver.userClaimableResult(principal, requestDto);
+
+        assertThat(result.isClaimable()).isFalse();
+        assertThat(result.isClaimableByUser()).isFalse();
+    }
+
+    @Test
+    public void canClaim() {
+        Principal principal = PrincipalMother.davyvanroy();
+        RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        when(githubSolverResolver.solveResolver(requestDto)).thenReturn(Optional.of("davyvanroy"));
+        when(keycloakRepository.getUserIdentities(principal.getName()))
+                .thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
+
+        assertThat(claimResolver.canClaim(principal, requestDto)).isTrue();
+
     }
 
     @Test
     public void claim() throws IOException {
-        claimResolver = new GithubClaimResolver(githubSolverResolver, azraelClient, keycloakRepository);
+
 
         RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
         UserClaimRequest userClaimRequest = createClaimRequest(request);
 
         when(keycloakRepository.getUserIdentities("davyvanroy")).thenReturn(Stream.of(UserIdentity.builder()
-                .provider(Provider.GITHUB)
-                .username("davyvanroy")
-                .build()));
+                                                                                                  .provider(Provider.GITHUB)
+                                                                                                  .username("davyvanroy")
+                                                                                                  .build()));
         when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of("davyvanroy"));
         SignClaimCommand signClaimCommand = createSignClaimCommand(userClaimRequest, "davyvanroy");
         ClaimSignature claimSignature = createClaimSignature(signClaimCommand);
@@ -76,18 +135,18 @@ public class GithubClaimResolverTest {
 
     private UserClaimRequest createClaimRequest(RequestDto request) {
         return UserClaimRequest.builder()
-                .address("0x0")
-                .platformId(request.getIssueInformation().getPlatformId())
-                .platform(request.getIssueInformation().getPlatform())
-                .build();
+                               .address("0x0")
+                               .platformId(request.getIssueInformation().getPlatformId())
+                               .platform(request.getIssueInformation().getPlatform())
+                               .build();
     }
 
     private SignClaimCommand createSignClaimCommand(UserClaimRequest userClaimRequest, String solver) {
         return SignClaimCommand.builder()
-                .platform(userClaimRequest.getPlatform().toString())
-                .platformId(userClaimRequest.getPlatformId())
-                .address(userClaimRequest.getAddress())
-                .solver(solver)
-                .build();
+                               .platform(userClaimRequest.getPlatform().toString())
+                               .platformId(userClaimRequest.getPlatformId())
+                               .address(userClaimRequest.getAddress())
+                               .solver(solver)
+                               .build();
     }
 }
