@@ -67,7 +67,10 @@ export class Utils {
             return $.ajax({
                 type: 'POST',
                 url: url,
-                data: JSON.stringify(body)
+                data: JSON.stringify(body),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }).promise();
             //return fetch(url, {
             //    method: 'POST',
