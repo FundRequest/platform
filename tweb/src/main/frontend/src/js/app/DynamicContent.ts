@@ -5,7 +5,6 @@ export class DynamicContent {
 
     constructor() {
         let $elements = Array.from(this._document.querySelectorAll("[data-dynamic-content]"));
-        console.log($elements);
         $elements.forEach((element: HTMLElement) => {
             let path = element.dataset.dynamicContent;
             if (path.length > 0) {

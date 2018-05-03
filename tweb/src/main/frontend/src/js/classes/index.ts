@@ -1,5 +1,3 @@
-import 'jquery';
-import 'bootstrap.bundle';
 //import 'waves';
 //import 'mdb';
 

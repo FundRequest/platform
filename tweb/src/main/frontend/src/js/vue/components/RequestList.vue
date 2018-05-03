@@ -157,7 +157,6 @@
 
         private _setIsEmpty(isEmpty: boolean) {
             this.hasNoResults = isEmpty;
-            console.log(this.listFilter.isFiltered, this.hasNoResults);
             this.isEmpty = !this.listFilter.isFiltered && isEmpty;
         }
 
