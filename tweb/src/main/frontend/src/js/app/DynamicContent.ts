@@ -1,4 +1,5 @@
 import * as $ from 'jquery';
+
 import {Utils} from '../classes/Utils';
 
 export class DynamicContent {

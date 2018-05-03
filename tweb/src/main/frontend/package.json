@@ -85,7 +85,7 @@
     "node-waves": "^0.7.6",
     "qrcode.vue": "^1.6.0",
     "requirejs": "^2.3.5",
-    "typeface-titillium-web": "0.0.54",
+    "sweetalert2": "^7.19.3",
     "v-money": "^0.8.1",
     "vue": "^2.5.2",
     "vue-class-component": "^6.0.0",

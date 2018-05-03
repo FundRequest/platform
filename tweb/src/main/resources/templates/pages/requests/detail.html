@@ -7,11 +7,11 @@
 
 <th:block layout:fragment="content">
     <section class="section section--header mb-5">
-        <div class="row">
-            <div class="col-12 col-md-4 d-none d-md-flex request-details__header-logo">
+        <div class="media">
+            <div class="d-none d-md-flex header-image">
                 <img th:src="@{${request.icon}(size=200)}" th:alt-title="${request.owner}" />
             </div>
-            <div class="col-12 col-md-7">
+            <div class="media-body">
                 <h1 class="mb-2">
                     <span class="d-inline-block d-md-none">
                         <img th:src="@{${request.icon}(size=32)}" th:alt-title="${request.owner}" />
