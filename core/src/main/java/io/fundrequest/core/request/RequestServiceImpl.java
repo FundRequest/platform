@@ -167,7 +167,7 @@ class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
-    public void requestClaimed(RequestClaimedCommand command) {
+    public Request requestClaimed(RequestClaimedCommand command) {
         Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
                                            .orElseThrow(ResourceNotFoundException::new);
         request.setStatus(RequestStatus.CLAIMED);
@@ -182,6 +182,7 @@ class RequestServiceImpl implements RequestService {
                 command.getTransactionId(), mappers.map(Request.class, RequestDto.class, request),
                 mappers.map(Claim.class, ClaimDto.class, claim),
                 command.getSolver(), command.getTimestamp()));
+        return request;
     }
 
 

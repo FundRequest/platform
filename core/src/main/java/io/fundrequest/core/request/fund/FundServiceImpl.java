@@ -103,7 +103,11 @@ class FundServiceImpl implements FundService {
         final Optional<Request> one = requestRepository.findOne(requestId);
         if (one.isPresent()) {
             try {
-                return getFromFundRepository(one.get());
+                if (one.get().getStatus() == RequestStatus.CLAIMED) {
+                    return getFromClaimRepository(one.get());
+                } else {
+                    return getFromFundRepository(one.get());
+                }
             } catch (final Exception ex) {
                 return Collections.emptyList();
             }
@@ -124,7 +128,7 @@ class FundServiceImpl implements FundService {
                                                                                     x))
                          .filter(Optional::isPresent)
                          .map(Optional::get)
-                         .map(getTotalFundDto(request)).collect(Collectors.toList());
+                         .map(getTotalClaimFundDto(request)).collect(Collectors.toList());
     }
 
     private List<TotalFundDto> getFromFundRepository(final Request request) {

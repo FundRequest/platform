@@ -7,6 +7,7 @@ import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.view.RequestDto;
@@ -36,7 +37,7 @@ public interface RequestService {
 
     Long createRequest(CreateRequestCommand command);
 
-    void requestClaimed(RequestClaimedCommand command);
+    Request requestClaimed(RequestClaimedCommand command);
 
     SignedClaim signClaimRequest(Principal principal, UserClaimRequest userClaimRequest);
 
