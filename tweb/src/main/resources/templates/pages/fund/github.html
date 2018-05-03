@@ -145,8 +145,9 @@
                                                    placeholder="ex.: https://github.com/repoXYZ/issues/1"
                                                    v-bind:value="githubUrl"
                                                    v-on:input="updateUrl($event.target.value)"
+                                                   th:classappend="${url != null ? 'disabled' : ''}"
                                                    th:readonly="${url != null}"
-                                                    th:attr="'data-value'=${url}"/>
+                                                   th:attr="'data-value'=${url}"/>
                                             <div class="invalid-feedback">Please enter a valid github issue</div>
                                         </div>
                                     </div>
