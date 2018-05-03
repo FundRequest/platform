@@ -44,6 +44,14 @@
     padding: .1rem 1rem;
     vertical-align: middle;
 
+    &--claimed {
+        background-color: $orange-900;
+    }
+
+    &--claimable {
+        background-color: $green-400;
+    }
+
     &--funded {
         background-color: $yellow-400;
     }
