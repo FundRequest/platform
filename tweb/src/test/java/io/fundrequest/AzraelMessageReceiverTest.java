@@ -6,6 +6,7 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
 import io.fundrequest.core.request.fund.infrastructure.ProcessedBlockchainEventRepository;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
 
+import static io.fundrequest.core.request.domain.RequestMother.fundRequestArea51;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -44,7 +46,7 @@ public class AzraelMessageReceiverTest {
         blockchainEventRepository = mock(ProcessedBlockchainEventRepository.class);
         requestService = mock(RequestService.class);
         objectMapper = new ObjectMapper();
-        messageReceiver = new AzraelMessageReceiver(requestService, objectMapper, blockchainEventRepository, mock(FundService.class));
+        messageReceiver = new AzraelMessageReceiver(requestService, objectMapper, blockchainEventRepository, fundService);
     }
 
     @Test
@@ -69,21 +71,13 @@ public class AzraelMessageReceiverTest {
         objectMapper.writeValue(w, dto);
         when(blockchainEventRepository.findOne(dto.getTransactionHash())).thenReturn(Optional.empty());
 
+        final Request request = fundRequestArea51().withId(1L).build();
+        when(requestService.requestClaimed(any(RequestClaimedCommand.class))).thenReturn(request);
+
         messageReceiver.receiveClaimedMessage(w.toString());
 
-        verifyRequestClaimed(dto);
+        verify(fundService).clearTotalFundsCache(request.getId());
         verify(blockchainEventRepository).save(new ProcessedBlockchainEvent(dto.getTransactionHash()));
-    }
-
-    public void verifyRequestClaimed(ClaimedEthDto dto) {
-        RequestClaimedCommand command = new RequestClaimedCommand();
-        command.setPlatform(Platform.valueOf(dto.getPlatform()));
-        command.setPlatformId(dto.getPlatformId());
-        command.setSolver(dto.getSolver());
-        command.setAmountInWei(new BigDecimal(dto.getAmount()));
-        command.setTimestamp(getTimeStamp(dto.getTimestamp()));
-        command.setTransactionId(dto.getTransactionHash());
-        verify(requestService).requestClaimed(command);
     }
 
     @Test
@@ -100,8 +94,8 @@ public class AzraelMessageReceiverTest {
 
     private LocalDateTime getTimeStamp(Long time) {
         return time == null ? null : Instant.ofEpochMilli(time)
-                .atZone(ZoneOffset.UTC)
-                .toLocalDateTime();
+                                            .atZone(ZoneOffset.UTC)
+                                            .toLocalDateTime();
     }
 
 
@@ -138,12 +132,12 @@ public class AzraelMessageReceiverTest {
 
     private FundedEthDto createDto() {
         return FundedEthDto.builder()
-                .platform("GITHUB")
-                .platformId("1")
-                .amount("5223000000000000000")
-                .token("0xe5dada80aa6477e85d09747f2842f7993d0df71c")
-                .from("0xbbee53d695c8f744b21b3ebb48c73700df375b49")
-                .transactionHash("0x4056a21aaec0e60a1ff76cfe5b08f3d3594e07de1aa88c93cc8ff0df0b9370f1")
-                .build();
+                           .platform("GITHUB")
+                           .platformId("1")
+                           .amount("5223000000000000000")
+                           .token("0xe5dada80aa6477e85d09747f2842f7993d0df71c")
+                           .from("0xbbee53d695c8f744b21b3ebb48c73700df375b49")
+                           .transactionHash("0x4056a21aaec0e60a1ff76cfe5b08f3d3594e07de1aa88c93cc8ff0df0b9370f1")
+                           .build();
     }
 }
