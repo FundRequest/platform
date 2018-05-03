@@ -43,12 +43,11 @@
                 th:attr="'v-bind:requests'=${requests}"
                 :filters="[
                     { value: 'all', title: 'All', description: 'Showing an overview of all your requests, including funds that are pending.' },
-                    { value: 'funded', title: 'Funded', description: 'Showing an overview of all your funded requests, including funds that are pending.' },
+                    { value: 'open', title: 'Open', description: 'Showing an overview of all your open requests, including funds that are pending.' },
+                    { value: 'resolved', title: 'Resolved', description: 'Showing an overview of all your resolved requests.' },
+                    { value: 'closed', title: 'Closed', description: 'Showing an overview of all your closed requests.' },
                     { value: 'starred', title: 'Starred', description: 'Showing an overview of all the requests that you have starred.' },
-                    { value: 'claimed', title: 'Claimed', description: 'Showing an overview of all your claimed requests.' },
-                    { value: 'failed', title: 'Failed', description: 'Showing an overview of all your failed requests' }
-                 ]"
-        >
+                 ]">
             <template slot-scope="{statusFilter}">
                 <request-list-pending-funds
                      th:attr="'v-bind:funds'=${pendingFunds}"
