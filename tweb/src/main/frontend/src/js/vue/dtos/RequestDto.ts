@@ -10,6 +10,7 @@ export default class RequestDto {
     title: string;
     description: string;
     status: string;
+    fase: string;
     technologies: string[];
     funds: RequestFundsDto;
     starred: boolean;

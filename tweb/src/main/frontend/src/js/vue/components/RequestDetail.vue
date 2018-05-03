@@ -1,13 +1,13 @@
 <template>
     <section class="request-details">
         <list-filter
-                v-bind:active="statusFilter"
-                v-bind:default="statusFilterDefault"
+                v-bind:active="faseFilter"
+                v-bind:default="faseFilterDefault"
                 v-bind:filters="filters"
-                v-on:update="setStatusFilter"
+                v-on:update="setFaseFilter"
         />
 
-        <slot v-bind:statusFilter="statusFilter"></slot>
+        <slot v-bind:faseFilter="faseFilter"></slot>
     </section>
 </template>
 
@@ -27,11 +27,11 @@
     })
     export default class RequestList extends Vue {
         @Prop() filters: ListFilterDto[];
-        @Prop() statusFilterDefault: string;
+        @Prop() faseFilterDefault: string;
         @Prop({required: true}) request!: any;
 
         private _request: RequestDto;
-        public statusFilter: string = "all";
+        public faseFilter: string = "all";
 
         mounted() {
             this._request = Object.assign(new RequestDto, this.request);
@@ -45,8 +45,8 @@
             }
         }
 
-        public setStatusFilter(statusFilter: string) {
-            this.statusFilter = statusFilter;
+        public setFaseFilter(faseFilter: string) {
+            this.faseFilter = faseFilter;
         }
 
     }

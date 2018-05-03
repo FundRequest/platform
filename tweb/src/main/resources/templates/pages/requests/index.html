@@ -36,15 +36,15 @@
     </section>
 
     <section class="mb-5">
-        <request-list
-                th:attr="'v-bind:requests'=${requests},
+        <request-list th:attr="'v-bind:requests'=${requests},
                 'v-bind:projects'=${projects},
                 'v-bind:technologies'=${technologies},
                 'v-bind:filters'='[
-                    { value: &quot;funded&quot;, count: '+${requestsFunded}+', title: &quot;Funded&quot;, description: &quot;Showing an overview of all funded requests.&quot; },
-                    { value: &quot;claimed&quot;, count: '+${requestsClaimed}+', title: &quot;Claimed&quot;, description: &quot;Showing an overview of all claimed requests.&quot; },
+                    { value: &quot;open&quot;, count: '+${requestsPerFaseCount['OPEN']}+', title: &quot;Open&quot;, description: &quot;Showing an overview of all open requests.&quot; },
+                    { value: &quot;resolved&quot;, count: '+${requestsPerFaseCount['RESOLVED']}+', title: &quot;Resolved&quot;, description: &quot;Showing an overview of all resolved requests.&quot; },
+                    { value: &quot;closed&quot;, count: '+${requestsPerFaseCount['CLOSED']}+', title: &quot;Closed&quot;, description: &quot;Showing an overview of all closed requests.&quot; },
                  ]' "
-                :status-filter-default="'funded'"
+                :fase-filter-default="'open'"
         >
             <template slot-scope="{statusFilter}">
                 <div class="card mb-5" v-if="statusFilter === 'funded'">
