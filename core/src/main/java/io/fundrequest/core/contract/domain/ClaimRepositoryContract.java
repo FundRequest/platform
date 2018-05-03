@@ -34,7 +34,7 @@ public class ClaimRepositoryContract extends Contract {
                                                        new Utf8String(platformId)
 
                                                             ),
-                                               singletonList(new TypeReference<Uint256>() {
+                                               singletonList(new TypeReference<Utf8String>() {
                                                }));
         try {
             return Optional.of(executeCallSingleValueReturn(function, String.class));
@@ -49,7 +49,7 @@ public class ClaimRepositoryContract extends Contract {
                                                        new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
                                                        new Utf8String(platformId),
                                                        new Uint(BigInteger.valueOf(index))),
-                                               singletonList(new TypeReference<Uint256>() {
+                                               singletonList(new TypeReference<Address>() {
                                                }));
         try {
             return Optional.of(prettify(executeCallSingleValueReturn(function, String.class)));
@@ -78,10 +78,10 @@ public class ClaimRepositoryContract extends Contract {
                                                Arrays.asList(
                                                        new Bytes32(Arrays.copyOfRange(platform.getBytes(), 0, 32)),
                                                        new Utf8String(platformId)),
-                                               singletonList(new TypeReference<Uint256>() {
+                                               singletonList(new TypeReference<Uint>() {
                                                }));
         try {
-            return executeCallSingleValueReturn(function, Long.class);
+            return executeCallSingleValueReturn(function, BigInteger.class).longValue();
         } catch (final Exception ex) {
             return 0L;
         }
