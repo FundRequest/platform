@@ -20,9 +20,9 @@ export default class RequestsList {
         return requests.filter((request: RequestDto) => {
             let regex = new RegExp(filter.search, 'i');
             let valid;
-            valid = filter.status == 'all';
-            valid = valid || (filter.status == 'starred' && request.starred);
-            valid = valid || filter.status == request.status.toLowerCase();
+            valid = filter.fase == 'all';
+            valid = valid || (filter.fase == 'starred' && request.starred);
+            valid = valid || filter.fase == request.fase.toLowerCase();
             valid = valid && (isProjectAlwaysValid || filter.project.toLowerCase() == request.owner.toLowerCase());
             valid = valid && (isSearchAlwaysValid || request.title.match(regex));
             valid = valid && (isTechAlwaysValid || filter.tech.every((f: string) => {

@@ -10,7 +10,6 @@ import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.UserClaimRequest;
-import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.fund.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
@@ -34,6 +33,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -68,25 +68,10 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/requests")
     public ModelAndView requests() {
-        List<RequestView> requests = requestService.findAll().stream().map(this::mapToRequestView).collect(Collectors.toList());
-        int noOfFundedRequests = 0;
-        int noOfClaimedRequests = 0;
-        for (RequestView r : requests) {
-            switch (RequestStatus.valueOf(r.getStatus())) {
-                case FUNDED:
-                    noOfFundedRequests += 1;
-                    break;
-                case CLAIMED:
-                case CLAIM_APPROVED:
-                case CLAIM_REQUESTED:
-                    noOfClaimedRequests += 1;
-                    break;
-                default:
-            }
-        }
+        final List<RequestView> requests = requestService.findAll().stream().map(this::mapToRequestView).collect(Collectors.toList());
+        final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(req -> req.getFase(), Collectors.counting()));
         return modelAndView()
-                .withObject("requestsFunded", noOfFundedRequests)
-                .withObject("requestsClaimed", noOfClaimedRequests)
+                .withObject("requestsPerFaseCount", requestsPerFaseCount)
                 .withObject("requests", getAsJson(requests))
                 .withObject("statistics", statisticsService.getStatistics())
                 .withObject("projects", getAsJson(requestService.findAllProjects()))
@@ -164,6 +149,7 @@ public class RequestController extends AbstractController {
                 .platform(r.getIssueInformation().getPlatform().name())
                 .title(r.getIssueInformation().getTitle())
                 .status(r.getStatus().name())
+                .fase(r.getStatus().getFase().name())
                 .starred(r.isLoggedInUserIsWatcher())
                 .technologies(r.getTechnologies())
                 .funds(r.getFunds())
