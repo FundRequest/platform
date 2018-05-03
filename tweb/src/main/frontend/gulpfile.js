@@ -168,5 +168,5 @@ gulp.task('default', function(done) {
 
 gulp.task('watch', function(done) {
     target = (arg && arg.target) || target;
-    runSequence('copy-dependencies', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website', done);
+    runSequence('copy-dependencies', 'copy-assets', 'styles-bootstrap', 'styles-mdb', 'styles-core', 'styles-website', 'run-watch', done);
 });

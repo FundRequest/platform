@@ -9,7 +9,7 @@ module.exports = {
     ],
     mode: 'development',
     entry: {
-        bundle: path.resolve(__dirname, './src/js/vue/index.ts'),
+        bundle: path.resolve(__dirname, './src/js/index.ts'),
         //core: path.resolve(__dirname, './src/scss/core.scss'),
         //bootstrap: path.resolve(__dirname, './src/scss/bootstrap.scss'),
         //mdb: path.resolve(__dirname, './src/scss/mdb.scss'),
@@ -88,13 +88,14 @@ module.exports = {
         //new MiniCssExtractPlugin({
         //    filename: "css/[name].css"
         //})
+
     ],
     resolve: {
         extensions: ['.ts', '.js', '.vue', '.json'],
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
             'jquery$': 'jquery/dist/jquery.min.js',
-            'bootstrap.bundle$': 'bootstrap/dist/js/bootstrap.bundle.js',
+            'bootstrap$': 'bootstrap/dist/js/bootstrap.bundle.js',
             'waves$': 'node-waves/dist/waves.min.js',
             'mdb$': 'mdbootstrap/js/mdb.min.js',
             'clipboard$': 'clipboard/dist/clipboard.min.js',

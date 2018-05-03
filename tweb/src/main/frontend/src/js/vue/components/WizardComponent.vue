@@ -140,7 +140,6 @@
             let account = _web3.eth.defaultAccount;
             let frContractAddress = Contracts.getInstance().frContractAddress;
             let allowance = (await erc20.allowance(account, frContractAddress)).toNumber();
-            console.log(allowance);
             let weiAmount = Number(_web3.toWei(this.fundAmount, "ether"));
             if (allowance > 0 && allowance < weiAmount) {
                 console.log("setting to 0");

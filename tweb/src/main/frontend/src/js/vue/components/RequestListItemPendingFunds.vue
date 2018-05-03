@@ -19,6 +19,7 @@
             </div>
         </div>
         <div class="request-details__price" v-if="req.funds.usdFunds != null">
+            <span class="disclaimer-asterix">*</span>
             <span class="request-details__fund-currency">~$</span>
             <span class="request-details__fund-amount">{{formatPrice(req.funds.usdFunds, 0)}}</span>
         </div>
