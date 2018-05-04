@@ -44,22 +44,33 @@
     padding: .1rem 1rem;
     vertical-align: middle;
 
-    &--claimed {
-        background-color: $blue-500;
+    &--funded,
+    &--unresolve,
+    &--unresolved  {
+        background-color: $yellow-400;
     }
 
-    &--claimable {
+    &--claim_requested,
+    &--claimable,
+    &--in_progress,
+    &--resolved {
         background-color: $green-400;
     }
 
-    &--funded {
-        background-color: $yellow-400;
+    &--closed,
+    &--claimed,
+    &--cancelled {
+        background-color: $blue-500;
+    }
+
+    &--resolved {
+        background-color: $green-400;
     }
 
     &--pending {
         background-color: map_get($purple, 'lighten-2');
     }
-
+    
     &--filter {
         vertical-align: middle;
         background-color: $gray-300;
