@@ -78,13 +78,13 @@
 
     <section class="mb-5">
         <request-detail th:attr="'v-bind:request'=${requestJson}"
-                        v-bind:status-filter-default="'info'"
+                        v-bind:fase-filter-default="'info'"
                         v-bind:filters="[
                     { value: 'info', title: 'Info', description: 'Detailed description of the request' },
                     { value: 'funded-by', title: 'Funded By', description: 'An overview of the funders and funds.' }
                  ]">
-            <template slot-scope="{statusFilter}">
-                <div class="card" v-if="statusFilter === 'info'">
+            <template slot-scope="{faseFilter}">
+                <div class="card" v-if="faseFilter === 'info'">
                     <div class="card-header">
                         Info
                     </div>
@@ -103,7 +103,7 @@
                     </div>
                 </div>
                   -->
-                <div class="card" v-if="statusFilter === 'funded-by'">
+                <div class="card" v-if="faseFilter === 'funded-by'">
                     <div class="card-header">
                         Funders
                     </div>

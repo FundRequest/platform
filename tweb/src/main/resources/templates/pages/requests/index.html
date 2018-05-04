@@ -46,8 +46,8 @@
                  ]' "
                 :fase-filter-default="'open'"
         >
-            <template slot-scope="{statusFilter}">
-                <div class="card mb-5" v-if="statusFilter === 'funded'">
+            <template slot-scope="{faseFilter}">
+                <div class="card mb-5" v-if="faseFilter === 'open'">
                     <div class="card-body">
                         <div class="row request-list__statistics">
                             <div class="col-12 col-md-4 request-list__statistic">
