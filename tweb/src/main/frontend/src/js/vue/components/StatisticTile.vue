@@ -14,10 +14,6 @@
 
 <script lang="ts">
     import { Vue, Component, Prop } from "vue-property-decorator";
-    //import {Utils} from '../../Utils';
-   // import {FundRequestToken} from '../../../contracts/FundRequestToken';
-   // import * as Web3 from 'web3';
-
 
     @Component
     export default class StatisticTile extends Vue {
@@ -25,8 +21,7 @@
         @Prop({required: true}) value!: string;
         @Prop({required: true}) description!: string;
 
-      /*  const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-
+        /*
         private async getRequestsFunded() {
             const fundRequestToken = await FundRequestToken.createAndValidate(web3, Utils.getFundRequestTokenAddress())
 
