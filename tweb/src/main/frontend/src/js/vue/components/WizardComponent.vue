@@ -147,7 +147,7 @@
                 allowance = 0;
             }
             if (allowance === 0) {
-                console.log("You will need to allow the FundRequest contrac to access this token");
+                console.log("You will need to allow the FundRequest contract to access this token");
                 await erc20.approveTx(frContractAddress, new BigNumber("1.157920892e77").minus(1)).send({});
             }
             let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, weiAmount)
@@ -159,7 +159,7 @@
             pendingFundCommand.fromAddress = account;
             pendingFundCommand.tokenAddress = this.selectedToken.address;
             pendingFundCommand.platform = this.githubIssue.platform;
-            pendingFundCommand.platformId = this.githubIssue.platformId
+            pendingFundCommand.platformId = this.githubIssue.platformId;
             await Utils.fetchJSON(`/rest/pending-fund`, pendingFundCommand);
         }
 
