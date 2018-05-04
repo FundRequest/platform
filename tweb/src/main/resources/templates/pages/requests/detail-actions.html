@@ -1,5 +1,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
+<th:block th:fragment="details">
+
+
+
 <a id="btnAddFunds" class="btn btn-secondary mb-0" th:href="@{/requests/{id}/fund(id=${request.id})}" th:if="${request.status.name() == 'FUNDED' and userClaimable.claimable == false}">
   Add Funds
 </a>
@@ -14,6 +18,8 @@
 <form th:action="@{/requests/{id}/claim(id=${request.id})}" method="post" th:if="${userClaimable.claimableByUser}">
   <button type="submit" class="btn btn-success mb-0">Claim Funds</button>
 </form>
+
+</th:block>
 
 
 </html>

@@ -56,22 +56,19 @@ export class Utils {
         return response;
     }
 
-    public static fetchJSON(url: string, body: any = null): Promise<any> {
+    public static getJSON(url: string): Promise<any> {
+        return $.getJSON(url).promise();
+        //return fetch(url, {credentials: 'same-origin'})
+        //    .then(Utils._handleHttpErrors)
+        //    .then(res => res ? res.json() : null)
+        //    .catch(err => null);
+    }
+
+    public static post(url: string, body: any = null): Promise<any> {
         if (body == null) {
-            return $.getJSON(url).promise();
-            //return fetch(url, {credentials: 'same-origin'})
-            //    .then(Utils._handleHttpErrors)
-            //    .then(res => res ? res.json() : null)
-            //    .catch(err => null);
+            return $.post(url).promise();
         } else {
-            return $.ajax({
-                type: 'POST',
-                url: url,
-                data: JSON.stringify(body),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).promise();
+            return $.post(url, body).promise();
             //return fetch(url, {
             //    method: 'POST',
             //    body: JSON.stringify(body),
@@ -84,23 +81,8 @@ export class Utils {
         }
     }
 
-    public static fetchHTML(url: string, body: any = null): Promise<any> {
-        if (body == null) {
-            return fetch(url, {credentials: 'same-origin'})
-                .then(Utils._handleHttpErrors)
-                .then(res => res ? res.text() : null)
-                .catch(err => null);
-        } else {
-            return fetch(url, {
-                method: 'POST',
-                body: JSON.stringify(body),
-                credentials: 'same-origin',
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                })
-            }).then(res => res ? res.text() : null
-            ).catch(err => null);
-        }
+    public static getHTML(url: string): Promise<any> {
+        return $.get(url).promise();
     }
 
     public static async validateHTMLElement(element: HTMLElement, validations: string[], callback = null): Promise<boolean> {

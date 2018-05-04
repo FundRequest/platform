@@ -12,14 +12,17 @@
                 <img th:src="@{${request.icon}(size=200)}" th:alt-title="${request.owner}" />
             </div>
             <div class="media-body">
-                <h1 class="mb-2">
-                    <span class="d-inline-block d-md-none">
-                        <img th:src="@{${request.icon}(size=32)}" th:alt-title="${request.owner}" />
-                    </span>
-                    <span>
-                        <span th:text="${request.owner}">FundRequest</span> /
-                        <span th:text="${request.repo}">new plugin</span> <span class="text-muted">#<span th:text="${request.issueNumber}">948</span></span>
-                    </span>
+                <h1 class="mb-2 media">
+                    <div class="media-body">
+                        <span class="d-inline-block d-md-none">
+                            <img th:src="@{${request.icon}(size=32)}" th:alt-title="${request.owner}" />
+                        </span>
+                        <span>
+                            <span th:text="${request.owner}">FundRequest</span> /
+                            <span th:text="${request.repo}">new plugin</span> <span class="text-muted">#<span th:text="${request.issueNumber}">948</span></span>
+                        </span>
+                    </div>
+                    <starred-link class="ml-2" sec:authorize="isFullyAuthenticated()" th:attr="'v-bind:starred'=${request.starred}, 'v-bind:id'=${request.id}"></starred-link>
                 </h1>
 
                 <div class="request-details">

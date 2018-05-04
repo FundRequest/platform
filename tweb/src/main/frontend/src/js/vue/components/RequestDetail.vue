@@ -33,7 +33,7 @@
         private _request: RequestDto;
         public faseFilter: string = "all";
 
-        mounted() {
+        public mounted() {
             this._request = Object.assign(new RequestDto, this.request);
             if(this._request.platform.toUpperCase() == 'GITHUB') {
                 this.filters.push(Object.assign(new ListFilterDto(), {

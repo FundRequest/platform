@@ -3,6 +3,7 @@ package io.fundreqest.platform.tweb.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
+import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
@@ -19,9 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.security.Principal;
 
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -31,6 +30,8 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
     private Principal principal;
     private RequestService requestService;
     private ProfileService profileService;
+    private Mappers mappers;
+    private ObjectMapper objectMapper;
 
     @Before
     public void setUp() throws Exception {
@@ -42,14 +43,16 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
     protected RequestController setupController() {
         requestService = mock(RequestService.class);
         profileService = mock(ProfileService.class, RETURNS_DEEP_STUBS);
+        mappers = mock(Mappers.class);
+        objectMapper = spy(new ObjectMapper());
         return new RequestController(requestService,
-                                     mock(PendingFundService.class),
-                                     mock(StatisticsService.class),
-                                     profileService,
-                                     mock(FundService.class),
-                                     mock(ClaimService.class),
-                                     new ObjectMapper(),
-                                     mock(Mappers.class));
+                mock(PendingFundService.class),
+                mock(StatisticsService.class),
+                profileService,
+                mock(FundService.class),
+                mock(ClaimService.class),
+                objectMapper,
+                mappers);
     }
 
     @Test
@@ -60,10 +63,10 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(requestService.getUserClaimableResult(principal, 1L)).thenReturn(userClaimableDto);
 
         this.mockMvc.perform(get("/requests/{id}/actions", 1L).principal(principal))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail-actions"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("request", request))
-                    .andExpect(MockMvcResultMatchers.model().attribute("userClaimable", userClaimableDto));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail-actions :: details"))
+                .andExpect(MockMvcResultMatchers.model().attribute("request", request))
+                .andExpect(MockMvcResultMatchers.model().attribute("userClaimable", userClaimableDto));
     }
 
     @Test
@@ -75,8 +78,8 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(profileService.getUserProfile(principal.getName()).getEtherAddress()).thenReturn("0x0000000");
 
         this.mockMvc.perform(post("/requests/{id}/claim", 1L).principal(principal))
-                    .andExpect(redirectAlert("success", "Your claim has been requested and waiting for approval."))
-                    .andExpect(redirectedUrl("/requests/" + 1L));
+                .andExpect(redirectAlert("success", "Your claim has been requested and waiting for approval."))
+                .andExpect(redirectedUrl("/requests/" + 1L));
     }
 
     @Test
@@ -84,8 +87,21 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(profileService.getUserProfile(principal.getName()).getEtherAddress()).thenReturn("");
 
         this.mockMvc.perform(post("/requests/{id}/claim", 1L).principal(principal))
-                    .andExpect(redirectAlert("danger", "Please update your profile with a correct ether address."))
-                    .andExpect(redirectedUrl("/requests/" + 1L));
+                .andExpect(redirectAlert("danger", "Please update your profile with a correct ether address."))
+                .andExpect(redirectedUrl("/requests/" + 1L));
+    }
+
+    @Test
+    public void toggleWatchRequest() throws Exception {
+        RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
+        RequestView requestView = new RequestView();
+        when(requestService.findRequest(1L)).thenReturn(request);
+        when(mappers.map(RequestDto.class, RequestView.class, request)).thenReturn(requestView);
+        when(objectMapper.writeValueAsString(requestView)).thenReturn("{ starred: true }");
+
+        this.mockMvc.perform(post("/requests/{id}/watch", 1L).principal(principal))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("{ starred: true }"));
     }
 
 }

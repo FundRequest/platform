@@ -1,4 +1,4 @@
-import {Web3} from "./web3";
+import {Web3x} from "./Web3x";
 import {FundRequestContract} from "../contracts/FundRequestContract";
 import {FundRequestToken} from "../contracts/FundRequestToken";
 import {FundRepository} from "../contracts/FundRepository";
@@ -16,7 +16,7 @@ export class Contracts {
     private _frContract: Promise<FundRequestContract> = null;
     private _erc20Contract: Map<string, Promise<MiniMeToken>> = new Map<string, Promise<MiniMeToken>>();
     private _fundRepository: Promise<FundRepository> = null;
-    private _web3: any = Web3.getInstance();
+    private _web3: any = Web3x.getInstance();
 
     constructor() {
         let metaFundRequestToken = document.head.querySelector('[name="contracts:FundRequestToken"]');
@@ -55,7 +55,7 @@ export class Contracts {
     }
 
     static getPossibleTokens(platformId: string): Promise<TokenInfo[]> {
-        return Utils.fetchJSON("/rest/fund/allowed-tokens?platform=GITHUB&platformId=" + encodeURIComponent(platformId));
+        return Utils.getJSON("/rest/fund/allowed-tokens?platform=GITHUB&platformId=" + encodeURIComponent(platformId));
     }
 
     public static getInstance() {
