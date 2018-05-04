@@ -24,7 +24,6 @@
         <module>github</module>
         <module>core</module>
         <module>profile</module>
-        <module>rest-api</module>
         <module>tweb</module>
         <module>admin-web</module>
     </modules>
@@ -52,7 +51,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Camden.SR7</version>
+                <version>Edgware.SR3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
