@@ -61,7 +61,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
 
         this.mockMvc.perform(get("/requests/{id}/actions", 1L).principal(principal))
                     .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail-actions"))
+                    .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail-actions :: details"))
                     .andExpect(MockMvcResultMatchers.model().attribute("request", request))
                     .andExpect(MockMvcResultMatchers.model().attribute("userClaimable", userClaimableDto));
     }

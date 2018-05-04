@@ -120,7 +120,7 @@ public class RequestController extends AbstractController {
         return modelAndView()
                 .withObject("userClaimable", requestService.getUserClaimableResult(principal, id))
                 .withObject("request", request)
-                .withView("pages/requests/detail-actions")
+                .withView("pages/requests/detail-actions :: details")
                 .build();
     }
 

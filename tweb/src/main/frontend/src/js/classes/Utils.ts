@@ -64,14 +64,7 @@ export class Utils {
             //    .then(res => res ? res.json() : null)
             //    .catch(err => null);
         } else {
-            return $.ajax({
-                type: 'POST',
-                url: url,
-                data: JSON.stringify(body),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).promise();
+            return $.post(url, body).promise();
             //return fetch(url, {
             //    method: 'POST',
             //    body: JSON.stringify(body),
