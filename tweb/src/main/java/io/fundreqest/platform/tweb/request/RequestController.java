@@ -124,6 +124,22 @@ public class RequestController extends AbstractController {
                 .build();
     }
 
+    @PostMapping(value = {"/requests/{id}/watch"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public String toggleWatchRequest(Principal principal, @PathVariable Long id) {
+        RequestDto request = requestService.findRequest(id);
+        if(request.isLoggedInUserIsWatcher()) {
+            request.setLoggedInUserIsWatcher(false);
+            requestService.removeWatcherFromRequest(principal, id);
+        } else {
+            request.setLoggedInUserIsWatcher(true);
+            requestService.addWatcherToRequest(principal, id);
+        }
+        RequestView requestview = mapToRequestView(request);
+
+        return getAsJson(requestview);
+    }
+
     @GetMapping("/user/requests")
     public ModelAndView userRequests(Principal principal) {
         List<RequestView> requests = requestService.findRequestsForUser(principal).stream()

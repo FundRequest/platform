@@ -185,6 +185,41 @@
         font-size: .75rem;
         color: $gray-500;
     }
+
+    &__star-link {
+        font-size: .75em;
+        vertical-align: super;
+
+        .fa {
+            display: none;
+        }
+        .far {
+            display: inline;
+        }
+        color: $gray-600;
+
+        &:hover,
+        &:active,
+        &:focus {
+            color: $gray-700;
+        }
+
+        &.-starred {
+            .fa {
+                display: inline;
+            }
+            .far {
+                display: none;
+            }
+            color: $yellow-500;
+
+            &:hover,
+            &:active,
+            &:focus {
+                color: $yellow-600;
+            }
+        }
+    }
 }
 
 .request-details--list {

@@ -26,7 +26,7 @@ class LinkedIn {
 
     private _addButtonEvents(button, address, data, modal) {
         button.addEventListener('click', (e) => {
-            Utils.fetchJSON(address, data)
+            Utils.post(address, data)
                 .then(() => {
                     $(modal).modal('hide');
                     Alert.show('Sharing is caring, thanks!');
@@ -45,7 +45,7 @@ class LinkedIn {
             let image: HTMLImageElement = target.querySelector('[data-share-linked-in="image"]') as HTMLImageElement;
             let url: HTMLAnchorElement = target.querySelector('[data-share-linked-in="url"]') as HTMLAnchorElement;
 
-            Utils.fetchJSON('/bounties/linkedin/random-post')
+            Utils.getJSON('/bounties/linkedin/random-post')
                 .then((data: LinkedInData) => {
                     this._postId = data.id;
                     url ? url.href = data.submittedUrl : null;

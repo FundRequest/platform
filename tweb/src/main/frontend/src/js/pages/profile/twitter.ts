@@ -47,7 +47,7 @@ class Twitter {
     }
 
     private _getVerify(): Promise<any> {
-        return Utils.fetchJSON('/bounties/twitter/verify');
+        return Utils.getJSON('/bounties/twitter/verify');
     }
 }
 

@@ -10,19 +10,18 @@ export class DynamicContent {
         $elements.forEach((element: HTMLElement) => {
             let path = element.dataset.dynamicContent;
             if (path.length > 0) {
-                Utils.fetchHTML(path).then((html) => {
+                Utils.getHTML(path).then((html) => {
                     let span = document.createElement('span');
                     span.innerHTML = html;
                     element.parentNode.replaceChild(span, element);
-                    this._reinitialize();
+                    this._reinitialize(element);
                 });
             }
         })
     }
 
-    private _reinitialize() {
-        let $tooltips = $('[data-toggle="tooltip"]');
-        $tooltips.tooltip('dispose');
+    private _reinitialize(parentElement) {
+        let $tooltips = $('[data-toggle="tooltip"]', parentElement);
         $tooltips.tooltip();
     }
 }

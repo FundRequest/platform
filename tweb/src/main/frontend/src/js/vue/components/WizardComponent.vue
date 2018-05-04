@@ -160,7 +160,7 @@
             pendingFundCommand.tokenAddress = this.selectedToken.address;
             pendingFundCommand.platform = this.githubIssue.platform;
             pendingFundCommand.platformId = this.githubIssue.platformId;
-            await Utils.fetchJSON(`/rest/pending-fund`, pendingFundCommand);
+            await Utils.post(`/rest/pending-fund`, pendingFundCommand);
         }
 
         public fundUsingTrustWallet() {
@@ -168,7 +168,7 @@
         }
 
         public async showTrustWalletModal() {
-            this.qrData = (await Utils.fetchJSON(`/rest/requests/erc67/fund`, {
+            this.qrData = (await Utils.post(`/rest/requests/erc67/fund`, {
                 platform: this.githubIssue.platform,
                 platformId: this.githubIssue.platformId,
                 amount: this.totalAmount,

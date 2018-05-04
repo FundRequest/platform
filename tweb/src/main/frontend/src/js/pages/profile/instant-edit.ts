@@ -104,7 +104,7 @@ export class InstantEdit {
 
         Utils.showLoading();
 
-        Utils.fetchJSON(postAddress, data)
+        Utils.post(postAddress, data)
             .then(() => {
                 self._hideError(field, name);
                 Alert.show(`${title} saved!`);
