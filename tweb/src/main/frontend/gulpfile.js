@@ -119,7 +119,7 @@ gulp.task('copy-dependencies', function() {
     //copy.push(gulp.src(['node_modules/node-waves/dist/*']).pipe(gulp.dest(`${target}/vendors/node-waves`)));
     //copy.push(gulp.src(['node_modules/requirejs/*.js']).pipe(gulp.dest(`${target}/vendors/requirejs`)));
     //copy.push(gulp.src(['node_modules/lightslider/dist/**/*']).pipe(gulp.dest(`${target}/vendors/lightslider`)));
-    //copy.push(gulp.src(['node_modules/web3/dist/*']).pipe(gulp.dest(`${target}/vendors/web3`)));
+    copy.push(gulp.src(['node_modules/web3/dist/*']).pipe(gulp.dest(`${target}/vendors/web3`)));
     return copy;
 });
 

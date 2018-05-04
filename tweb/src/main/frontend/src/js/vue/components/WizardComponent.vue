@@ -7,7 +7,7 @@
     import {TokenInfo} from "../../classes/token-info";
     import {Contracts} from "../../classes/contracts";
     import {PaymentMethod, PaymentMethods} from "../../classes/payment-method";
-    import {Web3} from "../../classes/web3";
+    import {Web3x} from "../../classes/Web3x";
     import {Utils} from "../../classes/Utils";
     import {PendingFundCommand} from "../models/PendingFundCommand";
     import {Alert} from "../../classes/alert";
@@ -98,7 +98,7 @@
         }
 
         private async updateDappDisabledMsg() {
-            let web3 = Web3.getInstance();
+            let web3 = Web3x.getInstance();
             if (web3 && web3.eth && web3.eth.defaultAccount) {
                 await new Promise((resolve, reject) => {
                     web3.version.getNetwork((err, res) => {
@@ -136,7 +136,7 @@
 
         private async fundUsingDapp() {
             let erc20 = await Contracts.getInstance().getErc20Contract(this.selectedToken.address);
-            let _web3 = Web3.getInstance();
+            let _web3 = Web3x.getInstance();
             let account = _web3.eth.defaultAccount;
             let frContractAddress = Contracts.getInstance().frContractAddress;
             let allowance = (await erc20.allowance(account, frContractAddress)).toNumber();
