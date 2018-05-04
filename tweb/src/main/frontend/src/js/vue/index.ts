@@ -5,6 +5,7 @@ import RequestList from './components/RequestList.vue';
 import RequestListPendingFunds from './components/RequestListPendingFunds.vue';
 import StatisticTile from './components/StatisticTile.vue';
 import WizardComponent from './components/WizardComponent.vue';
+import StarredLink from './components/StarredLink.vue';
 
 import './filters';
 import {EventBus} from './EventBus';
@@ -18,6 +19,7 @@ let v = new Vue({
         'request-list': RequestList,
         'request-list-pending-funds': RequestListPendingFunds,
         'statistic-tile': StatisticTile,
+        'starred-link': StarredLink,
         'wizard-component': WizardComponent
     },
     mounted() {

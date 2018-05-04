@@ -88,7 +88,7 @@ export class Github {
         let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(link);
         if (matches && matches.length >= 4) {
             let url = `https://api.github.com/repos/${matches[1]}/${matches[2]}/issues/${matches[3]}`;
-            return Utils.fetchJSON(url)
+            return Utils.getJSON(url)
                 .then(res => res ? new GithubIssue(res) : null);
         } else {
             return Promise.resolve(null);
