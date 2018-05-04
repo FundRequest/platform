@@ -35,7 +35,7 @@
 
         mounted() {
             this.githubUrl = (this.$refs.requestUrl as HTMLElement).dataset.value;
-            if(this.githubUrl) {
+            if (this.githubUrl) {
                 this.updateUrl(this.githubUrl);
             }
             let metaNetwork = document.head.querySelector("[name=\"ethereum:network\"]");
@@ -120,7 +120,7 @@
                         Utils.showLoading();
                         await this.fundUsingDapp();
                         window.location.href = "/user/requests";
-                    } catch(err) {
+                    } catch (err) {
                         Alert.show('<div class="text-center">Something went wrong when funding, please try again. <br/> If the problem remains, please contact the FundRequest team.</div>', 'danger')
                     } finally {
                         Utils.hideLoading();
@@ -140,7 +140,9 @@
             let account = _web3.eth.defaultAccount;
             let frContractAddress = Contracts.getInstance().frContractAddress;
             let allowance = (await erc20.allowance(account, frContractAddress)).toNumber();
-            let weiAmount = Number(_web3.toWei(this.fundAmount, "ether"));
+
+            let decimals = (await erc20.decimals).toNumber();
+            let weiAmount = Number(this.fundAmount * Math.pow(10, decimals));
             if (allowance > 0 && allowance < weiAmount) {
                 console.log("setting to 0");
                 await erc20.approveTx(frContractAddress, 0).send({});
@@ -151,7 +153,9 @@
                 await erc20.approveTx(frContractAddress, new BigNumber("1.157920892e77").minus(1)).send({});
             }
             let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, weiAmount)
-                .send({}).catch(rej => {throw new Error(rej);}) as string;
+                .send({}).catch(rej => {
+                    throw new Error(rej);
+                }) as string;
             let pendingFundCommand = new PendingFundCommand();
             pendingFundCommand.transactionId = response;
             pendingFundCommand.amount = this.fundAmount.toString();

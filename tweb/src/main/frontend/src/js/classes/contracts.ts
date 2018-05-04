@@ -4,7 +4,7 @@ import {FundRequestToken} from "../contracts/FundRequestToken";
 import {FundRepository} from "../contracts/FundRepository";
 import {Utils} from "./Utils";
 import {TokenInfo} from "./token-info";
-import {ERC20} from "../contracts/ERC20";
+import {MiniMeToken} from "../contracts/MiniMeToken";
 
 export class Contracts {
 
@@ -14,7 +14,7 @@ export class Contracts {
     public frContractAddress: string;
     private _tokenContract: Promise<FundRequestToken> = null;
     private _frContract: Promise<FundRequestContract> = null;
-    private _erc20Contract: Map<string, Promise<ERC20>> = new Map<string, Promise<ERC20>>();
+    private _erc20Contract: Map<string, Promise<MiniMeToken>> = new Map<string, Promise<MiniMeToken>>();
     private _fundRepository: Promise<FundRepository> = null;
     private _web3: any = Web3.getInstance();
 
@@ -39,9 +39,9 @@ export class Contracts {
         return this._frContract;
     }
 
-    public getErc20Contract(address: string): Promise<ERC20> {
+    public getErc20Contract(address: string): Promise<MiniMeToken> {
         if (!this._erc20Contract.get(address)) {
-            this._erc20Contract.set(address, ERC20.createAndValidate(this._web3, address));
+            this._erc20Contract.set(address, MiniMeToken.createAndValidate(this._web3, address));
         }
         return this._erc20Contract.get(address);
     }
