@@ -23,6 +23,7 @@
 <style>
     .form-control--fnd {
         position: relative;
+        -moz-appearance: none;
         -webkit-appearance: none;
         border-radius: 5px !important;
         box-shadow: none;

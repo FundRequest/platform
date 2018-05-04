@@ -78,6 +78,7 @@
     border-color: $gray-200;
     font-weight: $font-weight-normal;
 
+    &::-moz-placeholder,
     &::-webkit-input-placeholder {
         color: $gray-400;
     }

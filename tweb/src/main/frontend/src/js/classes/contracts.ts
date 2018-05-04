@@ -1,4 +1,4 @@
-import {Web3} from "./web3";
+import {Web3x} from "./Web3x";
 import {FundRequestContract} from "../contracts/FundRequestContract";
 import {FundRequestToken} from "../contracts/FundRequestToken";
 import {FundRepository} from "../contracts/FundRepository";
@@ -16,7 +16,7 @@ export class Contracts {
     private _frContract: Promise<FundRequestContract> = null;
     private _erc20Contract: Map<string, Promise<ERC20>> = new Map<string, Promise<ERC20>>();
     private _fundRepository: Promise<FundRepository> = null;
-    private _web3: any = Web3.getInstance();
+    private _web3: any = Web3x.getInstance();
 
     constructor() {
         let metaFundRequestToken = document.head.querySelector('[name="contracts:FundRequestToken"]');
