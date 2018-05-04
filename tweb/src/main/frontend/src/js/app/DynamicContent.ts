@@ -1,3 +1,5 @@
+import * as $ from 'jquery';
+
 import {Utils} from '../classes/Utils';
 
 export class DynamicContent {
@@ -9,10 +11,18 @@ export class DynamicContent {
             let path = element.dataset.dynamicContent;
             if (path.length > 0) {
                 Utils.fetchHTML(path).then((html) => {
-                    element.innerHTML = html;
-                    $(element).find(".auto-tooltip").tooltip({});
+                    let span = document.createElement('span');
+                    span.innerHTML = html;
+                    element.parentNode.replaceChild(span, element);
+                    this._reinitialize();
                 });
             }
         })
+    }
+
+    private _reinitialize() {
+        let $tooltips = $('[data-toggle="tooltip"]');
+        $tooltips.tooltip('dispose');
+        $tooltips.tooltip();
     }
 }

@@ -1,44 +1,42 @@
-.fnd-profile-picture {
-    width: 100px;
-    height: 100px;
-
-    background-color: $blue-200;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-
-    margin: -60px auto 0 auto;
-    border-radius: $border-radius-lg;
-    border: 2px solid $white;
-    overflow: hidden;
-    @include box-shadow($z-depth-3);
-
-    @include media-breakpoint-up(sm) {
-        width: 125px;
-        height: 125px;
-    }
-
-    @include media-breakpoint-up(md) {
-        width: 100%;
-        height: auto;
-        margin: 0;
-        border-radius: $card-border-radius 0 0 $card-border-radius;
-        border: none;
-        flex: 0 0 25%;
-        @include box-shadow(none);
-    }
-
-    @include media-breakpoint-up(lg) {
-        flex-basis: 20%;
-    }
+.form-control[data-edit="eth-address"] {
+    width: 100%;
+    max-width: 24rem;
 }
 
-.card--fnd-profile {
-    .card-title {
-        text-align: center;
+.fnd-profile {
+    &__fields {
+
+        label {
+            font-size: $font-size-sm;
+            font-weight: $font-weight-normal;
+            color: $gray-500;
+        }
+
+        .md-form input {
+            font-size: $font-size-sm;
+            font-weight: $font-weight-normal;
+        }
+    }
+
+    &__picture {
+        width: 100%;
+        height: 100%;
+
+        background-color: $blue-200;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+
+        border-radius: $border-radius-lg;
+        border: 2px solid $white;
+        overflow: hidden;
+        @include box-shadow($z-depth-1);
 
         @include media-breakpoint-up(md) {
-            text-align: left;
+            margin: 0;
+            border-radius: $border-radius;
+            border: none;
+            @include box-shadow(none);
         }
     }
 }
@@ -60,14 +58,12 @@
     align-items: center;
     justify-content: space-between;
     color: $white;
-    // transition: box-shadow .3s ease;
 
     &:hover,
     &:focus,
     &:active {
         color: $white;
         text-decoration: none;
-        //box-shadow: $box-shadow-normal;
 
         i {
             transform: translateX(10px);

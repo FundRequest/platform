@@ -15,14 +15,16 @@
 <div th:replace="fragments/top :: alert-container"></div>
 <div th:replace="fragments/top :: loader"></div>
 
-<div class="fnd-page-container">
+<div class="fnd-page-container" id="vue-app">
     <div th:replace="fragments/header :: header"></div>
     <th:block layout:fragment="content" />
 </div>
 
 <div th:replace="fragments/footer :: footer"></div>
 
+<script th:src="@{/assets/vendors/jquery/jquery.min.js}"></script>
 <script th:src="@{/assets/js/bundle.js}"></script>
+<script th:src="@{/assets/vendors/mdbootstrap/js/mdb.min.js}"></script>
 
 <div th:replace="fragments/intercom-script"></div>
 

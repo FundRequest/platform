@@ -25,3 +25,22 @@
     color: $gray-500;
     font-size: $font-size-lg;
 }
+
+.header-image {
+    width: 6.25rem;
+    height: 6.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    @include media-breakpoint-up(sm) {
+        width: 7.5rem;
+        height: 7.5rem;
+    }
+
+    @include media-breakpoint-up(md) {
+        width: 12.5rem;
+        height: 12.5rem;
+        margin-right: 3rem;
+    }
+}
