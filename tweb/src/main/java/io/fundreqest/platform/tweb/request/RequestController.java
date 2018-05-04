@@ -68,7 +68,7 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/requests")
     public ModelAndView requests() {
-        final List<RequestView> requests = requestService.findAll().stream().map(this::mapToRequestView).collect(Collectors.toList());
+        final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
         final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(req -> req.getFase(), Collectors.counting()));
         return modelAndView()
                 .withObject("requestsPerFaseCount", requestsPerFaseCount)
@@ -135,40 +135,20 @@ public class RequestController extends AbstractController {
             request.setLoggedInUserIsWatcher(true);
             requestService.addWatcherToRequest(principal, id);
         }
-        RequestView requestview = mapToRequestView(request);
+        RequestView requestview = mappers.map(RequestDto.class, RequestView.class, request);
 
         return getAsJson(requestview);
     }
 
     @GetMapping("/user/requests")
     public ModelAndView userRequests(Principal principal) {
-        List<RequestView> requests = requestService.findRequestsForUser(principal).stream()
-                                                   .map(this::mapToRequestView)
-                                                   .collect(Collectors.toList());
+        List<RequestView> requests =  mappers.mapList(RequestDto.class, RequestView.class, requestService.findRequestsForUser(principal));
 
         List<PendingFundDto> pendingFunds = pendingFundService.findByUser(principal);
         return modelAndView()
                 .withObject("requests", getAsJson(requests))
                 .withObject("pendingFunds", getAsJson(pendingFunds))
                 .withView("pages/user/requests")
-                .build();
-    }
-
-    private RequestView mapToRequestView(RequestDto r) {
-        return RequestView
-                .builder()
-                .id(r.getId())
-                .icon("https://github.com/" + r.getIssueInformation().getOwner() + ".png")
-                .owner(r.getIssueInformation().getOwner())
-                .repo(r.getIssueInformation().getRepo())
-                .issueNumber(r.getIssueInformation().getNumber())
-                .platform(r.getIssueInformation().getPlatform().name())
-                .title(r.getIssueInformation().getTitle())
-                .status(r.getStatus().name())
-                .fase(r.getStatus().getFase().name())
-                .starred(r.isLoggedInUserIsWatcher())
-                .technologies(r.getTechnologies())
-                .funds(r.getFunds())
                 .build();
     }
 
