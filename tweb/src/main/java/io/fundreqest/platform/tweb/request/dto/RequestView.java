@@ -21,6 +21,7 @@ public class RequestView {
     private String issueNumber;
     private String title;
     private String status;
+    private String fase;
     private Set<String> technologies;
     private AllFundsDto funds;
     private Boolean starred;

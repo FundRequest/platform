@@ -1,4 +1,3 @@
-import 'jquery';
 import 'bootstrap';
 
 import './vue/index';

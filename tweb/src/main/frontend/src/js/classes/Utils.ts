@@ -67,7 +67,10 @@ export class Utils {
             return $.ajax({
                 type: 'POST',
                 url: url,
-                data: JSON.stringify(body)
+                data: JSON.stringify(body),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }).promise();
             //return fetch(url, {
             //    method: 'POST',
@@ -149,7 +152,7 @@ export class Utils {
             return Github.validateLink(link);
         },
         number: (value) => {
-            return /^[0-9]+(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
+            return /^[0-9]+(\.[0-9]{1,3})?$/.exec(value.trim()) != null;
         }
     };
 

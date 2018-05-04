@@ -5,6 +5,7 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
@@ -85,12 +86,13 @@ public class AzraelMessageReceiver {
         LOGGER.debug("Recieved new message from Azrael: " + message);
         ClaimedEthDto result = objectMapper.readValue(message, ClaimedEthDto.class);
         if (isNotProcessed(result.getTransactionHash())) {
-            requestService.requestClaimed(new RequestClaimedCommand(
+            final Request request = requestService.requestClaimed(new RequestClaimedCommand(
                     getPlatform(result.getPlatform()),
                     result.getPlatformId(),
                     result.getTransactionHash(), result.getSolver(),
                     getTimeStamp(result.getTimestamp()),
                     new BigDecimal(result.getAmount())));
+            fundService.clearTotalFundsCache(request.getId());
             processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
         }
     }

@@ -8,12 +8,11 @@ import WizardComponent from './components/WizardComponent.vue';
 
 import './filters';
 import {EventBus} from './EventBus';
-import {DynamicContent} from "../app/DynamicContent";
+import {DynamicContent} from '../app/DynamicContent';
 
 let v = new Vue({
     el: '#vue-app',
-    data: {
-    },
+    data: {},
     components: {
         'request-detail': RequestDetail,
         'request-list': RequestList,
@@ -29,6 +28,6 @@ let v = new Vue({
     }
 });
 
-window.addEventListener("hashchange", (e: HashChangeEvent) => {
+window.addEventListener('hashchange', (e: HashChangeEvent) => {
     EventBus.$emit('hashchange');
 }, false);

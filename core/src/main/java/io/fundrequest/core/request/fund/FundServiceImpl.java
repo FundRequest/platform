@@ -103,23 +103,45 @@ class FundServiceImpl implements FundService {
         final Optional<Request> one = requestRepository.findOne(requestId);
         if (one.isPresent()) {
             try {
-                final Request request = one.get();
-                final Long fundedTokenCount = fundRequestContractsService.fundRepository()
-                                                                         .getFundedTokenCount(request.getIssueInformation().getPlatform().name(),
-                                                                                              request.getIssueInformation().getPlatformId());
-                return LongStream.range(0, fundedTokenCount)
-                                 .mapToObj(x -> fundRequestContractsService.fundRepository()
-                                                                           .getFundedToken(request.getIssueInformation().getPlatform().name(),
-                                                                                           request.getIssueInformation().getPlatformId(),
-                                                                                           x)).filter(Optional::isPresent)
-                                 .map(Optional::get)
-                                 .map(getTotalFundDto(request)).collect(Collectors.toList());
+                if (one.get().getStatus() == RequestStatus.CLAIMED) {
+                    return getFromClaimRepository(one.get());
+                } else {
+                    return getFromFundRepository(one.get());
+                }
             } catch (final Exception ex) {
                 return Collections.emptyList();
             }
         } else {
             return Collections.emptyList();
         }
+    }
+
+    private List<TotalFundDto> getFromClaimRepository(final Request request) {
+        final Long tokenCount = fundRequestContractsService.claimRepository()
+                                                           .getTokenCount(request.getIssueInformation().getPlatform().name(),
+                                                                          request.getIssueInformation().getPlatformId());
+
+        return LongStream.range(0, tokenCount)
+                         .mapToObj(x -> fundRequestContractsService.claimRepository()
+                                                                   .getTokenByIndex(request.getIssueInformation().getPlatform().name(),
+                                                                                    request.getIssueInformation().getPlatformId(),
+                                                                                    x))
+                         .filter(Optional::isPresent)
+                         .map(Optional::get)
+                         .map(getTotalClaimFundDto(request)).collect(Collectors.toList());
+    }
+
+    private List<TotalFundDto> getFromFundRepository(final Request request) {
+        final Long fundedTokenCount = fundRequestContractsService.fundRepository()
+                                                                 .getFundedTokenCount(request.getIssueInformation().getPlatform().name(),
+                                                                                      request.getIssueInformation().getPlatformId());
+        return LongStream.range(0, fundedTokenCount)
+                         .mapToObj(x -> fundRequestContractsService.fundRepository()
+                                                                   .getFundedToken(request.getIssueInformation().getPlatform().name(),
+                                                                                   request.getIssueInformation().getPlatformId(),
+                                                                                   x)).filter(Optional::isPresent)
+                         .map(Optional::get)
+                         .map(getTotalFundDto(request)).collect(Collectors.toList());
     }
 
 
@@ -259,6 +281,16 @@ class FundServiceImpl implements FundService {
     @Override
     @CacheEvict(value = "funds", key = "#requestId")
     public void clearTotalFundsCache(Long requestId) {
+    }
+
+    private Function<String, TotalFundDto> getTotalClaimFundDto(final Request request) {
+        return tokenAddress -> {
+            final BigDecimal rawBalance = new BigDecimal(fundRequestContractsService.claimRepository()
+                                                                                    .getAmountByToken(request.getIssueInformation().getPlatform().name(),
+                                                                                                      request.getIssueInformation().getPlatformId(),
+                                                                                                      tokenAddress));
+            return createTotalFund(tokenAddress, rawBalance);
+        };
     }
 
     private Function<String, TotalFundDto> getTotalFundDto(final Request request) {
