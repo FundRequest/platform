@@ -51,6 +51,7 @@
     }
 
     &--claim_requested,
+    &--claim_approved,
     &--claimable,
     &--in_progress,
     &--resolved {
@@ -70,7 +71,7 @@
     &--pending {
         background-color: map_get($purple, 'lighten-2');
     }
-    
+
     &--filter {
         vertical-align: middle;
         background-color: $gray-300;
