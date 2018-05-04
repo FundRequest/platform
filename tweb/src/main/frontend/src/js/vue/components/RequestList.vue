@@ -48,7 +48,7 @@
                                     v-on:input="setSortBy">
                             <option value="" selected="selected" disabled="disabled">SORT BY</option>
                             <option value="title" selected="selected">Title</option>
-                            <option value="fundings">Fundings</option>
+                            <option value="fundings">Funding</option>
                         </fnd-select>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
-import {Alert} from './alert';
-import {Utils} from './Utils';
+import {Alert} from '../../classes/alert';
+import {Utils} from '../../classes/Utils';
 
 export class InstantEdit {
     private _document: HTMLDocument = document;

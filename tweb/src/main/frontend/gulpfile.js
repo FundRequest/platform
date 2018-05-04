@@ -109,7 +109,7 @@ gulp.task('typechain', function() {
 
 gulp.task('copy-dependencies', function() {
     let copy = [];
-    //copy.push(gulp.src(['node_modules/jquery/dist/*']).pipe(gulp.dest(`${target}/vendors/jquery`)));
+    copy.push(gulp.src(['node_modules/jquery/dist/*']).pipe(gulp.dest(`${target}/vendors/jquery`)));
     //copy.push(gulp.src(['node_modules/bootstrap/dist/**/*']).pipe(gulp.dest(`${target}/vendors/bootstrap`)));
     copy.push(gulp.src(['node_modules/mdbootstrap/js/mdb.*']).pipe(gulp.dest(`${target}/vendors/mdbootstrap/js`)));
     copy.push(gulp.src(['node_modules/mdbootstrap/font/**/*']).pipe(gulp.dest(`${target}/vendors/mdbootstrap/font`)));
@@ -119,8 +119,6 @@ gulp.task('copy-dependencies', function() {
     //copy.push(gulp.src(['node_modules/node-waves/dist/*']).pipe(gulp.dest(`${target}/vendors/node-waves`)));
     //copy.push(gulp.src(['node_modules/requirejs/*.js']).pipe(gulp.dest(`${target}/vendors/requirejs`)));
     //copy.push(gulp.src(['node_modules/lightslider/dist/**/*']).pipe(gulp.dest(`${target}/vendors/lightslider`)));
-    copy.push(gulp.src(['node_modules/typeface-titillium-web/index.css']).pipe(gulp.dest(`${target}/vendors/typeface-titillium-web`)));
-    copy.push(gulp.src(['node_modules/typeface-titillium-web/files/*']).pipe(gulp.dest(`${target}/vendors/typeface-titillium-web/files`)));
     //copy.push(gulp.src(['node_modules/web3/dist/*']).pipe(gulp.dest(`${target}/vendors/web3`)));
     return copy;
 });

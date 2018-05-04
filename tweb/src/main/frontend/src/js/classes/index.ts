@@ -1,10 +1,10 @@
 //import 'waves';
 //import 'mdb';
+import * as $ from 'jquery';
 
 import * as ClipboardJS from 'clipboard';
-import * as $ from 'jquery';
 import {Alert} from './alert';
-import {InstantEdit} from './instant-edit';
+import {InstantEdit} from '../pages/profile/instant-edit';
 import {OpenLinkInPopup} from './open-link-in-popup';
 
 class Main {
@@ -21,17 +21,6 @@ class Main {
 
             new InstantEdit();
             new OpenLinkInPopup();
-            $('.fnd-badge[data-toggle="tooltip"]').tooltip();
-
-            $('.md-form .form-control').each((i, element) => {
-                let $el = $(element);
-                $el.on('focus', () => {
-                    $el.siblings('label').addClass('active');
-                });
-                $el.on('focusout', () => {
-                    $el.siblings('label').removeClass('active');
-                });
-            });
 
             setTimeout(function () {
                 document.body.classList.remove('preload');
