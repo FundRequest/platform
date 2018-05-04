@@ -19,7 +19,7 @@
                         <span th:text="${bounty.getTotalRewards()}"></span> FND
                     </small>
                 </h5>
-                <div class="card-footer text-center">
+                <div class="card-footer card-footer--light text-center">
                     <div class="font-weight-bold">Rewards will be transferred 7th of May.</div>
                     <div class="text-secondary font-weight-bold"
                          th:classappend="${profile.hadEtherAddress() ? 'd-none' : ''}"
@@ -198,7 +198,7 @@
                             <span>When the referrals are verified, you get rewarded</span>
                         </div>
                         <div id="rewards-list-content">
-                            Loading...
+                            <span th:attr="'data-dynamic-content'='/referrals/'">Loading...</span>
                         </div>
                     </div>
                 </div>
@@ -249,7 +249,6 @@
 </th:block>
 
 <th:block layout:fragment="scripts">
-    <script>require(['app/referrals'])</script>
 </th:block>
 
 </body>

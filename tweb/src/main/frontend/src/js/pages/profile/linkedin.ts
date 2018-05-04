@@ -1,6 +1,7 @@
-import {Alert} from './alert';
 import * as $ from 'jquery';
-import {Utils} from './Utils';
+
+import {Alert} from '../../classes/alert';
+import {Utils} from '../../classes/Utils';
 
 interface LinkedInData {
     id: string;
