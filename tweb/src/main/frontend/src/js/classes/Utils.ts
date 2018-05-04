@@ -152,7 +152,7 @@ export class Utils {
             return Github.validateLink(link);
         },
         number: (value) => {
-            return /^[0-9]+(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
+            return /^[0-9]+(\.[0-9]{1,3})?$/.exec(value.trim()) != null;
         }
     };
 
