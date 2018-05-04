@@ -30,6 +30,7 @@ public abstract class RequestDetailsViewMapperDecorator implements RequestDetail
             view.setTitle(issueInfo.getTitle());
             view.setStarred(r.isLoggedInUserIsWatcher());
             view.setDescription(createHtmlDescription(issueInfo));
+            view.setFase(r.getStatus().getFase().name());
         }
         return view;
     }
