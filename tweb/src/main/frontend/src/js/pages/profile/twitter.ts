@@ -1,6 +1,7 @@
-import {Alert} from './alert';
-import {Utils} from "./Utils";
 import * as $ from 'jquery';
+
+import {Alert} from '../../classes/alert';
+import {Utils} from "../../classes/Utils";
 
 interface VerifyResponse {
     validated: boolean;
@@ -25,14 +26,6 @@ class Twitter {
                 let link: string = `http://twitter.com/home?status=${encodeURIComponent(text)}`;
 
                 let twitterWindow: Window = Utils.getNewWindow(link, 600, 600);
-
-                /*
-                let winTimer = window.setInterval(function () {
-                    if (twitterWindow.closed !== false) {
-                        window.clearInterval(winTimer);
-                        this._verify();
-                    }
-                }, 200);*/
             });
         }
     }
@@ -54,15 +47,7 @@ class Twitter {
     }
 
     private _getVerify(): Promise<any> {
-        return $.get('/bounties/twitter/verify').promise();
-        /*
-        return await fetch('/bounties/twitter/verify', {mode: 'no-cors'})
-            .then((response) => response.json())
-            .catch(function (ex) {
-                Alert.show('Oops, something went wrong, please try again.', 'danger');
-                Utils.hideLoading();
-            }) as VerifyResponse;
-            */
+        return Utils.fetchJSON('/bounties/twitter/verify');
     }
 }
 

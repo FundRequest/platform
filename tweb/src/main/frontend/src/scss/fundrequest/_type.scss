@@ -1,3 +1,12 @@
+h1, h2, h3 {
+    font-family: $font-family-sans-serif;
+}
+
+input {
+    font-family: $font-family-sans-serif;
+}
+
+
 .h1, .h2,
 h1, h2 {
     font-weight: $font-weight-bold;
@@ -11,6 +20,11 @@ h3, h4, h5, h6 {
 .h1, h1 {
     color: $secondary;
     margin-bottom: 2rem;
+    font-size: $h1-font-size * .75;
+
+    @include media-breakpoint-up(md) {
+        font-size: $h1-font-size;
+    }
 }
 
 .h2, h2 {
