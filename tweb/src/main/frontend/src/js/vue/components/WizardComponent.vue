@@ -141,8 +141,8 @@
             let frContractAddress = Contracts.getInstance().frContractAddress;
             let allowance = (await erc20.allowance(account, frContractAddress)).toNumber();
             let decimals = (await erc20.decimals).toNumber();
-            let weiAmount = Number(this.fundAmount * Math.pow(10, decimals));
-            if (allowance > 0 && allowance < weiAmount) {
+            let dividableAmount = Number(this.fundAmount * Math.pow(10, decimals));
+            if (allowance > 0 && allowance < dividableAmount) {
                 console.log("setting to 0");
                 await erc20.approveTx(frContractAddress, 0).send({});
                 allowance = 0;
@@ -151,7 +151,7 @@
                 console.log("You will need to allow the FundRequest contract to access this token");
                 await erc20.approveTx(frContractAddress, new BigNumber("1.157920892e77").minus(1)).send({});
             }
-            let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, weiAmount)
+            let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, dividableAmount)
                 .send({}).catch(rej => {
                     throw new Error(rej);
                 }) as string;
