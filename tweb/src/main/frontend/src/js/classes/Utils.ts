@@ -64,18 +64,14 @@ export class Utils {
         //    .catch(err => null);
     }
 
-    public static postJSON(url: string, body: any = null): Promise<any> {
-        if (body == null) {
-            return $.post(url).promise();
-        } else {
-            return $.ajax({
-                type: 'POST',
-                url: url,
-                data: JSON.stringify(body),
-                contentType: "application/json",
-                dataType: 'json'
-            }).promise();
-        }
+    public static postJSON(url: string, body: any): Promise<any> {
+        return $.ajax({
+            type: 'POST',
+            url: url,
+            data: JSON.stringify(body),
+            contentType: "application/json",
+            dataType: 'json'
+        }).promise();
     }
 
     public static post(url: string, body: any = null): Promise<any> {
