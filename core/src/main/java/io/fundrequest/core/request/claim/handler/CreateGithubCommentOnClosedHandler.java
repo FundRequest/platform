@@ -30,7 +30,7 @@ public class CreateGithubCommentOnClosedHandler {
     public CreateGithubCommentOnClosedHandler(final GithubGateway githubGateway,
                                               final GithubSolverResolver githubSolverResolver,
                                               final GitHubCommentFactory gitHubCommentFactory,
-                                              @Value("${github.add-comment-when-funded:false}") final Boolean addComment,
+                                              @Value("${github.add-comments:false}") final Boolean addComment,
                                               @Value("${feign.client.github.username:fundrequest-notifier}") final String githubUser) {
 
         this.githubGateway = githubGateway;

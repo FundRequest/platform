@@ -24,7 +24,7 @@ public class CreateGithubCommentOnResolvedHandler {
     public CreateGithubCommentOnResolvedHandler(final GithubGateway githubGateway,
                                                 final GithubSolverResolver githubSolverResolver,
                                                 final GitHubCommentFactory gitHubCommentFactory,
-                                                @Value("${github.add-comment-when-funded:false}") final Boolean addComment) {
+                                                @Value("${github.add-comments:false}") final Boolean addComment) {
         this.githubGateway = githubGateway;
         this.githubSolverResolver = githubSolverResolver;
         this.gitHubCommentFactory = gitHubCommentFactory;
