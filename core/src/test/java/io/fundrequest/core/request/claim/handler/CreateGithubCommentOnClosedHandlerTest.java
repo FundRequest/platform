@@ -14,6 +14,7 @@ import io.fundrequest.platform.github.parser.GithubUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -25,8 +26,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +63,6 @@ public class CreateGithubCommentOnClosedHandlerTest {
     @Test
     public void postsGithubComment_lessThan2CommentsPresent() {
         final RequestClaimedEvent event = new RequestClaimedEvent("1324354", RequestDtoMother.freeCodeCampNoUserStories(), mock(ClaimDto.class), SOLVER, LocalDateTime.now());
-        final String expectedMessage = EXPECTED_MESSAGE;
         final RequestDto request = event.getRequestDto();
         final IssueInformationDto issueInformation = request.getIssueInformation();
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
@@ -70,15 +70,18 @@ public class CreateGithubCommentOnClosedHandlerTest {
 
         when(githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(existingComments);
         when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of(SOLVER));
-        when(gitHubCommentFactory.createResolvedComment(request.getId(), SOLVER)).thenReturn(expectedMessage);
+        when(gitHubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
 
         handler.createGithubCommentOnRequestClaimed(event);
 
-        verify(githubGateway).createCommentOnIssue(eq(issueInformation.getOwner()),
+        final InOrder inOrder = inOrder(githubGateway);
+        inOrder.verify(githubGateway).evictCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
+        inOrder.verify(githubGateway).getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
+        inOrder.verify(githubGateway).createCommentOnIssue(eq(issueInformation.getOwner()),
                                                    eq(issueInformation.getRepo()),
                                                    eq(issueInformation.getNumber()),
                                                    createGithubCommentArgumentCaptor.capture());
-        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo(expectedMessage);
+        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo(EXPECTED_MESSAGE);
     }
 
     @Test
@@ -93,11 +96,14 @@ public class CreateGithubCommentOnClosedHandlerTest {
 
         when(githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(existingComments);
         when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of(SOLVER));
-        when(gitHubCommentFactory.createResolvedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
+        when(gitHubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
 
         handler.createGithubCommentOnRequestClaimed(event);
 
-        verify(githubGateway).editCommentOnIssue(eq(issueInformation.getOwner()),
+        final InOrder inOrder = inOrder(githubGateway);
+        inOrder.verify(githubGateway).evictCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
+        inOrder.verify(githubGateway).getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
+        inOrder.verify(githubGateway).editCommentOnIssue(eq(issueInformation.getOwner()),
                                                  eq(issueInformation.getRepo()),
                                                  eq(secondComment.getId()),
                                                  createGithubCommentArgumentCaptor.capture());
@@ -107,7 +113,6 @@ public class CreateGithubCommentOnClosedHandlerTest {
     @Test
     public void postsGithubComment_moreThan2CommentsPresent() {
         final RequestClaimedEvent event = new RequestClaimedEvent("1324354", RequestDtoMother.freeCodeCampNoUserStories(), mock(ClaimDto.class), SOLVER, LocalDateTime.now());
-        final String expectedMessage = EXPECTED_MESSAGE;
         final RequestDto request = event.getRequestDto();
         final IssueInformationDto issueInformation = request.getIssueInformation();
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
@@ -118,15 +123,18 @@ public class CreateGithubCommentOnClosedHandlerTest {
         final List<GithubIssueCommentsResult> existingComments = Arrays.asList(firstComment, secondComment, thirdComment);
         when(githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(existingComments);
         when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of(SOLVER));
-        when(gitHubCommentFactory.createResolvedComment(request.getId(), SOLVER)).thenReturn(expectedMessage);
+        when(gitHubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
 
         handler.createGithubCommentOnRequestClaimed(event);
 
-        verify(githubGateway).editCommentOnIssue(eq(issueInformation.getOwner()),
+        final InOrder inOrder = inOrder(githubGateway);
+        inOrder.verify(githubGateway).evictCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
+        inOrder.verify(githubGateway).getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
+        inOrder.verify(githubGateway).editCommentOnIssue(eq(issueInformation.getOwner()),
                                                  eq(issueInformation.getRepo()),
                                                  eq(secondComment.getId()),
                                                  createGithubCommentArgumentCaptor.capture());
-        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo(expectedMessage);
+        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo(EXPECTED_MESSAGE);
     }
 
     @Test

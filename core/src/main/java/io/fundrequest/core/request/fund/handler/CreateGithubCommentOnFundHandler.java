@@ -39,6 +39,7 @@ public class CreateGithubCommentOnFundHandler {
         RequestDto request = event.getRequestDto();
         IssueInformationDto issueInformation = request.getIssueInformation();
         if (addComment && issueInformation.getPlatform() == Platform.GITHUB) {
+            githubGateway.evictCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
             List<GithubIssueCommentsResult> comments = githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
             Optional<GithubIssueCommentsResult> existingComments = comments.stream().filter(c -> githubUser.equalsIgnoreCase(c.getUser().getLogin())).findFirst();
             if (!existingComments.isPresent()) {

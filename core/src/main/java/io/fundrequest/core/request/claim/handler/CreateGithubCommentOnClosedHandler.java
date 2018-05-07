@@ -48,7 +48,7 @@ public class CreateGithubCommentOnClosedHandler {
             if (issueInformation.getPlatform() == Platform.GITHUB) {
                 final String solver = githubSolverResolver.solveResolver(request).orElseThrow(() -> new RuntimeException("No solver found for request " + request.getId()));
                 final CreateGithubComment comment = new CreateGithubComment();
-                comment.setBody(gitHubCommentFactory.createResolvedComment(request.getId(), solver));
+                comment.setBody(gitHubCommentFactory.createClosedComment(request.getId(), solver));
 
                 final List<GithubIssueCommentsResult> ourComments = getOurComments(issueInformation);
                 if (ourComments.size() < 2) {
@@ -62,6 +62,7 @@ public class CreateGithubCommentOnClosedHandler {
     }
 
     private List<GithubIssueCommentsResult> getOurComments(final IssueInformationDto issueInformation) {
+        githubGateway.evictCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
         final List<GithubIssueCommentsResult> comments = githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
         return comments.stream().filter(c -> githubUser.equalsIgnoreCase(c.getUser().getLogin())).collect(Collectors.toList());
     }
