@@ -148,22 +148,21 @@ public class RequestServiceImplTest {
 
     @Test
     public void getUserClaimableResultUpdatesStatus() {
-        Principal principal = PrincipalMother.davyvanroy();
-        long requestId = 1L;
-        Request request = RequestMother.fundRequestArea51().build();
-        RequestDto requestDto = RequestDtoMother.fundRequestArea51();
-        requestDto.setStatus(RequestStatus.FUNDED);
+        final Principal principal = PrincipalMother.davyvanroy();
+        final long requestId = 1L;
+        final Request request = RequestMother.fundRequestArea51().build();
+        request.setStatus(RequestStatus.FUNDED);
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        final UserClaimableDto expected = UserClaimableDto.builder().claimableByUser(true).claimable(true).build();
+        final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
+
         when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
         when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
-        UserClaimableDto expected = UserClaimableDto.builder().claimableByUser(true).claimable(true).build();
-        when(githubClaimResolver.userClaimableResult(principal, requestDto))
-                .thenReturn(expected);
+        when(githubClaimResolver.userClaimableResult(principal, requestDto)).thenReturn(expected);
 
         UserClaimableDto result = requestService.getUserClaimableResult(principal, requestId);
 
         assertThat(result).isEqualTo(expected);
-
-        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
         verify(requestRepository).save(requestArgumentCaptor.capture());
         assertThat(requestArgumentCaptor.getValue().getStatus()).isEqualTo(RequestStatus.CLAIMABLE);
     }
