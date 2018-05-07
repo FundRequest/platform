@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.ZonedDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,5 +15,6 @@ public class GithubIssueCommentsResult {
     private Long id;
     private GithubUser user;
     private String title;
+    private ZonedDateTime createdAt;
     private String body;
 }

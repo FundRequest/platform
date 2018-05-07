@@ -23,45 +23,33 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 interface GithubClient {
 
     @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}", method = GET)
-    GithubResult getIssue(
-            @PathVariable("owner") String owner,
-            @PathVariable("repo") String repo,
-            @PathVariable("number") String number
-                         );
+    GithubResult getIssue(@PathVariable("owner") String owner,
+                          @PathVariable("repo") String repo,
+                          @PathVariable("number") String number);
 
     @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}/comments", method = GET)
-    List<GithubIssueCommentsResult> getCommentsForIssue(
-            @PathVariable("owner") String owner,
-            @PathVariable("repo") String repo,
-            @PathVariable("number") String number
-                                                       );
+    List<GithubIssueCommentsResult> getCommentsForIssue(@PathVariable("owner") String owner,
+                                                        @PathVariable("repo") String repo,
+                                                        @PathVariable("number") String number);
 
-    @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}/comments", method = POST)
-    void createCommentOnIssue(
-            @PathVariable("owner") String owner,
-            @PathVariable("repo") String repo,
-            @PathVariable("number") String number,
-            CreateGithubComment comment
-                             );
+    @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}/comments", method = POST, consumes = "application/json")
+    void createCommentOnIssue(@PathVariable("owner") String owner,
+                              @PathVariable("repo") String repo,
+                              @PathVariable("number") String number,
+                              CreateGithubComment comment);
 
-    @RequestMapping(value = "/repos/{owner}/{repo}/issues/comments/{commentId}", method = PATCH)
-    void editCommentOnIssue(
-            @PathVariable("owner") String owner,
-            @PathVariable("repo") String repo,
-            @PathVariable("commentId") Long commentId,
-            CreateGithubComment comment
-                           );
+    @RequestMapping(value = "/repos/{owner}/{repo}/issues/comments/{commentId}", method = PATCH, consumes = "application/json")
+    void editCommentOnIssue(@PathVariable("owner") String owner,
+                            @PathVariable("repo") String repo,
+                            @PathVariable("commentId") Long commentId,
+                            CreateGithubComment comment);
 
     @RequestMapping(value = "/repos/{owner}/{repo}/languages", method = GET)
-    Map<String, Long> getLanguages(
-            @PathVariable("owner") String owner,
-            @PathVariable("repo") String repo
-                                  );
+    Map<String, Long> getLanguages(@PathVariable("owner") String owner,
+                                   @PathVariable("repo") String repo);
 
     @RequestMapping(value = "/users/{username}", method = GET)
-    GithubUser getUser(
-            @PathVariable("username") String username
-                      );
+    GithubUser getUser(@PathVariable("username") String username);
 
     @RequestMapping(value = "/rate_limit", method = GET)
     GithubRateLimits getRateLimit();

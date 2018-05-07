@@ -11,7 +11,7 @@ import org.springframework.context.annotation.FilterType;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@EnableFeignClients
+@EnableFeignClients("io.fundrequest.platform.github")
 @ComponentScan(
         basePackageClasses = {FundRequestGithub.class},
         excludeFilters = {
