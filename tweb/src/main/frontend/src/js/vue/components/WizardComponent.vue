@@ -163,7 +163,7 @@
             pendingFundCommand.tokenAddress = this.selectedToken.address;
             pendingFundCommand.platform = this.githubIssue.platform;
             pendingFundCommand.platformId = this.githubIssue.platformId;
-            await Utils.post(`/rest/pending-fund`, pendingFundCommand);
+            await Utils.postJSON(`/rest/pending-fund`, pendingFundCommand);
         }
 
         public fundUsingTrustWallet() {
