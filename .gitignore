@@ -219,4 +219,3 @@ core/docker_data
 **/node/**
 **/node_modules/**
 /tweb/src/main/frontend/src/js/contracts/
-**/frontend/package-lock.json
