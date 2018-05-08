@@ -5,6 +5,7 @@ import io.fundrequest.core.request.view.FundDtoMother;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.CreateGithubComment;
+import io.fundrequest.platform.github.GitHubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,21 +18,24 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 public class CreateGithubCommentOnFundHandlerTest {
 
     private CreateGithubCommentOnFundHandler handler;
     private GithubGateway githubGateway;
+    private GitHubCommentFactory gitHubCommentFactory;
 
     @Before
     public void setUp() throws Exception {
         githubGateway = mock(GithubGateway.class);
-        handler = new CreateGithubCommentOnFundHandler(githubGateway, true, "fundrequest-notifier");
+        gitHubCommentFactory = mock(GitHubCommentFactory.class);
+        handler = new CreateGithubCommentOnFundHandler(githubGateway, gitHubCommentFactory, true, "fundrequest-notifier");
     }
 
     @Test
     public void ignoresGithubComment() throws Exception {
-        handler = new CreateGithubCommentOnFundHandler(githubGateway, false, "fundrequest-notifier");
+        handler = new CreateGithubCommentOnFundHandler(githubGateway, gitHubCommentFactory, false, "fundrequest-notifier");
 
         handler.createGithubCommentOnRequestFunded(createEvent());
 
@@ -39,18 +43,18 @@ public class CreateGithubCommentOnFundHandlerTest {
     }
 
     @Test
-    public void postsGithubComment() throws Exception {
-        RequestFundedEvent event = createEvent();
+    public void postsGithubComment() {
+        final RequestFundedEvent event = createEvent();
+        final String expectedMessage = "sgdhfjgkh";
+        final IssueInformationDto issueInformation = event.getRequestDto().getIssueInformation();
+        final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
+
+        when(gitHubCommentFactory.createFundedComment(event.getRequestDto().getId())).thenReturn(expectedMessage);
 
         handler.createGithubCommentOnRequestFunded(event);
 
-        ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
-        IssueInformationDto issueInformation = event.getRequestDto().getIssueInformation();
         verify(githubGateway).createCommentOnIssue(eq(issueInformation.getOwner()), eq(issueInformation.getRepo()), eq(issueInformation.getNumber()), createGithubCommentArgumentCaptor.capture());
-        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo("Great, this issue is now funded on FundRequest: https://alpha.fundrequest.io!  \n" +
-                "\n" +
-                "3.87 FND was funded on 2017-12-27");
-
+        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo(expectedMessage);
     }
 
     private RequestFundedEvent createEvent() {
