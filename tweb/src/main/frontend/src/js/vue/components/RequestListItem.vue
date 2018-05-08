@@ -2,7 +2,9 @@
     <a v-bind:href="getRequestDetailUrl(req.id)" class="request-details request-details--list-item" v-if="req != null">
         <div class="request-details__logo">
             <div><img v-bind:src="`${req.icon}?size=30`" /></div>
-            <div class="request-details__owner" ref="fontSizeFit" style="font-size: 15px">{{req.owner}}</div>
+            <div class="request-details__owner">
+                <font-size-fit v-bind:max-size="15">{{req.owner}}</font-size-fit>
+            </div>
         </div>
         <div class="request-details__content">
             <div class="request-details__info">
@@ -50,14 +52,15 @@
     import RequestDto from "../dtos/RequestDto";
     import {Utils} from '../../classes/Utils';
     import {Locations} from '../../classes/Locations';
+    import FontSizeFit from "./FontSizeFit";
 
-    @Component
+    @Component({
+        components: {
+            FontSizeFit
+        }
+    })
     export default class RequestListItem extends Vue {
         @Prop({required: true}) request!: any;
-
-        mounted() {
-            this._resizeText(this.$refs["fontSizeFit"] as HTMLElement);
-        }
 
         public get req() {
             return Object.assign(new RequestDto(), this.request);
@@ -73,15 +76,6 @@
 
         public getRequestDetailUrl(id) {
             return Locations.getRequestDetailUrl(id);
-        }
-
-        private _resizeText(el: HTMLElement) {
-            if (el) {
-                el.style.fontSize = (parseInt(el.style.fontSize.slice(0, -2)) - 1) + "px";
-                if (el.offsetWidth > el.parentElement.offsetWidth) {
-                    this._resizeText(el);
-                }
-            }
         }
 
     }

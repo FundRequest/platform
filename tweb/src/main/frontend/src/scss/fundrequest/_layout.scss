@@ -6,6 +6,7 @@ body {
     align-items: center;
     font-family: $font-family-base;
     font-weight: $font-weight-normal;
+    min-width: 320px; // size iphone 5
 }
 
 .fnd-page-container {
@@ -181,6 +182,7 @@ body {
     border-bottom: 2px solid $gray-a100;
 
     .nav-link {
+        text-align: center;
         font-weight: $font-weight-bold;
         text-transform: uppercase;
         color: $gray-500;
@@ -238,6 +240,8 @@ a.anchor {
     font-size: $font-size-sm;
     .disclaimer-asterix {
         font-size: $font-size-sm;
+        margin-left: 0;
+        margin-right: .25rem;
     }
 }
 
@@ -246,6 +250,6 @@ a.anchor {
     display: inline-block;
     font-size: 0.5em; //use em value to stay in proportion with item's text size
     vertical-align: super;
-    margin-right: .25rem;
+    margin-left: .25rem;
     align-self: stretch;
 }

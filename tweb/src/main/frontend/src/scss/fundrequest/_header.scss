@@ -32,13 +32,19 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    margin-right: 1rem;
 
-    @include media-breakpoint-up(sm) {
-        width: 7.5rem;
-        height: 7.5rem;
+    > img {
+        max-width: 100%;
     }
 
     @include media-breakpoint-up(md) {
+        width: 7.5rem;
+        height: 7.5rem;
+        margin-right: 2rem;
+    }
+
+    @include media-breakpoint-up(lg) {
         width: 12.5rem;
         height: 12.5rem;
         margin-right: 3rem;

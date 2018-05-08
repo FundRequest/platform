@@ -55,8 +55,8 @@
             </div>
         </div>
         <div class="request-list__block card" v-if="!hasNoResults">
-            <RequestListItem v-for="request in filteredRequests" v-bind:request="request"
-                             v-bind:key="request.id"></RequestListItem>
+            <request-list-item v-for="request in filteredRequests" v-bind:request="request"
+                             v-bind:key="request.id"></request-list-item>
         </div>
         <div v-bind:class="{'mt-5': isEmpty}" v-if="hasNoResults">
             <div class="request-list__block request-list__block--non-found card">
