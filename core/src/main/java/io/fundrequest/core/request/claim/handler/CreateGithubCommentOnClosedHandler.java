@@ -46,14 +46,18 @@ public class CreateGithubCommentOnClosedHandler {
             final RequestDto request = event.getRequestDto();
             final IssueInformationDto issueInformation = request.getIssueInformation();
             if (issueInformation.getPlatform() == Platform.GITHUB) {
-                final CreateGithubComment comment = createComment(request);
-                final List<GithubIssueCommentsResult> ourComments = getOurComments(issueInformation);
-                if (ourComments.size() < 2) {
-                    placeNewComment(issueInformation, comment);
-                } else {
-                    editLastComment(issueInformation, comment, ourComments);
-                }
+                placeComment(request, issueInformation);
             }
+        }
+    }
+
+    private void placeComment(final RequestDto request, final IssueInformationDto issueInformation) {
+        final CreateGithubComment comment = createComment(request);
+        final List<GithubIssueCommentsResult> ourComments = getOurComments(issueInformation);
+        if (ourComments.size() < 2) {
+            placeNewComment(issueInformation, comment);
+        } else {
+            editLastComment(issueInformation, comment, ourComments);
         }
     }
 
@@ -70,11 +74,11 @@ public class CreateGithubCommentOnClosedHandler {
         return comments.stream().filter(c -> githubUser.equalsIgnoreCase(c.getUser().getLogin())).collect(Collectors.toList());
     }
 
-    private void placeNewComment(IssueInformationDto issueInformation, CreateGithubComment comment) {
+    private void placeNewComment(final IssueInformationDto issueInformation, final CreateGithubComment comment) {
         githubGateway.createCommentOnIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), comment);
     }
 
-    private void editLastComment(IssueInformationDto issueInformation, CreateGithubComment comment, List<GithubIssueCommentsResult> ourComments) {
+    private void editLastComment(final IssueInformationDto issueInformation, final CreateGithubComment comment, List<GithubIssueCommentsResult> ourComments) {
         final GithubIssueCommentsResult lastComment = ourComments.stream()
                                                                  .max(Comparator.comparing(GithubIssueCommentsResult::getCreatedAt))
                                                                  .orElseThrow(() -> new RuntimeException("No comments found"));
