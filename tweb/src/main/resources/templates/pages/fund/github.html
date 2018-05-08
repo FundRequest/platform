@@ -104,7 +104,7 @@
                                 <h4 class="wizard__title__text" v-if="githubIssue != null" v-cloak="true">
                                     <img v-bind:src="githubIssue.avatar + '?size=22'" height="22" width="22" />
                                     <a v-bind:href="githubIssue.html_url" target="_blank" rel="noopener noreferrer">
-                                        {{githubIssue.owner}}/{{githubIssue.repo}} <span class="wizard__title__number">#{{githubIssue.number}}</span>
+                                        {{githubIssue.title}} <span class="wizard__title__number">#{{githubIssue.number}}</span>
                                     </a>
                                 </h4>
                             </div>
