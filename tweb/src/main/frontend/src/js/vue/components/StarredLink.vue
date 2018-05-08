@@ -22,10 +22,8 @@
         }
 
         public async toggleStarred() {
-            console.log(this.isStarred, this.starred);
             const request: RequestDto = await Utils.post(`/requests/${this.id}/watch`);
             this.isStarred = request.starred;
-            console.log(this.isStarred, request);
         }
     }
 </script>
