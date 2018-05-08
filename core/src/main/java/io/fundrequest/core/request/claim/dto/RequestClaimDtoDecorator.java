@@ -23,7 +23,7 @@ public abstract class RequestClaimDtoDecorator implements RequestClaimDtoMapper 
     public RequestClaimDto map(RequestClaim r) {
         RequestClaimDto dto = delegate.map(r);
         if (dto != null) {
-            RequestDto request = requestService.findRequest(dto.getId());
+            RequestDto request = requestService.findRequest(r.getRequestId());
             dto.setUrl(createLink(request.getIssueInformation()));
         }
         return dto;
