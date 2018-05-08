@@ -19,8 +19,9 @@
   "main": "./js/app.js",
   "scripts": {
     "build": "gulp",
-    "webpack": "webpack --config ./webpack.config.js",
-    "webpack-watch": "webpack --watch --config ./webpack.config.js",
+    "webpack": "webpack --config ./webpack.config.base.js",
+    "webpack-watch": "webpack --watch --config ./webpack.config.base.js",
+    "webpack-prod": "webpack --config ./webpack.config.prod.js",
     "typechain": "typechain --outDir ./src/js/contracts './src/js/abi/*.json'",
     "watch": "gulp watch",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -53,6 +54,7 @@
     "gulp-shell": "^0.6.5",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-typescript": "^4.0.1",
+    "lodash": "^4.17.10",
     "mini-css-extract-plugin": "^0.4.0",
     "node": "^8.11.1",
     "node-sass": "^4.9.0",
@@ -67,7 +69,8 @@
     "vue-template-compiler": "^2.5.16",
     "vue-template-loader": "^0.4.1",
     "webpack": "^4.6.0",
-    "webpack-cli": "^2.1.2"
+    "webpack-cli": "^2.1.2",
+    "webpack-config": "^7.5.0"
   },
   "files": [
     "scss/**/*.scss",

@@ -136,7 +136,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run webpack</arguments>
+                            <arguments>run webpack-prod</arguments>
                         </configuration>
                     </execution>
                 </executions>

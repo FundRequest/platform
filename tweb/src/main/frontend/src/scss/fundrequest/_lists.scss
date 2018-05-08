@@ -45,10 +45,11 @@
             content: '';
             display: block;
             position: absolute;
-            width: 1px;
+            width: 2px;
             background-color: $white;
             left: .5rem;
             height: 50%;
+            transform: translateX(-50%);
         }
     }
 
