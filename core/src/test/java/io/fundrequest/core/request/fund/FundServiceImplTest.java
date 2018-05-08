@@ -64,6 +64,7 @@ public class FundServiceImplTest {
     private PendingFundRepository pendingFundRepository;
     private ProfileService profileService;
     private FiatService fiatService;
+    private Principal funder;
 
     @Before
     public void setUp() {
@@ -78,6 +79,9 @@ public class FundServiceImplTest {
         profileService = mock(ProfileService.class);
         fiatService = mock(FiatService.class);
         when(fundRepository.saveAndFlush(any(Fund.class))).then(returnsFirstArg());
+        UserProfile user = UserProfileMother.davy();
+        funder = user::getId;
+        when(profileService.getUserProfile(funder.getName())).thenReturn(user);
         fundService = new FundServiceImpl(
                 fundRepository,
                 pendingFundRepository,
@@ -132,8 +136,6 @@ public class FundServiceImplTest {
 
         when(requestRepository.findOne(request.getId())).thenReturn(Optional.of(request));
 
-        Principal funder = () -> "davy";
-
         FundDto fundDto = new FundDto();
         when(mappers.map(eq(Fund.class), eq(FundDto.class), any(Fund.class)))
                 .thenReturn(fundDto);
@@ -162,9 +164,25 @@ public class FundServiceImplTest {
         UserProfile davy = UserProfileMother.davy();
         when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
 
-        FundersDto result = fundService.getFundedBy(1L);
+        FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
+        assertThat(result.getFunders().get(0).isLoggedInUser()).isTrue();
+    }
+
+    @Test
+    public void fundersNoPrincipal() {
+        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        UserProfile davy = UserProfileMother.davy();
+        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
+
+        FundersDto result = fundService.getFundedBy(null, 1L);
+
+        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
+        assertThat(result.getFunders().get(0).isLoggedInUser()).isFalse();
     }
 
     @Test
@@ -173,7 +191,7 @@ public class FundServiceImplTest {
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
         mockTokenInfo();
 
-        FundersDto result = fundService.getFundedBy(1L);
+        FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getFunders().get(0).getFunder()).isEqualTo(funds.get(0).getFunder());
     }
@@ -187,7 +205,7 @@ public class FundServiceImplTest {
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
         mockTokenInfo();
 
-        FundersDto result = fundService.getFundedBy(1L);
+        FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getOtherFunds()).isNull();
         assertThat(result.getFndFunds().getTokenSymbol()).isEqualTo("FND");
@@ -204,7 +222,7 @@ public class FundServiceImplTest {
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
         mockTokenInfo();
 
-        FundersDto result = fundService.getFundedBy(1L);
+        FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getFndFunds()).isNull();
         assertThat(result.getOtherFunds().getTokenSymbol()).isEqualTo("ZRX");
@@ -221,7 +239,7 @@ public class FundServiceImplTest {
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
         mockTokenInfo();
 
-        FundersDto result = fundService.getFundedBy(1L);
+        FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getFunders().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(result.getFunders().get(1).getFndFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
@@ -238,7 +256,7 @@ public class FundServiceImplTest {
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
         mockTokenInfo();
 
-        FundersDto result = fundService.getFundedBy(1L);
+        FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getFunders()).hasSize(1);
         assertThat(result.getFunders().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(new BigDecimal("5"));

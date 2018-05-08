@@ -21,6 +21,7 @@ import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
+import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -31,11 +32,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -153,10 +154,10 @@ class FundServiceImpl implements FundService {
 
     @Override
     @Transactional(readOnly = true)
-    public FundersDto getFundedBy(Long requestId) {
+    public FundersDto getFundedBy(Principal principal, Long requestId) {
         List<FunderDto> list = fundRepository.findByRequestId(requestId)
                                              .stream()
-                                             .map(this::mapToFunderDto)
+                                             .map(r -> this.mapToFunderDto(principal == null ? null : profileService.getUserProfile(principal.getName()), r))
                                              .filter(Objects::nonNull)
                                              .collect(Collectors.toList());
         list = groupByFunder(list);
@@ -172,20 +173,17 @@ class FundServiceImpl implements FundService {
     }
 
     private List<FunderDto> groupByFunder(List<FunderDto> list) {
-        return list.stream().collect(Collectors.groupingBy(FunderDto::getFunder, Collectors.reducing(new BinaryOperator<FunderDto>() {
-            @Override
-            public FunderDto apply(FunderDto a1, FunderDto b1) {
-                if (a1 == null && b1 == null) {
-                    return null;
-                } else if (a1 == null) {
-                    return b1;
-                } else if (b1 == null) {
-                    return a1;
-                }
-                a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
-                a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
+        return list.stream().collect(Collectors.groupingBy(FunderDto::getFunder, Collectors.reducing((a1, b1) -> {
+            if (a1 == null && b1 == null) {
+                return null;
+            } else if (a1 == null) {
+                return b1;
+            } else if (b1 == null) {
                 return a1;
             }
+            a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
+            a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
+            return a1;
         }))).values().stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
     }
 
@@ -267,14 +265,16 @@ class FundServiceImpl implements FundService {
                 .orElse(null);
     }
 
-    private FunderDto mapToFunderDto(Fund f) {
+    private FunderDto mapToFunderDto(UserProfile userProfile, Fund f) {
         TotalFundDto totalFundDto = createTotalFund(f.getToken(), f.getAmountInWei());
+        String funder = StringUtils.isNotBlank(f.getFunderUserId()) ? profileService.getUserProfile(f.getFunderUserId()).getName() : f.getFunder();
         return totalFundDto == null
                ? null
                : FunderDto.builder()
-                          .funder(StringUtils.isNotBlank(f.getFunderUserId()) ? profileService.getUserProfile(f.getFunderUserId()).getName() : f.getFunder())
+                          .funder(funder)
                           .fndFunds("FND".equalsIgnoreCase(totalFundDto.getTokenSymbol()) ? totalFundDto : null)
                           .otherFunds(!"FND".equalsIgnoreCase(totalFundDto.getTokenSymbol()) ? totalFundDto : null)
+                          .isLoggedInUser(userProfile != null && (userProfile.getId().equals(f.getFunderUserId()) || f.getFunder().equals(userProfile.getEtherAddress())))
                           .build();
     }
 

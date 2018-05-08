@@ -111,7 +111,7 @@
                         <div class="request-funding">
                             <div class="request-funding__transfers">
                                 <div class="request-funding__transfer" th:each="transfer : ${fundedBy.funders}">
-                                    <div class="request-details__label" th:text="${transfer.funder}">Karel Striegel</div>
+                                    <div class="request-details__label"><span th:text="${transfer.funder}">Karel Striegel</span> <small th:if="${transfer.loggedInUser}" class="badge badge-primary">You</small></div>
                                     <div class="request-details__fund" th:if="${transfer.fndFunds != null}">
                                         <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(transfer.fndFunds.totalAmount,1,2,'POINT')}">100,00</span>
                                         <span class="request-details__fund-currency" th:text="${transfer.fndFunds.tokenSymbol}">FND</span>
