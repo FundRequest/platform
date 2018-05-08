@@ -4,34 +4,38 @@
             <div><img v-bind:src="`${req.icon}?size=30`" /></div>
             <div class="request-details__owner" ref="fontSizeFit" style="font-size: 15px">{{req.owner}}</div>
         </div>
-        <div class="request-details__info">
-            <div class="request-details__header">
-                <span class="request-details__title">{{req.title}}</span>
-                <span class="request-details__number">#{{req.issueNumber}}</span>
+        <div class="request-details__content">
+            <div class="request-details__info">
+                <div class="request-details__header">
+                    <span class="request-details__title">{{req.title}}</span>
+                    <span class="request-details__number">#{{req.issueNumber}}</span>
+                </div>
+                <div class="request-details__status">
+                    <span class="request-details__badge badge badge-pill" v-bind:class="`badge--${req.status.toLowerCase()}`">{{req.status.toLowerCase()}}</span>
+                    <span class="request-details__tech" v-for="tech in req.technologies">{{tech}}</span>
+                </div>
+                <div class="request-details__icons">
+                    <i class="fab fa-github"></i>
+                    <i class="fab fa-github-alt"></i>
+                    <i class="fa fa-comment"></i>
+                </div>
             </div>
-            <div class="request-details__status">
-                <span class="request-details__badge badge" v-bind:class="`badge--${req.status.toLowerCase()}`">{{req.status.toLowerCase()}}</span>
-                <span class="request-details__tech" v-for="tech in req.technologies">{{tech}}</span>
-            </div>
-            <div class="request-details__icons">
-                <i class="fab fa-github"></i>
-                <i class="fab fa-github-alt"></i>
-                <i class="fa fa-message"></i>
-            </div>
-        </div>
-        <div class="request-details__price" v-if="req.funds.usdFunds != null">
-            <span class="disclaimer-asterix">*</span>
-            <span class="request-details__fund-currency">$</span>
-            <span class="request-details__fund-amount">{{formatPrice(req.funds.usdFunds, 0)}}</span>
-        </div>
-        <div class="request-details__crypto">
-            <div class="request-details__fund" v-if="req.funds.fndFunds != null">
-                <span class="request-details__fund-amount">{{formatPrice(req.funds.fndFunds.totalAmount)}}</span>
-                <span class="request-details__fund-currency">{{req.funds.fndFunds.tokenSymbol}}</span>
-            </div>
-            <div class="request-details__fund" v-if="req.funds.otherFunds != null">
-                <span class="request-details__fund-amount">{{formatPrice(req.funds.otherFunds.totalAmount)}}</span>
-                <span class="request-details__fund-currency">{{req.funds.otherFunds.tokenSymbol}}</span>
+            <div class="request-details__funding-details">
+                <div class="request-details__price" v-if="req.funds.usdFunds != null">
+                    <span class="disclaimer-asterix">*</span>
+                    <span class="request-details__fund-currency">$</span>
+                    <span class="request-details__fund-amount">{{formatPrice(req.funds.usdFunds, 0)}}</span>
+                </div>
+                <div class="request-details__crypto">
+                    <div class="request-details__fund" v-if="req.funds.fndFunds != null">
+                        <span class="request-details__fund-amount">{{formatPrice(req.funds.fndFunds.totalAmount)}}</span>
+                        <span class="request-details__fund-currency">{{req.funds.fndFunds.tokenSymbol}}</span>
+                    </div>
+                    <div class="request-details__fund" v-if="req.funds.otherFunds != null">
+                        <span class="request-details__fund-amount">{{formatPrice(req.funds.otherFunds.totalAmount)}}</span>
+                        <span class="request-details__fund-currency">{{req.funds.otherFunds.tokenSymbol}}</span>
+                    </div>
+                </div>
             </div>
         </div>
 
