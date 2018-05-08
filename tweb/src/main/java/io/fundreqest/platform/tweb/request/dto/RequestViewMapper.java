@@ -16,6 +16,10 @@ public class RequestViewMapper implements BaseMapper<RequestDto, RequestView> {
 
     @Override
     public RequestView map(final RequestDto r) {
+        if (r == null) {
+            return null;
+        }
+
         return RequestView.builder()
                           .id(r.getId())
                           .icon("https://github.com/" + r.getIssueInformation().getOwner() + ".png")
