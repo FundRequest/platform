@@ -378,6 +378,52 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="modal fade" style="display: none" ref="approveInfoModal" tabindex="-1" role="dialog"
+                     v-cloak="true" v-if="githubIssue != null &amp;&amp; selectedToken != null">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <span class="text-primary">Fund</span>
+                                    <span class="text-muted">
+                                        {{githubIssue.owner}}/{{githubIssue.repo}} #{{githubIssue.number}}
+                                    </span>
+                                </h5>
+                                <button type="button" class="close" v-on:click="hideApproveInfoModal()">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row mb-2">
+                                    <div class="col-12 d-flex align-items-center">
+                                        <ul class="bullet-steps" v-if="currentAllowance === 0">
+                                            <li class="bullet-steps__item -yellow">First time funding with {{selectedToken.symbol}}?</li>
+                                            <li class="bullet-steps__item -green">We will need to let the smart contract know that you approve funding with {{selectedToken.symbol}}. One time only.</li>
+                                            <li class="bullet-steps__item -blue">So when clicking 'Send transaction' you'll have submit 2 transactions. The first one is to approve the tokens, the 2nd one is to fund.</li>
+                                        </ul>
+                                        <ul class="bullet-steps" v-if="currentAllowance > 0 &amp;&amp; currentAllowance &lt; currentFundAmount">
+                                            <li class="bullet-steps__item -yellow">Your allowance in {{selectedToken.symbol}} is smaller the {{currentFundAmount}}?</li>
+                                            <li class="bullet-steps__item -green">
+                                                We will need to let the smart contract know that you approve more funding with {{selectedToken.symbol}}.
+                                                This will take 2 transactions, a first one to set the allowance to 0, a 2nd one to approve the extra funding.
+                                            </li>
+                                            <li class="bullet-steps__item -blue">So when clicking 'Send transaction' you'll have submit 3 transactions. The first 2 are to approve the tokens, the 3th one is to fund.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button class="btn btn-secondary" v-on:click="fund()">
+                                            <span>Start transaction</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section class="mb-2" ref="faq" id="faq">
