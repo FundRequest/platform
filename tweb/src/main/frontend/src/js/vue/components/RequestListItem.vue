@@ -35,9 +35,9 @@
             </div>
         </div>
 
-        <div class="request-details__actions" v-on:click.stop="showActions($event)">
+        <!--div class="request-details__actions" v-on:click.stop="showActions($event)">
             <i class="fal fa-ellipsis-v fa-2x text-secondary"></i>
-        </div>
+        </div-->
     </div>
 </template>
 
