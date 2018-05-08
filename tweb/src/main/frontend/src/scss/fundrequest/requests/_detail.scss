@@ -237,7 +237,7 @@
     }
 
     &:nth-child(even) {
-        background-color: #f9f9f9;
+        background-color: $gray-100;
     }
 
     &:last-child {
@@ -299,6 +299,16 @@
             }
         }
     }*/
+}
+
+.request-details--pending {
+    cursor: default;
+    &:hover {
+        background-color: $white;
+        &:nth-child(even) {
+            background-color: $gray-100;
+        }
+    }
 }
 
 .request-funding {
