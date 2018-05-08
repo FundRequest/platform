@@ -53,7 +53,8 @@
                             <div class="col-12 col-md-4 request-list__statistic">
                                 <div class="request-list__statistic-title">Total funding</div>
                                 <div class="request-list__statistic-value">
-                                    <span class="disclaimer-asterix">*</span>$<span th:text="${#numbers.formatDecimal(statistics.totalAvailableFunding,1,2,'POINT')}">2873</span>
+                                    <span>$</span><span th:text="${#numbers.formatDecimal(statistics.totalAvailableFunding,1,2,'POINT')}">2873</span>
+                                    <span class="disclaimer-asterix">*</span>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 request-list__statistic">

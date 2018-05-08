@@ -19,54 +19,58 @@
                         </span>
                         <span>
                             <span th:text="${request.owner}">FundRequest</span> /
-                            <span th:text="${request.repo}">new plugin</span> <span class="text-muted">#<span th:text="${request.issueNumber}">948</span></span>
+                            <span th:text="${request.repo}">new plugin</span> <span class="text-muted">#<span
+                                th:text="${request.issueNumber}">948</span></span>
                         </span>
                     </div>
-                    <starred-link class="ml-2" sec:authorize="isFullyAuthenticated()" th:attr="'v-bind:starred'=${request.starred}, 'v-bind:id'=${request.id}"></starred-link>
+                    <starred-link class="ml-2" sec:authorize="isFullyAuthenticated()"
+                                  th:attr="'v-bind:starred'=${request.starred}, 'v-bind:id'=${request.id}"></starred-link>
                 </h1>
 
                 <div class="request-details">
-                    <div class="request-details__info mb-4">
-                        <div class="request-details__header">
-                            <span class="request-details__title" th:text="${request.title}">Request title</span>
-                        </div>
-                        <div class="request-details__status">
-                            <span class="request-details__badge badge"
+
+                    <div class="request-details__content">
+                        <div class="request-details__info mb-4">
+                            <div class="request-details__header">
+                                <span class="request-details__title" th:text="${request.title}">Request title</span>
+                            </div>
+                            <div class="request-details__status">
+                            <span class="request-details__badge badge badge-pill"
                                   th:classappend="'badge--' + ${#strings.toLowerCase(#strings.replace(request.status, ' ', '_'))}"
                                   th:text="${request.status}">Claimed</span>
-                            <span class="request-details__icons">
+                                <span class="request-details__icons">
                           <!--<i class="fab fa-linkedin-in"></i>-->
                           <!--<i class="fab fa-twitter"></i>-->
                       </span>
-                        </div>
-                    </div>
-                    <div class="request-details__funding-details">
-                        <div class="request-details__price"
-                             th:if="${request.funds != null and request.funds.usdFunds != null}">
-                            <span class="disclaimer-asterix">*</span>
-                            <span class="request-details__fund-currency">$</span>
-                            <span class="request-details__fund-amount"
-                                  th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,0,'POINT')}">-</span>
-                        </div>
-                        <div class="request-details__crypto">
-                            <div class="request-details__fund" th:if="${request.funds.fndFunds != null}">
-                                <img class="request-details__fund-logo"
-                                      th:src="${request.funds.fndFunds.tokenImage}" />
-                                <span class="request-details__fund-amount"
-                                      th:text="${#numbers.formatDecimal(request.funds.fndFunds.totalAmount,1,2,'POINT')}">-</span>
-                                <span class="request-details__fund-currency"
-                                      th:text="${request.funds.fndFunds.tokenSymbol}">FND</span>
-                            </div>
-                            <div class="request-details__fund" th:if="${request.funds.otherFunds != null}">
-                                <img class="request-details__fund-logo"
-                                     th:src="${request.funds.otherFunds.tokenImage}" />
-                                <span class="request-details__fund-amount"
-                                      th:text="${#numbers.formatDecimal(request.funds.otherFunds.totalAmount,1,2,'POINT')}">-</span>
-                                <span class="request-details__fund-currency"
-                                      th:text="${request.funds.otherFunds.tokenSymbol}">FND</span>
                             </div>
                         </div>
-
+                        <div class="request-details__funding-details">
+                            <div class="request-details__price"
+                                 th:if="${request.funds != null and request.funds.usdFunds != null}">
+                                <span class="request-details__fund-currency">$</span>
+                                <span class="request-details__fund-amount"
+                                      th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,0,'POINT')}">-</span>
+                                <span class="disclaimer-asterix">*</span>
+                            </div>
+                            <div class="request-details__crypto">
+                                <div class="request-details__fund" th:if="${request.funds.fndFunds != null}">
+                                    <img class="request-details__fund-logo"
+                                         th:src="${request.funds.fndFunds.tokenImage}" />
+                                    <span class="request-details__fund-amount"
+                                          th:text="${#numbers.formatDecimal(request.funds.fndFunds.totalAmount,1,2,'POINT')}">-</span>
+                                    <span class="request-details__fund-currency"
+                                          th:text="${request.funds.fndFunds.tokenSymbol}">FND</span>
+                                </div>
+                                <div class="request-details__fund" th:if="${request.funds.otherFunds != null}">
+                                    <img class="request-details__fund-logo"
+                                         th:src="${request.funds.otherFunds.tokenImage}" />
+                                    <span class="request-details__fund-amount"
+                                          th:text="${#numbers.formatDecimal(request.funds.otherFunds.totalAmount,1,2,'POINT')}">-</span>
+                                    <span class="request-details__fund-currency"
+                                          th:text="${request.funds.otherFunds.tokenSymbol}">FND</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="request-details__actions">
                             <span th:attr="'data-dynamic-content'='/requests/'+${request.id}+'/actions'"></span>
                         </div>
@@ -111,14 +115,21 @@
                         <div class="request-funding">
                             <div class="request-funding__transfers">
                                 <div class="request-funding__transfer" th:each="transfer : ${fundedBy.funders}">
-                                    <div class="request-details__label" th:text="${transfer.funder}">Karel Striegel</div>
+                                    <div class="request-details__label">
+                                        <span th:text="${transfer.funder}">Karel Striegel</span>
+                                        <span th:if="${transfer.loggedInUser}" class="badge badge-pill badge-primary">You</span>
+                                    </div>
                                     <div class="request-details__fund" th:if="${transfer.fndFunds != null}">
-                                        <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(transfer.fndFunds.totalAmount,1,2,'POINT')}">100,00</span>
-                                        <span class="request-details__fund-currency" th:text="${transfer.fndFunds.tokenSymbol}">FND</span>
+                                        <span class="request-details__fund-amount"
+                                              th:text="${#numbers.formatDecimal(transfer.fndFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                        <span class="request-details__fund-currency"
+                                              th:text="${transfer.fndFunds.tokenSymbol}">FND</span>
                                     </div>
                                     <div class="request-details__fund" th:if="${transfer.otherFunds != null}">
-                                        <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(transfer.otherFunds.totalAmount,1,2,'POINT')}">100,00</span>
-                                        <span class="request-details__fund-currency" th:text="${transfer.otherFunds.tokenSymbol}">XYZ</span>
+                                        <span class="request-details__fund-amount"
+                                              th:text="${#numbers.formatDecimal(transfer.otherFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                        <span class="request-details__fund-currency"
+                                              th:text="${transfer.otherFunds.tokenSymbol}">XYZ</span>
                                     </div>
                                 </div>
                             </div>
@@ -127,12 +138,16 @@
                                     Subtotal
                                 </div>
                                 <div class="request-details__fund" th:if="${fundedBy.fndFunds != null}">
-                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(fundedBy.fndFunds.totalAmount,1,2,'POINT')}">100,00</span>
-                                    <span class="request-details__fund-currency" th:text="${fundedBy.fndFunds.tokenSymbol}">FND</span>
+                                    <span class="request-details__fund-amount"
+                                          th:text="${#numbers.formatDecimal(fundedBy.fndFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                    <span class="request-details__fund-currency"
+                                          th:text="${fundedBy.fndFunds.tokenSymbol}">FND</span>
                                 </div>
                                 <div class="request-details__fund" th:if="${fundedBy.otherFunds != null}">
-                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(fundedBy.otherFunds.totalAmount,1,2,'POINT')}">100,00</span>
-                                    <span class="request-details__fund-currency" th:text="${fundedBy.otherFunds.tokenSymbol}">XYZ</span>
+                                    <span class="request-details__fund-amount"
+                                          th:text="${#numbers.formatDecimal(fundedBy.otherFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                    <span class="request-details__fund-currency"
+                                          th:text="${fundedBy.otherFunds.tokenSymbol}">XYZ</span>
                                 </div>
                             </div>
                             <div class="request-funding__total">
@@ -140,10 +155,10 @@
                                     <span>Total</span>
                                 </div>
                                 <div class="request-details__price" th:if="${fundedBy.usdFunds != null}">
-                                    <span class="disclaimer-asterix">*</span>
                                     <span class="request-details__fund-amount"
                                           th:text="${#numbers.formatDecimal(fundedBy.usdFunds,1,2,'POINT')}">58</span>
                                     <span class="request-details__fund-currency">USD</span>
+                                    <span class="disclaimer-asterix">*</span>
                                 </div>
                             </div>
                         </div>

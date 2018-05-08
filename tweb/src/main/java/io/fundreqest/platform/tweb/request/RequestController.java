@@ -81,12 +81,12 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests/{id}")
-    public ModelAndView details(@PathVariable Long id, Model model) {
+    public ModelAndView details(Principal principal, @PathVariable Long id, Model model) {
         RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id));
         return modelAndView(model)
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
-                .withObject("fundedBy", fundService.getFundedBy(id))
+                .withObject("fundedBy", fundService.getFundedBy(principal, id))
                 .withObject("githubComments", requestService.getComments(id))
                 .withView("pages/requests/detail")
                 .build();

@@ -9,7 +9,7 @@
     }
 
     &__logo {
-        width: 5rem;
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -23,10 +23,51 @@
         img {
             margin-bottom: .5rem;
         }
+
+        @include media-breakpoint-up(md) {
+            position: relative;
+            width: 5rem;
+            padding: .5rem 0;
+
+            &::after {
+                position: absolute;
+                content: '';
+                right: -1rem;
+                bottom: 0;
+                top: 0;
+                width: 1px;
+                background-color: $gray-200;
+            }
+        }
     }
 
     &__owner {
         white-space: nowrap;
+    }
+
+    &__content {
+        width: 100%;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+
+        > * {
+            display: flex;
+            width: 100%;
+        }
+
+        @include media-breakpoint-up(md) {
+            width: calc(100% - 7rem);
+            text-align: left;
+
+            > * {
+                display: flex;
+                width: auto;
+            }
+        }
     }
 
     &__info {
@@ -34,8 +75,9 @@
         flex-shrink: 1;
         flex-direction: column;
         text-align: center;
+        width: 100%;
 
-        @include media-breakpoint-up(sm) {
+        @include media-breakpoint-up(md) {
             text-align: left;
         }
     }
@@ -45,6 +87,7 @@
         margin-right: .25rem;
         position: relative;
         color: $gray-500;
+        line-height: $font-size-lg;
         font-size: $font-size-sm;
         font-weight: $font-weight-bold;
 
@@ -72,7 +115,7 @@
         max-width: 100%;
         justify-content: center;
 
-        @include media-breakpoint-up(sm) {
+        @include media-breakpoint-up(md) {
             justify-content: flex-start;
         }
     }
@@ -83,7 +126,7 @@
         margin-bottom: .25rem;
         justify-content: center;
 
-        @include media-breakpoint-up(sm) {
+        @include media-breakpoint-up(md) {
             justify-content: flex-start;
         }
     }
@@ -97,7 +140,9 @@
 
     &__badge {
         text-transform: capitalize;
-        margin-right: 1rem;
+        + .request-details__tech {
+            margin-left: 1rem;
+        }
     }
 
     &__number {
@@ -111,7 +156,9 @@
         color: $gray-500;
         i {
             font-size: 1.25rem;
-            margin-right: .5rem;
+            + i {
+                margin-left: .5rem;
+            }
         }
     }
 
@@ -128,18 +175,34 @@
     }
 
     &__funding-details {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+
         > * {
             display: flex;
+        }
+
+        @include media-breakpoint-up(md) {
+            justify-content: flex-end;
+            text-align: right;
         }
     }
 
     &__label {
+        display: flex;
         flex-grow: 1;
+        align-items: center;
+
+        .badge {
+            padding: .15rem .5rem;
+            margin-left: .5rem;
+        }
     }
 
     &__fund {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         color: $gray-500;
         font-weight: $font-weight-bold;
@@ -162,6 +225,10 @@
 
         &-currency {
             display: block;
+        }
+
+        @include media-breakpoint-up(md) {
+            justify-content: space-between;
         }
     }
 
@@ -230,9 +297,12 @@
     cursor: pointer;
     flex-wrap: wrap;
 
-
     @include media-breakpoint-up(md) {
+        align-items: flex-start;
         justify-content: flex-start;
+    }
+
+    @include media-breakpoint-up(lg) {
         flex-wrap: nowrap;
     }
 
@@ -248,57 +318,61 @@
         background-color: $gray-200;
     }
 
-    .request-details__info {
-        padding: 0 1rem;
-        min-width: 20rem;
+    .request-details {
+        &__info {
+            padding: 0 1rem;
+            min-width: 20rem;
 
-        @include media-breakpoint-up(sm) {
-            min-width: 30rem;
-            max-width: calc(100% - 24rem);
-            border-left: 1px solid $gray-200;
-        }
-    }
-
-    .request-details__price {
-        padding: 0 1rem;
-        color: $green-500;
-        font-size: 1.5rem;
-        font-weight: $font-weight-normal;
-        width: 9rem;
-    }
-
-    .request-details__fund {
-        color: $gray-600;
-        font-size: $font-size-lg;
-        font-weight: $font-weight-normal;
-    }
-
-    .request-details__crypto {
-        margin-left: 0;
-        border-left: 0 none;
-        width: 8rem;
-        padding: 0 .25rem;
-    }
-
-    /*
-    .request-details__actions {
-        flex-grow: 0;
-        justify-content: center;
-        padding: .5rem 2rem .5rem 1.5rem;
-        width: 4rem;
-
-        i {
-            text-align: center;
-            width: .5rem;
-            transition: font-size .35s ease-in-out;
-        }
-
-        &:hover {
-            i {
-                font-size: 3rem;
+            @include media-breakpoint-up(md) {
+                min-width: 30rem;
+                max-width: calc(100% - 18rem); // - actions width
             }
         }
-    }*/
+        &__price {
+            padding: 0 1rem;
+            color: $green-500;
+            font-size: 1.5rem;
+            font-weight: $font-weight-normal;
+
+            @include media-breakpoint-up(lg) {
+                width: 9rem;
+            }
+        }
+        &__fund {
+            color: $gray-600;
+            font-size: $font-size-lg;
+            font-weight: $font-weight-normal;
+        }
+        &__crypto {
+            margin-left: 0;
+            border-left: 0 none;
+            padding: 0 1rem;
+
+            @include media-breakpoint-up(lg) {
+                width: 9rem;
+            }
+        }
+
+        /*
+        &__actions {
+            flex-grow: 0;
+            justify-content: center;
+            padding: .5rem 2rem .5rem 1.5rem;
+            width: 4rem;
+
+            i {
+                text-align: center;
+                width: .5rem;
+                transition: font-size .35s ease-in-out;
+            }
+
+            &:hover {
+                i {
+                    font-size: 3rem;
+                }
+            }
+        }*/
+    }
 }
 
 .request-details--pending {

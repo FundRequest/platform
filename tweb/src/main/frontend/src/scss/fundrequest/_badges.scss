@@ -40,9 +40,14 @@
 
 .badge {
     box-shadow: none;
-    border-radius: 10000px;
-    padding: .1rem 1rem;
-    vertical-align: middle;
+
+    &-pill {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    //border-radius: 10000px;
+    //padding: .1rem 1rem;
+    //vertical-align: middle;
 
     &--funded,
     &--unresolve,
