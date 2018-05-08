@@ -48,7 +48,7 @@
                                 <h3>Define the amount of funding you want to add to your request as well as your preferred payment method.</h3>
                             </div>
                             <div class="wizard__step-title" ref="stepTitle3" v-bind:class="getClassesPanel(3)">
-                                <h2>Request Overview</h2>
+                                <h2>Request Summary</h2>
                                 <h3>Overview of your request. Verify, pay and we'll add your request to our marketplace.</h3>
                             </div>
                         </div>
@@ -56,14 +56,8 @@
                             <nav class="steps">
                                 <div class="step" v-bind:class="getClassesStep(1)">
                                     <div class="step__content">
-                                        <p class="step__number step__number--blue"><!--i class="fab fa-github-alt"></i--></p>
+                                        <p class="step__number step__number--blue"></p>
                                         <a class="step__link" href="#step1" v-on:click="gotoStep(1, true)">
-                                            <!--svg class="checkmark" xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 52 52">
-                                                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                                                <path class="checkmark__check" fill="none"
-                                                      d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                                            </svg-->
                                         </a>
                                         <div class="lines">
                                             <div class="line -background"></div>
@@ -75,14 +69,8 @@
 
                                 <div class="step" v-bind:class="getClassesStep(2)">
                                     <div class="step__content">
-                                        <p class="step__number"><!--i class="fas fa-dollar-sign"></i--></p>
+                                        <p class="step__number"></p>
                                         <a class="step__link" href="#step2" v-on:click="gotoStep(2, true)">
-                                            <!--svg class="checkmark" xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 52 52">
-                                                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                                                <path class="checkmark__check" fill="none"
-                                                      d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                                            </svg-->
                                         </a>
                                         <div class="lines">
                                             <div class="line -background"></div>
@@ -94,14 +82,8 @@
 
                                 <div class="step" v-bind:class="getClassesStep(3)">
                                     <div class="step__content">
-                                        <p class="step__number step__number--yellow"><!--i class="far fa-handshake"></i--></p>
+                                        <p class="step__number step__number--yellow"></p>
                                         <a class="step__link" href="#step3" v-on:click="gotoStep(3, true)">
-                                            <!--svg class="checkmark" xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 52 52">
-                                                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                                                <path class="checkmark__check" fill="none"
-                                                      d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                                            </svg-->
                                         </a>
 
                                         <div class="lines">
@@ -167,7 +149,7 @@
                             </div>
                             <div class="wizard__footer">
                                 <button class="btn btn-secondary" v-on:click="gotoStep(2)">
-                                    Continue to funding details
+                                    Continue to payment details
                                 </button>
                             </div>
                         </div>
@@ -275,11 +257,11 @@
                             </div>
                             <div class="wizard__footer">
                                 <button class="btn btn-link text-secondary" v-on:click="gotoStep(1)">
-                                    Back to issue details
+                                    Back to request details
                                 </button>
 
                                 <button class="btn btn-secondary" v-on:click="gotoStep(3)">
-                                    Continue to last step
+                                    Continue to summary
                                 </button>
                             </div>
                         </div>
@@ -325,7 +307,7 @@
                             </div>
                             <div class="wizard__footer">
                                 <button class="btn btn-link text-secondary" v-on:click="gotoStep(2)">
-                                    Back to funding details
+                                    Back to payment details
                                 </button>
 
                                 <button class="btn btn-secondary" v-on:click="fund()">
