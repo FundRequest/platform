@@ -39,12 +39,19 @@ public class HomeControllerTest extends AbstractControllerTest<HomeController> {
     }
 
     @Test
-    public void logout() throws Exception {
+    public void logoutWithPrincipal() throws Exception {
         Principal principal = PrincipalMother.davyvanroy();
         mockMvc.perform(get("/logout").principal(principal))
                .andExpect(status().is3xxRedirection())
                .andExpect(redirectedUrl("/"));
 
         verify(profileService).logout(principal);
+    }
+
+    @Test
+    public void logoutWithoutPrincipal() throws Exception {
+        mockMvc.perform(get("/logout"))
+               .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrl("/"));
     }
 }
