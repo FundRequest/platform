@@ -46,24 +46,38 @@ public class CreateGithubCommentOnClosedHandler {
             final RequestDto request = event.getRequestDto();
             final IssueInformationDto issueInformation = request.getIssueInformation();
             if (issueInformation.getPlatform() == Platform.GITHUB) {
-                final String solver = githubSolverResolver.solveResolver(request).orElseThrow(() -> new RuntimeException("No solver found for request " + request.getId()));
-                final CreateGithubComment comment = new CreateGithubComment();
-                comment.setBody(gitHubCommentFactory.createClosedComment(request.getId(), solver));
-
+                final CreateGithubComment comment = createComment(request);
                 final List<GithubIssueCommentsResult> ourComments = getOurComments(issueInformation);
                 if (ourComments.size() < 2) {
-                    githubGateway.createCommentOnIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), comment);
+                    placeNewComment(issueInformation, comment);
                 } else {
-                    final GithubIssueCommentsResult lastComment = ourComments.stream().max(Comparator.comparing(GithubIssueCommentsResult::getCreatedAt)).get();
-                    githubGateway.editCommentOnIssue(issueInformation.getOwner(), issueInformation.getRepo(), lastComment.getId(), comment);
+                    editLastComment(issueInformation, comment, ourComments);
                 }
             }
         }
+    }
+
+    private CreateGithubComment createComment(final RequestDto request) {
+        final String solver = githubSolverResolver.solveResolver(request).orElseThrow(() -> new RuntimeException("No solver found for request " + request.getId()));
+        final CreateGithubComment comment = new CreateGithubComment();
+        comment.setBody(gitHubCommentFactory.createClosedComment(request.getId(), solver));
+        return comment;
     }
 
     private List<GithubIssueCommentsResult> getOurComments(final IssueInformationDto issueInformation) {
         githubGateway.evictCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
         final List<GithubIssueCommentsResult> comments = githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
         return comments.stream().filter(c -> githubUser.equalsIgnoreCase(c.getUser().getLogin())).collect(Collectors.toList());
+    }
+
+    private void placeNewComment(IssueInformationDto issueInformation, CreateGithubComment comment) {
+        githubGateway.createCommentOnIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), comment);
+    }
+
+    private void editLastComment(IssueInformationDto issueInformation, CreateGithubComment comment, List<GithubIssueCommentsResult> ourComments) {
+        final GithubIssueCommentsResult lastComment = ourComments.stream()
+                                                                 .max(Comparator.comparing(GithubIssueCommentsResult::getCreatedAt))
+                                                                 .orElseThrow(() -> new RuntimeException("No comments found"));
+        githubGateway.editCommentOnIssue(issueInformation.getOwner(), issueInformation.getRepo(), lastComment.getId(), comment);
     }
 }
