@@ -10,7 +10,7 @@
                 <span class="request-details__number">#{{req.issueNumber}}</span>
             </div>
             <div class="request-details__status">
-                <span class="request-details__badge badge" v-bind:class="`badge--${req.status.toLowerCase()}`">{{req.status.toLowerCase()}}</span>
+                <span class="request-details__badge badge" v-bind:class="`badge--${req.status.toLowerCase().replace(' ', '_')}`">{{req.status}}</span>
                 <span class="request-details__tech" v-for="tech in req.technologies">{{tech}}</span>
             </div>
             <div class="request-details__icons">
