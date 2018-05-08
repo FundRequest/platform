@@ -236,12 +236,16 @@ a.anchor {
 
 .disclaimer-footer {
     font-size: $font-size-sm;
+    .disclaimer-asterix {
+        font-size: $font-size-sm;
+    }
 }
 
 .disclaimer-asterix {
     color: $gray-500;
     display: inline-block;
-    font-size: 0.875em; //use em value to stay in proportion with item's text size
+    font-size: 0.5em; //use em value to stay in proportion with item's text size
     vertical-align: super;
     margin-right: .25rem;
+    align-self: stretch;
 }
