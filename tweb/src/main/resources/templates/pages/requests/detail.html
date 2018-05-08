@@ -13,7 +13,7 @@
             </div>
             <div class="media-body">
                 <h1 class="mb-2 media">
-                    <div class="media-body">
+                    <div class="media-body text-center text-md-left">
                         <span class="d-inline-block d-md-none">
                             <img th:src="@{${request.icon}(size=32)}" th:alt-title="${request.owner}" />
                         </span>
@@ -30,7 +30,7 @@
                 <div class="request-details">
 
                     <div class="request-details__content">
-                        <div class="request-details__info mb-4">
+                        <div class="request-details__info mb-1 mb-md-2 mb-lg-4">
                             <div class="request-details__header">
                                 <span class="request-details__title" th:text="${request.title}">Request title</span>
                             </div>
@@ -44,7 +44,7 @@
                       </span>
                             </div>
                         </div>
-                        <div class="request-details__funding-details">
+                        <div class="request-details__funding-details mb-1">
                             <div class="request-details__price"
                                  th:if="${request.funds != null and request.funds.usdFunds != null}">
                                 <span class="request-details__fund-currency">$</span>
@@ -89,11 +89,20 @@
                  ]">
             <template slot-scope="{faseFilter}">
                 <div class="card" v-if="faseFilter === 'info'">
-                    <div class="card-header">
-                        Info
-                    </div>
                     <div class="card-body">
-                        <div class="markdown" th:utext="${request.description}"></div>
+                        <div class="request-details d-flex flex-wrap align-items-start">
+                            <div class="request-details__logo">
+                                <div>
+                                    <img th:src="@{${request.icon}(size=30)}" th:alt-title="${request.owner}" />
+                                </div>
+                                <div class="request-details__owner">
+                                    <font-size-fit v-bind:max-size="15" th:text="${request.owner}">
+                                        FundRequest
+                                    </font-size-fit>
+                                </div>
+                            </div>
+                            <div class="request-details__markdown" th:utext="${request.description}"></div>
+                        </div>
                     </div>
                 </div>
                 <!--
@@ -116,8 +125,9 @@
                             <div class="request-funding__transfers">
                                 <div class="request-funding__transfer" th:each="transfer : ${fundedBy.funders}">
                                     <div class="request-details__label">
-                                        <span th:text="${transfer.funder}">Karel Striegel</span>
-                                        <span th:if="${transfer.loggedInUser}" class="badge badge-pill badge-primary">You</span>
+                                        <span class="request-details__label-text" th:text="${transfer.funder}">Karel Striegel</span>
+                                        <span class="request-details__label-badge badge badge-pill badge-primary"
+                                              th:if="${transfer.loggedInUser}">You</span>
                                     </div>
                                     <div class="request-details__fund" th:if="${transfer.fndFunds != null}">
                                         <span class="request-details__fund-amount"

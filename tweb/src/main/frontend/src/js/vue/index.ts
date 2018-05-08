@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import FontSizeFit from './components/FontSizeFit.vue';
 import RequestDetail from './components/RequestDetail.vue';
 import RequestList from './components/RequestList.vue';
 import RequestListPendingFunds from './components/RequestListPendingFunds.vue';
@@ -20,7 +21,8 @@ let v = new Vue({
         'request-list-pending-funds': RequestListPendingFunds,
         'statistic-tile': StatisticTile,
         'starred-link': StarredLink,
-        'wizard-component': WizardComponent
+        'wizard-component': WizardComponent,
+        'font-size-fit': FontSizeFit,
     },
     mounted() {
         new DynamicContent();

@@ -18,7 +18,7 @@
         color: $gray-500;
         text-align: center;
         padding: 0;
-        margin: 0 1rem;
+        margin: 0 1rem 0 0;
 
         img {
             margin-bottom: .5rem;
@@ -41,6 +41,15 @@
         }
     }
 
+    &__markdown {
+        display: block;
+        margin-top: 1rem;
+
+        @include media-breakpoint-up(md) {
+            margin: 0 0 0 1rem;
+        }
+    }
+
     &__owner {
         white-space: nowrap;
     }
@@ -60,7 +69,6 @@
         }
 
         @include media-breakpoint-up(md) {
-            width: calc(100% - 7rem);
             text-align: left;
 
             > * {
@@ -164,13 +172,21 @@
 
     &__price {
         color: $green-500;
-        font-size: 3.75rem;
+        font-size: 2.5rem;
         justify-content: flex-end;
         font-weight: bold;
         align-items: center;
 
         .request-details__fund-amount {
             flex-grow: 0;
+        }
+
+        @include media-breakpoint-up(md) {
+            font-size: 3rem;
+        }
+
+        @include media-breakpoint-up(lg) {
+            font-size: 3.75rem;
         }
     }
 
@@ -193,8 +209,16 @@
         display: flex;
         flex-grow: 1;
         align-items: center;
+        max-width: calc(100% - 7rem);
 
-        .badge {
+        &-text {
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        &-badge {
             padding: .15rem .5rem;
             margin-left: .5rem;
         }
@@ -242,9 +266,13 @@
     }
 
     &__actions {
-        justify-content: flex-end;
+        justify-content: center;
         align-items: center;
         flex-grow: 1;
+
+        @include media-breakpoint-up(md) {
+            justify-content: flex-end;
+        }
     }
 
     &__disclaimer {
@@ -319,6 +347,10 @@
     }
 
     .request-details {
+        &__logo {
+            margin: 0 1rem;
+        }
+
         &__info {
             padding: 0 1rem;
             min-width: 20rem;
@@ -328,9 +360,16 @@
                 max-width: calc(100% - 18rem); // - actions width
             }
         }
+
+
+        &__content {
+            @include media-breakpoint-up(md) {
+                width: calc(100% - 7rem);
+            }
+        }
+
         &__price {
             padding: 0 1rem;
-            color: $green-500;
             font-size: 1.5rem;
             font-weight: $font-weight-normal;
 
@@ -338,11 +377,13 @@
                 width: 9rem;
             }
         }
+
         &__fund {
             color: $gray-600;
             font-size: $font-size-lg;
             font-weight: $font-weight-normal;
         }
+
         &__crypto {
             margin-left: 0;
             border-left: 0 none;
@@ -399,6 +440,7 @@
     &__transfer {
         display: flex;
         margin-bottom: .5rem;
+        justify-content: space-between;
 
         .request-details__fund {
             font-weight: $font-weight-normal;
@@ -426,9 +468,10 @@
     &__total {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         .request-details__price {
             display: flex;
-            font-size: 3.5rem;
+            font-size: 1.5rem;
             font-weight: $font-weight-normal;
         }
     }

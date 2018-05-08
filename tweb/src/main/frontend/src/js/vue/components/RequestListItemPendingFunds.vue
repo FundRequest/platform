@@ -3,8 +3,8 @@
          v-on:click="gotoDetails($event.target, req.id)">
         <div class="request-details__logo">
             <div><img v-bind:src="`${req.icon}?size=30`" /></div>
-            <div class="request-details__owner" ref="fontSizeFit" style="font-size: 15px">
-                {{req.issueInformation.owner}}
+            <div class="request-details__owner">
+                <font-size-fit v-bind:max-size="15">{{req.issueInformation.owner}}</font-size-fit>
             </div>
         </div>
         <div class="request-details__content">
@@ -24,9 +24,9 @@
             </div>
             <div class="request-details__funding-details">
                 <div class="request-details__price" v-if="req.funds.usdFunds != null">
-                    <span class="disclaimer-asterix">*</span>
                     <span class="request-details__fund-currency">$</span>
                     <span class="request-details__fund-amount">{{formatPrice(req.funds.usdFunds, 0)}}</span>
+                    <span class="disclaimer-asterix">*</span>
                 </div>
                 <div class="request-details__crypto">
                     <div class="request-details__fund" v-if="req.funds.fndFunds != null">
@@ -51,14 +51,11 @@
     import {Component, Prop, Vue} from "vue-property-decorator";
     import {Utils} from "../../classes/Utils";
     import {RequestListItemPendingFundDto} from "../dtos/RequestListItemPendingFundDto";
+    import FontSizeFit from "./FontSizeFit";
 
     @Component
     export default class RequestListItemPendingFund extends Vue {
         @Prop({required: true}) request!: any;
-
-        mounted() {
-            this._resizeText(this.$refs["fontSizeFit"] as HTMLElement);
-        }
 
         public get req(): RequestListItemPendingFundDto {
             return Object.assign(new RequestListItemPendingFundDto(), this.request);
@@ -71,16 +68,6 @@
         public showActions(e) {
             null;
         }
-
-        private _resizeText(el: HTMLElement) {
-            if (el) {
-                el.style.fontSize = (parseInt(el.style.fontSize.slice(0, -2)) - 1) + "px";
-                if (el.offsetWidth > el.parentElement.offsetWidth) {
-                    this._resizeText(el);
-                }
-            }
-        }
-
     }
 </script>
 
