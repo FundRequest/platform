@@ -10,6 +10,7 @@ import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.domain.ClaimBuilder;
 import io.fundrequest.core.request.claim.dto.ClaimDto;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
+import io.fundrequest.core.request.claim.event.RequestClaimableEvent;
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
@@ -38,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -105,19 +107,13 @@ class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public UserClaimableDto getUserClaimableResult(Principal principal, Long id) {
-        RequestDto request = findRequest(id);
-        UserClaimableDto result = githubClaimResolver.userClaimableResult(principal, request);
+        Request request = findOne(id);
+        UserClaimableDto result = githubClaimResolver.userClaimableResult(principal, mappers.map(Request.class, RequestDto.class, request));
         if(request.getStatus() == RequestStatus.FUNDED && result.isClaimable()) {
-            updateStatus(id, RequestStatus.CLAIMABLE);
+            request = updateStatus(request, RequestStatus.CLAIMABLE);
+            eventPublisher.publishEvent(new RequestClaimableEvent(mappers.map(Request.class, RequestDto.class, request), LocalDateTime.now()));
         }
         return result;
-    }
-
-    private void updateStatus(Long requestId, RequestStatus newStatus) {
-        requestRepository.findOne(requestId).ifPresent(r -> {
-            r.setStatus(newStatus);
-            requestRepository.save(r);
-        });
     }
 
     @Override
@@ -168,20 +164,19 @@ class RequestServiceImpl implements RequestService {
     @Transactional
     @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
     public Request requestClaimed(RequestClaimedCommand command) {
-        Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
-                                           .orElseThrow(ResourceNotFoundException::new);
-        request.setStatus(RequestStatus.CLAIMED);
-        request = requestRepository.save(request);
+        Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId()).orElseThrow(ResourceNotFoundException::new);
+        request = updateStatus(request, RequestStatus.CLAIMED);
         Claim claim = claimRepository.save(ClaimBuilder.aClaim()
                                                        .withRequestId(request.getId())
                                                        .withSolver(command.getSolver())
                                                        .withTimestamp(command.getTimestamp())
                                                        .withAmountInWei(command.getAmountInWei())
                                                        .build());
-        eventPublisher.publishEvent(new RequestClaimedEvent(
-                command.getTransactionId(), mappers.map(Request.class, RequestDto.class, request),
-                mappers.map(Claim.class, ClaimDto.class, claim),
-                command.getSolver(), command.getTimestamp()));
+        eventPublisher.publishEvent(new RequestClaimedEvent(command.getTransactionId(),
+                                                            mappers.map(Request.class, RequestDto.class, request),
+                                                            mappers.map(Claim.class, ClaimDto.class, claim),
+                                                            command.getSolver(),
+                                                            command.getTimestamp()));
         return request;
     }
 
@@ -253,5 +248,10 @@ class RequestServiceImpl implements RequestService {
                         .sorted(Comparator.comparingLong(RequestTechnology::getWeight).reversed())
                         .limit(4)
                         .collect(Collectors.toSet());
+    }
+
+    private Request updateStatus(final Request request, final RequestStatus newStatus) {
+        request.setStatus(newStatus);
+        return requestRepository.save(request);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @FeignClient(
-        name = "github-client",
+        name = "stackoverflow-client",
         url = "http://api.stackexchange.com/2.2/"
 )
 public interface StackOverflowClient {
