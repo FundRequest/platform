@@ -193,8 +193,16 @@
         display: flex;
         flex-grow: 1;
         align-items: center;
+        max-width: calc(100% - 7rem);
 
-        .badge {
+        &-text {
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        &-badge {
             padding: .15rem .5rem;
             margin-left: .5rem;
         }
@@ -330,7 +338,6 @@
         }
         &__price {
             padding: 0 1rem;
-            color: $green-500;
             font-size: 1.5rem;
             font-weight: $font-weight-normal;
 
@@ -428,7 +435,7 @@
         align-items: center;
         .request-details__price {
             display: flex;
-            font-size: 3.5rem;
+            font-size: 1.5rem;
             font-weight: $font-weight-normal;
         }
     }

@@ -116,8 +116,8 @@
                             <div class="request-funding__transfers">
                                 <div class="request-funding__transfer" th:each="transfer : ${fundedBy.funders}">
                                     <div class="request-details__label">
-                                        <span th:text="${transfer.funder}">Karel Striegel</span>
-                                        <span th:if="${transfer.loggedInUser}" class="badge badge-pill badge-primary">You</span>
+                                        <span class="request-details__label-text" th:text="${transfer.funder}">Karel Striegel</span>
+                                        <span class="request-details__label-badge badge badge-pill badge-primary" th:if="${transfer.loggedInUser}">You</span>
                                     </div>
                                     <div class="request-details__fund" th:if="${transfer.fndFunds != null}">
                                         <span class="request-details__fund-amount"
