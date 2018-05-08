@@ -72,7 +72,7 @@ public class RequestController extends AbstractController {
     @GetMapping("/requests")
     public ModelAndView requests() {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
-        final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(req -> req.getFase(), Collectors.counting()));
+        final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
         return modelAndView()
                 .withObject("requestsPerFaseCount", requestsPerFaseCount)
                 .withObject("requests", getAsJson(requests))
@@ -102,7 +102,7 @@ public class RequestController extends AbstractController {
         return modelAndView(model)
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
-                .withView("pages/requests/badge")
+                .withView("requests/badge")
                 .build();
     }
 
