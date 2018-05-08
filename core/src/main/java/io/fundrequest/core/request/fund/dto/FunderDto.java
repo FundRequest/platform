@@ -10,5 +10,6 @@ public class FunderDto {
     private String funder;
     private TotalFundDto fndFunds;
     private TotalFundDto otherFunds;
+    private boolean isLoggedInUser;
 
 }

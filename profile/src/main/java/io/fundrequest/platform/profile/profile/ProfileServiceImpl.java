@@ -63,6 +63,7 @@ public class ProfileServiceImpl implements ProfileService {
                                                                                                                            .build()));
         UserRepresentation user = keycloakRepository.getUser(userId);
         return UserProfile.builder()
+                          .id(user.getId())
                           .name(user.getFirstName() + " " + user.getLastName())
                           .email(user.getEmail())
                           .picture(getPicture(user))
