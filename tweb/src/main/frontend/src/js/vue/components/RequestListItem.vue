@@ -1,5 +1,5 @@
 <template>
-    <a v-bind:href="getRequestDetailUrl(req.id)" class="request-details request-details--list" v-if="req != null">
+    <a v-bind:href="getRequestDetailUrl(req.id)" class="request-details request-details--list-item" v-if="req != null">
         <div class="request-details__logo">
             <div><img v-bind:src="`${req.icon}?size=30`" /></div>
             <div class="request-details__owner" ref="fontSizeFit" style="font-size: 15px">{{req.owner}}</div>
@@ -35,9 +35,9 @@
             </div>
         </div>
 
-        <div class="request-details__actions" v-on:click.stop="showActions($event)">
+        <!--div class="request-details__actions" v-on:click.stop="showActions($event)">
             <i class="fal fa-ellipsis-v fa-2x text-secondary"></i>
-        </div>
+        </div-->
     </a>
 </template>
 

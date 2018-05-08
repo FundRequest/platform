@@ -1,5 +1,5 @@
 <template>
-    <div class="request-details request-details--list request-details--pending" v-if="req != null" v-on:click="gotoDetails($event.target, req.id)">
+    <div class="request-details request-details--list-item request-details--pending" v-if="req != null" v-on:click="gotoDetails($event.target, req.id)">
         <div class="request-details__logo">
             <div><img v-bind:src="`${req.icon}?size=30`" /></div>
             <div class="request-details__owner" ref="fontSizeFit" style="font-size: 15px">{{req.issueInformation.owner}}</div>
@@ -34,9 +34,9 @@
             </div>
         </div>
 
-        <div class="request-details__actions" v-on:click="showActions($event.target)">
+        <!--div class="request-details__actions" v-on:click="showActions($event.target)">
             <i class="fal fa-ellipsis-v fa-2x text-secondary"></i>
-        </div>
+        </div-->
     </div>
 </template>
 
