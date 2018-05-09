@@ -56,7 +56,7 @@
                             <nav class="steps">
                                 <div class="step" v-bind:class="getClassesStep(1)">
                                     <div class="step__content">
-                                        <a class="step__link" href="#"
+                                        <a class="step__link"
                                            data-toggle="tooltip" data-placement="bottom" title="Select Github issue"
                                            v-on:click="gotoStep(1, true)">
                                         </a>
@@ -72,7 +72,7 @@
 
                                 <div class="step" v-bind:class="getClassesStep(2)">
                                     <div class="step__content">
-                                        <a class="step__link" href="#" v-on:click="gotoStep(2, true)"
+                                        <a class="step__link" v-on:click="gotoStep(2, true)"
                                            data-toggle="tooltip" data-placement="bottom" title="Payment details">
                                         </a>
                                         <p class="step__number"></p>
@@ -87,7 +87,7 @@
 
                                 <div class="step" v-bind:class="getClassesStep(3)">
                                     <div class="step__content">
-                                        <a class="step__link" href="#" v-on:click="gotoStep(3, true)"
+                                        <a class="step__link" v-on:click="gotoStep(3, true)"
                                            data-toggle="tooltip" data-placement="bottom" title="Request Summary">
                                         </a>
                                         <p class="step__number step__number--yellow"></p>
