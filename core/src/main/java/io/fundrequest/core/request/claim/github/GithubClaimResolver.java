@@ -40,13 +40,15 @@ public class GithubClaimResolver {
         try {
             final String solver = getSolver(user, userClaimRequest, request);
             final ClaimSignature signature = getSignature(userClaimRequest, solver);
-            return new SignedClaim(solver,
-                                   signature.getAddress(),
-                                   userClaimRequest.getPlatform(),
-                                   signature.getPlatformId(),
-                                   signature.getR(),
-                                   signature.getS(),
-                                   signature.getV());
+            return SignedClaim.builder()
+                              .solver(solver)
+                              .solverAddress(signature.getAddress())
+                              .platform(userClaimRequest.getPlatform())
+                              .platformId(signature.getPlatformId())
+                              .r(signature.getR())
+                              .s(signature.getS())
+                              .v(signature.getV())
+                              .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
