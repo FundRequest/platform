@@ -1,6 +1,5 @@
-package io.fundrequest.core.request.claim.github;
+package io.fundrequest.platform.github;
 
-import io.fundrequest.core.request.view.RequestDto;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,14 +12,10 @@ import java.util.Optional;
 @Component
 public class GithubSolverResolver {
 
-    public Optional<String> solveResolver(RequestDto request) {
+    public Optional<String> solveResolver(final String owner, final String repo, final String number) {
         Document doc = null;
         try {
-            doc = Jsoup.connect("https://github.com/" +
-                                request.getIssueInformation().getOwner() +
-                                "/" + request.getIssueInformation().getRepo() +
-                                "/issues/" + request.getIssueInformation().getNumber()
-                               ).get();
+            doc = Jsoup.connect("https://github.com/" + owner + "/" + repo + "/issues/" + number).get();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -32,17 +27,17 @@ public class GithubSolverResolver {
                               .findFirst();
     }
 
-    private String getAuthor(Element di) {
+    private String getAuthor(final Element di) {
         return di.select(".discussion-item a.author").text();
     }
 
-    private boolean isPullRequest(Element di) {
+    private boolean isPullRequest(final Element di) {
         Elements select = di.select(".discussion-item h3[id^=ref-pullrequest-]");
-        return select.size() > 0;
+        return !select.isEmpty();
     }
 
-    private boolean isMerged(Element di) {
+    private boolean isMerged(final Element di) {
         Elements select = di.select(".discussion-item span[title=State: merged");
-        return select.size() > 0;
+        return !select.isEmpty();
     }
 }

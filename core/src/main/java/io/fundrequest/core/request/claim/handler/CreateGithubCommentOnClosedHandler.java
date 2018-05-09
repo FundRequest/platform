@@ -1,13 +1,13 @@
 package io.fundrequest.core.request.claim.handler;
 
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
-import io.fundrequest.core.request.claim.github.GithubSolverResolver;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.github.CreateGithubComment;
 import io.fundrequest.platform.github.GitHubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
+import io.fundrequest.platform.github.GithubSolverResolver;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -52,7 +52,7 @@ public class CreateGithubCommentOnClosedHandler {
     }
 
     private void placeComment(final RequestDto request, final IssueInformationDto issueInformation) {
-        final CreateGithubComment comment = createComment(request);
+        final CreateGithubComment comment = createComment(request.getId(), issueInformation);
         final List<GithubIssueCommentsResult> ourComments = getOurComments(issueInformation);
         if (ourComments.size() < 2) {
             placeNewComment(issueInformation, comment);
@@ -61,10 +61,10 @@ public class CreateGithubCommentOnClosedHandler {
         }
     }
 
-    private CreateGithubComment createComment(final RequestDto request) {
-        final String solver = githubSolverResolver.solveResolver(request).orElseThrow(() -> new RuntimeException("No solver found for request " + request.getId()));
+    private CreateGithubComment createComment(final Long requestId, final IssueInformationDto issueInformation) {
+        final String solver = githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).orElseThrow(() -> new RuntimeException("No solver found for request " + requestId));
         final CreateGithubComment comment = new CreateGithubComment();
-        comment.setBody(gitHubCommentFactory.createClosedComment(request.getId(), solver));
+        comment.setBody(gitHubCommentFactory.createClosedComment(requestId, solver));
         return comment;
     }
 

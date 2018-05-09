@@ -15,15 +15,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GithubHealthCheckTest {
+public class GithubRateHealthCheckTest {
 
-    private GithubHealthCheck githubHealthCheck;
+    private GithubRateHealthCheck githubRateHealthCheck;
     private GithubGateway githubGateway;
 
     @Before
     public void setUp() throws Exception {
         githubGateway = mock(GithubGateway.class);
-        githubHealthCheck = new GithubHealthCheck(githubGateway, 20);
+        githubRateHealthCheck = new GithubRateHealthCheck(githubGateway, 20);
     }
 
     @Test
@@ -41,12 +41,12 @@ public class GithubHealthCheckTest {
                                                                                            .build())
                                                                       .build());
 
-        final Health resultaat = githubHealthCheck.health();
+        final Health result = githubRateHealthCheck.health();
 
-        assertThat(resultaat.getStatus()).isEqualTo(Status.UP);
-        assertThat(resultaat.getDetails().get("limit")).isEqualTo(limit);
-        assertThat(resultaat.getDetails().get("remaining")).isEqualTo(remaining);
-        assertThat(resultaat.getDetails().get("reset")).isEqualTo(verwachteReset);
+        assertThat(result.getStatus()).isEqualTo(Status.UP);
+        assertThat(result.getDetails().get("limit")).isEqualTo(limit);
+        assertThat(result.getDetails().get("remaining")).isEqualTo(remaining);
+        assertThat(result.getDetails().get("reset")).isEqualTo(verwachteReset);
     }
 
     @Test
@@ -64,12 +64,12 @@ public class GithubHealthCheckTest {
                                                                                            .build())
                                                                       .build());
 
-        final Health resultaat = githubHealthCheck.health();
+        final Health result = githubRateHealthCheck.health();
 
-        assertThat(resultaat.getStatus().getCode()).isEqualTo("THRESHOLD REACHED");
-        assertThat(resultaat.getDetails().get("limit")).isEqualTo(limit);
-        assertThat(resultaat.getDetails().get("remaining")).isEqualTo(remaining);
-        assertThat(resultaat.getDetails().get("reset")).isEqualTo(verwachteReset);
+        assertThat(result.getStatus().getCode()).isEqualTo("THRESHOLD REACHED");
+        assertThat(result.getDetails().get("limit")).isEqualTo(limit);
+        assertThat(result.getDetails().get("remaining")).isEqualTo(remaining);
+        assertThat(result.getDetails().get("reset")).isEqualTo(verwachteReset);
     }
 
     @Test
@@ -87,11 +87,11 @@ public class GithubHealthCheckTest {
                                                                                            .build())
                                                                       .build());
 
-        final Health resultaat = githubHealthCheck.health();
+        final Health result = githubRateHealthCheck.health();
 
-        assertThat(resultaat.getStatus()).isEqualTo(Status.DOWN);
-        assertThat(resultaat.getDetails().get("limit")).isEqualTo(limit);
-        assertThat(resultaat.getDetails().get("remaining")).isEqualTo(remaining);
-        assertThat(resultaat.getDetails().get("reset")).isEqualTo(verwachteReset);
+        assertThat(result.getStatus()).isEqualTo(Status.DOWN);
+        assertThat(result.getDetails().get("limit")).isEqualTo(limit);
+        assertThat(result.getDetails().get("remaining")).isEqualTo(remaining);
+        assertThat(result.getDetails().get("reset")).isEqualTo(verwachteReset);
     }
 }
