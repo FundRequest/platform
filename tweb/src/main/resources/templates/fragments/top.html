@@ -10,7 +10,7 @@
 </div>
 
 
-<!--/* Container for all alerts, like feedback after an async call is finisched */-->
+<!--/* Container for all alerts, like feedback after an async call is finished */-->
 <div th:fragment="alert-container" id="alert-container" class="alert-container">
     <div th:if="${alerts}" th:each="a : ${alerts}" class="alert alert-dismissible fade show" th:classappend="${'alert-' + a.type}" role="alert">
         <span th:text="${a.msg}">Message</span>
