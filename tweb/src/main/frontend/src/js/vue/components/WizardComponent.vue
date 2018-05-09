@@ -121,12 +121,11 @@
             switch (this.paymentMethod) {
                 case PaymentMethods.getInstance().dapp:
                     try {
-
                         if (await this.fundUsingDapp()) {
                             window.location.href = "/user/requests";
                         }
                     } catch(err) {
-                        Alert.show("<div class=\"text-center\">Something went wrong when funding, please try again. <br/> If the problem remains, <a href=\"https://help.fundrequest.io\">please contact the FundRequest team</a></div> ", "danger");
+                        Alert.error(`Something went wrong during funding, please try again. <br/> If the problem remains, <a href="https://help.fundrequest.io">please contact the FundRequest team</a>.`);
                     }
                     break;
                 case PaymentMethods.getInstance().trustWallet:
