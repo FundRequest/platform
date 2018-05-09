@@ -123,6 +123,12 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     &.-in-progress {
         transform: translateY(-50%) scaleX(1);
     }
+
+    &.-tooltip-overlay {
+        height: 12px;
+        background-color: transparent;
+        width: 100%;
+    }
 }
 
 // Panels
@@ -177,16 +183,19 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     }
 
     &__link {
-        color: $black;
+        position: absolute;
+        display: block;
+        width: $circle-size + 0.3rem;
+        height: $circle-size + 0.3rem;
+        transform: translateX(-0.15rem) translateY(-0.15rem);
+
+        z-index: 6;
         cursor: default;
-        pointer-events: none;
 
         &:hover,
         &:active,
         &:focus {
-            color: $black;
             cursor: default;
-            pointer-events: none;
         }
     }
 
@@ -257,15 +266,11 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
 
         .step__link {
             cursor: pointer;
-            pointer-events: auto;
 
-            /*
-            &:hover .checkmark {
-                width: $circle-size + .375rem;
-                height: $circle-size + .375rem;
-                margin-left: -.375rem / 2;
-                margin-top: -.375rem / 2;
-            }*/
+            &:hover + .step__number:after {
+                width: $circle-size + .25rem;
+                height: $circle-size + .25rem;
+            }
         }
 
         /*.checkmark {
