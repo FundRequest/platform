@@ -48,7 +48,7 @@
                                 <h3>Define the amount of funding you want to add to your request as well as your preferred payment method.</h3>
                             </div>
                             <div class="wizard__step-title" ref="stepTitle3" v-bind:class="getClassesPanel(3)">
-                                <h2>Request Overview</h2>
+                                <h2>Request Summary</h2>
                                 <h3>Overview of your request. Verify, pay and we'll add your request to our marketplace.</h3>
                             </div>
                         </div>
@@ -56,14 +56,8 @@
                             <nav class="steps">
                                 <div class="step" v-bind:class="getClassesStep(1)">
                                     <div class="step__content">
-                                        <p class="step__number step__number--blue"><!--i class="fab fa-github-alt"></i--></p>
+                                        <p class="step__number step__number--blue"></p>
                                         <a class="step__link" href="#step1" v-on:click="gotoStep(1, true)">
-                                            <!--svg class="checkmark" xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 52 52">
-                                                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                                                <path class="checkmark__check" fill="none"
-                                                      d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                                            </svg-->
                                         </a>
                                         <div class="lines">
                                             <div class="line -background"></div>
@@ -75,14 +69,8 @@
 
                                 <div class="step" v-bind:class="getClassesStep(2)">
                                     <div class="step__content">
-                                        <p class="step__number"><!--i class="fas fa-dollar-sign"></i--></p>
+                                        <p class="step__number"></p>
                                         <a class="step__link" href="#step2" v-on:click="gotoStep(2, true)">
-                                            <!--svg class="checkmark" xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 52 52">
-                                                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                                                <path class="checkmark__check" fill="none"
-                                                      d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                                            </svg-->
                                         </a>
                                         <div class="lines">
                                             <div class="line -background"></div>
@@ -94,14 +82,8 @@
 
                                 <div class="step" v-bind:class="getClassesStep(3)">
                                     <div class="step__content">
-                                        <p class="step__number step__number--yellow"><!--i class="far fa-handshake"></i--></p>
+                                        <p class="step__number step__number--yellow"></p>
                                         <a class="step__link" href="#step3" v-on:click="gotoStep(3, true)">
-                                            <!--svg class="checkmark" xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 52 52">
-                                                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                                                <path class="checkmark__check" fill="none"
-                                                      d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                                            </svg-->
                                         </a>
 
                                         <div class="lines">
@@ -122,7 +104,7 @@
                                 <h4 class="wizard__title__text" v-if="githubIssue != null" v-cloak="true">
                                     <img v-bind:src="githubIssue.avatar + '?size=22'" height="22" width="22" />
                                     <a v-bind:href="githubIssue.html_url" target="_blank" rel="noopener noreferrer">
-                                        {{githubIssue.owner}}/{{githubIssue.repo}} <span class="wizard__title__number">#{{githubIssue.number}}</span>
+                                        {{githubIssue.title}} <span class="wizard__title__number">#{{githubIssue.number}}</span>
                                     </a>
                                 </h4>
                             </div>
@@ -167,7 +149,7 @@
                             </div>
                             <div class="wizard__footer">
                                 <button class="btn btn-secondary" v-on:click="gotoStep(2)">
-                                    Continue to funding details
+                                    Continue to payment details
                                 </button>
                             </div>
                         </div>
@@ -275,11 +257,11 @@
                             </div>
                             <div class="wizard__footer">
                                 <button class="btn btn-link text-secondary" v-on:click="gotoStep(1)">
-                                    Back to issue details
+                                    Back to request details
                                 </button>
 
                                 <button class="btn btn-secondary" v-on:click="gotoStep(3)">
-                                    Continue to last step
+                                    Continue to summary
                                 </button>
                             </div>
                         </div>
@@ -325,7 +307,7 @@
                             </div>
                             <div class="wizard__footer">
                                 <button class="btn btn-link text-secondary" v-on:click="gotoStep(2)">
-                                    Back to funding details
+                                    Back to payment details
                                 </button>
 
                                 <button class="btn btn-secondary" v-on:click="fund()">
@@ -372,6 +354,52 @@
                                             requests when
                                             the blockchain transaction is completed
                                         </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" style="display: none" ref="approveInfoModal" tabindex="-1" role="dialog"
+                     v-cloak="true" v-if="githubIssue != null &amp;&amp; selectedToken != null">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <span class="text-primary">Fund</span>
+                                    <span class="text-muted">
+                                        {{githubIssue.owner}}/{{githubIssue.repo}} #{{githubIssue.number}}
+                                    </span>
+                                </h5>
+                                <button type="button" class="close" v-on:click="hideApproveInfoModal()">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row mb-2">
+                                    <div class="col-12 d-flex align-items-center">
+                                        <ul class="bullet-steps" v-if="currentAllowance === 0">
+                                            <li class="bullet-steps__item -yellow">First time funding with {{selectedToken.symbol}}?</li>
+                                            <li class="bullet-steps__item -green">We will need to let the smart contract know that you approve funding with {{selectedToken.symbol}}. One time only.</li>
+                                            <li class="bullet-steps__item -blue">So when clicking 'Send transaction' you'll have submit 2 transactions. The first one is to approve the tokens, the 2nd one is to fund.</li>
+                                        </ul>
+                                        <ul class="bullet-steps" v-if="currentAllowance > 0 &amp;&amp; currentAllowance &lt; currentFundAmount">
+                                            <li class="bullet-steps__item -yellow">Your allowance in {{selectedToken.symbol}} is smaller the {{currentFundAmount}}?</li>
+                                            <li class="bullet-steps__item -green">
+                                                We will need to let the smart contract know that you approve more funding with {{selectedToken.symbol}}.
+                                                This will take 2 transactions, a first one to set the allowance to 0, a 2nd one to approve the extra funding.
+                                            </li>
+                                            <li class="bullet-steps__item -blue">So when clicking 'Send transaction' you'll have submit 3 transactions. The first 2 are to approve the tokens, the 3th one is to fund.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button class="btn btn-secondary" v-on:click="fund()">
+                                            <span>Start transaction</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
