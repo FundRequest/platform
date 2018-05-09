@@ -56,36 +56,41 @@
                             <nav class="steps">
                                 <div class="step" v-bind:class="getClassesStep(1)">
                                     <div class="step__content">
-                                        <p class="step__number step__number--blue"></p>
-                                        <a class="step__link" href="#step1" v-on:click="gotoStep(1, true)">
+                                        <a class="step__link" href="#"
+                                           data-toggle="tooltip" data-placement="bottom" title="Select Github issue"
+                                           v-on:click="gotoStep(1, true)">
                                         </a>
+                                        <p class="step__number step__number--blue"></p>
                                         <div class="lines">
                                             <div class="line -background"></div>
                                             <div class="line -progress"></div>
                                             <div class="line -overlay"></div>
+                                            <div class="line -tooltip-overlay" data-toggle="tooltip" data-placement="bottom"></div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="step" v-bind:class="getClassesStep(2)">
                                     <div class="step__content">
-                                        <p class="step__number"></p>
-                                        <a class="step__link" href="#step2" v-on:click="gotoStep(2, true)">
+                                        <a class="step__link" href="#" v-on:click="gotoStep(2, true)"
+                                           data-toggle="tooltip" data-placement="bottom" title="Payment details">
                                         </a>
+                                        <p class="step__number"></p>
                                         <div class="lines">
                                             <div class="line -background"></div>
                                             <div class="line -progress"></div>
                                             <div class="line -overlay"></div>
+                                            <div class="line -tooltip-overlay" data-toggle="tooltip" data-placement="bottom"></div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="step" v-bind:class="getClassesStep(3)">
                                     <div class="step__content">
-                                        <p class="step__number step__number--yellow"></p>
-                                        <a class="step__link" href="#step3" v-on:click="gotoStep(3, true)">
+                                        <a class="step__link" href="#" v-on:click="gotoStep(3, true)"
+                                           data-toggle="tooltip" data-placement="bottom" title="Request Summary">
                                         </a>
-
+                                        <p class="step__number step__number--yellow"></p>
                                         <div class="lines">
                                             <div class="line -background"></div>
                                             <div class="line -overlay"></div>
