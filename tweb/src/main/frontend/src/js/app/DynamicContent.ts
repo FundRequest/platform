@@ -21,7 +21,6 @@ export class DynamicContent {
     }
 
     private _reinitialize(parentElement) {
-        let $tooltips = $('[data-toggle="tooltip"]', parentElement);
-        $tooltips.tooltip();
+        $('[data-toggle="tooltip"]', parentElement).tooltip();
     }
 }
