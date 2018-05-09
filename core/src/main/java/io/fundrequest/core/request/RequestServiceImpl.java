@@ -21,7 +21,7 @@ import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestTechnology;
 import io.fundrequest.core.request.erc67.ERC67;
-import io.fundrequest.core.request.fund.CreateERC67FundRequest;
+import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;

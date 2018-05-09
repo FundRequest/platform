@@ -5,7 +5,6 @@ import io.fundreqest.platform.tweb.request.messsaging.AzraelMessageReceiver;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
-import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
@@ -18,7 +17,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -46,7 +44,7 @@ public class AzraelMessageReceiverTest {
         blockchainEventRepository = mock(ProcessedBlockchainEventRepository.class);
         requestService = mock(RequestService.class);
         objectMapper = new ObjectMapper();
-        messageReceiver = new AzraelMessageReceiver(requestService, objectMapper, blockchainEventRepository, fundService);
+        messageReceiver = new AzraelMessageReceiver(requestService, objectMapper, blockchainEventRepository, fundService, pendingFundService);
     }
 
     @Test

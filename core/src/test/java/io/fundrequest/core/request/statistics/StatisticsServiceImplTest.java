@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.statistics;
 
 import io.fundrequest.core.request.fiat.FiatService;
-import io.fundrequest.core.request.fund.EthUtil;
+import io.fundrequest.core.web3j.EthUtil;
 import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.TokenAmountDto;
