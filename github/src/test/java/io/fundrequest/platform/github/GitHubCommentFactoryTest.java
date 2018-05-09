@@ -16,7 +16,7 @@ public class GitHubCommentFactoryTest {
             + "([How to Close Issues via Pull Requests?](https://help.github.com/articles/closing-issues-using-keywords)) e.g. `fixes #156`"
             + "\r\n"
             + "\r\n* For more help on how to claim on issue, please visit our [help section](https://help.fundrequest.io)."
-            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
+//            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
             + "\r\n* Looking for more? Feel free to [browse](https://fundrequest.io/requests) through all funded requests.";
 
     private final static String EXPECTED_RESOLVED_COMMENT =
@@ -24,10 +24,11 @@ public class GitHubCommentFactoryTest {
             + " [![](https://fundrequest.io/assets/img/powered-by-fundrequest-badge.svg)](https://fundrequest.io)"
             + "<a href=\"https://fundrequest.io\"><img align=\"right\" src=\"https://avatars0.githubusercontent.com/u/22447793?s=20&v=4\"></a>"
             + "\r\n"
-            + "Thank you @dfghd-ghjgfg for your code contribution. You can now claim the reward that is linked to this issue. This can be done via our "
-            + "[Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest) or directly from the [funded request](https://fundrequest.io/requests/635)."
+//            + "Thank you @dfghd-ghjgfg for your code contribution. You can now claim the reward that is linked to this issue. This can be done via our "
+//            + "[Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest) or directly from the [funded request](https://fundrequest.io/requests/635)."
+            + "Thank you @dfghd-ghjgfg for your code contribution. You can now claim the reward that is linked to this issue. This can be done directly from the [funded request](https://fundrequest.io/requests/635)."
             + "\r\n"
-            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
+//            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
             + "\r\n* Looking for more? Feel free to [browse](https://fundrequest.io/requests) through all funded requests.";
 
     private final static String EXPECTED_CLOSED_COMMENT =
@@ -37,7 +38,7 @@ public class GitHubCommentFactoryTest {
             + "\r\n"
             + "Thank you @ljn-ytd for your code contribution. The reward linked to this issue has been transferred to your account."
             + "\r\n"
-            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
+//            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
             + "\r\n* Looking for more? Feel free to [browse](https://fundrequest.io/requests) through all funded requests.";
 
     private GitHubCommentFactory gitHubCommentFactory;
