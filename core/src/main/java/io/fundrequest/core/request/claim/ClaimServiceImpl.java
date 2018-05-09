@@ -3,12 +3,14 @@ package io.fundrequest.core.request.claim;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
+import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.RequestClaimRepository;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.view.RequestDto;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,5 +53,15 @@ class ClaimServiceImpl implements ClaimService {
         requestClaimRepository.save(requestClaim);
         request.setStatus(RequestStatus.CLAIM_REQUESTED);
         requestRepository.save(request);
+    }
+
+
+    @EventListener
+    public void onClaimed(RequestClaimedEvent claimedEvent) {
+        requestClaimRepository.findByRequestId(claimedEvent.getRequestDto().getId())
+                              .forEach(requestClaim -> {
+                                  requestClaim.setStatus(ClaimRequestStatus.PROCESSED);
+                                  requestClaimRepository.save(requestClaim);
+                              });
     }
 }

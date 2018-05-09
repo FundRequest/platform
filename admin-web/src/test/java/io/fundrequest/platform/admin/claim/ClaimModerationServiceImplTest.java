@@ -39,7 +39,7 @@ public class ClaimModerationServiceImplTest {
         final Mappers mappers = mock(Mappers.class);
         rabbitTemplate = mock(RabbitTemplate.class);
         azraelClient = mock(AzraelClient.class);
-        claimModerationService = new ClaimModerationServiceImpl(mappers, rabbitTemplate, requestClaimRepository, requestRepository, azraelClient);
+        claimModerationService = new ClaimModerationServiceImpl(mappers, requestClaimRepository, requestRepository, azraelClient);
     }
 
 

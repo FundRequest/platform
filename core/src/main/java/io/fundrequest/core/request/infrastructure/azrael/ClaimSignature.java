@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ClaimSignature {
+
     private String platform;
     private String platformId;
     private String solver;
