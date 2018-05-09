@@ -34,14 +34,14 @@ class Twitter {
         Utils.showLoading();
         this._getVerify()
             .then((data: VerifyResponse) => {
-                Alert.show(data.message, data.validated ? 'success' : 'danger');
+                data.validated ? Alert.success(data.message) : Alert.error(data.message);
                 if (data.validated) {
                     callback != null ? callback() : null;
                 }
                 Utils.hideLoading();
             })
             .catch(function (ex) {
-                Alert.show('Oops, something went wrong, please try again.', 'danger');
+                Alert.error('Oops, something went wrong, please try again.');
                 Utils.hideLoading();
             });
     }

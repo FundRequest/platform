@@ -107,7 +107,7 @@ export class InstantEdit {
         Utils.post(postAddress, data)
             .then(() => {
                 self._hideError(field, name);
-                Alert.show(`${title} saved!`);
+                Alert.success(`${title} saved!`);
             })
             .catch(() => {
                 this._showError(field, name, 'Something went wrong.');

@@ -12,11 +12,11 @@ class Main {
         $(function () {
             let _clipboard = new ClipboardJS('[data-clipboard-target]');
             _clipboard.on('success', (e) => {
-                Alert.show('Copied to your clipboard! ');
+                Alert.success('Copied to your clipboard! ');
                 e.clearSelection();
             });
             _clipboard.on('error', () => {
-                Alert.show('This browser doesn\'t allow copying to your clipboard, please do it manually');
+                Alert.warning('This browser doesn\'t allow copying to your clipboard, please do it manually');
             });
 
             new InstantEdit();
