@@ -7,6 +7,7 @@ import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.FundService;
+import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
 import io.fundrequest.core.request.fund.infrastructure.ProcessedBlockchainEventRepository;
 import io.fundrequest.core.request.fund.messaging.dto.ClaimedEthDto;
@@ -37,12 +38,14 @@ public class AzraelMessageReceiverTest {
     private ProcessedBlockchainEventRepository blockchainEventRepository;
     private ObjectMapper objectMapper;
     private RequestService requestService;
+    private PendingFundService pendingFundService;
 
     @Before
     public void setUp() throws Exception {
         fundService = mock(FundService.class);
         blockchainEventRepository = mock(ProcessedBlockchainEventRepository.class);
         requestService = mock(RequestService.class);
+        pendingFundService = mock(PendingFundService.class);
         objectMapper = new ObjectMapper();
         messageReceiver = new AzraelMessageReceiver(requestService, objectMapper, blockchainEventRepository, fundService, pendingFundService);
     }
