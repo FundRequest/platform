@@ -64,6 +64,16 @@ export class Utils {
         //    .catch(err => null);
     }
 
+    public static postJSON(url: string, body: any): Promise<any> {
+        return $.ajax({
+            type: 'POST',
+            url: url,
+            data: JSON.stringify(body),
+            contentType: "application/json",
+            dataType: 'json'
+        }).promise();
+    }
+
     public static post(url: string, body: any = null): Promise<any> {
         if (body == null) {
             return $.post(url).promise();
@@ -134,7 +144,7 @@ export class Utils {
             return Github.validateLink(link);
         },
         number: (value) => {
-            return /^[0-9]+(\.[0-9]{1,3})?$/.exec(value.trim()) != null;
+            return /^[0-9]+(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
         }
     };
 

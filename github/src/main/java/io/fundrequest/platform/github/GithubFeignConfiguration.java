@@ -17,8 +17,7 @@ public class GithubFeignConfiguration {
     })
     public BasicAuthRequestInterceptor basicAuthRequestInterceptor(
             @Value("${feign.client.github.username}") String githubUsername,
-            @Value("${feign.client.github.password}") String githubPassword
-                                                                  ) {
+            @Value("${feign.client.github.password}") String githubPassword) {
         return new BasicAuthRequestInterceptor(githubUsername, githubPassword);
     }
 }

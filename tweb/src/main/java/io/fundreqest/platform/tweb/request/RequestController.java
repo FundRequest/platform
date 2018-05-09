@@ -19,6 +19,8 @@ import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
@@ -69,7 +72,7 @@ public class RequestController extends AbstractController {
     @GetMapping("/requests")
     public ModelAndView requests() {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
-        final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(req -> req.getFase(), Collectors.counting()));
+        final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
         return modelAndView()
                 .withObject("requestsPerFaseCount", requestsPerFaseCount)
                 .withObject("requests", getAsJson(requests))
@@ -81,14 +84,25 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests/{id}")
-    public ModelAndView details(@PathVariable Long id, Model model) {
+    public ModelAndView details(Principal principal, @PathVariable Long id, Model model) {
         RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id));
         return modelAndView(model)
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
-                .withObject("fundedBy", fundService.getFundedBy(id))
+                .withObject("fundedBy", fundService.getFundedBy(principal, id))
                 .withObject("githubComments", requestService.getComments(id))
                 .withView("pages/requests/detail")
+                .build();
+    }
+
+    @GetMapping(value = "/requests/{id}/badge", produces = "image/svg+xml")
+    public ModelAndView detailsBadge(@PathVariable final Long id, final Model model, final HttpServletResponse response) {
+        RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id));
+        response.setHeader(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue());
+        return modelAndView(model)
+                .withObject("request", request)
+                .withObject("requestJson", getAsJson(request))
+                .withView("requests/badge")
                 .build();
     }
 

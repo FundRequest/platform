@@ -27,7 +27,11 @@
         public panelsHeight: number = 0;
         public stepTitlesHeight: number = 0;
         public trustWalletModalActive: boolean = false;
+        public approveInfoModalActive: boolean = false;
         public qrData: string = "";
+
+        public currentAllowance: number = 0;
+        public currentFundAmount: number = 0;
 
         public paymentMethod: PaymentMethod = PaymentMethods.getInstance().trustWallet;
         public fundAmount: number = 100;
@@ -35,7 +39,7 @@
 
         mounted() {
             this.githubUrl = (this.$refs.requestUrl as HTMLElement).dataset.value;
-            if(this.githubUrl) {
+            if (this.githubUrl) {
                 this.updateUrl(this.githubUrl);
             }
             let metaNetwork = document.head.querySelector("[name=\"ethereum:network\"]");
@@ -117,13 +121,11 @@
             switch (this.paymentMethod) {
                 case PaymentMethods.getInstance().dapp:
                     try {
-                        Utils.showLoading();
-                        await this.fundUsingDapp();
-                        window.location.href = "/user/requests";
+                        if (await this.fundUsingDapp()) {
+                            window.location.href = "/user/requests";
+                        }
                     } catch(err) {
-                        Alert.show('<div class="text-center">Something went wrong when funding, please try again. <br/> If the problem remains, <a href="https://help.fundrequest.io">please contact the FundRequest team</a></div> ', 'danger')
-                    } finally {
-                        Utils.hideLoading();
+                        Alert.error(`Something went wrong during funding, please try again. <br/> If the problem remains, <a href="https://help.fundrequest.io">please contact the FundRequest team</a>.`);
                     }
                     break;
                 case PaymentMethods.getInstance().trustWallet:
@@ -134,33 +136,51 @@
             }
         }
 
-        private async fundUsingDapp() {
+        private _handleTransactionError(err): void {
+            Utils.hideLoading();
+            throw new Error(err);
+        }
+
+        private async fundUsingDapp(): Promise<boolean> {
+            Utils.showLoading();
             let erc20 = await Contracts.getInstance().getErc20Contract(this.selectedToken.address);
             let _web3 = Web3x.getInstance();
             let account = _web3.eth.defaultAccount;
             let frContractAddress = Contracts.getInstance().frContractAddress;
-            let allowance = (await erc20.allowance(account, frContractAddress)).toNumber();
-            let weiAmount = Number(_web3.toWei(this.fundAmount, "ether"));
-            if (allowance > 0 && allowance < weiAmount) {
-                console.log("setting to 0");
-                await erc20.approveTx(frContractAddress, 0).send({});
-                allowance = 0;
+            let decimals = (await erc20.decimals).toNumber();
+            this.currentAllowance = (await erc20.allowance(account, frContractAddress)).toNumber();
+            this.currentFundAmount = Number(this.fundAmount * Math.pow(10, decimals));
+            Utils.hideLoading();
+
+            if (!this.approveInfoModalActive && this.currentAllowance < this.currentFundAmount) {
+                this.showApproveInfoModal();
+                return false;
             }
-            if (allowance === 0) {
-                console.log("You will need to allow the FundRequest contract to access this token");
-                await erc20.approveTx(frContractAddress, new BigNumber("1.157920892e77").minus(1)).send({});
+            else {
+                Utils.showLoading();
+                if (this.currentAllowance > 0 && this.currentAllowance < this.currentFundAmount) {
+                    // setting to 0
+                    await erc20.approveTx(frContractAddress, 0).send({}).catch(rej => this._handleTransactionError(rej));
+                    this.currentAllowance = 0;
+                }
+                if (this.currentAllowance === 0) {
+                    // You will need to allow the FundRequest contract to access this token
+                    await erc20.approveTx(frContractAddress, new BigNumber("1.157920892e77").minus(1)).send({}).catch(rej => this._handleTransactionError(rej));
+                }
+                let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, this.currentFundAmount)
+                    .send({}).catch(rej => this._handleTransactionError(rej)) as string;
+                let pendingFundCommand = new PendingFundCommand();
+                pendingFundCommand.transactionId = response;
+                pendingFundCommand.amount = this.fundAmount.toString();
+                pendingFundCommand.description = this.description;
+                pendingFundCommand.fromAddress = account;
+                pendingFundCommand.tokenAddress = this.selectedToken.address;
+                pendingFundCommand.platform = this.githubIssue.platform;
+                pendingFundCommand.platformId = this.githubIssue.platformId;
+                await Utils.postJSON(`/rest/pending-fund`, pendingFundCommand);
+                Utils.hideLoading();
+                return true;
             }
-            let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, weiAmount)
-                .send({}).catch(rej => {throw new Error(rej);}) as string;
-            let pendingFundCommand = new PendingFundCommand();
-            pendingFundCommand.transactionId = response;
-            pendingFundCommand.amount = this.fundAmount.toString();
-            pendingFundCommand.description = this.description;
-            pendingFundCommand.fromAddress = account;
-            pendingFundCommand.tokenAddress = this.selectedToken.address;
-            pendingFundCommand.platform = this.githubIssue.platform;
-            pendingFundCommand.platformId = this.githubIssue.platformId;
-            await Utils.post(`/rest/pending-fund`, pendingFundCommand);
         }
 
         public fundUsingTrustWallet() {
@@ -181,19 +201,27 @@
             });
 
             this.trustWalletModalActive = true;
-            (<HTMLElement>this.$refs.panels).style.opacity = "0.5";
-            (<HTMLElement>this.$refs.panels).style.pointerEvents = "none";
-            (<HTMLElement>this.$refs.faq).style.opacity = "0.5";
-            (<HTMLElement>this.$refs.faq).style.pointerEvents = "none";
+            this._fadeoutPage();
+        }
+
+        public showApproveInfoModal() {
+            Utils.modal.open(<HTMLElement>this.$refs.approveInfoModal, () => {
+                this.hideApproveInfoModal();
+            });
+            this.approveInfoModalActive = true;
+            this._fadeoutPage();
         }
 
         public hideTrustWalletModal() {
             Utils.modal.close(<HTMLElement>this.$refs.trustWalletModal);
             this.trustWalletModalActive = false;
-            (<HTMLElement>this.$refs.panels).style.opacity = "";
-            (<HTMLElement>this.$refs.panels).style.pointerEvents = "";
-            (<HTMLElement>this.$refs.faq).style.opacity = "";
-            (<HTMLElement>this.$refs.faq).style.pointerEvents = "";
+            this._fadeinPage();
+        }
+
+        public hideApproveInfoModal() {
+            Utils.modal.close(<HTMLElement>this.$refs.approveInfoModal);
+            this.approveInfoModalActive = false;
+            this._fadeinPage();
         }
 
         public get totalAmount() {
@@ -209,6 +237,20 @@
             this.githubUrl = url;
             this.$forceUpdate();
             await this.updatePossibleTokens(this.githubIssue);
+        }
+
+        private _fadeoutPage() {
+            (<HTMLElement>this.$refs.panels).style.opacity = "0.5";
+            (<HTMLElement>this.$refs.panels).style.pointerEvents = "none";
+            (<HTMLElement>this.$refs.faq).style.opacity = "0.5";
+            (<HTMLElement>this.$refs.faq).style.pointerEvents = "none";
+        }
+
+        private _fadeinPage() {
+            (<HTMLElement>this.$refs.panels).style.opacity = "";
+            (<HTMLElement>this.$refs.panels).style.pointerEvents = "";
+            (<HTMLElement>this.$refs.faq).style.opacity = "";
+            (<HTMLElement>this.$refs.faq).style.pointerEvents = "";
         }
 
         private async updatePossibleTokens(res: GithubIssue): Promise<void> {

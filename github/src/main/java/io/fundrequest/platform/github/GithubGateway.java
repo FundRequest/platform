@@ -4,6 +4,7 @@ import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.github.parser.GithubRateLimits;
 import io.fundrequest.platform.github.parser.GithubResult;
 import io.fundrequest.platform.github.parser.GithubUser;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,11 @@ public class GithubGateway {
     @Cacheable(value = "github_comments")
     public List<GithubIssueCommentsResult> getCommentsForIssue(String owner, String repo, String number) {
         return githubClient.getCommentsForIssue(owner, repo, number);
+    }
+
+    @CacheEvict(value = "github_comments")
+    public void evictCommentsForIssue(String owner, String repo, String number) {
+        // Intentionally blank
     }
 
     public void createCommentOnIssue(String owner, String repo, String number, CreateGithubComment comment) {

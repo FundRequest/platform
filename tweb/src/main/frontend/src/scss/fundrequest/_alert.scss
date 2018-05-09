@@ -51,3 +51,30 @@
 .alert--top + .alert-container {
     margin-top: 50px;
 }
+
+#toast-container {
+    > div {
+        &:first-child {
+            margin-top: 2rem;
+        }
+    }
+    .toast-message a {
+        text-decoration: underline;
+    }
+
+    .toast-success {
+        background-color: $green-500;
+    }
+
+    .toast-error {
+        background-color: $danger;
+    }
+
+    .toast-info {
+        background-color: $primary;
+    }
+
+    .toast-warning {
+        background-color: $warning;
+    }
+}

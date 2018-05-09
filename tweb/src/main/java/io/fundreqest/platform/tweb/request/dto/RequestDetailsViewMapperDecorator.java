@@ -1,5 +1,6 @@
 package io.fundreqest.platform.tweb.request.dto;
 
+import io.fundreqest.platform.tweb.infrastructure.mav.EnumToCapitalizedStringMapper;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.github.GithubGateway;
@@ -17,6 +18,9 @@ public abstract class RequestDetailsViewMapperDecorator implements RequestDetail
     @Autowired
     private GithubGateway githubGateway;
 
+    @Autowired
+    private EnumToCapitalizedStringMapper enumToCapitalizedStringMapper;
+
     @Override
     public RequestDetailsView map(RequestDto r) {
         RequestDetailsView view = delegate.map(r);
@@ -30,6 +34,8 @@ public abstract class RequestDetailsViewMapperDecorator implements RequestDetail
             view.setTitle(issueInfo.getTitle());
             view.setStarred(r.isLoggedInUserIsWatcher());
             view.setDescription(createHtmlDescription(issueInfo));
+            view.setFase(enumToCapitalizedStringMapper.map(r.getStatus().getFase()));
+            view.setStatus(enumToCapitalizedStringMapper.map(r.getStatus()));
         }
         return view;
     }

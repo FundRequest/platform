@@ -16,6 +16,7 @@ public class RequestDetailsView {
     private String title;
     private String description;
     private String status;
+    private String fase;
     private Set<String> technologies;
     private AllFundsDto funds;
     private Boolean starred;
