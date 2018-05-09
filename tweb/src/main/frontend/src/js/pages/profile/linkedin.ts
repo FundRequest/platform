@@ -29,10 +29,10 @@ class LinkedIn {
             Utils.post(address, data)
                 .then(() => {
                     $(modal).modal('hide');
-                    Alert.show('Sharing is caring, thanks!');
+                    Alert.success('Sharing is caring, thanks!');
                 })
                 .catch(() => {
-                    Alert.show('Oops, something went wrong, please try again.', 'danger');
+                    Alert.error('Oops, something went wrong, please try again.');
                 });
         });
     }
