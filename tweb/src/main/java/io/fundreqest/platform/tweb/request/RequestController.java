@@ -102,7 +102,7 @@ public class RequestController extends AbstractController {
         return modelAndView(model)
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
-                .withView("requests/badge")
+                .withView("requests/badge.svg")
                 .build();
     }
 
