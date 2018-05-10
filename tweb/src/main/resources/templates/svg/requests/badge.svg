@@ -10,9 +10,9 @@
   </clipPath>
   <g clip-path="url(#a)">
     <path fill="#555" d="M0 0h89v20H0z"/>
-    <path fill="#44cc11" th:if="${request.fase == 'OPEN'}" d="M89 0h121v20H89z"/>
-    <path fill="#49b2e1" th:if="${request.fase == 'RESOLVED'}" d="M89 0h121v20H89z"/>
-    <path fill="#a8a8a8" th:if="${request.fase == 'CLOSED'}" d="M89 0h121v20H89z"/>
+    <path fill="#44cc11" th:if="${request.fase == 'Open'}" d="M89 0h121v20H89z"/>
+    <path fill="#49b2e1" th:if="${request.fase == 'Resolved'}" d="M89 0h121v20H89z"/>
+    <path fill="#a8a8a8" th:if="${request.fase == 'Closed'}" d="M89 0h121v20H89z"/>
     <path fill="url(#b)" d="M0 0h210v20H0z"/>
   </g>
   <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="110">

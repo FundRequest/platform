@@ -3,6 +3,7 @@ package io.fundreqest.platform.tweb.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
+import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
@@ -16,11 +17,16 @@ import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.security.Principal;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -53,6 +59,23 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                 mock(ClaimService.class),
                 objectMapper,
                 mappers);
+    }
+
+    @Test
+    public void detailsBadge() throws Exception {
+        final long requestId = 654L;
+        final RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
+        request.setId(requestId);
+        final RequestDetailsView requestDetailsView = new RequestDetailsView();
+
+        when(requestService.findRequest(requestId)).thenReturn(request);
+        when(mappers.map(RequestDto.class, RequestDetailsView.class, request)).thenReturn(requestDetailsView);
+
+        this.mockMvc.perform(get("/requests/{id}/badge", 654L).principal(principal))
+                .andExpect(MockMvcResultMatchers.header().string(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
+                .andExpect(MockMvcResultMatchers.view().name("requests/badge.svg"));
     }
 
     @Test

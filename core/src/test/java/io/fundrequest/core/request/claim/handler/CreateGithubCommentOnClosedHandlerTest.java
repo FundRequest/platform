@@ -2,13 +2,13 @@ package io.fundrequest.core.request.claim.handler;
 
 import io.fundrequest.core.request.claim.dto.ClaimDto;
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
-import io.fundrequest.core.request.claim.github.GithubSolverResolver;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.CreateGithubComment;
 import io.fundrequest.platform.github.GitHubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
+import io.fundrequest.platform.github.GithubSolverResolver;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.github.parser.GithubUser;
 import org.junit.Before;
@@ -69,7 +69,7 @@ public class CreateGithubCommentOnClosedHandlerTest {
         final List<GithubIssueCommentsResult> existingComments = Arrays.asList(createCommentFromGithubUserMock(0));
 
         when(githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(existingComments);
-        when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of(SOLVER));
+        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of(SOLVER));
         when(gitHubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
 
         handler.createGithubCommentOnRequestClaimed(event);
@@ -95,7 +95,7 @@ public class CreateGithubCommentOnClosedHandlerTest {
         final List<GithubIssueCommentsResult> existingComments = Arrays.asList(firstComment, secondComment);
 
         when(githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(existingComments);
-        when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of(SOLVER));
+        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of(SOLVER));
         when(gitHubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
 
         handler.createGithubCommentOnRequestClaimed(event);
@@ -119,10 +119,10 @@ public class CreateGithubCommentOnClosedHandlerTest {
         final GithubIssueCommentsResult firstComment = createCommentFromGithubUserMock(-3);
         final GithubIssueCommentsResult secondComment = createCommentFromGithubUserMock(-1);
         final GithubIssueCommentsResult thirdComment = createCommentFromGithubUserMock(-2);
-
         final List<GithubIssueCommentsResult> existingComments = Arrays.asList(firstComment, secondComment, thirdComment);
+
         when(githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(existingComments);
-        when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of(SOLVER));
+        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of(SOLVER));
         when(gitHubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
 
         handler.createGithubCommentOnRequestClaimed(event);
@@ -141,8 +141,9 @@ public class CreateGithubCommentOnClosedHandlerTest {
     public void postsGithubComment_noSolverFound() {
         final RequestClaimedEvent event = new RequestClaimedEvent("1324354", RequestDtoMother.freeCodeCampNoUserStories(), mock(ClaimDto.class), SOLVER, LocalDateTime.now());
         final RequestDto request = event.getRequestDto();
+        final IssueInformationDto issueInformation = request.getIssueInformation();
 
-        when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.empty());
+        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.empty());
 
         try {
             handler.createGithubCommentOnRequestClaimed(event);
