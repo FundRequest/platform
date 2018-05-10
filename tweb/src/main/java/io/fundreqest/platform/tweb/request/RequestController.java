@@ -101,8 +101,7 @@ public class RequestController extends AbstractController {
         response.setHeader(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue());
         return modelAndView(model)
                 .withObject("request", request)
-                .withObject("requestJson", getAsJson(request))
-                .withView("requests/badge")
+                .withView("requests/badge.svg")
                 .build();
     }
 
