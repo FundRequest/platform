@@ -12,13 +12,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Component
-public class GithubHealthCheck implements HealthIndicator {
+public class GithubRateHealthCheck implements HealthIndicator {
 
     private final GithubGateway githubGateway;
     private final int threshold;
 
-    public GithubHealthCheck(final GithubGateway githubGateway,
-                             @Value("${io.fundrequest.github.api-rate-limit-threshold-percentage:20}") final int thresholdPercentage) {
+    public GithubRateHealthCheck(final GithubGateway githubGateway,
+                                 @Value("${io.fundrequest.health.github.api-rate-limit.threshold-percentage:20}") final int thresholdPercentage) {
         this.githubGateway = githubGateway;
         this.threshold = thresholdPercentage;
     }

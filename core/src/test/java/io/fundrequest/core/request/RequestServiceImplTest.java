@@ -230,20 +230,20 @@ public class RequestServiceImplTest {
 
     @Test
     public void signClaimRequest() {
-        UserClaimRequest command = UserClaimRequest.builder()
-                                                   .platform(Platform.GITHUB)
-                                                   .platformId("1")
-                                                   .build();
-        Principal principal = () -> "davyvanroy";
-        Request request = RequestMother.freeCodeCampNoUserStories().build();
-        RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
+        final UserClaimRequest command = UserClaimRequest.builder()
+                                                         .platform(Platform.GITHUB)
+                                                         .platformId("1")
+                                                         .build();
+        final Principal principal = () -> "davyvanroy";
+        final Request request = RequestMother.freeCodeCampNoUserStories().build();
+        final RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
+        final SignedClaim expected = SignedClaim.builder().solver("").solverAddress("").platform(Platform.GITHUB).platformId("1").r("r").s("s").v(27).build();
+
         when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.of(request));
         when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
-        SignedClaim expected = new SignedClaim("", "", Platform.GITHUB, "1", "r", "s", 27);
-        when(githubClaimResolver.getSignedClaim(principal, command, requestDto))
-                .thenReturn(expected);
+        when(githubClaimResolver.getSignedClaim(principal, command, requestDto)).thenReturn(expected);
 
-        SignedClaim result = requestService.signClaimRequest(principal, command);
+        final SignedClaim result = requestService.signClaimRequest(principal, command);
 
         assertThat(result).isEqualTo(expected);
     }

@@ -1,13 +1,13 @@
 package io.fundrequest.core.request.claim.handler;
 
 import io.fundrequest.core.request.claim.event.RequestClaimableEvent;
-import io.fundrequest.core.request.claim.github.GithubSolverResolver;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.github.CreateGithubComment;
 import io.fundrequest.platform.github.GitHubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
+import io.fundrequest.platform.github.GithubSolverResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -37,7 +37,7 @@ public class CreateGithubCommentOnResolvedHandler {
             final RequestDto request = event.getRequestDto();
             final IssueInformationDto issueInformation = request.getIssueInformation();
             if (issueInformation.getPlatform() == Platform.GITHUB) {
-                final String solver = githubSolverResolver.solveResolver(request).orElseThrow(() -> new RuntimeException("No solver found for request " + request.getId()));
+                final String solver = githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).orElseThrow(() -> new RuntimeException("No solver found for request " + request.getId()));
                 final CreateGithubComment comment = new CreateGithubComment();
                 comment.setBody(gitHubCommentFactory.createResolvedComment(request.getId(), solver));
                 githubGateway.createCommentOnIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), comment);
