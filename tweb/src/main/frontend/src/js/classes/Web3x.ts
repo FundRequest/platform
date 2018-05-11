@@ -13,10 +13,14 @@ export class Web3x {
         }
     }
 
-    static getInstance(): any {
+    public static getInstance(): any {
         if (Web3x.instance == null) {
             Web3x.instance = new Web3x();
         }
         return Web3x.instance._web3;
+    }
+
+    public static getAccount(): any {
+        return Web3x.getInstance().eth.defaultAccount;
     }
 }

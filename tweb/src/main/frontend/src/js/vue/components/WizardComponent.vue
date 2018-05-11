@@ -1,9 +1,8 @@
 <script lang="ts">
     import {Component, Vue} from "vue-property-decorator";
-    import BigNumber from "bignumber.js";
     import QrcodeVue from "qrcode.vue";
 
-    import {Github, GithubIssue} from "../../classes/github";
+    import Github, {GithubIssue} from "../../classes/Github";
     import {TokenInfo} from "../../classes/token-info";
     import {Contracts} from "../../classes/contracts";
     import {PaymentMethod, PaymentMethods} from "../../classes/payment-method";
@@ -32,6 +31,7 @@
 
         public currentAllowance: number = 0;
         public currentFundAmount: number = 0;
+        public errorMessages: { fundAmount: string } = {};
 
         public paymentMethod: PaymentMethod = PaymentMethods.getInstance().trustWallet;
         public fundAmount: number = 100;
@@ -80,6 +80,12 @@
                     let validations: string[] = fieldElement.dataset.formValidation.split(";");
                     valid = await Utils.validateHTMLElement(fieldElement, validations) && valid;
                 }
+                if (valid && step == 3 && this.paymentMethod == PaymentMethods.getInstance().dapp) {
+                    valid = await this._validateFundAmountBalance(formElements.find((el: HTMLInputElement) => el.name == "fundAmount") as HTMLInputElement);
+                } else {
+                    this.errorMessages.fundAmount = `Please enter a valid number`;
+                }
+                this.$forceUpdate();
             }
 
             if (valid) {
@@ -90,6 +96,20 @@
                 }
             }
             this._loading = false;
+        }
+
+        private async _validateFundAmountBalance(element: HTMLInputElement): Promise<boolean> {
+            let valid = true;
+            if (this.paymentMethod == PaymentMethods.getInstance().dapp) {
+                let balance = await Contracts.getErc20Balance(Web3x.getAccount(), this.selectedToken);
+                let fundAmountInWei = Number(this.fundAmount * Math.pow(10, this.selectedToken.decimals));
+                if (fundAmountInWei > balance) {
+                    this.errorMessages.fundAmount = `Your ${this.selectedToken.symbol} balance is to low.`;
+                    Utils.setElementInvalid(element);
+                    valid = false;
+                }
+            }
+            return valid;
         }
 
         private async updateDappPaymentMethod() {
@@ -124,7 +144,7 @@
                         if (await this.fundUsingDapp()) {
                             window.location.href = "/user/requests";
                         }
-                    } catch(err) {
+                    } catch (err) {
                         Alert.error(`Something went wrong during funding, please try again. <br/> If the problem remains, <a href="https://help.fundrequest.io">please contact the FundRequest team</a>.`);
                     }
                     break;
@@ -143,12 +163,10 @@
 
         private async fundUsingDapp(): Promise<boolean> {
             Utils.showLoading();
-            let erc20 = await Contracts.getInstance().getErc20Contract(this.selectedToken.address);
-            let _web3 = Web3x.getInstance();
-            let account = _web3.eth.defaultAccount;
             let frContractAddress = Contracts.getInstance().frContractAddress;
-            let decimals = (await erc20.decimals).toNumber();
-            this.currentAllowance = (await erc20.allowance(account, frContractAddress)).toNumber();
+            let erc20 = await Contracts.getInstance().getErc20Contract(this.selectedToken.address);
+            let decimals = this.selectedToken.decimals;
+            this.currentAllowance = (await erc20.allowance(Web3x.getAccount(), frContractAddress)).toNumber();
             this.currentFundAmount = Number(this.fundAmount * Math.pow(10, decimals));
             Utils.hideLoading();
 
@@ -165,15 +183,15 @@
                 }
                 if (this.currentAllowance === 0) {
                     // You will need to allow the FundRequest contract to access this token
-                    await erc20.approveTx(frContractAddress, new BigNumber("1.157920892e77").minus(1)).send({}).catch(rej => this._handleTransactionError(rej));
+                    await erc20.approveTx(frContractAddress, Utils.biggestNumber()).send({}).catch(rej => this._handleTransactionError(rej));
                 }
-                let response = await (await Contracts.getInstance().getFrContract()).fundTx(_web3.fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, this.currentFundAmount)
+                let response = await (await Contracts.getInstance().getFrContract()).fundTx(Web3x.getInstance().fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, this.currentFundAmount)
                     .send({}).catch(rej => this._handleTransactionError(rej)) as string;
                 let pendingFundCommand = new PendingFundCommand();
                 pendingFundCommand.transactionId = response;
                 pendingFundCommand.amount = this.fundAmount.toString();
                 pendingFundCommand.description = this.description;
-                pendingFundCommand.fromAddress = account;
+                pendingFundCommand.fromAddress = Web3x.getAccount();
                 pendingFundCommand.tokenAddress = this.selectedToken.address;
                 pendingFundCommand.platform = this.githubIssue.platform;
                 pendingFundCommand.platformId = this.githubIssue.platformId;
