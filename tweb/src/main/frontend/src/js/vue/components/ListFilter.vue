@@ -37,7 +37,7 @@
     import {Component, Prop, Vue} from "vue-property-decorator";
     import ListFilterDto from "../dtos/ListFilterDto";
     import {EventBus} from "../EventBus";
-    import {Utils} from "../../classes/Utils";
+    import Utils from "../../classes/Utils";
 
     @Component
     export default class ListFilter extends Vue {

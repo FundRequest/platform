@@ -2,7 +2,7 @@ import {Web3x} from "./Web3x";
 import {FundRequestContract} from "../contracts/FundRequestContract";
 import {FundRequestToken} from "../contracts/FundRequestToken";
 import {FundRepository} from "../contracts/FundRepository";
-import {Utils} from "./Utils";
+import Utils from "./Utils";
 import {TokenInfo} from "./token-info";
 import {MiniMeToken} from "../contracts/MiniMeToken";
 

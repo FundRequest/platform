@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 
-import {Utils} from '../classes/Utils';
+import Utils from '../classes/Utils';
 
 export class DynamicContent {
     private _document: HTMLDocument = document;

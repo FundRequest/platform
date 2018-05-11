@@ -8,9 +8,9 @@
     import {Contracts} from "../../classes/contracts";
     import {PaymentMethod, PaymentMethods} from "../../classes/payment-method";
     import {Web3x} from "../../classes/Web3x";
-    import {Utils} from "../../classes/Utils";
+    import Utils from "../../classes/Utils";
     import {PendingFundCommand} from "../models/PendingFundCommand";
-    import {Alert} from "../../classes/alert";
+    import Alert from "../../classes/Alert";
 
     Vue.component("qrcode-vue", QrcodeVue);
 

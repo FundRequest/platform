@@ -1,7 +1,7 @@
 import * as $ from 'jquery';
 import {Github} from './github';
 
-export class Utils {
+export default class Utils {
 
     public static showLoading() {
         let loader = document.querySelector('[data-page-loader]');

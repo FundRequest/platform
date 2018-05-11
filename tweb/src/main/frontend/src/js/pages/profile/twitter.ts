@@ -1,7 +1,7 @@
 import * as $ from 'jquery';
 
-import {Alert} from '../../classes/alert';
-import {Utils} from "../../classes/Utils";
+import Alert from '../../classes/Alert';
+import Utils from "../../classes/Utils";
 
 interface VerifyResponse {
     validated: boolean;
