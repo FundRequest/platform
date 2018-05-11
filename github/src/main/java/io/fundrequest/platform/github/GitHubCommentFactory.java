@@ -10,7 +10,6 @@ public class GitHubCommentFactory {
     private static final String COMMENT_HEADER =
             "[![](%1$s/requests/%2$s/badge)](%1$s/requests/%2$s)"
             + " [![](%1$s/assets/img/powered-by-fundrequest-badge.svg)](https://fundrequest.io)"
-            + "<a href=\"https://fundrequest.io\"><img align=\"right\" src=\"https://avatars0.githubusercontent.com/u/22447793?s=20&v=4\"></a>"
             + LINE_BREAK;
 
     private static final String COMMENT_FOOTER =
