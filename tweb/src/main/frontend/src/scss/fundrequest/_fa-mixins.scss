@@ -1,0 +1,52 @@
+%fa-default {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+
+    font-family: Font Awesome\ 5 Pro;
+}
+
+%fas {
+    @extend %fa-default;
+    font-weight: 900;
+}
+
+%fa {
+    @extend %fa-default;
+    font-weight: 900;
+}
+
+%fab {
+    @extend %fa-default;
+    font-family: Font Awesome\ 5 Brands;
+}
+
+%fal {
+    @extend %fa-default;
+    font-weight: 300;
+}
+
+%far {
+    @extend %fa-default;
+    font-weight: 400
+}
+
+
+%fa-exclamation-triangle {
+    content: '\f071';
+}
+
+%fa-badge-check {
+    content: '\f336';
+}
+
+%fa-info-circle {
+    content: '\f05a';
+}
+%fa-exclamation-circle {
+    content: '\f06a';
+}
