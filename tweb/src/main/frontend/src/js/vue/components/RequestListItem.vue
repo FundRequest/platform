@@ -50,7 +50,7 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
     import RequestDto from "../dtos/RequestDto";
-    import {Utils} from '../../classes/Utils';
+    import Utils from '../../classes/Utils';
     import {Locations} from '../../classes/Locations';
     import FontSizeFit from "./FontSizeFit";
 

@@ -17,7 +17,7 @@
         @include box-shadow($z-depth-1-half);
 
         &:first-child {
-            margin-top: 2rem;
+            margin-top: .5rem;
         }
 
         &:hover {
@@ -48,33 +48,58 @@
     border-radius: 0;
 }
 
-.alert--top + .alert-container {
-    margin-top: 50px;
+.alert-container alert--top {
+
 }
 
-#toast-container {
-    > div {
-        &:first-child {
-            margin-top: 2rem;
+.alert--with-icon {
+    position: relative;
+    padding-left: 2.5rem;
+
+    &::before {
+        @extend %far;
+        display: block;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2.5rem;
+        text-align: center;
+        left: 0;
+    }
+
+    &.alert-info {
+        &::before {
+            @extend %fa-info-circle;
         }
     }
-    .toast-message a {
-        text-decoration: underline;
+
+    &.alert-danger {
+        &::before {
+            @extend %fa-exclamation-triangle;
+        }
     }
 
-    .toast-success {
-        background-color: $green-500;
+    &.alert-success {
+        &::before {
+            @extend %fa-badge-check;
+        }
     }
 
-    .toast-error {
-        background-color: $danger;
+    &.alert-warning {
+        &::before {
+            @extend %fa-exclamation-circle;
+        }
     }
+}
 
-    .toast-info {
-        background-color: $primary;
-    }
-
-    .toast-warning {
-        background-color: $warning;
-    }
+.alert-progress {
+    position: absolute;
+    left: -1px;
+    bottom: -1px;
+    height: 4px;
+    background-color: #000000;
+    opacity: 0.4;
+    border-radius: 4px;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+    filter: alpha(opacity=40);
 }

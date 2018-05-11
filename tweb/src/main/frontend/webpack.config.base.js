@@ -88,7 +88,6 @@ let baseConfig = {
 //new MiniCssExtractPlugin({
         //    filename: "css/[name].css"
         //})
-
     ],
     resolve: {
         extensions: ['.ts', '.js', '.vue', '.json'],
