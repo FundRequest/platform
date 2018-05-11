@@ -14,23 +14,19 @@
     <dependencies>
         <dependency>
             <groupId>io.fundrequest</groupId>
-            <artifactId>db</artifactId>
-            <version>${project.version}</version>
+            <artifactId>common</artifactId>
         </dependency>
         <dependency>
             <groupId>io.fundrequest</groupId>
             <artifactId>keycloak</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.fundrequest</groupId>
             <artifactId>github</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.fundrequest</groupId>
             <artifactId>profile</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -125,7 +121,7 @@
         <dependency>
             <groupId>io.fundrequest</groupId>
             <artifactId>profile</artifactId>
-            <version>${project.version}</version>
+            <version>${project.parent.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

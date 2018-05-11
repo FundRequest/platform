@@ -1,7 +1,7 @@
 package io.fundrequest.platform.github;
 
 import feign.auth.BasicAuthRequestInterceptor;
-import io.fundrequest.db.infrastructure.IgnoreDuringComponentScan;
+import io.fundrequest.common.infrastructure.IgnoreDuringComponentScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;

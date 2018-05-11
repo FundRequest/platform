@@ -1,11 +1,15 @@
 package io.fundrequest.platform.github;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.actuate.health.Status;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class GithubSolverHealthCheck implements HealthIndicator {
@@ -15,51 +19,56 @@ public class GithubSolverHealthCheck implements HealthIndicator {
     private final GithubSolverResolver githubSolverResolver;
     private final String owner;
     private final String repo;
-    private final String number;
-    private final String solver;
-
-    private final Health.Builder healthUp;
-    private final Health.Builder healthDownBuilder;
+    private final Map<String, String> issues;
 
     public GithubSolverHealthCheck(final GithubSolverResolver githubSolverResolver,
-                                   @Value("${io.fundrequest.health.github.solver.owner:FundRequest}") final String owner,
-                                   @Value("${io.fundrequest.health.github.solver.repo:area51}") final String repo,
-                                   @Value("${io.fundrequest.health.github.solver.number:38}") final String number,
-                                   @Value("${io.fundrequest.health.github.solver.expected-solver:davyvanroy}") final String expectedSolver) {
+                                   final GithubSolverHealthCheckProperties githubSolverHealthCheckProperties) {
         this.githubSolverResolver = githubSolverResolver;
-        this.owner = owner;
-        this.repo = repo;
-        this.number = number;
-        this.solver = expectedSolver;
-
-        final String usedIssue = "https://github.com/" + owner + "/" + repo + "/issues/" + number;
-        this.healthUp = Health.up()
-                              .withDetail("usedIssue", usedIssue)
-                              .withDetail("expectedSolver", expectedSolver);
-
-        this.healthDownBuilder = Health.down()
-                                       .withDetail("usedIssue", usedIssue)
-                                       .withDetail("expectedSolver", expectedSolver);
+        this.owner = githubSolverHealthCheckProperties.getOwner();
+        this.repo = githubSolverHealthCheckProperties.getRepo();
+        this.issues = githubSolverHealthCheckProperties.getIssues();
     }
 
     @Override
     public Health health() {
+        final List<Health> healths = issues.keySet()
+                                           .stream()
+                                           .map(number -> checkHealth(number, issues.get(number)).withDetail("checkedURL", mapToGithubURL(number)).build())
+                                           .collect(Collectors.toList());
+
+        return Health.status(calculateOverallStatus(healths)).withDetail("healths", healths).build();
+    }
+
+    private Status calculateOverallStatus(final Collection<Health> healths) {
+        final long downAmount = healths.stream()
+                                       .map(Health::getStatus)
+                                       .filter(Status.DOWN::equals)
+                                       .count();
+        return downAmount > 0 ? Status.DOWN : Status.UP;
+    }
+
+    private Health.Builder checkHealth(final String number, final String expectedSolver) {
         try {
-            final Optional<String> solverOptional = githubSolverResolver.solveResolver(owner, repo, number);
+
+            final Optional<String> solverOptional = githubSolverResolver.resolveSolver(owner, repo, number);
             if (solverOptional.isPresent()) {
-                if (solver.equals(solverOptional.get())) {
-                    return healthUp.build();
+                if (expectedSolver.equals(solverOptional.get())) {
+                    return Health.up();
                 } else {
-                    return healthDownBuilder.withDetail("fetchedSolver", solverOptional.get())
-                                            .withDetail(DOWN_PROBLEM_KEY, "Fetched solver does not match expected solver")
-                                            .build();
+                    return Health.down()
+                                 .withDetail("expectedSolver", expectedSolver)
+                                 .withDetail("fetchedSolver", solverOptional.get())
+                                 .withDetail(DOWN_PROBLEM_KEY, "Fetched solver does not match expected solver");
                 }
             } else {
-                return healthDownBuilder.withDetail(DOWN_PROBLEM_KEY, "No solver found").build();
+                return Health.down().withDetail(DOWN_PROBLEM_KEY, "No solver found");
             }
         } catch (Exception e) {
-            return healthDownBuilder.withDetail(DOWN_PROBLEM_KEY, "Exception thrown while fetching solver").build();
+            return Health.down().withDetail(DOWN_PROBLEM_KEY, "Exception thrown while fetching solver");
         }
     }
 
+    private String mapToGithubURL(final String number) {
+        return "https://github.com/" + owner + "/" + repo + "/issues/" + number;
+    }
 }

@@ -11,5 +11,5 @@ public class GithubResult {
     private String title;
     private String state;
     private String body;
-
+    private GithubUser user;
 }

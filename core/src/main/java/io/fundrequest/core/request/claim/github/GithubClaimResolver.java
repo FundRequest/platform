@@ -81,7 +81,7 @@ public class GithubClaimResolver {
 
     private Optional<String> getSolver(final RequestDto request) {
         final IssueInformationDto issueInformation = request.getIssueInformation();
-        return githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
+        return githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
     }
 
     private String getSolver(final Principal user, final UserClaimRequest userClaimRequest, final RequestDto request) throws IOException {

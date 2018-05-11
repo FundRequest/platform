@@ -56,7 +56,7 @@ public class CreateGithubCommentOnResolvedHandlerTest {
         final String solver = "gdhfjghiuyutfyd";
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
 
-        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of(solver));
+        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of(solver));
         when(gitHubCommentFactory.createResolvedComment(request.getId(), solver)).thenReturn(expectedMessage);
 
         handler.createGithubCommentOnRequestClaimable(event);
@@ -77,7 +77,7 @@ public class CreateGithubCommentOnResolvedHandlerTest {
         final String solver = "gdhfjghiuyutfyd";
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
 
-        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.empty());
+        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.empty());
         when(gitHubCommentFactory.createResolvedComment(request.getId(), solver)).thenReturn(expectedMessage);
 
         try {
