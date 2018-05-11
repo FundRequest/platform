@@ -49,7 +49,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import {Utils} from "../../classes/Utils";
+    import Utils from "../../classes/Utils";
     import {RequestListItemPendingFundDto} from "../dtos/RequestListItemPendingFundDto";
     import FontSizeFit from "./FontSizeFit";
 

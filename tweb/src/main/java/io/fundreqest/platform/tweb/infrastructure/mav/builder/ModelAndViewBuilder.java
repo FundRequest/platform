@@ -36,6 +36,11 @@ public class ModelAndViewBuilder {
         return this;
     }
 
+    public ModelAndViewBuilder withSuccessMessage(String msg) {
+        getAlertsFromModel().add(new AlertDto("success", msg));
+        return this;
+    }
+
     private List<AlertDto> getAlertsFromModel() {
         modelAndView.getModel().putIfAbsent("alerts", new ArrayList<AlertDto>());
         return (List<AlertDto>) modelAndView.getModel().get("alerts");

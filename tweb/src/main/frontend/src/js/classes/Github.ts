@@ -1,4 +1,4 @@
-import {Utils} from './Utils';
+import Utils from './Utils';
 
 import {Contracts} from "./contracts";
 import {FundRepository} from "../contracts/FundRepository";
@@ -57,7 +57,7 @@ export class GithubIssue {
 
     constructor(res: any) {
         Object.assign(this, res);
-        let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(this.html_url);
+        let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/i.exec(this.html_url);
         this.owner = matches[1];
         this.repo = matches[2];
         this.platformId = `${this.owner}|FR|${this.repo}|FR|${this.number}`;
@@ -65,7 +65,7 @@ export class GithubIssue {
     }
 }
 
-export class Github {
+export default class Github {
 
     private static _tokenContractAddress = Contracts.getInstance().tokenContractAddress;
     private _fundRepository: FundRepository;
@@ -85,7 +85,7 @@ export class Github {
     }
 
     public static getGithubInfo(link: string): Promise<GithubIssue> {
-        let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/.exec(link);
+        let matches = /^https:\/\/github\.com\/(.+)\/(.+)\/issues\/(\d+)$/i.exec(link);
         if (matches && matches.length >= 4) {
             let url = `https://api.github.com/repos/${matches[1]}/${matches[2]}/issues/${matches[3]}`;
             return Utils.getJSON(url)
