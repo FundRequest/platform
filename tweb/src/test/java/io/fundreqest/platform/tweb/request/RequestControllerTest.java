@@ -152,7 +152,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(profileService.getUserProfile(principal.getName()).getEtherAddress()).thenReturn("");
 
         this.mockMvc.perform(post("/requests/{id}/claim", 1L).principal(principal))
-                .andExpect(redirectAlert("danger", "Please update your profile with a correct ether address."))
+                .andExpect(redirectAlert("danger", "Please update <a href=\"/profile\">your profile</a> with a correct ether address."))
                 .andExpect(redirectedUrl("/requests/" + 1L));
     }
 

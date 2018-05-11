@@ -119,7 +119,7 @@ public class RequestController extends AbstractController {
         String etherAddress = profileService.getUserProfile(principal.getName()).getEtherAddress();
         if (StringUtils.isBlank(etherAddress)) {
             return redirectView(redirectAttributes)
-                    .withDangerMessage("Please update your profile with a correct ether address.")
+                    .withDangerMessage("Please update <a href=\"/profile\">your profile</a> with a correct ether address.")
                     .url("/requests/" + id)
                     .build();
         }
