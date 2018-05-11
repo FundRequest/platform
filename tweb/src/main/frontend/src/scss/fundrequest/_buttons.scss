@@ -34,6 +34,8 @@
     margin-bottom: .675rem;
     line-height: 1rem;
 
+    &:active,
+    &:focus,
     &:hover {
         text-decoration: none;
     }

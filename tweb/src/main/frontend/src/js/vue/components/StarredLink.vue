@@ -8,7 +8,7 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
     import RequestDto from "../dtos/RequestDto";
-    import {Utils} from "../../classes/Utils";
+    import Utils from "../../classes/Utils";
 
     @Component
     export default class StarredLink extends Vue {
