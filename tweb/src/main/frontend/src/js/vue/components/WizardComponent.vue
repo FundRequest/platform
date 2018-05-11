@@ -31,7 +31,7 @@
 
         public currentAllowance: number = 0;
         public currentFundAmount: number = 0;
-        public errorMessages: { fundAmount: string } = {};
+        public errorMessages: { fundAmount: string } = { fundAmount: '' };
 
         public paymentMethod: PaymentMethod = PaymentMethods.getInstance().trustWallet;
         public fundAmount: number = 100;
