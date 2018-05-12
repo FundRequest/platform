@@ -20,17 +20,18 @@
         <dependency>
             <groupId>io.fundrequest</groupId>
             <artifactId>db</artifactId>
-            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.fundrequest</groupId>
+            <artifactId>common</artifactId>
         </dependency>
         <dependency>
             <groupId>io.fundrequest</groupId>
             <artifactId>keycloak</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.fundrequest</groupId>
             <artifactId>github</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

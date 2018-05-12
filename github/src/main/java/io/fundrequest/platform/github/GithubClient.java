@@ -27,6 +27,11 @@ interface GithubClient {
                           @PathVariable("repo") String repo,
                           @PathVariable("number") String number);
 
+    @RequestMapping(value = "/repos/{owner}/{repo}/pulls/{number}", method = GET)
+    GithubResult getPullrequest(@PathVariable("owner") String owner,
+                                @PathVariable("repo") String repo,
+                                @PathVariable("number") String number);
+
     @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}/comments", method = GET)
     List<GithubIssueCommentsResult> getCommentsForIssue(@PathVariable("owner") String owner,
                                                         @PathVariable("repo") String repo,
@@ -53,4 +58,5 @@ interface GithubClient {
 
     @RequestMapping(value = "/rate_limit", method = GET)
     GithubRateLimits getRateLimit();
+
 }

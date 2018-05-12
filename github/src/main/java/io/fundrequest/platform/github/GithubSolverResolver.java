@@ -1,5 +1,7 @@
 package io.fundrequest.platform.github;
 
+import io.fundrequest.platform.github.parser.GithubResult;
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,7 +14,13 @@ import java.util.Optional;
 @Component
 public class GithubSolverResolver {
 
-    public Optional<String> solveResolver(final String owner, final String repo, final String number) {
+    private final GithubGateway githubGateway;
+
+    public GithubSolverResolver(final GithubGateway githubGateway) {
+        this.githubGateway = githubGateway;
+    }
+
+    public Optional<String> resolveSolver(final String owner, final String repo, final String number) {
         Document doc = null;
         try {
             doc = Jsoup.connect("https://github.com/" + owner + "/" + repo + "/issues/" + number).get();
@@ -23,21 +31,36 @@ public class GithubSolverResolver {
         return discussionItems.stream()
                               .filter(this::isPullRequest)
                               .filter(this::isMerged)
-                              .map(this::getAuthor)
+                              .map(discussionItem -> getAuthor(discussionItem, owner, repo))
                               .findFirst();
     }
 
-    private String getAuthor(final Element di) {
-        return di.select(".discussion-item a.author").text();
+    private String getAuthor(final Element discussionItem, final String owner, final String repo) {
+        final String author = extractAuthorFromDiscussionItem(discussionItem);
+        return authorFound(author) ? author : fetchAuthorFromPullrequest(discussionItem, owner, repo);
     }
 
-    private boolean isPullRequest(final Element di) {
-        Elements select = di.select(".discussion-item h3[id^=ref-pullrequest-]");
+    private String extractAuthorFromDiscussionItem(final Element discussionItem) {
+        return discussionItem.select(".discussion-item a.author").text();
+    }
+
+    private String fetchAuthorFromPullrequest(final Element discussionItem, final String owner, final String repo) {
+        final String pullRequestNumber = discussionItem.select(".discussion-item [id^=ref-pullrequest-] span.issue-num").text();
+        final GithubResult pullrequest = githubGateway.getPullrequest(owner, repo, pullRequestNumber.replace("#", ""));
+        return pullrequest.getUser().getLogin();
+    }
+
+    private boolean authorFound(final String author) {
+        return StringUtils.isNotEmpty(author);
+    }
+
+    private boolean isPullRequest(final Element discussionItem) {
+        Elements select = discussionItem.select(".discussion-item [id^=ref-pullrequest-]");
         return !select.isEmpty();
     }
 
-    private boolean isMerged(final Element di) {
-        Elements select = di.select(".discussion-item span[title=State: merged");
+    private boolean isMerged(final Element discussionItem) {
+        Elements select = discussionItem.select(".discussion-item span[title=State: merged]");
         return !select.isEmpty();
     }
 }

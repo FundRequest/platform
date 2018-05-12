@@ -41,7 +41,7 @@ public class GitHubCommentFactory {
 
     private final String badgeBasepath;
 
-    public GitHubCommentFactory(@Value("${io.fundrequest.badge.basepath}") final String badgeBasepath) {
+    public GitHubCommentFactory(@Value("${io.fundrequest.badge.basepath:https://fundrequest.io}") final String badgeBasepath) {
         this.badgeBasepath = badgeBasepath;
     }
 

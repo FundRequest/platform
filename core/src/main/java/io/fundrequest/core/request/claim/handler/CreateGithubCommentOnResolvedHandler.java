@@ -37,7 +37,7 @@ public class CreateGithubCommentOnResolvedHandler {
             final RequestDto request = event.getRequestDto();
             final IssueInformationDto issueInformation = request.getIssueInformation();
             if (issueInformation.getPlatform() == Platform.GITHUB) {
-                final String solver = githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).orElseThrow(() -> new RuntimeException("No solver found for request " + request.getId()));
+                final String solver = githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).orElseThrow(() -> new RuntimeException("No solver found for request " + request.getId()));
                 final CreateGithubComment comment = new CreateGithubComment();
                 comment.setBody(gitHubCommentFactory.createResolvedComment(request.getId(), solver));
                 githubGateway.createCommentOnIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), comment);

@@ -48,7 +48,7 @@ public class GithubClaimResolverTest {
         requestDto.setStatus(RequestStatus.FUNDED);
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
 
-        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
+        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
         when(keycloakRepository.getUserIdentities(principal.getName())).thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
 
         final UserClaimableDto result = claimResolver.userClaimableResult(principal, requestDto);
@@ -63,7 +63,7 @@ public class GithubClaimResolverTest {
         requestDto.setStatus(RequestStatus.FUNDED);
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
 
-        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
+        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
 
         final UserClaimableDto result = claimResolver.userClaimableResult(null, requestDto);
 
@@ -78,7 +78,7 @@ public class GithubClaimResolverTest {
         requestDto.setStatus(RequestStatus.CLAIM_REQUESTED);
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
 
-        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
+        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
         when(keycloakRepository.getUserIdentities(principal.getName())).thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
 
         final UserClaimableDto result = claimResolver.userClaimableResult(principal, requestDto);
@@ -93,7 +93,7 @@ public class GithubClaimResolverTest {
         final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
 
-        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
+        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
         when(keycloakRepository.getUserIdentities(principal.getName())).thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
 
         assertThat(claimResolver.canClaim(principal, requestDto)).isTrue();
@@ -111,7 +111,7 @@ public class GithubClaimResolverTest {
                                                                                                   .provider(Provider.GITHUB)
                                                                                                   .username("davyvanroy")
                                                                                                   .build()));
-        when(githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
+        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
         when(azraelClient.getSignature(signClaimCommand)).thenReturn(claimSignature);
 
         SignedClaim result = claimResolver.getSignedClaim(() -> "davyvanroy", userClaimRequest, request);

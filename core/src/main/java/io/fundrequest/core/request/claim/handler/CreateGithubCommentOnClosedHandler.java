@@ -62,7 +62,7 @@ public class CreateGithubCommentOnClosedHandler {
     }
 
     private CreateGithubComment createComment(final Long requestId, final IssueInformationDto issueInformation) {
-        final String solver = githubSolverResolver.solveResolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).orElseThrow(() -> new RuntimeException("No solver found for request " + requestId));
+        final String solver = githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).orElseThrow(() -> new RuntimeException("No solver found for request " + requestId));
         final CreateGithubComment comment = new CreateGithubComment();
         comment.setBody(gitHubCommentFactory.createClosedComment(requestId, solver));
         return comment;
