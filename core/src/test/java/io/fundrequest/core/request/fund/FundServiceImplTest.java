@@ -120,38 +120,32 @@ public class FundServiceImplTest {
         assertThat(result).isEqualTo(expecedFunds);
     }
 
-
     @Test
     public void saveFunds() {
-        Request request = RequestMother.freeCodeCampNoUserStories().build();
+        final Request request = RequestMother.freeCodeCampNoUserStories().build();
 
-        FundsAddedCommand command = FundsAddedCommand.builder()
-                                                     .requestId(request.getId())
-                                                     .amountInWei(BigDecimal.TEN)
-                                                     .transactionId("trans_id")
-                                                     .funderAddress("address")
-                                                     .timestamp(LocalDateTime.now())
-                                                     .token("token")
-                                                     .build();
+        final FundsAddedCommand command = FundsAddedCommand.builder()
+                                                           .requestId(request.getId())
+                                                           .amountInWei(BigDecimal.TEN)
+                                                           .transactionId("trans_id")
+                                                           .funderAddress("address")
+                                                           .timestamp(LocalDateTime.now())
+                                                           .token("token")
+                                                           .build();
+        final FundDto fundDto = new FundDto();
+        final RequestDto requestDto = new RequestDto();
+        final Cache cache = mock(Cache.class);
 
         when(requestRepository.findOne(request.getId())).thenReturn(Optional.of(request));
-
-        FundDto fundDto = new FundDto();
-        when(mappers.map(eq(Fund.class), eq(FundDto.class), any(Fund.class)))
-                .thenReturn(fundDto);
-
-        RequestDto requestDto = new RequestDto();
-        when(mappers.map(eq(Request.class), eq(RequestDto.class), any(Request.class)))
-                .thenReturn(requestDto);
-        Cache cache = mock(Cache.class);
+        when(mappers.map(eq(Fund.class), eq(FundDto.class), any(Fund.class))).thenReturn(fundDto);
+        when(mappers.map(eq(Request.class), eq(RequestDto.class), any(Request.class))).thenReturn(requestDto);
         when(cacheManager.getCache("funds")).thenReturn(cache);
-        when(pendingFundRepository.findByTransactionHash(command.getTransactionId()))
-                .thenReturn(Optional.of(PendingFund.builder().userId(funder.getName()).build()));
+        when(pendingFundRepository.findByTransactionHash(command.getTransactionId())).thenReturn(Optional.of(PendingFund.builder().userId(funder.getName()).build()));
 
         fundService.addFunds(command);
 
         verifyFundsSaved(command, funder);
-        verifyEventCreated(requestDto, fundDto);
+        verifyEventCreated(request.getId(), fundDto);
         verify(cache).evict(request.getId());
     }
 
@@ -270,12 +264,14 @@ public class FundServiceImplTest {
         when(tokenInfoService.getTokenInfo(zrxTokenInfo.getAddress())).thenReturn(zrxTokenInfo);
     }
 
+    private void verifyEventCreated(Long requestId, FundDto fundDto) {
+        final ArgumentCaptor<RequestFundedEvent> requestFundedEventArgumentCaptor = ArgumentCaptor.forClass(RequestFundedEvent.class);
 
-    private void verifyEventCreated(RequestDto requestDto, FundDto fundDto) {
-        ArgumentCaptor<RequestFundedEvent> requestFundedEventArgumentCaptor = ArgumentCaptor.forClass(RequestFundedEvent.class);
         verify(eventPublisher).publishEvent(requestFundedEventArgumentCaptor.capture());
-        assertThat(requestFundedEventArgumentCaptor.getValue().getFundDto()).isEqualTo(fundDto);
-        assertThat(requestFundedEventArgumentCaptor.getValue().getRequestDto()).isEqualTo(requestDto);
+
+        final RequestFundedEvent event = requestFundedEventArgumentCaptor.getValue();
+        assertThat(event.getFundDto()).isEqualTo(fundDto);
+        assertThat(event.getRequestId()).isEqualTo(requestId);
     }
 
     private void verifyFundsSaved(FundsAddedCommand command, Principal funder) {

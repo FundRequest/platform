@@ -46,7 +46,7 @@ public class NotificationServiceImplTest {
     private FundService fundService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         notificationRepository = mock(NotificationRepository.class);
         when(notificationRepository.save(any(Notification.class))).then(returnsFirstArg());
         when(notificationRepository.saveAndFlush(any(Notification.class))).then(returnsFirstArg());
@@ -62,7 +62,7 @@ public class NotificationServiceImplTest {
     }
 
     @Test
-    public void onRequestCreatedClaimedNotification() throws Exception {
+    public void onRequestCreatedClaimedNotification() {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
 
@@ -80,7 +80,7 @@ public class NotificationServiceImplTest {
     }
 
     @Test
-    public void onRequestClaimedPublishesNotification() throws Exception {
+    public void onRequestClaimedPublishesNotification() {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
         notificationService.onClaimed(new RequestClaimedEvent(TRANSACTION_ID, requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
@@ -96,11 +96,16 @@ public class NotificationServiceImplTest {
     }
 
     @Test
-    public void onRequestFundedCreatesNotification() throws Exception {
-        RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
-        FundDto fundDto = FundDtoMother.aFundDto();
+    public void onRequestFundedCreatesNotification() {
+        final Long requestId = 6789L;
+        final FundDto fundDto = FundDtoMother.aFundDto();
 
-        notificationService.onFunded(new RequestFundedEvent(TRANSACTION_ID, fundDto, requestDto, LocalDateTime.now()));
+        notificationService.onFunded(RequestFundedEvent.builder()
+                                                       .transactionId(TRANSACTION_ID)
+                                                       .fundDto(fundDto)
+                                                       .requestId(requestId)
+                                                       .timestamp(LocalDateTime.now())
+                                                       .build());
 
         assertRequestFundedNotificationSaved(fundDto);
     }
@@ -114,11 +119,19 @@ public class NotificationServiceImplTest {
     }
 
     @Test
-    public void onRequestFundedPublishesNotification() throws Exception {
-        RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
-        FundDto fundDto = FundDtoMother.aFundDto();
+    public void onRequestFundedPublishesNotification() {
+        final Long requestId = 467L;
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        final FundDto fundDto = FundDtoMother.aFundDto();
 
-        notificationService.onFunded(new RequestFundedEvent(TRANSACTION_ID, fundDto, requestDto, LocalDateTime.now()));
+        when(requestService.findRequest(requestId)).thenReturn(requestDto);
+
+        notificationService.onFunded(RequestFundedEvent.builder()
+                                                       .transactionId(TRANSACTION_ID)
+                                                       .fundDto(fundDto)
+                                                       .requestId(requestId)
+                                                       .timestamp(LocalDateTime.now())
+                                                       .build());
 
         assertRequestFundedNotificationPublished(fundDto, requestDto);
     }
@@ -126,14 +139,15 @@ public class NotificationServiceImplTest {
     private void assertRequestFundedNotificationPublished(FundDto fundDto, RequestDto requestDto) {
         ArgumentCaptor<RequestFundedNotificationDto> captor = ArgumentCaptor.forClass(RequestFundedNotificationDto.class);
         verify(eventPublisher).publishEvent(captor.capture());
-        assertThat(captor.getValue().getFundDto()).isEqualTo(fundDto);
-        assertThat(captor.getValue().getRequestDto()).isEqualTo(requestDto);
-        assertThat(captor.getValue().getDate()).isEqualToIgnoringSeconds(LocalDateTime.now());
-        assertThat(captor.getValue().getType()).isEqualTo(NotificationType.REQUEST_FUNDED);
+        final RequestFundedNotificationDto requestFundedNotificationDto = captor.getValue();
+        assertThat(requestFundedNotificationDto.getFundDto()).isEqualTo(fundDto);
+        assertThat(requestFundedNotificationDto.getRequestDto()).isEqualTo(requestDto);
+        assertThat(requestFundedNotificationDto.getDate()).isEqualToIgnoringSeconds(LocalDateTime.now());
+        assertThat(requestFundedNotificationDto.getType()).isEqualTo(NotificationType.REQUEST_FUNDED);
     }
 
     @Test
-    public void getLast() throws Exception {
+    public void getLast() {
         RequestClaimedNotification requestCreatedNotification = RequestClaimedNotificationMother.aRequestClaimedNotification();
         RequestDto requestDtoForFund = RequestDtoMother.freeCodeCampNoUserStories();
         FundDto fundDto = FundDtoMother.aFundDto();
