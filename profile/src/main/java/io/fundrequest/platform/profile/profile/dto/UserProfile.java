@@ -13,6 +13,7 @@ public class UserProfile {
     private String telegramName;
     private String picture;
     private String headline;
+    private Long createdAt;
     private boolean verifiedDeveloper;
     private UserProfileProvider github;
     private UserProfileProvider linkedin;

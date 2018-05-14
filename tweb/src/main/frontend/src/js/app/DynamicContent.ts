@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 
-import {Utils} from '../classes/Utils';
+import Utils from '../classes/Utils';
 
 export class DynamicContent {
     private _document: HTMLDocument = document;
@@ -21,7 +21,6 @@ export class DynamicContent {
     }
 
     private _reinitialize(parentElement) {
-        let $tooltips = $('[data-toggle="tooltip"]', parentElement);
-        $tooltips.tooltip();
+        $('[data-toggle="tooltip"]', parentElement).tooltip();
     }
 }

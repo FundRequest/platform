@@ -1,7 +1,7 @@
 package io.fundreqest.platform.tweb;
 
+import io.fundrequest.common.infrastructure.IgnoreDuringComponentScan;
 import io.fundrequest.core.FundRequestCore;
-import io.fundrequest.db.infrastructure.IgnoreDuringComponentScan;
 import io.fundrequest.platform.github.FundRequestGithub;
 import io.fundrequest.platform.keycloak.FundRequestKeycloak;
 import io.fundrequest.platform.profile.ProfileApplication;

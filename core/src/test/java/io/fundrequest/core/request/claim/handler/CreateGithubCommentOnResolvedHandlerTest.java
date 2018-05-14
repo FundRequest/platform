@@ -1,13 +1,13 @@
 package io.fundrequest.core.request.claim.handler;
 
 import io.fundrequest.core.request.claim.event.RequestClaimableEvent;
-import io.fundrequest.core.request.claim.github.GithubSolverResolver;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.CreateGithubComment;
 import io.fundrequest.platform.github.GitHubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
+import io.fundrequest.platform.github.GithubSolverResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -56,7 +56,7 @@ public class CreateGithubCommentOnResolvedHandlerTest {
         final String solver = "gdhfjghiuyutfyd";
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
 
-        when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.of(solver));
+        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of(solver));
         when(gitHubCommentFactory.createResolvedComment(request.getId(), solver)).thenReturn(expectedMessage);
 
         handler.createGithubCommentOnRequestClaimable(event);
@@ -77,7 +77,7 @@ public class CreateGithubCommentOnResolvedHandlerTest {
         final String solver = "gdhfjghiuyutfyd";
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
 
-        when(githubSolverResolver.solveResolver(request)).thenReturn(Optional.empty());
+        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.empty());
         when(gitHubCommentFactory.createResolvedComment(request.getId(), solver)).thenReturn(expectedMessage);
 
         try {

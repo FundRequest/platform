@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import * as $ from 'jquery';
 
 import FontSizeFit from './components/FontSizeFit.vue';
 import RequestDetail from './components/RequestDetail.vue';
@@ -26,6 +27,9 @@ let v = new Vue({
     },
     mounted() {
         new DynamicContent();
+
+        $('#vue-app').find('[data-toggle="tooltip"]').tooltip();
+
         setTimeout(function () {
             document.body.classList.remove('preload');
         }, 500);

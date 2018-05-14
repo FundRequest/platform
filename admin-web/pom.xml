@@ -52,7 +52,6 @@
         <dependency>
             <groupId>io.fundrequest</groupId>
             <artifactId>core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -62,7 +61,7 @@
         <dependency>
             <groupId>io.fundrequest</groupId>
             <artifactId>core</artifactId>
-            <version>${project.version}</version>
+            <version>${project.parent.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
