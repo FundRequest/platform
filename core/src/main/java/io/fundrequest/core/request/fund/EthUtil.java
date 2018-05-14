@@ -11,7 +11,7 @@ public class EthUtil {
     }
 
     public static BigDecimal toWei(BigDecimal rawBalance, int noOfDecimals) {
-        final BigDecimal multiplier = BigDecimal.valueOf(10).pow(noOfDecimals);
+        final BigDecimal multiplier = BigDecimal.TEN.pow(noOfDecimals);
         return rawBalance.multiply(multiplier);
     }
 
