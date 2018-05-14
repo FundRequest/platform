@@ -6,6 +6,7 @@ import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +24,16 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 @Order(2)
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
+    @Value("#{'${io.fundrequest.security.cors.allow-origin}'.split(',')}")
+    private List<String> allowOrigins;
+
     /**
      * Registers the KeycloakAuthenticationProvider with the authentication manager.
      */
@@ -71,9 +77,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:2000");
-        config.addAllowedOrigin("https://alpha-key.fundrequest.io");
-        config.addAllowedOrigin("https://key.fundrequest.io");
+        allowOrigins.forEach(config::addAllowedOrigin);
         config.addAllowedHeader("*");
         config.addExposedHeader(HttpHeaders.AUTHORIZATION);
         config.addExposedHeader(HttpHeaders.LOCATION);
