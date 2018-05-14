@@ -1,6 +1,7 @@
 package io.fundrequest.core.request.fund.domain;
 
 import io.fundrequest.core.request.domain.IssueInformation;
+import io.fundrequest.db.infrastructure.AbstractEntity;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,14 +11,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.math.BigInteger;
-import java.util.Date;
 
 @Data
 @Entity(name = "pending_funds")
-public class PendingFund {
+public class PendingFund extends AbstractEntity {
 
     @Id
     @Column(name = "id")
@@ -45,11 +43,6 @@ public class PendingFund {
     @Embedded
     private IssueInformation issueInformation;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "added_date")
-    @Builder.Default
-    private Date addedDate = new Date();
-
     @Builder
     public PendingFund(final String transactionhash,
                        final String description,
@@ -65,7 +58,6 @@ public class PendingFund {
         this.tokenAddress = tokenAddress;
         this.userId = userId;
         this.issueInformation = issueInformation;
-        this.addedDate = new Date();
     }
 
     protected PendingFund() {
