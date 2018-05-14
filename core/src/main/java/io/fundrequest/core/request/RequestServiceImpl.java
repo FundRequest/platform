@@ -211,6 +211,7 @@ class RequestServiceImpl implements RequestService {
                 .withAddress(createERC67FundRequest.getTokenAddress())
                 .withNetwork("ethereum")
                 .withParameter("data", createERC67FundRequest.toByteData())
+                .withParameter("gas", "200000")
                 .build()
                 .visualize();
     }
