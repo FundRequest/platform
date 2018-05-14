@@ -41,7 +41,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import static io.fundrequest.core.request.fund.EthUtil.fromWei;
+import static io.fundrequest.core.web3j.EthUtil.fromWei;
 
 @Service
 class FundServiceImpl implements FundService {
@@ -146,11 +146,7 @@ class FundServiceImpl implements FundService {
     }
 
 
-    @Override
-    @Transactional
-    public void removePendingFund(String transactionHash) {
-        pendingFundRepository.findByTransactionHash(transactionHash).ifPresent(pf -> pendingFundRepository.delete(pf));
-    }
+
 
     @Override
     @Transactional(readOnly = true)

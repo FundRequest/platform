@@ -1,13 +1,13 @@
 package io.fundrequest.platform.admin.claim.continuous;
 
+import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
 import io.fundrequest.core.request.claim.infrastructure.RequestClaimRepository;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
-import org.springframework.data.domain.Sort;
+import io.fundrequest.core.transactions.TransactionStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static io.fundrequest.core.request.claim.domain.ClaimRequestStatus.APPROVED;
@@ -29,8 +29,11 @@ public class RequestClaimCleaner {
         final List<RequestClaim> claims = requestClaimRepository.findByStatus(APPROVED);
 
         claims.stream()
-              .filter(x -> {
-                  azraelClient.
-              })
+              .filter(x -> x.getTransactionHash() != null)
+              .filter(x -> azraelClient.getTransactionStatus(x.getTransactionHash()).equals(TransactionStatus.FAILED))
+              .forEach(x -> {
+                  x.setStatus(ClaimRequestStatus.TRANSACTION_FAILED);
+                  requestClaimRepository.save(x);
+              });
     }
 }

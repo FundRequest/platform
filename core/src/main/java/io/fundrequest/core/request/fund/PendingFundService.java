@@ -22,25 +22,28 @@ import java.util.List;
 public class PendingFundService {
 
     private final PendingFundRepository pendingFundRepository;
-
     private final GithubPlatformIdParser githubLinkParser;
-
     private final Mappers mappers;
-
-    private TokenInfoService tokenInfoService;
+    private final TokenInfoService tokenInfoService;
 
     public PendingFundService(final PendingFundRepository pendingFundRepository,
-                              GithubPlatformIdParser githubLinkParser,
-                              Mappers mappers, TokenInfoService tokenInfoService) {
+                              final GithubPlatformIdParser githubLinkParser,
+                              final Mappers mappers,
+                              final TokenInfoService tokenInfoService) {
         this.pendingFundRepository = pendingFundRepository;
         this.githubLinkParser = githubLinkParser;
         this.mappers = mappers;
         this.tokenInfoService = tokenInfoService;
     }
 
+    @Transactional(readOnly = true)
+    public List<PendingFund> findAll() {
+        return pendingFundRepository.findAll();
+    }
+
     @Transactional
     public void save(Principal principal, final PendingFundCommand command) {
-        IssueInformation issueInformation = githubLinkParser.parseIssue(command.getPlatformId());
+        final IssueInformation issueInformation = githubLinkParser.parseIssue(command.getPlatformId());
         PendingFund pf = PendingFund.builder()
                                     .amount(toWei(command))
                                     .description(command.getDescription())
@@ -53,9 +56,19 @@ public class PendingFundService {
         pendingFundRepository.save(pf);
     }
 
+    @Transactional
+    public void removePendingFund(final String transactionHash) {
+        pendingFundRepository.findByTransactionHash(transactionHash).ifPresent(pendingFundRepository::delete);
+    }
+
+    @Transactional
+    public void removePendingFund(final PendingFund pendingFund) {
+        pendingFundRepository.findOne(pendingFund.getId()).ifPresent(pendingFundRepository::delete);
+    }
+
     @NotNull
     private BigInteger toWei(PendingFundCommand command) {
-        TokenInfoDto tokenInfo = tokenInfoService.getTokenInfo(command.getTokenAddress());
+        final TokenInfoDto tokenInfo = tokenInfoService.getTokenInfo(command.getTokenAddress());
         final BigDecimal multiplier = BigDecimal.TEN.pow(tokenInfo.getDecimals());
         return new BigDecimal(command.getAmount()).multiply(multiplier).toBigInteger();
     }

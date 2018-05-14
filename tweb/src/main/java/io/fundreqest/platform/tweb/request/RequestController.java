@@ -10,7 +10,7 @@ import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.UserClaimRequest;
-import io.fundrequest.core.request.fund.CreateERC67FundRequest;
+import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
