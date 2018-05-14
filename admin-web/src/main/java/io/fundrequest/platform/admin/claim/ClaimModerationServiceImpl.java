@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -53,7 +54,7 @@ public class ClaimModerationServiceImpl implements ClaimModerationService {
             request.setStatus(RequestStatus.CLAIM_APPROVED);
             requestClaim.setStatus(ClaimRequestStatus.APPROVED);
             requestClaim.setTransactionHash(prettify(claimTransaction.getTransactionHash()));
-            requestClaim.setTransactionSubmitTime(new Date());
+            requestClaim.setTransactionSubmitTime(LocalDateTime.now());
             requestRepository.save(request);
             requestClaimRepository.save(requestClaim);
         } catch (final Exception ex) {

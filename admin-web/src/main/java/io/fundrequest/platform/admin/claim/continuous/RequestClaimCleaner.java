@@ -24,7 +24,7 @@ public class RequestClaimCleaner {
         this.azraelClient = azraelClient;
     }
 
-    @Scheduled(fixedDelay = 300000L)
+    @Scheduled(fixedDelay = 300_000L)
     public void clean() {
         final List<RequestClaim> claims = requestClaimRepository.findByStatus(APPROVED);
 

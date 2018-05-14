@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -50,7 +51,7 @@ public class RequestClaim extends AbstractEntity {
     @Column(name = "transaction_submit_time")
     @Temporal(TemporalType.TIMESTAMP)
     @Setter
-    private Date transactionSubmitTime;
+    private LocalDateTime transactionSubmitTime;
 
     public void setStatus(ClaimRequestStatus status) {
         this.status = status;
