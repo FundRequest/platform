@@ -52,7 +52,7 @@ public class CreateGithubCommentOnFundHandlerTest {
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
 
-        when(gitHubCommentFactory.createFundedComment(requestId)).thenReturn(expectedMessage);
+        when(gitHubCommentFactory.createFundedComment(requestId, issueInformation.getNumber())).thenReturn(expectedMessage);
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
 
         handler.createGithubCommentOnRequestFunded(event);

@@ -19,7 +19,7 @@ public class GitHubCommentFactory {
     private static final String FUNDED_COMMENT_TEMPLATE =
             COMMENT_HEADER
             + "This issue has been funded using [FundRequest](https://fundrequest.io). A developer can claim the reward by submitting a pull request referencing this issue. "
-            + "([How to Close Issues via Pull Requests?](https://help.github.com/articles/closing-issues-using-keywords)) e.g. `fixes #%2$s`"
+            + "([How to Close Issues via Pull Requests?](https://help.github.com/articles/closing-issues-using-keywords)) e.g. `fixes #%3$s`"
             + LINE_BREAK
             + LINE_BREAK
             + "* For more help on how to claim on issue, please visit our [help section](https://help.fundrequest.io)."
@@ -45,8 +45,8 @@ public class GitHubCommentFactory {
         this.badgeBasepath = badgeBasepath;
     }
 
-    public String createFundedComment(final Long requestId) {
-        return String.format(FUNDED_COMMENT_TEMPLATE, badgeBasepath, requestId);
+    public String createFundedComment(final Long requestId, final String githubIssueNumber) {
+        return String.format(FUNDED_COMMENT_TEMPLATE, badgeBasepath, requestId, githubIssueNumber);
     }
 
     public String createResolvedComment(final Long requestId, final String solver) {

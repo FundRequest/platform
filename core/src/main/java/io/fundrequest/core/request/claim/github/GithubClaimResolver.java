@@ -10,10 +10,11 @@ import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
 import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.GithubSolverResolver;
+import io.fundrequest.platform.github.parser.GithubResult;
 import io.fundrequest.platform.keycloak.KeycloakRepository;
 import io.fundrequest.platform.keycloak.UserIdentity;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -25,18 +26,24 @@ import java.util.function.Supplier;
 public class GithubClaimResolver {
 
     private static final Supplier<RuntimeException> GITHUB_ACCOUNT_IS_NOT_LINKED = () -> new RuntimeException("Github account is not linked");
+    private static final String GITHUB_STATE_CLOSED = "closed";
 
     private GithubSolverResolver githubSolverResolver;
+    private final GithubGateway githubGateway;
     private AzraelClient azraelClient;
     private KeycloakRepository keycloakRepository;
 
-    public GithubClaimResolver(GithubSolverResolver githubSolverResolver, AzraelClient azraelClient, KeycloakRepository keycloakRepository) {
+    public GithubClaimResolver(final GithubSolverResolver githubSolverResolver,
+                               final GithubGateway githubGateway,
+                               final AzraelClient azraelClient,
+                               final KeycloakRepository keycloakRepository) {
         this.githubSolverResolver = githubSolverResolver;
+        this.githubGateway = githubGateway;
         this.azraelClient = azraelClient;
         this.keycloakRepository = keycloakRepository;
     }
 
-    public SignedClaim getSignedClaim(Principal user, UserClaimRequest userClaimRequest, RequestDto request) {
+    public SignedClaim getSignedClaim(final Principal user, final UserClaimRequest userClaimRequest, final RequestDto request) {
         try {
             final String solver = getSolver(user, userClaimRequest, request);
             final ClaimSignature signature = getSignature(userClaimRequest, solver);
@@ -56,27 +63,34 @@ public class GithubClaimResolver {
     }
 
     public Boolean canClaim(final Principal user, final RequestDto request) {
-        final Optional<String> solver = getSolver(request);
-        final String userPlatformUsername = getUserPlatformUsername(user, request.getIssueInformation().getPlatform()).orElseThrow(GITHUB_ACCOUNT_IS_NOT_LINKED);
-        return solver.isPresent() && solver.get().equalsIgnoreCase(userPlatformUsername);
+        return isIssueClosed(request)
+               && getSolver(request).map(solver -> isClaimalbeByUser(user, request, solver)).orElse(false);
     }
 
-    public UserClaimableDto userClaimableResult(final Principal user, RequestDto request) {
-        final Optional<String> solver = getSolver(request);
-        if (solver.isPresent() && (request.getStatus() == RequestStatus.FUNDED || request.getStatus() == RequestStatus.CLAIMABLE)) {
-            return UserClaimableDto.builder()
-                                   .claimable(true)
-                                   .claimableByUser(isClaimalbeByUser(user, request, solver.get()))
-                                   .build();
+    public UserClaimableDto userClaimableResult(final Principal user, final RequestDto request) {
+        if (isIssueClosed(request)) {
+            final Optional<String> solver = getSolver(request);
+            if (solver.isPresent() && (request.getStatus() == RequestStatus.FUNDED || request.getStatus() == RequestStatus.CLAIMABLE)) {
+                return UserClaimableDto.builder()
+                                       .claimable(true)
+                                       .claimableByUser(isClaimalbeByUser(user, request, solver.get()))
+                                       .build();
+            }
         }
         return UserClaimableDto.builder().claimable(false).claimableByUser(false).build();
     }
 
-    @NotNull
-    private Boolean isClaimalbeByUser(Principal user, RequestDto request, String solver) {
+    private Boolean isClaimalbeByUser(final Principal user, final RequestDto request, final String solver) {
         return user == null
                ? false
                : getUserPlatformUsername(user, request.getIssueInformation().getPlatform()).map(u -> u.equalsIgnoreCase(solver)).orElse(false);
+    }
+
+    private boolean isIssueClosed(final RequestDto request) {
+        final GithubResult githubIssue = githubGateway.getIssue(request.getIssueInformation().getOwner(),
+                                                                request.getIssueInformation().getRepo(),
+                                                                request.getIssueInformation().getNumber());
+        return githubIssue.getState().equals(GITHUB_STATE_CLOSED);
     }
 
     private Optional<String> getSolver(final RequestDto request) {
@@ -93,7 +107,7 @@ public class GithubClaimResolver {
         return solver;
     }
 
-    private ClaimSignature getSignature(UserClaimRequest userClaimRequest, String solver) {
+    private ClaimSignature getSignature(final UserClaimRequest userClaimRequest, final String solver) {
         final SignClaimCommand command = SignClaimCommand.builder()
                                                          .platform(userClaimRequest.getPlatform().toString())
                                                          .platformId(userClaimRequest.getPlatformId())
@@ -103,7 +117,7 @@ public class GithubClaimResolver {
         return azraelClient.getSignature(command);
     }
 
-    public Optional<String> getUserPlatformUsername(Principal user, Platform platform) {
+    public Optional<String> getUserPlatformUsername(final Principal user, final Platform platform) {
         if (platform != Platform.GITHUB) {
             throw new RuntimeException("only github is supported for now");
         }
