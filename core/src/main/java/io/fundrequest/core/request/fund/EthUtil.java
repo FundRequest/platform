@@ -1,6 +1,7 @@
 package io.fundrequest.core.request.fund;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 
 public class EthUtil {
@@ -12,5 +13,9 @@ public class EthUtil {
     public static BigDecimal toWei(BigDecimal rawBalance, int noOfDecimals) {
         final BigDecimal multiplier = BigDecimal.valueOf(10).pow(noOfDecimals);
         return rawBalance.multiply(multiplier);
+    }
+
+    public static BigInteger toWei(BigInteger rawBalance, int noOfDecimals) {
+        return rawBalance.multiply(BigInteger.TEN.pow(noOfDecimals));
     }
 }

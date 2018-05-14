@@ -13,6 +13,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
 
+import static io.fundrequest.core.request.fund.EthUtil.toWei;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
@@ -49,7 +50,7 @@ public class CreateERC67FundRequest {
         final Function function = new Function(
                 "approveAndCall",
                 asList(new org.web3j.abi.datatypes.Address(fundrequestAddress),
-                       new org.web3j.abi.datatypes.generated.Uint256(amount.multiply(BigInteger.TEN.pow(decimals))),
+                       new org.web3j.abi.datatypes.generated.Uint256(getRawValue()),
                        new DynamicBytes(getData().getBytes())),
                 emptyList());
         return FunctionEncoder.encode(function);
@@ -62,9 +63,13 @@ public class CreateERC67FundRequest {
     public String toFunction() {
         final StringBuilder builder = new StringBuilder("approveAndCall").append("(");
         builder.append("address ").append(fundrequestAddress).append(", ");
-        builder.append("uint256 ").append(amount.multiply(BigInteger.TEN.pow(decimals)).toString()).append(", ");
+        builder.append("uint256 ").append(getRawValue().toString()).append(", ");
         builder.append("bytes ").append("0x").append(Hex.encodeHexString((getData()).getBytes()));
         builder.append(")");
         return builder.toString();
+    }
+
+    private BigInteger getRawValue() {
+        return toWei(amount, decimals);
     }
 }
