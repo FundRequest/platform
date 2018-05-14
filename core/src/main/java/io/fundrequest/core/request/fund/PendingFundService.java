@@ -9,6 +9,7 @@ import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
+import io.fundrequest.core.web3j.EthUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,8 +70,7 @@ public class PendingFundService {
     @NotNull
     private BigInteger toWei(PendingFundCommand command) {
         final TokenInfoDto tokenInfo = tokenInfoService.getTokenInfo(command.getTokenAddress());
-        final BigDecimal multiplier = BigDecimal.TEN.pow(tokenInfo.getDecimals());
-        return new BigDecimal(command.getAmount()).multiply(multiplier).toBigInteger();
+        return EthUtil.toWei(new BigDecimal(command.getAmount()), tokenInfo.getDecimals()).toBigInteger();
     }
 
     @Transactional(readOnly = true)
