@@ -8,9 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import static io.fundrequest.core.web3j.AddressUtils.prettify;
 
@@ -43,7 +41,7 @@ public class PendingFundCleaner {
     }
 
     private boolean hasAged(PendingFund fund) {
-        return fund.getAddedDate().before(Date.from(LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant()));
+        return fund.getCreationDate().isBefore(LocalDateTime.now().minusDays(1));
     }
 
     private boolean hasFailed(PendingFund fund) {
