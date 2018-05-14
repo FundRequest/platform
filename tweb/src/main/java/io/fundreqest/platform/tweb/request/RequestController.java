@@ -11,6 +11,7 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
+import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
@@ -43,28 +44,31 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RequestController extends AbstractController {
 
-    private RequestService requestService;
-    private PendingFundService pendingFundService;
-    private StatisticsService statisticsService;
-    private ProfileService profileService;
-    private FundService fundService;
-    private ClaimService claimService;
-    private ObjectMapper objectMapper;
-    private Mappers mappers;
+    private final RequestService requestService;
+    private final PendingFundService pendingFundService;
+    private final StatisticsService statisticsService;
+    private final ProfileService profileService;
+    private final FundService fundService;
+    private final ClaimService claimService;
+    private final FiatService fiatService;
+    private final ObjectMapper objectMapper;
+    private final Mappers mappers;
 
-    public RequestController(RequestService requestService,
-                             PendingFundService pendingFundService,
-                             StatisticsService statisticsService,
-                             ProfileService profileService, FundService fundService,
-                             ClaimService claimService,
-                             ObjectMapper objectMapper,
-                             Mappers mappers) {
+    public RequestController(final RequestService requestService,
+                             final PendingFundService pendingFundService,
+                             final StatisticsService statisticsService,
+                             final ProfileService profileService, FundService fundService,
+                             final ClaimService claimService,
+                             final FiatService fiatService,
+                             final ObjectMapper objectMapper,
+                             final Mappers mappers) {
         this.requestService = requestService;
         this.pendingFundService = pendingFundService;
         this.statisticsService = statisticsService;
         this.profileService = profileService;
         this.fundService = fundService;
         this.claimService = claimService;
+        this.fiatService = fiatService;
         this.objectMapper = objectMapper;
         this.mappers = mappers;
     }
@@ -97,12 +101,16 @@ public class RequestController extends AbstractController {
 
     @GetMapping(value = "/requests/{id}/badge", produces = "image/svg+xml")
     public ModelAndView detailsBadge(@PathVariable final Long id, final Model model, final HttpServletResponse response) {
-        RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id));
+        final RequestDto request = requestService.findRequest(id);
         response.setHeader(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue());
+
+        final double fndUsdPrice = fiatService.getUsdPrice(request.getFunds().getFndFunds());
+        final double otherFundsUsdPrice = fiatService.getUsdPrice(request.getFunds().getOtherFunds());
+
         return modelAndView(model)
-                .withObject("request", request)
-                .withObject("requestJson", getAsJson(request))
-                .withView("requests/badge")
+                .withObject("requestFase", request.getStatus().getFase())
+                .withObject("highestFunds", fndUsdPrice >= otherFundsUsdPrice ? request.getFunds().getFndFunds() : request.getFunds().getOtherFunds())
+                .withView("requests/badge.svg")
                 .build();
     }
 
@@ -111,7 +119,7 @@ public class RequestController extends AbstractController {
         String etherAddress = profileService.getUserProfile(principal.getName()).getEtherAddress();
         if (StringUtils.isBlank(etherAddress)) {
             return redirectView(redirectAttributes)
-                    .withDangerMessage("Please update your profile with a correct ether address.")
+                    .withDangerMessage("Please update <a href=\"/profile\">your profile</a> with a correct ether address.")
                     .url("/requests/" + id)
                     .build();
         }

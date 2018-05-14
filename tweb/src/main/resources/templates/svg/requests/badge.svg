@@ -1,28 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      xmlns:th="http://www.thymeleaf.org"
-     width="210" height="20">
-  <linearGradient id="b" x2="0" y2="100%">
-    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
-    <stop offset="1" stop-opacity=".1"/>
-  </linearGradient>
-  <clipPath id="a">
-    <rect width="210" height="20" rx="3" fill="#fff"/>
-  </clipPath>
-  <g clip-path="url(#a)">
-    <path fill="#555" d="M0 0h89v20H0z"/>
-    <path fill="#44cc11" th:if="${request.fase == 'OPEN'}" d="M89 0h121v20H89z"/>
-    <path fill="#49b2e1" th:if="${request.fase == 'RESOLVED'}" d="M89 0h121v20H89z"/>
-    <path fill="#a8a8a8" th:if="${request.fase == 'CLOSED'}" d="M89 0h121v20H89z"/>
-    <path fill="url(#b)" d="M0 0h210v20H0z"/>
-  </g>
-  <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="110">
-    <text x="455" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="790">funding status</text>
-    <text x="455" y="140" transform="scale(.1)" textLength="790">funding status</text>
-    <text x="1485" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="1110">
-      <span th:remove="tag" th:text="${#strings.toLowerCase(request.fase)}"></span> (<span th:remove="tag" th:if="${request.funds.fndFunds != null}" th:text="${#numbers.formatDecimal(request.funds.fndFunds.totalAmount,1,2,'POINT')}"></span> <span th:remove="tag" th:text="${request.funds.fndFunds.tokenSymbol}"></span>)
-    </text>
-    <text x="1485" y="140" transform="scale(.1)" textLength="1110">
-      <span th:remove="tag" th:text="${#strings.toLowerCase(request.fase)}"></span> (<span th:remove="tag" th:if="${request.funds.fndFunds != null}" th:text="${#numbers.formatDecimal(request.funds.fndFunds.totalAmount,1,2,'POINT')}"></span> <span th:remove="tag" th:text="${request.funds.fndFunds.tokenSymbol}"></span>)
-    </text>
-  </g>
+     width="227" height="20">
+    <linearGradient id="b" x2="0" y2="100%">
+        <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+        <stop offset="1" stop-opacity=".1"/>
+    </linearGradient>
+    <clipPath id="a">
+        <rect width="227" height="20" rx="3" fill="#fff"/>
+    </clipPath>
+    <g clip-path="url(#a)">
+        <path fill="#555" d="M0 0h106v20H0z"/>
+        <path fill="#44cc11" th:if="${requestFase.name() == 'OPEN'}" d="M106 0h141v20H106z"/>
+        <path fill="#49b2e1" th:if="${requestFase.name() == 'RESOLVED'}" d="M106 0h141v20H106z"/>
+        <path fill="#a8a8a8" th:if="${requestFase.name() == 'CLOSED'}" d="M106 0h141v20H106z"/>
+        <path fill="url(#b)" d="M0 0h227v20H0z"/>
+    </g>
+    <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="110">
+        <g viewBox="0 0 61 60" x="50" y="10" transform="translate(1,1), scale(.30)">
+            <path d="M4,28.67l24-24a2.74,2.74,0,0,0,.8-1.93,2.7,2.7,0,0,0-3-2.68A28.88,28.88,0,0,0,1.35,20,10.23,10.23,0,0,0,4,28.67Z"
+                  transform="translate(0 0)" style="fill:#ffd64a"/>
+            <path d="M1.36,20l0,.1,0-.08Z" transform="translate(0 0)" style="fill:#f68c3e"/>
+            <polygon points="4.01 28.67 4.01 28.67 3.96 28.72 4.01 28.67" style="fill:#f68c3e"/>
+            <path d="M4,28.72l0,0A10.23,10.23,0,0,1,1.35,20l0,.08a28.78,28.78,0,0,0-.95,4l0,.24q-.15,1-.23,2c0,.12,0,.25,0,.37C0,27.35,0,28,0,28.72q0,.72,0,1.44c0,.16,0,.32,0,.47,0,.32,0,.63.07.95s0,.37.07.56.07.56.11.84.06.39.1.59.09.53.14.8.08.4.13.59.11.51.18.76.1.4.16.6.14.49.21.74l.19.59q.12.36.24.72l.21.58.28.7.24.57.31.68.26.55.34.67.28.53.38.67.3.5.43.66.31.47.48.68.3.42c.19.25.39.5.59.75l.24.31q.43.52.88,1l.17.18c.25.27.5.53.75.79l.35.33.62.59.41.36.6.52.45.36.61.48.48.35.61.44.5.33.63.4.52.31.65.37.54.29.66.34.55.27.68.31.56.24.71.28.57.21.74.25.56.18.78.22.55.15.86.2.5.11,1.06.19.31.06,1.16.15a2.86,2.86,0,0,0,2.95-1.48,2.71,2.71,0,0,0-.52-3.1Z"
+                  transform="translate(0 0)" style="fill:#f68c3e"/>
+            <path d="M56.34,28.67l-24-24a2.74,2.74,0,0,1-.8-1.93,2.7,2.7,0,0,1,3-2.68A28.88,28.88,0,0,1,59,20a10.23,10.23,0,0,1-2.65,8.69Z"
+                  transform="translate(0 0)" style="fill:#30b561"/>
+            <path d="M59,20l0,.1L59,20Z" transform="translate(0 0)" style="fill:#f68c3e"/>
+            <polygon points="56.34 28.67 56.34 28.67 56.38 28.72 56.34 28.67" style="fill:#f68c3e"/>
+            <path d="M56.38,28.72l0,0A10.23,10.23,0,0,0,59,20l0,.08a28.78,28.78,0,0,1,.95,4l0,.24q.15,1,.23,2c0,.12,0,.25,0,.37,0,.68.08,1.36.08,2q0,.72,0,1.44c0,.16,0,.32,0,.47,0,.32,0,.63-.07.95s0,.37-.07.56-.07.56-.11.84-.06.39-.1.59-.09.53-.14.8-.08.4-.13.59-.11.51-.18.76-.1.4-.16.6-.14.49-.21.74l-.19.59q-.12.36-.24.72l-.21.58-.28.7-.24.57-.31.68-.26.55-.34.67-.28.53-.38.67-.3.5-.43.66-.31.47-.48.68-.3.42c-.19.25-.39.5-.59.75l-.24.31q-.43.52-.88,1l-.17.18c-.25.27-.5.53-.75.79l-.35.33L51,50l-.41.36-.6.52-.45.36-.61.48-.48.35-.61.44-.5.33-.63.4-.52.31-.65.37-.54.29-.66.34-.55.27-.68.31-.56.24-.71.28-.57.21-.74.25-.56.18-.78.22-.55.15-.86.2-.5.11-1.06.19-.31.06-1.16.15a2.86,2.86,0,0,1-2.95-1.48,2.71,2.71,0,0,1,.52-3.1Z"
+                  transform="translate(0 0)" style="fill:#7cc78f"/>
+        </g>
+        <text x="625" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="790">funding status
+        </text>
+        <text x="625" y="140" transform="scale(.1)" textLength="790">funding status</text>
+        <text x="1655" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="1110">
+            <span th:remove="tag" th:text="${#strings.toLowerCase(requestFase.name())}"></span>
+            (<span th:remove="tag" th:if="${highestFunds != null}"
+                   th:text="${#numbers.formatDecimal(highestFunds.totalAmount,1,2,'POINT')}"></span>
+            <span th:remove="tag" th:text="${highestFunds.tokenSymbol}"></span>)
+        </text>
+        <text x="1655" y="140" transform="scale(.1)" textLength="1110">
+            <span th:remove="tag" th:text="${#strings.toLowerCase(requestFase.name())}"></span>
+            (<span th:remove="tag" th:if="${highestFunds != null}"
+                   th:text="${#numbers.formatDecimal(highestFunds.totalAmount,1,2,'POINT')}"></span>
+            <span th:remove="tag" th:text="${highestFunds.tokenSymbol}"></span>)
+        </text>
+    </g>
 </svg>

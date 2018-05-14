@@ -3,7 +3,7 @@
 import * as $ from 'jquery';
 
 import * as ClipboardJS from 'clipboard';
-import {Alert} from './alert';
+import Alert from './Alert';
 import {InstantEdit} from '../pages/profile/instant-edit';
 import {OpenLinkInPopup} from './open-link-in-popup';
 

@@ -2,7 +2,7 @@ import {Web3x} from "./Web3x";
 import {FundRequestContract} from "../contracts/FundRequestContract";
 import {FundRequestToken} from "../contracts/FundRequestToken";
 import {FundRepository} from "../contracts/FundRepository";
-import {Utils} from "./Utils";
+import Utils from "./Utils";
 import {TokenInfo} from "./token-info";
 import {MiniMeToken} from "../contracts/MiniMeToken";
 
@@ -54,7 +54,16 @@ export class Contracts {
         return this._fundRepository;
     }
 
-    static getPossibleTokens(platformId: string): Promise<TokenInfo[]> {
+    public static async getErc20Balance(account: string, token: TokenInfo): Promise<Number> {
+        if (token) {
+            let erc20 = await Contracts.getInstance().getErc20Contract(token.address);
+            return (await erc20.balanceOf(account)).toNumber();
+        } else {
+            return 0;
+        }
+    }
+
+    public static getPossibleTokens(platformId: string): Promise<TokenInfo[]> {
         return Utils.getJSON("/rest/fund/allowed-tokens?platform=GITHUB&platformId=" + encodeURIComponent(platformId));
     }
 

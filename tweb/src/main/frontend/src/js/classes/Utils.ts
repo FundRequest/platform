@@ -1,7 +1,12 @@
 import * as $ from 'jquery';
-import {Github} from './github';
+import Github from './Github';
+import BigNumber from 'bignumber.js';
 
-export class Utils {
+export default class Utils {
+    
+    public static biggestNumber(): BigNumber {
+        return new BigNumber("1.157920892e77").minus(1);
+    }
 
     public static showLoading() {
         let loader = document.querySelector('[data-page-loader]');
@@ -95,19 +100,27 @@ export class Utils {
         return $.get(url).promise();
     }
 
+    public static setElementValid(element: HTMLElement) {
+        element.classList.add('is-valid');
+        element.classList.remove('is-invalid');
+    }
+
+    public static setElementInvalid(element: HTMLElement, message: string = null) {
+        element.classList.remove('is-valid');
+        element.classList.add('is-invalid');
+    }
+
     public static async validateHTMLElement(element: HTMLElement, validations: string[], callback = null): Promise<boolean> {
         let value = Utils._getElementValue(element);
         let isValid = await Utils._validateElementValue(validations, value);
 
         if (isValid) {
-            element.classList.add('is-valid');
-            element.classList.remove('is-invalid');
+            Utils.setElementValid(element);
             if (callback != null) {
                 await callback(value);
             }
         } else {
-            element.classList.remove('is-valid');
-            element.classList.add('is-invalid');
+            Utils.setElementInvalid(element);
         }
 
         return isValid;
@@ -148,19 +161,6 @@ export class Utils {
         }
     };
 
-    private static _getElementValue(element) {
-        switch (element.tagName.toLowerCase()) {
-            case 'input':
-                return (<HTMLInputElement>element).value;
-            case 'textarea':
-                return (<HTMLTextAreaElement>element).value;
-            case 'select':
-                return (<HTMLSelectElement>element).value;
-            default:
-                return '';
-        }
-    }
-
     private static async _validateElementValue(validations: string[], value: string): Promise<boolean> {
         let isValid = true;
 
@@ -191,5 +191,18 @@ export class Utils {
 
     private static async _validateGithub(value: string): Promise<boolean> {
         return value.trim().length <= 0 || await Utils.validators.github(value);
+    }
+
+    private static _getElementValue(element) {
+        switch (element.tagName.toLowerCase()) {
+            case 'input':
+                return (<HTMLInputElement>element).value;
+            case 'textarea':
+                return (<HTMLTextAreaElement>element).value;
+            case 'select':
+                return (<HTMLSelectElement>element).value;
+            default:
+                return '';
+        }
     }
 }
