@@ -274,7 +274,7 @@ class FundServiceImpl implements FundService {
                           .funder(funder)
                           .fndFunds("FND".equalsIgnoreCase(totalFundDto.getTokenSymbol()) ? totalFundDto : null)
                           .otherFunds(!"FND".equalsIgnoreCase(totalFundDto.getTokenSymbol()) ? totalFundDto : null)
-                          .isLoggedInUser(userProfile != null && (userProfile.getId().equals(f.getFunderUserId()) || f.getFunder().equals(userProfile.getEtherAddress())))
+                          .isLoggedInUser(userProfile != null && (userProfile.getId().equals(f.getFunderUserId()) || f.getFunder().equalsIgnoreCase(userProfile.getEtherAddress())))
                           .build();
     }
 
