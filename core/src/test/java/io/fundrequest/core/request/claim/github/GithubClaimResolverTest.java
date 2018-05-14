@@ -19,12 +19,14 @@ import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.keycloak.UserIdentity;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 
 import java.security.Principal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -60,6 +62,7 @@ public class GithubClaimResolverTest {
 
         assertThat(result.isClaimable()).isTrue();
         assertThat(result.isClaimableByUser()).isTrue();
+        verifyIssueCacheEvictedBeforeGet(issueInformation);
     }
 
     @Test
@@ -75,6 +78,7 @@ public class GithubClaimResolverTest {
 
         assertThat(result.isClaimable()).isFalse();
         assertThat(result.isClaimableByUser()).isFalse();
+        verifyIssueCacheEvictedBeforeGet(issueInformation);
     }
 
     @Test
@@ -90,6 +94,7 @@ public class GithubClaimResolverTest {
 
         assertThat(result.isClaimable()).isTrue();
         assertThat(result.isClaimableByUser()).isFalse();
+        verifyIssueCacheEvictedBeforeGet(issueInformation);
     }
 
     @Test
@@ -107,6 +112,7 @@ public class GithubClaimResolverTest {
 
         assertThat(result.isClaimable()).isFalse();
         assertThat(result.isClaimableByUser()).isFalse();
+        verifyIssueCacheEvictedBeforeGet(issueInformation);
     }
 
     @Test
@@ -120,6 +126,7 @@ public class GithubClaimResolverTest {
         when(githubGateway.getIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubResult.builder().state("closed").build());
 
         assertThat(claimResolver.canClaim(principal, requestDto)).isTrue();
+        verifyIssueCacheEvictedBeforeGet(issueInformation);
     }
 
     @Test
@@ -133,6 +140,7 @@ public class GithubClaimResolverTest {
         when(githubGateway.getIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubResult.builder().state("closed").build());
 
         assertThat(claimResolver.canClaim(principal, requestDto)).isFalse();
+        verifyIssueCacheEvictedBeforeGet(issueInformation);
     }
 
     @Test
@@ -144,6 +152,7 @@ public class GithubClaimResolverTest {
         when(githubGateway.getIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubResult.builder().state("open").build());
 
         assertThat(claimResolver.canClaim(principal, requestDto)).isFalse();
+        verifyIssueCacheEvictedBeforeGet(issueInformation);
     }
 
     @Test
@@ -199,5 +208,11 @@ public class GithubClaimResolverTest {
                                .address(userClaimRequest.getAddress())
                                .solver(solver)
                                .build();
+    }
+
+    private void verifyIssueCacheEvictedBeforeGet(final IssueInformationDto issueInformation) {
+        final InOrder inOrder = inOrder(githubGateway);
+        inOrder.verify(githubGateway).evictIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
+        inOrder.verify(githubGateway).getIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
     }
 }

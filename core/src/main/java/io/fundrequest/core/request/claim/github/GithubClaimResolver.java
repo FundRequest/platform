@@ -63,13 +63,16 @@ public class GithubClaimResolver {
     }
 
     public Boolean canClaim(final Principal user, final RequestDto request) {
-        return isIssueClosed(request)
-               && getSolver(request).map(solver -> isClaimalbeByUser(user, request, solver)).orElse(false);
+        final String owner = request.getIssueInformation().getOwner();
+        final String repo = request.getIssueInformation().getRepo();
+        final String number = request.getIssueInformation().getNumber();
+        return isIssueClosed(owner, repo, number) && getSolver(owner, repo, number).map(solver -> isClaimalbeByUser(user, request, solver)).orElse(false);
     }
 
     public UserClaimableDto userClaimableResult(final Principal user, final RequestDto request) {
-        if (isIssueClosed(request)) {
-            final Optional<String> solver = getSolver(request);
+        final IssueInformationDto issueInformation = request.getIssueInformation();
+        if (isIssueClosed(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())) {
+            final Optional<String> solver = getSolver(request.getIssueInformation().getOwner(), request.getIssueInformation().getRepo(), request.getIssueInformation().getNumber());
             if (solver.isPresent() && (request.getStatus() == RequestStatus.FUNDED || request.getStatus() == RequestStatus.CLAIMABLE)) {
                 return UserClaimableDto.builder()
                                        .claimable(true)
@@ -86,20 +89,20 @@ public class GithubClaimResolver {
                : getUserPlatformUsername(user, request.getIssueInformation().getPlatform()).map(u -> u.equalsIgnoreCase(solver)).orElse(false);
     }
 
-    private boolean isIssueClosed(final RequestDto request) {
-        final GithubResult githubIssue = githubGateway.getIssue(request.getIssueInformation().getOwner(),
-                                                                request.getIssueInformation().getRepo(),
-                                                                request.getIssueInformation().getNumber());
+    private boolean isIssueClosed(final String owner, final String repo, final String number) {
+        githubGateway.evictIssue(owner, repo, number);
+        final GithubResult githubIssue = githubGateway.getIssue(owner, repo, number);
         return githubIssue.getState().equals(GITHUB_STATE_CLOSED);
     }
 
-    private Optional<String> getSolver(final RequestDto request) {
-        final IssueInformationDto issueInformation = request.getIssueInformation();
-        return githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber());
+    private Optional<String> getSolver(final String owner, final String repo, final String number) {
+        return githubSolverResolver.resolveSolver(owner, repo, number);
     }
 
     private String getSolver(final Principal user, final UserClaimRequest userClaimRequest, final RequestDto request) throws IOException {
-        final String solver = getSolver(request).orElseThrow(() -> new RuntimeException("Unable to get solver"));
+        final String solver = getSolver(request.getIssueInformation().getOwner(),
+                                        request.getIssueInformation().getRepo(),
+                                        request.getIssueInformation().getNumber()).orElseThrow(() -> new RuntimeException("Unable to get solver"));
         final String userPlatformUsername = getUserPlatformUsername(user, userClaimRequest.getPlatform()).orElseThrow(GITHUB_ACCOUNT_IS_NOT_LINKED);
         if (!solver.equalsIgnoreCase(userPlatformUsername)) {
             throw new RuntimeException("Claim executed by wrong user");

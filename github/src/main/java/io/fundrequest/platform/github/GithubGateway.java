@@ -25,6 +25,11 @@ public class GithubGateway {
         return githubClient.getIssue(owner, repo, number);
     }
 
+    @CacheEvict(value = "github_issue")
+    public void evictIssue(String owner, String repo, String number) {
+        // Intentionally blank
+    }
+
     public GithubResult getPullrequest(String owner, String repo, String number) {
         return githubClient.getPullrequest(owner, repo, number);
     }
