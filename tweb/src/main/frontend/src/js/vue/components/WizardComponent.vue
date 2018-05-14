@@ -31,7 +31,7 @@
 
         public currentAllowance: number = 0;
         public currentFundAmount: number = 0;
-        public errorMessages: { fundAmount: string } = { fundAmount: '' };
+        public errorMessages: { fundAmount: string } = {fundAmount: ''};
 
         public paymentMethod: PaymentMethod = PaymentMethods.getInstance().trustWallet;
         public fundAmount: number = 100;
@@ -206,11 +206,10 @@
         }
 
         public async showTrustWalletModal() {
-            let fundAmountInWei = Number(this.fundAmount * Math.pow(10, this.selectedToken.decimals));
             this.qrData = (await Utils.postJSON(`/rest/requests/erc67/fund`, {
                 platform: this.githubIssue.platform,
                 platformId: this.githubIssue.platformId,
-                amount: fundAmountInWei,
+                amount: this.fundAmount,
                 fundrequestAddress: Contracts.getInstance().frContractAddress,
                 tokenAddress: Contracts.getInstance().tokenContractAddress
             })).erc67Link;
