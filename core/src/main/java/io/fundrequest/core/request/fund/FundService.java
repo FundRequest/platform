@@ -17,8 +17,6 @@ public interface FundService {
 
     List<TotalFundDto> getTotalFundsForRequest(Long requestId);
 
-    void removePendingFund(String transactionHash);
-
     FundersDto getFundedBy(Principal principal, Long requestId);
 
     void clearTotalFundsCache(Long requestId);

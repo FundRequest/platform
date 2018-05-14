@@ -1,4 +1,4 @@
-package io.fundrequest.core.request.fund;
+package io.fundrequest.core.request.fund.domain;
 
 import org.apache.commons.codec.binary.Hex;
 import org.hibernate.validator.constraints.NotEmpty;
