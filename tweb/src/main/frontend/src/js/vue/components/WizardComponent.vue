@@ -206,10 +206,11 @@
         }
 
         public async showTrustWalletModal() {
+            let fundAmountInWei = Number(this.fundAmount * Math.pow(10, this.selectedToken.decimals));
             this.qrData = (await Utils.post(`/rest/requests/erc67/fund`, {
                 platform: this.githubIssue.platform,
                 platformId: this.githubIssue.platformId,
-                amount: this.totalAmount,
+                amount: fundAmountInWei,
                 fundrequestAddress: Contracts.getInstance().frContractAddress,
                 tokenAddress: Contracts.getInstance().tokenContractAddress
             })).erc67Link;
