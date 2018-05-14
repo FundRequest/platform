@@ -8,6 +8,8 @@ cache:
     - tweb/src/main/frontend/src/js/vue/node_modules
 node_js: "8.7.0"
 
+script: mvn -Dfeign.client.github.username=$FEIGN_CLIENT_GITHUB_USERNAME -Dfeign.client.github.password=$FEIGN_CLIENT_GITHUB_PASSWORD test -B
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
