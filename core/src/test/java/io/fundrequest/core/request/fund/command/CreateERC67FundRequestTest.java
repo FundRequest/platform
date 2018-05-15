@@ -11,7 +11,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class CreateERC67FundRequestTest {
 
     @Test
-    public void toFunction() throws Exception {
+    public void toFunction() {
         CreateERC67FundRequest github = new CreateERC67FundRequest()
                 .setAmount(new BigInteger("100000000000000000000"))
                 .setFundrequestAddress("0x00000000000000000000000000000000deadbeef")
