@@ -79,7 +79,7 @@
         }
 
         public showActions(event: Event) {
-            console.log("show actions");
+            //console.log("show actions");
         }
 
         public getRequestDetailUrl(id) {
