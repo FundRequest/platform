@@ -34,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,15 +60,17 @@ class RequestServiceImpl implements RequestService {
     private GithubGateway githubGateway;
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
+    private Environment environment;
 
-    public RequestServiceImpl(RequestRepository requestRepository,
-                              Mappers mappers,
-                              GithubPlatformIdParser githubLinkParser,
-                              ProfileService profileService,
-                              ClaimRepository claimRepository,
-                              GithubGateway githubGateway,
-                              GithubClaimResolver githubClaimResolver,
-                              ApplicationEventPublisher eventPublisher) {
+    public RequestServiceImpl(final RequestRepository requestRepository,
+                              final Mappers mappers,
+                              final GithubPlatformIdParser githubLinkParser,
+                              final ProfileService profileService,
+                              final ClaimRepository claimRepository,
+                              final GithubGateway githubGateway,
+                              final GithubClaimResolver githubClaimResolver,
+                              final ApplicationEventPublisher eventPublisher,
+                              final Environment environment) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
@@ -76,6 +79,7 @@ class RequestServiceImpl implements RequestService {
         this.githubGateway = githubGateway;
         this.githubClaimResolver = githubClaimResolver;
         this.eventPublisher = eventPublisher;
+        this.environment = environment;
     }
 
     @Override
@@ -211,7 +215,7 @@ class RequestServiceImpl implements RequestService {
                 .withAddress(createERC67FundRequest.getTokenAddress())
                 .withNetwork("ethereum")
                 .withParameter("data", createERC67FundRequest.toByteData())
-                .withParameter("gas", "200000")
+                .withParameter("gas", environment.getProperty("io.fundrequest.payments.erc67.gas", "200000"))
                 .build()
                 .visualize();
     }
