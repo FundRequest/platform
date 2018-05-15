@@ -13,7 +13,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
 
-import static io.fundrequest.core.request.fund.EthUtil.toWei;
+import static io.fundrequest.core.web3j.EthUtil.toWei;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
