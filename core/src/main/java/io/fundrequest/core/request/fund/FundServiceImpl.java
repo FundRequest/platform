@@ -159,8 +159,8 @@ class FundServiceImpl implements FundService {
                                              .collect(Collectors.toList());
         list = groupByFunder(list);
         enrichFundsWithZeroValues(list);
-        TotalFundDto fndFunds = totalFndFunds(list);
-        TotalFundDto otherFunds = totalOtherFunds(list);
+        TotalFundDto fndFunds = totalFunds(list, FunderDto::getFndFunds);
+        TotalFundDto otherFunds = totalFunds(list, FunderDto::getOtherFunds);
         return FundersDto.builder()
                          .funders(list)
                          .fndFunds(fndFunds)
@@ -222,44 +222,25 @@ class FundServiceImpl implements FundService {
         }
     }
 
-    private TotalFundDto totalFndFunds(List<FunderDto> funds) {
+    private TotalFundDto totalFunds(final List<FunderDto> funds, final Function<FunderDto, TotalFundDto> getFundsFunction) {
         if (funds.isEmpty()) {
             return null;
         }
         BigDecimal totalValue = funds.stream()
-                                     .filter(f -> f.getFndFunds() != null)
-                                     .map(f -> f.getFndFunds().getTotalAmount())
+                                     .map(getFundsFunction)
+                                     .filter(Objects::nonNull)
+                                     .map(TotalFundDto::getTotalAmount)
                                      .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return funds
-                .stream()
-                .filter(f -> f.getFndFunds() != null)
-                .findFirst()
-                .map(f -> TotalFundDto.builder()
-                                      .tokenSymbol(f.getFndFunds().getTokenSymbol())
-                                      .tokenAddress(f.getFndFunds().getTokenAddress())
-                                      .totalAmount(totalValue)
-                                      .build())
-                .orElse(null);
-    }
-
-    private TotalFundDto totalOtherFunds(List<FunderDto> funds) {
-        if (funds.isEmpty()) {
-            return null;
-        }
-        BigDecimal totalValue = funds.stream()
-                                     .filter(f -> f.getOtherFunds() != null)
-                                     .map(f -> f.getOtherFunds().getTotalAmount())
-                                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return funds
-                .stream()
-                .filter(f -> f.getOtherFunds() != null)
-                .findFirst()
-                .map(f -> TotalFundDto.builder()
-                                      .tokenSymbol(f.getOtherFunds().getTokenSymbol())
-                                      .tokenAddress(f.getOtherFunds().getTokenAddress())
-                                      .totalAmount(totalValue)
-                                      .build())
-                .orElse(null);
+        return funds.stream()
+                    .map(getFundsFunction)
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .map(f -> TotalFundDto.builder()
+                                          .tokenSymbol(f.getTokenSymbol())
+                                          .tokenAddress(f.getTokenAddress())
+                                          .totalAmount(totalValue)
+                                          .build())
+                    .orElse(null);
     }
 
     private FunderDto mapToFunderDto(UserProfile userProfile, Fund f) {
