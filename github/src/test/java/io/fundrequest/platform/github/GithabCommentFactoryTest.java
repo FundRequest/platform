@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GithubCommentFactoryTest {
+public class GithabCommentFactoryTest {
 
     private final static String EXPECTED_FUNDED_COMMENT =
             "[![](https://fundrequest.io/requests/156/badge)](https://fundrequest.io/requests/156)"
@@ -38,11 +38,11 @@ public class GithubCommentFactoryTest {
 //            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
             + "\r\n* Looking for more? Feel free to [browse](https://fundrequest.io/requests) through all funded requests.";
 
-    private GithubCommentFactory githubCommentFactory;
+    private GithabCommentFactory githubCommentFactory;
 
     @Before
     public void setUp() {
-        githubCommentFactory = new GithubCommentFactory("https://fundrequest.io");
+        githubCommentFactory = new GithabCommentFactory("https://fundrequest.io");
     }
 
     @Test

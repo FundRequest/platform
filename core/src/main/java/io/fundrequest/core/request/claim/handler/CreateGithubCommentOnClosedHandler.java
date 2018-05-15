@@ -5,7 +5,7 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.github.CreateGithubComment;
-import io.fundrequest.platform.github.GithubCommentFactory;
+import io.fundrequest.platform.github.GithabCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.github.scraper.GithubScraper;
@@ -24,13 +24,13 @@ public class CreateGithubCommentOnClosedHandler {
 
     private final GithubGateway githubGateway;
     private final GithubScraper githubScraper;
-    private final GithubCommentFactory githubCommentFactory;
+    private final GithabCommentFactory githubCommentFactory;
     private final Boolean addComment;
     private final String githubUser;
 
     public CreateGithubCommentOnClosedHandler(final GithubGateway githubGateway,
                                               final GithubScraper githubScraper,
-                                              final GithubCommentFactory githubCommentFactory,
+                                              final GithabCommentFactory githubCommentFactory,
                                               @Value("${github.add-comments:false}") final Boolean addComment,
                                               @Value("${feign.client.github.username:fundrequest-notifier}") final String githubUser) {
 

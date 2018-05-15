@@ -6,7 +6,7 @@ import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.CreateGithubComment;
-import io.fundrequest.platform.github.GithubCommentFactory;
+import io.fundrequest.platform.github.GithabCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,13 +23,13 @@ public class CreateGithubCommentOnFundHandlerTest {
 
     private CreateGithubCommentOnFundHandler handler;
     private GithubGateway githubGateway;
-    private GithubCommentFactory githubCommentFactory;
+    private GithabCommentFactory githubCommentFactory;
     private RequestService requestService;
 
     @Before
     public void setUp() {
         githubGateway = mock(GithubGateway.class);
-        githubCommentFactory = mock(GithubCommentFactory.class);
+        githubCommentFactory = mock(GithabCommentFactory.class);
         requestService = mock(RequestService.class);
         handler = new CreateGithubCommentOnFundHandler(githubGateway, githubCommentFactory, requestService, true, "fundrequest-notifier");
     }
