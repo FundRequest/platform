@@ -71,16 +71,24 @@ export default class RequestsList {
 
     private _sort(requests: RequestDto[], sortBy: string) {
         if (sortBy) {
+            let splitted = sortBy.split('__');
+            let property = splitted[0];
+            let direction = splitted[1] ? splitted[1] : 'asc';
+
             let sortFunction;
-            if (sortBy.toLowerCase() == 'fundings') {
+            if (property.toLowerCase() == 'fundings') {
                 // sort fndFunds.totalAmount from high to low
                 sortFunction = this._getFundingSortFunction();
             } else {
-                sortFunction = this._getSortByFunction(sortBy);
+                sortFunction = this._getSortByFunction(property);
             }
-            return requests.sort(sortFunction);
-        } else {
-            return requests;
+
+            if (direction == 'asc') {
+                return requests.sort(sortFunction);
+            } else {
+                return requests.sort(sortFunction).reverse();
+            }
         }
+        return requests;
     }
 }
