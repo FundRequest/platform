@@ -4,6 +4,7 @@ import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,4 +27,7 @@ public class RequestDto {
 
     private AllFundsDto funds = new AllFundsDto();
 
+    private LocalDateTime creationDate;
+
+    private LocalDateTime lastModifiedDate;
 }

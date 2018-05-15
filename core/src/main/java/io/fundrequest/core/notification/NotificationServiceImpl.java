@@ -109,15 +109,15 @@ class NotificationServiceImpl implements NotificationService {
                                                                                fundedEvent.getTransactionId(),
                                                                                fundedEvent.getFundDto().getId());
         notification = notificationRepository.saveAndFlush(notification);
-        publishNotification(createRequestFundedNotification(notification, fundedEvent.getRequestDto(), fundedEvent.getFundDto()));
+        publishNotification(createRequestFundedNotification(notification, fundedEvent.getRequestId(), fundedEvent.getFundDto()));
     }
 
-    private RequestFundedNotificationDto createRequestFundedNotification(RequestFundedNotification notification, RequestDto requestDto, FundDto fundDto) {
+    private RequestFundedNotificationDto createRequestFundedNotification(RequestFundedNotification notification, Long requestId, FundDto fundDto) {
         return new RequestFundedNotificationDto(
                 notification.getId(),
                 notification.getTransactionId(),
                 notification.getDate(),
-                requestDto,
+                requestService.findRequest(requestId),
                 fundDto
         );
     }

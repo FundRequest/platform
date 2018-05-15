@@ -90,7 +90,7 @@
             <template slot-scope="{faseFilter}">
                 <div class="card" v-if="faseFilter === 'info'">
                     <div class="card-body">
-                        <div class="request-details d-flex flex-wrap align-items-start">
+                        <div class="request-details d-flex flex-wrap flex-md-nowrap align-items-start">
                             <div class="request-details__logo">
                                 <div>
                                     <img th:src="@{${request.icon}(size=30)}" th:alt-title="${request.owner}" />

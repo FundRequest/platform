@@ -19,6 +19,7 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
+import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
@@ -32,7 +33,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.env.Environment;
 
+import java.math.BigInteger;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -64,9 +67,10 @@ public class RequestServiceImplTest {
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
     private ProfileService profileService;
+    private Environment environment;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         requestRepository = mock(RequestRepository.class);
         mappers = mock(Mappers.class);
         githubLinkParser = mock(GithubPlatformIdParser.class);
@@ -75,16 +79,17 @@ public class RequestServiceImplTest {
         githubClaimResolver = mock(GithubClaimResolver.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
         claimRepository = mock(ClaimRepository.class);
+        environment = mock(Environment.class);
         requestService = new RequestServiceImpl(
                 requestRepository,
                 mappers,
                 githubLinkParser,
                 profileService,
-                claimRepository, githubGateway, githubClaimResolver, eventPublisher);
+                claimRepository, githubGateway, githubClaimResolver, eventPublisher, environment);
     }
 
     @Test
-    public void findAll() throws Exception {
+    public void findAll() {
         List<Request> requests = singletonList(RequestMother.freeCodeCampNoUserStories().build());
         when(requestRepository.findAll()).thenReturn(requests);
 
@@ -97,7 +102,23 @@ public class RequestServiceImplTest {
     }
 
     @Test
-    public void findAllByIterable() throws Exception {
+    public void generateERC67() {
+        when(environment.getProperty("io.fundrequest.payments.erc67.gas", "200000"))
+                .thenReturn("150000");
+
+        final CreateERC67FundRequest erc67 = new CreateERC67FundRequest()
+                .setAmount(new BigInteger("100000000000000000000"))
+                .setFundrequestAddress("0x00000000000000000000000000000000deadbeef")
+                .setTokenAddress("0x0000000000000000000000000000000000000000")
+                .setPlatform("github")
+                .setPlatformId("1");
+
+        assertThat(requestService.generateERC67(erc67))
+                .isEqualTo("ethereum:0x0000000000000000000000000000000000000000?data=0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000&gas=150000");
+    }
+
+    @Test
+    public void findAllByIterable() {
         List<Request> requests = singletonList(RequestMother.freeCodeCampNoUserStories().build());
         Set<Long> ids = requests.stream().map(Request::getId).collect(Collectors.toSet());
         when(requestRepository.findAll(ids)).thenReturn(requests);
@@ -111,7 +132,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
-    public void findRequest() throws Exception {
+    public void findRequest() {
         Optional<Request> request = Optional.of(RequestMother.freeCodeCampNoUserStories().withWatchers(singletonList("davy")).withId(1L).build());
         when(requestRepository.findOne(request.get().getId())).thenReturn(request);
         RequestDto expectedRequest = RequestDtoMother.freeCodeCampNoUserStories();
@@ -123,7 +144,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
-    public void findRequestsForUser() throws Exception {
+    public void findRequestsForUser() {
         Principal user = mock(Principal.class, RETURNS_DEEP_STUBS);
 
         List<Request> requests = singletonList(RequestMother.freeCodeCampNoUserStories().build());
@@ -168,7 +189,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
-    public void createWithNewIssue() throws Exception {
+    public void createWithNewIssue() {
         CreateRequestCommand command = createCommand();
         when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.empty());
         IssueInformation issueInformation = IssueInformationMother.kazuki43zooApiStub().build();
@@ -185,7 +206,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
-    public void createWithExistingIssue() throws Exception {
+    public void createWithExistingIssue() {
         CreateRequestCommand command = createCommand();
         Optional<Request> request = Optional.of(RequestMother.freeCodeCampNoUserStories().build());
         when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(request);
@@ -205,7 +226,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
-    public void addWatcher() throws Exception {
+    public void addWatcher() {
         Principal user = mock(Principal.class);
         when(user.getName()).thenReturn("davy");
         Optional<Request> request = Optional.of(RequestMother.freeCodeCampNoUserStories().withId(1L).build());
@@ -217,7 +238,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
-    public void removeWatcher() throws Exception {
+    public void removeWatcher() {
         Principal user = mock(Principal.class);
         when(user.getName()).thenReturn("davy");
         Optional<Request> request = Optional.of(RequestMother.freeCodeCampNoUserStories().withWatchers(singletonList("davy")).withId(1L).build());

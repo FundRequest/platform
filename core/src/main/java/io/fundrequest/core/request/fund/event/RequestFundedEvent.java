@@ -1,36 +1,16 @@
 package io.fundrequest.core.request.fund.event;
 
 import io.fundrequest.core.request.fund.dto.FundDto;
-import io.fundrequest.core.request.view.RequestDto;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Data
+@Builder
 public class RequestFundedEvent {
-    private String transactionId;
-    private FundDto fundDto;
-    private RequestDto requestDto;
-    private LocalDateTime timestamp;
-
-    public RequestFundedEvent(String transactionId, FundDto fundDto, RequestDto requestDto, LocalDateTime timestamp) {
-        this.transactionId = transactionId;
-        this.fundDto = fundDto;
-        this.requestDto = requestDto;
-        this.timestamp = timestamp;
-    }
-
-    public FundDto getFundDto() {
-        return fundDto;
-    }
-
-    public RequestDto getRequestDto() {
-        return requestDto;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public String getTransactionId() {
-        return transactionId;
-    }
+    private final String transactionId;
+    private final FundDto fundDto;
+    private final Long requestId;
+    private final LocalDateTime timestamp;
 }

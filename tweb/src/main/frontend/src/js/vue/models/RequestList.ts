@@ -10,7 +10,7 @@ export default class RequestsList {
 
     public getRequests(filter: RequestListFilter, sortBy: string = null): RequestDto[] {
         let requests = this._filter(this.requests, filter);
-        return this._sort(requests, sortBy);
+        return this._sortBy(requests, sortBy);
     }
 
     private _filter(requests: RequestDto[], filter: RequestListFilter) {
@@ -33,7 +33,44 @@ export default class RequestsList {
         });
     }
 
-    private _getFundingSortFunction() {
+    private _sortBy(requests: RequestDto[], sortBy: string) {
+        if (sortBy) {
+            let splitted = sortBy.split('__');
+            let property = splitted[0];
+            let direction = splitted[1] ? splitted[1] : 'asc';
+
+            return this._sortByPropertyAndDirection(requests, property, direction);
+        }
+        return requests;
+    }
+
+    private _sortByPropertyAndDirection(requests: RequestDto[], property: string, direction: string) {
+        let sortFunction = this._getSortFunction(property);
+        let sortedRequests = requests.sort(sortFunction);
+        return this._applyDirection(sortedRequests, direction);
+    }
+
+
+    private _applyDirection(requests: RequestDto[], direction: string) {
+        if (direction == 'asc') {
+            return requests;
+        } else {
+            return requests.reverse();
+        };
+    }
+
+    private _getSortFunction(property) {
+        let sortFunction;
+        if (property.toLowerCase() == 'fundings') {
+            // sort fndFunds.totalAmount from high to low
+            sortFunction = this._getSortByFundingFunction();
+        } else {
+            sortFunction = this._getSortByPropertyFunction(property);
+        }
+        return sortFunction;
+    }
+
+    private _getSortByFundingFunction() {
         return (a: RequestDto, b: RequestDto) => {
             let result = 0;
             if (a.funds.usdFunds && a.funds.usdFunds) {
@@ -48,7 +85,7 @@ export default class RequestsList {
         }
     }
 
-    private _getSortByFunction(sortBy: string) {
+    private _getSortByPropertyFunction(sortBy: string) {
         return (a: RequestDto, b: RequestDto) => {
             let result = 0;
             if (a.hasOwnProperty(sortBy) && b.hasOwnProperty(sortBy)) {
@@ -66,21 +103,6 @@ export default class RequestsList {
             }
 
             return result;
-        }
-    }
-
-    private _sort(requests: RequestDto[], sortBy: string) {
-        if (sortBy) {
-            let sortFunction;
-            if (sortBy.toLowerCase() == 'fundings') {
-                // sort fndFunds.totalAmount from high to low
-                sortFunction = this._getFundingSortFunction();
-            } else {
-                sortFunction = this._getSortByFunction(sortBy);
-            }
-            return requests.sort(sortFunction);
-        } else {
-            return requests;
         }
     }
 }

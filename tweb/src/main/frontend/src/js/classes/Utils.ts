@@ -156,6 +156,10 @@ export default class Utils {
         github: (link): Promise<boolean> => {
             return Github.validateLink(link);
         },
+        currency: (value) => {
+            return /^(?!0+\.00)(?=.+(\.|$))(?!0(?!\.))\d{1,3}(,\d{3})*(\.\d+)?$/
+                .exec(value.trim()) != null;
+        },
         number: (value) => {
             return /^[0-9]+(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
         }

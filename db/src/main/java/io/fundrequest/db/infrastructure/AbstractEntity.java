@@ -36,16 +36,31 @@ public abstract class AbstractEntity {
         return creationDate;
     }
 
+    protected void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public LocalDateTime getLastModifiedDate() {
         return lastModifiedDate;
+    }
+
+    protected void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 
     public String getCreatedBy() {
         return createdBy;
     }
 
+    protected void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 
+    protected void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
 }

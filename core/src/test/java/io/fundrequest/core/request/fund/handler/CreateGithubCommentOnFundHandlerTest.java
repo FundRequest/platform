@@ -1,8 +1,9 @@
 package io.fundrequest.core.request.fund.handler;
 
+import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
-import io.fundrequest.core.request.view.FundDtoMother;
 import io.fundrequest.core.request.view.IssueInformationDto;
+import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.CreateGithubComment;
 import io.fundrequest.platform.github.GitHubCommentFactory;
@@ -10,8 +11,6 @@ import io.fundrequest.platform.github.GithubGateway;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
@@ -25,39 +24,48 @@ public class CreateGithubCommentOnFundHandlerTest {
     private CreateGithubCommentOnFundHandler handler;
     private GithubGateway githubGateway;
     private GitHubCommentFactory gitHubCommentFactory;
+    private RequestService requestService;
 
     @Before
     public void setUp() throws Exception {
         githubGateway = mock(GithubGateway.class);
         gitHubCommentFactory = mock(GitHubCommentFactory.class);
-        handler = new CreateGithubCommentOnFundHandler(githubGateway, gitHubCommentFactory, true, "fundrequest-notifier");
+        requestService = mock(RequestService.class);
+        handler = new CreateGithubCommentOnFundHandler(githubGateway, gitHubCommentFactory, requestService, true, "fundrequest-notifier");
     }
 
     @Test
     public void ignoresGithubComment() throws Exception {
-        handler = new CreateGithubCommentOnFundHandler(githubGateway, gitHubCommentFactory, false, "fundrequest-notifier");
+        handler = new CreateGithubCommentOnFundHandler(githubGateway, gitHubCommentFactory, requestService, false, "fundrequest-notifier");
 
-        handler.createGithubCommentOnRequestFunded(createEvent());
+        handler.createGithubCommentOnRequestFunded(createEvent(65478L));
 
         verifyZeroInteractions(githubGateway);
     }
 
     @Test
     public void postsGithubComment() {
-        final RequestFundedEvent event = createEvent();
+        final long requestId = 65478L;
+        final RequestFundedEvent event = createEvent(requestId);
         final String expectedMessage = "sgdhfjgkh";
-        final IssueInformationDto issueInformation = event.getRequestDto().getIssueInformation();
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        final IssueInformationDto issueInformation = requestDto.getIssueInformation();
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
 
-        when(gitHubCommentFactory.createFundedComment(event.getRequestDto().getId())).thenReturn(expectedMessage);
+        when(gitHubCommentFactory.createFundedComment(requestId)).thenReturn(expectedMessage);
+        when(requestService.findRequest(requestId)).thenReturn(requestDto);
 
         handler.createGithubCommentOnRequestFunded(event);
 
         verify(githubGateway).createCommentOnIssue(eq(issueInformation.getOwner()), eq(issueInformation.getRepo()), eq(issueInformation.getNumber()), createGithubCommentArgumentCaptor.capture());
-        assertThat(createGithubCommentArgumentCaptor.getValue().getBody()).isEqualTo(expectedMessage);
+
+        final CreateGithubComment githubComment = createGithubCommentArgumentCaptor.getValue();
+        assertThat(githubComment.getBody()).isEqualTo(expectedMessage);
     }
 
-    private RequestFundedEvent createEvent() {
-        return new RequestFundedEvent("0xd009f45e5d999ba5c3c5ffc2551a9749919d6c8aa915106c2c21e76ab552c200", FundDtoMother.aFundDto(), RequestDtoMother.freeCodeCampNoUserStories(), LocalDateTime.now());
+    private RequestFundedEvent createEvent(long requestId) {
+        return RequestFundedEvent.builder()
+                                 .requestId(requestId)
+                                 .build();
     }
 }
