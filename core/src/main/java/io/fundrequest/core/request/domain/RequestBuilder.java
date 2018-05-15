@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.domain;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ public final class RequestBuilder {
     private Set<RequestTechnology> technologies = new HashSet<>();
     private Long id;
     private RequestStatus status;
+    private LocalDateTime lastModifiedDate;
 
     private RequestBuilder() {
     }
@@ -44,11 +46,17 @@ public final class RequestBuilder {
         return this;
     }
 
+    public RequestBuilder withLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+        return this;
+    }
+
     public RequestBuilder but() {
         return aRequest().withWatchers(watchers)
                          .withTechnologies(technologies)
                          .withStatus(status)
-                         .withIssueInformation(issueInformation);
+                         .withIssueInformation(issueInformation)
+                         .withLastModifiedDate(lastModifiedDate);
     }
 
     public Request build() {
@@ -60,6 +68,7 @@ public final class RequestBuilder {
         }
         watchers.forEach(request::addWatcher);
         technologies.forEach(request::addTechnology);
+        request.setLastModifiedDate(lastModifiedDate);
         return request;
     }
 }

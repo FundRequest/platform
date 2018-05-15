@@ -33,6 +33,8 @@ public class RequestViewMapper implements BaseMapper<RequestDto, RequestView> {
                           .starred(r.isLoggedInUserIsWatcher())
                           .technologies(r.getTechnologies())
                           .funds(r.getFunds())
+                          .creationDate(r.getCreationDate())
+                          .lastModifiedDate(r.getLastModifiedDate())
                           .build();
     }
 }

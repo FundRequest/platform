@@ -17,7 +17,6 @@ import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
-import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
@@ -45,6 +44,8 @@ import static io.fundrequest.core.web3j.EthUtil.fromWei;
 
 @Service
 class FundServiceImpl implements FundService {
+
+    private static final String FND_TOKEN_SYMBOL = "FND";
 
     private FundRepository fundRepository;
     private PendingFundRepository pendingFundRepository;
@@ -158,8 +159,8 @@ class FundServiceImpl implements FundService {
                                              .collect(Collectors.toList());
         list = groupByFunder(list);
         enrichFundsWithZeroValues(list);
-        TotalFundDto fndFunds = totalFndFunds(list);
-        TotalFundDto otherFunds = totalOtherFunds(list);
+        TotalFundDto fndFunds = totalFunds(list, FunderDto::getFndFunds);
+        TotalFundDto otherFunds = totalFunds(list, FunderDto::getOtherFunds);
         return FundersDto.builder()
                          .funders(list)
                          .fndFunds(fndFunds)
@@ -221,44 +222,25 @@ class FundServiceImpl implements FundService {
         }
     }
 
-    private TotalFundDto totalFndFunds(List<FunderDto> funds) {
-        if (funds.size() == 0) {
+    private TotalFundDto totalFunds(final List<FunderDto> funds, final Function<FunderDto, TotalFundDto> getFundsFunction) {
+        if (funds.isEmpty()) {
             return null;
         }
         BigDecimal totalValue = funds.stream()
-                                     .filter(f -> f.getFndFunds() != null)
-                                     .map(f -> f.getFndFunds().getTotalAmount())
+                                     .map(getFundsFunction)
+                                     .filter(Objects::nonNull)
+                                     .map(TotalFundDto::getTotalAmount)
                                      .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return funds
-                .stream()
-                .filter(f -> f.getFndFunds() != null)
-                .findFirst()
-                .map(f -> TotalFundDto.builder()
-                                      .tokenSymbol(f.getFndFunds().getTokenSymbol())
-                                      .tokenAddress(f.getFndFunds().getTokenAddress())
-                                      .totalAmount(totalValue)
-                                      .build())
-                .orElse(null);
-    }
-
-    private TotalFundDto totalOtherFunds(List<FunderDto> funds) {
-        if (funds.size() == 0) {
-            return null;
-        }
-        BigDecimal totalValue = funds.stream()
-                                     .filter(f -> f.getOtherFunds() != null)
-                                     .map(f -> f.getOtherFunds().getTotalAmount())
-                                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return funds
-                .stream()
-                .filter(f -> f.getOtherFunds() != null)
-                .findFirst()
-                .map(f -> TotalFundDto.builder()
-                                      .tokenSymbol(f.getOtherFunds().getTokenSymbol())
-                                      .tokenAddress(f.getOtherFunds().getTokenAddress())
-                                      .totalAmount(totalValue)
-                                      .build())
-                .orElse(null);
+        return funds.stream()
+                    .map(getFundsFunction)
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .map(f -> TotalFundDto.builder()
+                                          .tokenSymbol(f.getTokenSymbol())
+                                          .tokenAddress(f.getTokenAddress())
+                                          .totalAmount(totalValue)
+                                          .build())
+                    .orElse(null);
     }
 
     private FunderDto mapToFunderDto(UserProfile userProfile, Fund f) {
@@ -268,15 +250,28 @@ class FundServiceImpl implements FundService {
                ? null
                : FunderDto.builder()
                           .funder(funder)
-                          .fndFunds("FND".equalsIgnoreCase(totalFundDto.getTokenSymbol()) ? totalFundDto : null)
-                          .otherFunds(!"FND".equalsIgnoreCase(totalFundDto.getTokenSymbol()) ? totalFundDto : null)
+                          .fndFunds(getFndFunds(totalFundDto))
+                          .otherFunds(getOtherFunds(totalFundDto))
                           .isLoggedInUser(userProfile != null && (userProfile.getId().equals(f.getFunderUserId()) || f.getFunder().equalsIgnoreCase(userProfile.getEtherAddress())))
                           .build();
+    }
+
+    private TotalFundDto getFndFunds(final TotalFundDto totalFundDto) {
+        return hasFNDTokenSymbol(totalFundDto) ? totalFundDto : null;
+    }
+
+    private TotalFundDto getOtherFunds(final TotalFundDto totalFundDto) {
+        return !hasFNDTokenSymbol(totalFundDto) ? totalFundDto : null;
+    }
+
+    private boolean hasFNDTokenSymbol(TotalFundDto totalFundDto) {
+        return FND_TOKEN_SYMBOL.equalsIgnoreCase(totalFundDto.getTokenSymbol());
     }
 
     @Override
     @CacheEvict(value = "funds", key = "#requestId")
     public void clearTotalFundsCache(Long requestId) {
+        // Intentionally blank
     }
 
     private Function<String, TotalFundDto> getTotalClaimFundDto(final Request request) {
@@ -310,11 +305,9 @@ class FundServiceImpl implements FundService {
                              .build();
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void addFunds(FundsAddedCommand command) {
-        Request request = requestRepository.findOne(command.getRequestId())
-                                           .orElseThrow(() -> new RuntimeException("Unable to find request"));
         Fund fund = Fund.builder()
                         .amountInWei(command.getAmountInWei())
                         .requestId(command.getRequestId())
@@ -322,23 +315,19 @@ class FundServiceImpl implements FundService {
                         .timestamp(command.getTimestamp())
                         .funder(command.getFunderAddress())
                         .build();
-        Optional<PendingFund> pendingFund = pendingFundRepository.findByTransactionHash(command.getTransactionId());
+
+        final Optional<PendingFund> pendingFund = pendingFundRepository.findByTransactionHash(command.getTransactionId());
         if (pendingFund.isPresent()) {
             fund.setFunderUserId(pendingFund.get().getUserId());
         }
         fund = fundRepository.saveAndFlush(fund);
         cacheManager.getCache("funds").evict(fund.getRequestId());
-        if (request.getStatus() == RequestStatus.OPEN) {
-            request.setStatus(RequestStatus.FUNDED);
-            request = requestRepository.saveAndFlush(request);
-        }
-        eventPublisher.publishEvent(
-                new RequestFundedEvent(
-                        command.getTransactionId(), mappers.map(Fund.class, FundDto.class, fund),
-                        mappers.map(Request.class, RequestDto.class, request),
-                        command.getTimestamp())
-                                   );
 
+        eventPublisher.publishEvent(RequestFundedEvent.builder()
+                                                      .transactionId(command.getTransactionId())
+                                                      .fundDto(mappers.map(Fund.class, FundDto.class, fund))
+                                                      .requestId(command.getRequestId())
+                                                      .timestamp(command.getTimestamp())
+                                                      .build());
     }
-
 }

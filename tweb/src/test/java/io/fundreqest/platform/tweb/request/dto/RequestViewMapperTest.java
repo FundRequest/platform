@@ -45,6 +45,8 @@ public class RequestViewMapperTest {
         assertThat(result.getStarred()).isEqualTo(request.isLoggedInUserIsWatcher());
         assertThat(result.getTechnologies()).isEqualTo(request.getTechnologies());
         assertThat(result.getFunds()).isEqualTo(request.getFunds());
+        assertThat(result.getCreationDate()).isEqualTo(request.getCreationDate());
+        assertThat(result.getLastModifiedDate()).isEqualTo(request.getLastModifiedDate());
     }
 
     @Test

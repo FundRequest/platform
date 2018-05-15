@@ -14,4 +14,5 @@ export default class RequestDto {
     technologies: string[];
     funds: RequestFundsDto;
     starred: boolean;
+    lastModifiedDate: Date;
 }
