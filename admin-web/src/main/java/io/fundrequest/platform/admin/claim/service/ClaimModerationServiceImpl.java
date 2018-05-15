@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,35 +63,14 @@ public class ClaimModerationServiceImpl implements ClaimModerationService {
     @Override
     @Transactional(readOnly = true)
     public List<RequestClaimDto> listPendingRequestClaims() {
-        return mappers.mapList(
-                RequestClaim.class,
-                RequestClaimDto.class,
-                requestClaimRepository.findByStatusIn(Collections.singletonList(ClaimRequestStatus.PENDING), new Sort("creationDate"))
-                              );
+        return getRequestClaims(ClaimRequestStatus.PENDING);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<RequestClaimDto> listFailedRequestClaims() {
-        return mappers.mapList(
-                RequestClaim.class,
-                RequestClaimDto.class,
-                requestClaimRepository.findByStatusIn(Collections.singletonList(ClaimRequestStatus.TRANSACTION_FAILED), new Sort("creationDate"))
-                              );
+        return getRequestClaims(ClaimRequestStatus.TRANSACTION_FAILED);
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<RequestClaimDto> listCompletedRequestClaims() {
-        List<ClaimRequestStatus> statuses = Arrays.asList(ClaimRequestStatus.values());
-        statuses.remove(ClaimRequestStatus.PENDING);
-        return mappers.mapList(
-                RequestClaim.class,
-                RequestClaimDto.class,
-                requestClaimRepository.findByStatusIn(statuses, new Sort(new Sort.Order(Sort.Direction.DESC, "lastModifiedDate")))
-                              );
-    }
-
 
     @Transactional
     @Override
@@ -103,6 +81,14 @@ public class ClaimModerationServiceImpl implements ClaimModerationService {
         requestClaim.setStatus(ClaimRequestStatus.DECLINED);
         requestRepository.save(request);
         requestClaimRepository.save(requestClaim);
+    }
+
+    private List<RequestClaimDto> getRequestClaims(ClaimRequestStatus pending) {
+        return mappers.mapList(
+                RequestClaim.class,
+                RequestClaimDto.class,
+                requestClaimRepository.findByStatusIn(Collections.singletonList(pending), new Sort("creationDate"))
+                              );
     }
 
     private SignClaimCommand createSignClaimCommand(RequestClaim requestClaim, Request request) {
