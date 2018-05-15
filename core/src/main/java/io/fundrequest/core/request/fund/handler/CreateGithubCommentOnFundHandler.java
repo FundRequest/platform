@@ -5,7 +5,7 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.platform.github.CreateGithubComment;
-import io.fundrequest.platform.github.GithabCommentFactory;
+import io.fundrequest.platform.github.GithubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,13 +16,13 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class CreateGithubCommentOnFundHandler {
 
     private final GithubGateway githubGateway;
-    private final GithabCommentFactory githubCommentFactory;
+    private final GithubCommentFactory githubCommentFactory;
     private final RequestService requestService;
     private final Boolean addComment;
     private final String githubUser;
 
     public CreateGithubCommentOnFundHandler(final GithubGateway githubGateway,
-                                            final GithabCommentFactory githubCommentFactory,
+                                            final GithubCommentFactory githubCommentFactory,
                                             final RequestService requestService,
                                             @Value("${github.add-comments:false}") final Boolean addComment,
                                             @Value("${feign.client.github.username:fundrequest-notifier}") final String githubUser) {

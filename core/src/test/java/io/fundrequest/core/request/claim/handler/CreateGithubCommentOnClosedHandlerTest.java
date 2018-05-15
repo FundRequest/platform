@@ -6,7 +6,7 @@ import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.CreateGithubComment;
-import io.fundrequest.platform.github.GithabCommentFactory;
+import io.fundrequest.platform.github.GithubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.github.parser.GithubUser;
@@ -39,14 +39,14 @@ public class CreateGithubCommentOnClosedHandlerTest {
     private CreateGithubCommentOnClosedHandler handler;
 
     private GithubGateway githubGateway;
-    private GithabCommentFactory githubCommentFactory;
+    private GithubCommentFactory githubCommentFactory;
     private GithubScraper githubScraper;
     private String githubUser = "ytruyt";
 
     @Before
     public void setUp() {
         githubGateway = mock(GithubGateway.class);
-        githubCommentFactory = mock(GithabCommentFactory.class);
+        githubCommentFactory = mock(GithubCommentFactory.class);
         githubScraper = mock(GithubScraper.class);
         handler = new CreateGithubCommentOnClosedHandler(githubGateway, githubScraper, githubCommentFactory, true, githubUser);
     }
