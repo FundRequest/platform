@@ -1,5 +1,6 @@
 package io.fundrequest.platform.github;
 
+import io.fundrequest.platform.github.scraper.GithubScraper;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.Status;
@@ -12,21 +13,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class GithubSolverHealthCheck implements HealthIndicator {
+public class GithubScraperHealthCheck implements HealthIndicator {
 
     private static final String DOWN_PROBLEM_KEY = "problem";
 
-    private final GithubSolverResolver githubSolverResolver;
+    private final GithubScraper githubScraper;
     private final String owner;
     private final String repo;
     private final Map<String, String> issues;
 
-    public GithubSolverHealthCheck(final GithubSolverResolver githubSolverResolver,
-                                   final GithubSolverHealthCheckProperties githubSolverHealthCheckProperties) {
-        this.githubSolverResolver = githubSolverResolver;
-        this.owner = githubSolverHealthCheckProperties.getOwner();
-        this.repo = githubSolverHealthCheckProperties.getRepo();
-        this.issues = githubSolverHealthCheckProperties.getIssues();
+    public GithubScraperHealthCheck(final GithubScraper githubScraper,
+                                    final GithubScraperHealthCheckProperties githubScraperHealthCheckProperties) {
+        this.githubScraper = githubScraper;
+        this.owner = githubScraperHealthCheckProperties.getOwner();
+        this.repo = githubScraperHealthCheckProperties.getRepo();
+        this.issues = githubScraperHealthCheckProperties.getIssues();
     }
 
     @Override
@@ -50,7 +51,7 @@ public class GithubSolverHealthCheck implements HealthIndicator {
     private Health.Builder checkHealth(final String number, final String expectedSolver) {
         try {
 
-            final Optional<String> solverOptional = githubSolverResolver.resolveSolver(owner, repo, number);
+            final Optional<String> solverOptional = Optional.ofNullable(githubScraper.fetchGithubIssue(owner, repo, number).getSolver());
             if (solverOptional.isPresent()) {
                 if (expectedSolver.equals(solverOptional.get())) {
                     return Health.up();

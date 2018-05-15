@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GitHubCommentFactory {
+public class GithubCommentFactory {
 
     private static final String LINE_BREAK = "\r\n";
     private static final String COMMENT_HEADER =
@@ -41,7 +41,7 @@ public class GitHubCommentFactory {
 
     private final String badgeBasepath;
 
-    public GitHubCommentFactory(@Value("${io.fundrequest.badge.basepath:https://fundrequest.io}") final String badgeBasepath) {
+    public GithubCommentFactory(@Value("${io.fundrequest.badge.basepath:https://fundrequest.io}") final String badgeBasepath) {
         this.badgeBasepath = badgeBasepath;
     }
 
@@ -58,6 +58,6 @@ public class GitHubCommentFactory {
     }
 
     private String create(final String commentTemplate, final Long requestId, final String solver) {
-        return String.format(commentTemplate, badgeBasepath, requestId,solver);
+        return String.format(commentTemplate, badgeBasepath, requestId, solver);
     }
 }

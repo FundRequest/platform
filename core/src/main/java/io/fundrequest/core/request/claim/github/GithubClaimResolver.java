@@ -10,14 +10,12 @@ import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
 import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.platform.github.GithubGateway;
-import io.fundrequest.platform.github.GithubSolverResolver;
-import io.fundrequest.platform.github.parser.GithubResult;
+import io.fundrequest.platform.github.scraper.GithubScraper;
+import io.fundrequest.platform.github.scraper.model.GithubIssue;
 import io.fundrequest.platform.keycloak.KeycloakRepository;
 import io.fundrequest.platform.keycloak.UserIdentity;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -28,81 +26,70 @@ public class GithubClaimResolver {
     private static final Supplier<RuntimeException> GITHUB_ACCOUNT_IS_NOT_LINKED = () -> new RuntimeException("Github account is not linked");
     private static final String GITHUB_STATE_CLOSED = "closed";
 
-    private GithubSolverResolver githubSolverResolver;
-    private final GithubGateway githubGateway;
+    private GithubScraper githubScraper;
     private AzraelClient azraelClient;
     private KeycloakRepository keycloakRepository;
 
-    public GithubClaimResolver(final GithubSolverResolver githubSolverResolver,
-                               final GithubGateway githubGateway,
+    public GithubClaimResolver(final GithubScraper githubScraper,
                                final AzraelClient azraelClient,
                                final KeycloakRepository keycloakRepository) {
-        this.githubSolverResolver = githubSolverResolver;
-        this.githubGateway = githubGateway;
+        this.githubScraper = githubScraper;
         this.azraelClient = azraelClient;
         this.keycloakRepository = keycloakRepository;
     }
 
     public SignedClaim getSignedClaim(final Principal user, final UserClaimRequest userClaimRequest, final RequestDto request) {
-        try {
-            final String solver = getSolver(user, userClaimRequest, request);
-            final ClaimSignature signature = getSignature(userClaimRequest, solver);
-            return SignedClaim.builder()
-                              .solver(solver)
-                              .solverAddress(signature.getAddress())
-                              .platform(userClaimRequest.getPlatform())
-                              .platformId(signature.getPlatformId())
-                              .r(signature.getR())
-                              .s(signature.getS())
-                              .v(signature.getV())
-                              .build();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        final String solver = getSolver(user, userClaimRequest, request);
+        final ClaimSignature signature = getSignature(userClaimRequest, solver);
+        return SignedClaim.builder()
+                          .solver(solver)
+                          .solverAddress(signature.getAddress())
+                          .platform(userClaimRequest.getPlatform())
+                          .platformId(signature.getPlatformId())
+                          .r(signature.getR())
+                          .s(signature.getS())
+                          .v(signature.getV())
+                          .build();
     }
 
     public Boolean canClaim(final Principal user, final RequestDto request) {
         final String owner = request.getIssueInformation().getOwner();
         final String repo = request.getIssueInformation().getRepo();
         final String number = request.getIssueInformation().getNumber();
-        return isIssueClosed(owner, repo, number) && getSolver(owner, repo, number).map(solver -> isClaimalbeByUser(user, request, solver)).orElse(false);
+        final GithubIssue githubIssue = githubScraper.fetchGithubIssue(owner, repo, number);
+        return isIssueClosed(githubIssue) && isClaimalbeByUser(user, request, githubIssue.getSolver());
     }
 
     public UserClaimableDto userClaimableResult(final Principal user, final RequestDto request) {
         final IssueInformationDto issueInformation = request.getIssueInformation();
-        if (isIssueClosed(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())) {
-            final Optional<String> solver = getSolver(request.getIssueInformation().getOwner(), request.getIssueInformation().getRepo(), request.getIssueInformation().getNumber());
-            if (solver.isPresent() && (request.getStatus() == RequestStatus.FUNDED || request.getStatus() == RequestStatus.CLAIMABLE)) {
+        final GithubIssue githubIssue = githubScraper.fetchGithubIssue(issueInformation.getOwner(),
+                                                                       issueInformation.getRepo(),
+                                                                       issueInformation.getNumber());
+        if (isIssueClosed(githubIssue) && githubIssue.getSolver() != null && (request.getStatus() == RequestStatus.FUNDED || request.getStatus() == RequestStatus.CLAIMABLE)) {
                 return UserClaimableDto.builder()
                                        .claimable(true)
-                                       .claimableByUser(isClaimalbeByUser(user, request, solver.get()))
+                                       .claimableByUser(isClaimalbeByUser(user, request, githubIssue.getSolver()))
                                        .build();
-            }
         }
         return UserClaimableDto.builder().claimable(false).claimableByUser(false).build();
     }
 
     private Boolean isClaimalbeByUser(final Principal user, final RequestDto request, final String solver) {
-        return user == null
+        return user == null || solver == null
                ? false
                : getUserPlatformUsername(user, request.getIssueInformation().getPlatform()).map(u -> u.equalsIgnoreCase(solver)).orElse(false);
     }
 
-    private boolean isIssueClosed(final String owner, final String repo, final String number) {
-        githubGateway.evictIssue(owner, repo, number);
-        final GithubResult githubIssue = githubGateway.getIssue(owner, repo, number);
-        return githubIssue.getState().equals(GITHUB_STATE_CLOSED);
+    private boolean isIssueClosed(final GithubIssue githubIssue) {
+        return githubIssue.getStatus().equalsIgnoreCase(GITHUB_STATE_CLOSED);
     }
 
-    private Optional<String> getSolver(final String owner, final String repo, final String number) {
-        return githubSolverResolver.resolveSolver(owner, repo, number);
-    }
-
-    private String getSolver(final Principal user, final UserClaimRequest userClaimRequest, final RequestDto request) throws IOException {
-        final String solver = getSolver(request.getIssueInformation().getOwner(),
-                                        request.getIssueInformation().getRepo(),
-                                        request.getIssueInformation().getNumber()).orElseThrow(() -> new RuntimeException("Unable to get solver"));
+    private String getSolver(final Principal user, final UserClaimRequest userClaimRequest, final RequestDto request) {
+        final IssueInformationDto issueInformation = request.getIssueInformation();
+        final String solver = Optional.ofNullable(githubScraper.fetchGithubIssue(issueInformation.getOwner(),
+                                                                                 issueInformation.getRepo(),
+                                                                                 issueInformation.getNumber()).getSolver())
+                                      .orElseThrow(() -> new RuntimeException("Unable to get solver"));
         final String userPlatformUsername = getUserPlatformUsername(user, userClaimRequest.getPlatform()).orElseThrow(GITHUB_ACCOUNT_IS_NOT_LINKED);
         if (!solver.equalsIgnoreCase(userPlatformUsername)) {
             throw new RuntimeException("Claim executed by wrong user");

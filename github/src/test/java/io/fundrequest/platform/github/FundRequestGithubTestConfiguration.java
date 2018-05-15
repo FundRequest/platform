@@ -1,5 +1,6 @@
 package io.fundrequest.platform.github;
 
+import io.fundrequest.common.FundRequestCommon;
 import io.fundrequest.common.infrastructure.IgnoreDuringComponentScan;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
@@ -17,7 +18,7 @@ import java.util.Map;
 @EnableAutoConfiguration
 @EnableFeignClients("io.fundrequest.platform.github")
 @ComponentScan(
-        basePackageClasses = {FundRequestGithubTestConfiguration.class},
+        basePackageClasses = {FundRequestGithubTestConfiguration.class, FundRequestCommon.class},
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class),

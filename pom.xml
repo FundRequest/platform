@@ -48,6 +48,7 @@
         <junit-jupiter.version>5.0.0</junit-jupiter.version>
         <junit-platform.version>1.0.0</junit-platform.version>
         <junit-vintage-engine.version>4.12.0</junit-vintage-engine.version>
+        <jsoup.version>1.10.2</jsoup.version>
     </properties>
 
 
@@ -147,6 +148,11 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${spring-test.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.platform</groupId>

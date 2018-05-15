@@ -13,7 +13,7 @@ import java.util.Map;
 @ConfigurationProperties("io.fundrequest.health.github.solver")
 @NoArgsConstructor
 @AllArgsConstructor
-public class GithubSolverHealthCheckProperties {
+public class GithubScraperHealthCheckProperties {
 
     private String owner;
     private String repo;

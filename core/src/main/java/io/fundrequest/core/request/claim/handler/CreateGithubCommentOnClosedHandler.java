@@ -5,10 +5,10 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.github.CreateGithubComment;
-import io.fundrequest.platform.github.GitHubCommentFactory;
+import io.fundrequest.platform.github.GithubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
-import io.fundrequest.platform.github.GithubSolverResolver;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
+import io.fundrequest.platform.github.scraper.GithubScraper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -16,26 +16,27 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class CreateGithubCommentOnClosedHandler {
 
     private final GithubGateway githubGateway;
-    private final GithubSolverResolver githubSolverResolver;
-    private final GitHubCommentFactory gitHubCommentFactory;
+    private final GithubScraper githubScraper;
+    private final GithubCommentFactory githubCommentFactory;
     private final Boolean addComment;
     private final String githubUser;
 
     public CreateGithubCommentOnClosedHandler(final GithubGateway githubGateway,
-                                              final GithubSolverResolver githubSolverResolver,
-                                              final GitHubCommentFactory gitHubCommentFactory,
+                                              final GithubScraper githubScraper,
+                                              final GithubCommentFactory githubCommentFactory,
                                               @Value("${github.add-comments:false}") final Boolean addComment,
                                               @Value("${feign.client.github.username:fundrequest-notifier}") final String githubUser) {
 
         this.githubGateway = githubGateway;
-        this.githubSolverResolver = githubSolverResolver;
-        this.gitHubCommentFactory = gitHubCommentFactory;
+        this.githubScraper = githubScraper;
+        this.githubCommentFactory = githubCommentFactory;
         this.addComment = addComment;
         this.githubUser = githubUser;
     }
@@ -62,9 +63,11 @@ public class CreateGithubCommentOnClosedHandler {
     }
 
     private CreateGithubComment createComment(final Long requestId, final IssueInformationDto issueInformation) {
-        final String solver = githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).orElseThrow(() -> new RuntimeException("No solver found for request " + requestId));
+        final String solver = Optional.ofNullable(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).getSolver())
+                                      .orElseThrow(() -> new RuntimeException("No solver found for request " + requestId));
+
         final CreateGithubComment comment = new CreateGithubComment();
-        comment.setBody(gitHubCommentFactory.createClosedComment(requestId, solver));
+        comment.setBody(githubCommentFactory.createClosedComment(requestId, solver));
         return comment;
     }
 
