@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.fund.command;
 
 
-import io.fundrequest.core.request.fund.CreateERC67FundRequest;
+import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import org.junit.Test;
 
 import java.math.BigInteger;

@@ -8,7 +8,7 @@ import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
-import io.fundrequest.core.request.fund.CreateERC67FundRequest;
+import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.view.RequestDto;
 

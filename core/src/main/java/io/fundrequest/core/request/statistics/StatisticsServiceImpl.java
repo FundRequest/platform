@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static io.fundrequest.core.request.fund.EthUtil.fromWei;
+import static io.fundrequest.core.web3j.EthUtil.fromWei;
 
 @Service
 class StatisticsServiceImpl implements StatisticsService {

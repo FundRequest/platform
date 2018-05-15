@@ -1,4 +1,4 @@
-package io.fundrequest.core.request.fund;
+package io.fundrequest.core.web3j;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

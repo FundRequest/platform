@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KeycloakConfig {
 
-    @Value("${io.fundrequest.keycloak-custom.server-url}")
+    @Value("${keycloak.auth-server-url}")
     private String serverUrl;
     @Value("${io.fundrequest.keycloak-custom.realm}")
     private String realm;

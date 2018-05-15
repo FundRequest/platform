@@ -7,6 +7,7 @@ import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.FundService;
+import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
 import io.fundrequest.core.request.fund.infrastructure.ProcessedBlockchainEventRepository;
@@ -32,6 +33,7 @@ public class AzraelMessageReceiver {
     private ObjectMapper objectMapper;
     private ProcessedBlockchainEventRepository processedBlockchainEventRepository;
     private FundService fundService;
+    private final PendingFundService pendingFundService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AzraelMessageReceiver.class);
 
@@ -39,11 +41,12 @@ public class AzraelMessageReceiver {
     public AzraelMessageReceiver(RequestService requestService,
                                  ObjectMapper objectMapper,
                                  ProcessedBlockchainEventRepository processedBlockchainEventRepository,
-                                 FundService fundService) {
+                                 FundService fundService, PendingFundService pendingFundService) {
         this.requestService = requestService;
         this.objectMapper = objectMapper;
         this.processedBlockchainEventRepository = processedBlockchainEventRepository;
         this.fundService = fundService;
+        this.pendingFundService = pendingFundService;
     }
 
     @Transactional
@@ -60,7 +63,7 @@ public class AzraelMessageReceiver {
             fundRequest(result, newRequestId);
             processedBlockchainEventRepository.save(new ProcessedBlockchainEvent(result.getTransactionHash()));
             fundService.clearTotalFundsCache(newRequestId);
-            fundService.removePendingFund(result.getTransactionHash());
+            pendingFundService.removePendingFund(result.getTransactionHash());
         }
     }
 
