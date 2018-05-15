@@ -19,6 +19,7 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
+import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
@@ -34,6 +35,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.Environment;
 
+import java.math.BigInteger;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -97,6 +99,22 @@ public class RequestServiceImplTest {
         List<RequestDto> result = requestService.findAll();
 
         assertThat(result).isEqualTo(expectedRequests);
+    }
+
+    @Test
+    public void generateERC67() {
+        when(environment.getProperty("io.fundrequest.payments.erc67.gas", "200000"))
+                .thenReturn("150000");
+
+        final CreateERC67FundRequest erc67 = new CreateERC67FundRequest()
+                .setAmount(new BigInteger("100000000000000000000"))
+                .setFundrequestAddress("0x00000000000000000000000000000000deadbeef")
+                .setTokenAddress("0x0000000000000000000000000000000000000000")
+                .setPlatform("github")
+                .setPlatformId("1");
+
+        assertThat(requestService.generateERC67(erc67))
+                .isEqualTo("ethereum:0x0000000000000000000000000000000000000000?data=0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000&gas=150000");
     }
 
     @Test
