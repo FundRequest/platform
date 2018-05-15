@@ -1,6 +1,7 @@
 <script lang="ts">
     import {Component, Vue} from "vue-property-decorator";
     import QrcodeVue from "qrcode.vue";
+    import {VMoney} from "v-money";
 
     import Github, {GithubIssue} from "../../classes/Github";
     import {TokenInfo} from "../../classes/token-info";
@@ -11,9 +12,14 @@
     import {PendingFundCommand} from "../models/PendingFundCommand";
     import Alert from "../../classes/Alert";
 
-    Vue.component("qrcode-vue", QrcodeVue);
-
-    @Component
+    @Component({
+        components: {
+            QrcodeVue
+        },
+        directives: {
+            money: VMoney
+        }
+    })
     export default class WizardComponent extends Vue {
         private _activeStep: number = 1;
         private _loading: boolean = false;
@@ -31,11 +37,21 @@
 
         public currentAllowance: number = 0;
         public currentFundAmount: number = 0;
-        public errorMessages: { fundAmount: string } = { fundAmount: '' };
+        public errorMessages: { fundAmount: string } = {fundAmount: ""};
 
         public paymentMethod: PaymentMethod = PaymentMethods.getInstance().trustWallet;
-        public fundAmount: number = 100;
+        public fundAmount: string = "";
         public description: string = "";
+
+        public moneyConfig = {
+            decimal: ".",
+            thousands: ",",
+            prefix: "",
+            suffix: "",
+            precision: 2,
+            masked: true,
+            allowBlank: true
+        };
 
         mounted() {
             this.githubUrl = (this.$refs.requestUrl as HTMLElement).dataset.value;
@@ -83,7 +99,7 @@
                 if (valid && step == 3 && this.paymentMethod == PaymentMethods.getInstance().dapp) {
                     valid = await this._validateFundAmountBalance(formElements.find((el: HTMLInputElement) => el.name == "fundAmount") as HTMLInputElement);
                 } else {
-                    this.errorMessages.fundAmount = `Please enter a valid number`;
+                    this.errorMessages.fundAmount = `Please enter a valid number, e.g.: 120.00`;
                 }
                 this.$forceUpdate();
             }
@@ -102,7 +118,7 @@
             let valid = true;
             if (this.paymentMethod == PaymentMethods.getInstance().dapp) {
                 let balance = await Contracts.getErc20Balance(Web3x.getAccount(), this.selectedToken);
-                let fundAmountInWei = Number(this.fundAmount * Math.pow(10, this.selectedToken.decimals));
+                let fundAmountInWei = Number(this.fundAmountValue * Math.pow(10, this.selectedToken.decimals));
                 if (fundAmountInWei > balance) {
                     this.errorMessages.fundAmount = `Your ${this.selectedToken.symbol} balance is to low.`;
                     Utils.setElementInvalid(element);
@@ -156,6 +172,10 @@
             }
         }
 
+        private get fundAmountValue(): number {
+            return Number(this.fundAmount.replace(',', ''));
+        }
+
         private _handleTransactionError(err): void {
             Utils.hideLoading();
             throw new Error(err);
@@ -167,7 +187,7 @@
             let erc20 = await Contracts.getInstance().getErc20Contract(this.selectedToken.address);
             let decimals = this.selectedToken.decimals;
             this.currentAllowance = (await erc20.allowance(Web3x.getAccount(), frContractAddress)).toNumber();
-            this.currentFundAmount = Number(this.fundAmount * Math.pow(10, decimals));
+            this.currentFundAmount = Number(this.fundAmountValue * Math.pow(10, decimals));
             Utils.hideLoading();
 
             if (!this.approveInfoModalActive && this.currentAllowance < this.currentFundAmount) {
@@ -189,7 +209,7 @@
                     .send({}).catch(rej => this._handleTransactionError(rej)) as string;
                 let pendingFundCommand = new PendingFundCommand();
                 pendingFundCommand.transactionId = response;
-                pendingFundCommand.amount = this.fundAmount.toString();
+                pendingFundCommand.amount = this.fundAmountValue.toString();
                 pendingFundCommand.description = this.description;
                 pendingFundCommand.fromAddress = Web3x.getAccount();
                 pendingFundCommand.tokenAddress = this.selectedToken.address;
@@ -243,7 +263,7 @@
         }
 
         public get totalAmount() {
-            return this.fundAmount;
+            return this.fundAmountValue;
         }
 
         public get paymentMethods(): PaymentMethods {

@@ -35,7 +35,7 @@ export default class Alert {
         toastr.options.onclick = null;
         toastr.options.showDuration = 300;
         toastr.options.hideDuration = 1000;
-        toastr.options.timeOut = 500000;
+        toastr.options.timeOut = 5000;
         toastr.options.extendedTimeOut = 1000;
         toastr.options.showEasing = 'swing';
         toastr.options.hideEasing = 'linear';
