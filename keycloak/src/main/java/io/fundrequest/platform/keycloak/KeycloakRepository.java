@@ -32,7 +32,7 @@ public class KeycloakRepository {
     private String keycloakUrl;
     private final ObjectMapper objectMapper;
 
-    public KeycloakRepository(RealmResource resource, @Value("${io.fundrequest.keycloak-custom.server-url}") String keycloakUrl) {
+    public KeycloakRepository(RealmResource resource, @Value("${keycloak.auth-server-url}") String keycloakUrl) {
         this.resource = resource;
         this.keycloakUrl = keycloakUrl;
         objectMapper = new ObjectMapper();
