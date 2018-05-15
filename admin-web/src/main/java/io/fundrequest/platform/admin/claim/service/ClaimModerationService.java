@@ -1,4 +1,4 @@
-package io.fundrequest.platform.admin.claim;
+package io.fundrequest.platform.admin.claim.service;
 
 import io.fundrequest.core.request.claim.dto.RequestClaimDto;
 
@@ -8,6 +8,7 @@ public interface ClaimModerationService {
 
     void approveClaim(Long requestClaimId);
     List<RequestClaimDto> listPendingRequestClaims();
+    List<RequestClaimDto> listFailedRequestClaims();
     List<RequestClaimDto> listCompletedRequestClaims();
     void declineClaim(Long requestClaimId);
 }

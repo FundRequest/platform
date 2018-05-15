@@ -49,7 +49,6 @@ public class RequestClaim extends AbstractEntity {
     private String transactionHash;
 
     @Column(name = "transaction_submit_time")
-    @Temporal(TemporalType.TIMESTAMP)
     @Setter
     private LocalDateTime transactionSubmitTime;
 

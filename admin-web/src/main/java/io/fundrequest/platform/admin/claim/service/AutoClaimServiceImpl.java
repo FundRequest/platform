@@ -1,4 +1,4 @@
-package io.fundrequest.platform.admin.claim;
+package io.fundrequest.platform.admin.claim.service;
 
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.infrastructure.TrustedRepoRepository;

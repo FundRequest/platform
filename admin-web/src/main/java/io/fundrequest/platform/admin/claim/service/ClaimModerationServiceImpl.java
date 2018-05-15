@@ -1,4 +1,4 @@
-package io.fundrequest.platform.admin.claim;
+package io.fundrequest.platform.admin.claim.service;
 
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static io.fundrequest.core.web3j.AddressUtils.prettify;
@@ -69,6 +68,16 @@ public class ClaimModerationServiceImpl implements ClaimModerationService {
                 RequestClaim.class,
                 RequestClaimDto.class,
                 requestClaimRepository.findByStatusIn(Collections.singletonList(ClaimRequestStatus.PENDING), new Sort("creationDate"))
+                              );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RequestClaimDto> listFailedRequestClaims() {
+        return mappers.mapList(
+                RequestClaim.class,
+                RequestClaimDto.class,
+                requestClaimRepository.findByStatusIn(Collections.singletonList(ClaimRequestStatus.TRANSACTION_FAILED), new Sort("creationDate"))
                               );
     }
 

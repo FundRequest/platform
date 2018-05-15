@@ -13,6 +13,7 @@ import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
 import io.fundrequest.core.request.infrastructure.azrael.ClaimTransaction;
+import io.fundrequest.platform.admin.claim.service.ClaimModerationServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

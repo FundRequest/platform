@@ -6,6 +6,8 @@ import io.fundrequest.core.request.claim.dto.RequestClaimDto;
 import io.fundrequest.core.request.claim.infrastructure.TrustedRepoRepository;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
+import io.fundrequest.platform.admin.claim.service.AutoClaimServiceImpl;
+import io.fundrequest.platform.admin.claim.service.ClaimModerationService;
 import org.junit.Before;
 import org.junit.Test;
 

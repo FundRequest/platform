@@ -5,6 +5,7 @@ import io.fundrequest.core.request.claim.domain.RequestClaim;
 import io.fundrequest.core.request.claim.infrastructure.RequestClaimRepository;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.transactions.TransactionStatus;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import static io.fundrequest.core.request.claim.domain.ClaimRequestStatus.APPROVED;
 
 @Component
+@ConditionalOnProperty(value = "io.fundrequest.request-claim-cleaner.enabled", havingValue = "true")
 public class RequestClaimCleaner {
 
     private final RequestClaimRepository requestClaimRepository;

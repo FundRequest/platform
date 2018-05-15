@@ -1,5 +1,6 @@
 $(document).ready(function () {
   $('#pending-claims').DataTable();
+  $('#failed-claims').DataTable();
 
   $('button.approve').on('click', function () {
     let requestClaimId = $(this).data('id');
