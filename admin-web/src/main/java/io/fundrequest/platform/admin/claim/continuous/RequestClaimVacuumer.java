@@ -14,14 +14,14 @@ import java.util.List;
 import static io.fundrequest.core.request.claim.domain.ClaimRequestStatus.APPROVED;
 
 @Component
-@ConditionalOnProperty(value = "io.fundrequest.request-claim-cleaner.enabled", havingValue = "true")
-public class RequestClaimCleaner {
+@ConditionalOnProperty(value = "io.fundrequest.request-claim-vacuumer.enabled", havingValue = "true")
+public class RequestClaimVacuumer {
 
     private final RequestClaimRepository requestClaimRepository;
     private AzraelClient azraelClient;
 
-    public RequestClaimCleaner(final RequestClaimRepository requestClaimRepository,
-                               final AzraelClient azraelClient) {
+    public RequestClaimVacuumer(final RequestClaimRepository requestClaimRepository,
+                                final AzraelClient azraelClient) {
         this.requestClaimRepository = requestClaimRepository;
         this.azraelClient = azraelClient;
     }

@@ -19,7 +19,7 @@ public class ClaimController {
     }
 
     @GetMapping("/claims")
-    public ModelAndView showClaimsPage(Model model) {
+    public ModelAndView showClaimsPage(final Model model) {
         model.addAttribute("pendingClaims", claimModerationService.listPendingRequestClaims());
         model.addAttribute("failedClaims", claimModerationService.listFailedRequestClaims());
         return new ModelAndView("claims");

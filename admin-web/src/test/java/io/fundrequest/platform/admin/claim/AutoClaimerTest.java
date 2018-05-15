@@ -6,6 +6,7 @@ import io.fundrequest.core.request.claim.dto.RequestClaimDto;
 import io.fundrequest.core.request.claim.infrastructure.TrustedRepoRepository;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
+import io.fundrequest.platform.admin.claim.continuous.AutoClaimer;
 import io.fundrequest.platform.admin.claim.service.AutoClaimServiceImpl;
 import io.fundrequest.platform.admin.claim.service.ClaimModerationService;
 import org.junit.Before;
@@ -17,9 +18,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AutoClaimServiceImplTest {
+public class AutoClaimerTest {
 
-    private AutoClaimServiceImpl autoClaimService;
+    private AutoClaimer autoClaimService;
     private TrustedRepoRepository trustedRepoRepository;
     private ClaimModerationService claimModerationService;
     private RequestService requestService;
@@ -29,7 +30,7 @@ public class AutoClaimServiceImplTest {
         trustedRepoRepository = mock(TrustedRepoRepository.class);
         claimModerationService = mock(ClaimModerationService.class);
         requestService = mock(RequestService.class);
-        autoClaimService = new AutoClaimServiceImpl(claimModerationService, trustedRepoRepository, requestService);
+        autoClaimService = new AutoClaimer(claimModerationService, trustedRepoRepository, requestService);
     }
 
     @Test
