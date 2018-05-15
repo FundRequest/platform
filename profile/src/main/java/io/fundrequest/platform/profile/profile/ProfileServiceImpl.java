@@ -39,7 +39,7 @@ public class ProfileServiceImpl implements ProfileService {
     private final ApplicationEventPublisher eventPublisher;
 
     public ProfileServiceImpl(final KeycloakRepository keycloakRepository,
-                              final @Value("${io.fundrequest.keycloak-custom.server-url}") String keycloakUrl,
+                              final @Value("${keycloak.auth-server-url}") String keycloakUrl,
                               final ApplicationEventPublisher eventPublisher) {
         this.keycloakRepository = keycloakRepository;
         this.keycloakUrl = keycloakUrl;
