@@ -52,6 +52,7 @@ public class SurveyServiceImpl implements SurveyService, ApplicationListener<Aut
         return repository.findByUserId(principal.getName())
                          .map(s -> SurveyDto.builder()
                                             .status(s.getStatus())
+                                            .transactionHash(s.getTransactionHash())
                                             .build()
                              ).orElse(null);
     }

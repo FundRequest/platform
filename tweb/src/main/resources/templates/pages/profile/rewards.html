@@ -171,7 +171,9 @@
                         <div class="rewards-list__item">
                             <div class="rewards-list__text">Fill in survey</div>
                             <div>
-                                <span class="text-muted">Verification pending</span>
+                                <span class="text-muted" th:if="${survey.status.name() == 'UNVERIFIED'}">Verification pending</span>
+                                <span class="text-muted" th:if="${survey.status.name() == 'VERIFIED'}">Verified <small><a
+                                    th:href="${'https://etherscan.io/tx/'+survey.transactionHash}" target="_blank">View on etherscan</a></small></span>
                             </div>
                         </div>
                     </div>
