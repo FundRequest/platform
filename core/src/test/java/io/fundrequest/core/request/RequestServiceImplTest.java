@@ -108,7 +108,7 @@ public class RequestServiceImplTest {
 
         final CreateERC67FundRequest erc67 = CreateERC67FundRequest
                 .builder()
-                .amount(new BigInteger("100000000000000000000"))
+                .amount(new BigInteger("100"))
                 .fundrequestAddress("0x00000000000000000000000000000000deadbeef")
                 .tokenAddress("0x0000000000000000000000000000000000000000")
                 .platform("github")
