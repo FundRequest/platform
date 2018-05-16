@@ -85,6 +85,7 @@
                         v-bind:fase-filter-default="'info'"
                         v-bind:filters="[
                     { value: 'info', title: 'Info', description: 'Detailed description of the request' },
+                    { value: 'comments', title: 'Comments', description: 'Comments posted on the request' },
                     { value: 'funded-by', title: 'Funded By', description: 'An overview of the funders and funds.' }
                  ]">
             <template slot-scope="{faseFilter}">
@@ -105,8 +106,6 @@
                         </div>
                     </div>
                 </div>
-                <!--
-                { value: 'comments', title: 'Comments', description: 'Comments posted on the request' },
                 <div class="card" v-if="faseFilter === 'comments'">
                     <div class="card-header">
                         Comments
@@ -115,7 +114,6 @@
                         Comments
                     </div>
                 </div>
-                  -->
                 <div class="card" v-if="faseFilter === 'funded-by'">
                     <div class="card-header">
                         Funders
