@@ -168,6 +168,12 @@
 
     &__icons {
         color: $gray-500;
+        a {
+            color: $gray-500;
+            &:hover {
+                color: $gray-600;
+            }
+        }
         i {
             font-size: 1.25rem;
             + i {
