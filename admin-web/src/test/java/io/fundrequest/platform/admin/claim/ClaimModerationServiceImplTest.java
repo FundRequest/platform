@@ -12,6 +12,8 @@ import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
+import io.fundrequest.core.request.infrastructure.azrael.ClaimTransaction;
+import io.fundrequest.platform.admin.claim.service.ClaimModerationServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -39,7 +41,7 @@ public class ClaimModerationServiceImplTest {
         final Mappers mappers = mock(Mappers.class);
         rabbitTemplate = mock(RabbitTemplate.class);
         azraelClient = mock(AzraelClient.class);
-        claimModerationService = new ClaimModerationServiceImpl(mappers, rabbitTemplate, requestClaimRepository, requestRepository, azraelClient);
+        claimModerationService = new ClaimModerationServiceImpl(mappers, requestClaimRepository, requestRepository, azraelClient);
     }
 
 
@@ -51,15 +53,15 @@ public class ClaimModerationServiceImplTest {
         ClaimSignature sig = new ClaimSignature();
         when(azraelClient.getSignature(any())).thenReturn(sig);
         when(requestClaimRepository.findOne(requestClaim.getId())).thenReturn(Optional.of(requestClaim));
+        when(azraelClient.submitClaim(sig)).thenReturn(ClaimTransaction.builder().transactionHash("0x1").build());
 
         claimModerationService.approveClaim(requestClaim.getId());
 
         assertThat(request.getStatus()).isEqualTo(RequestStatus.CLAIM_APPROVED);
         assertThat(requestClaim.getStatus()).isEqualTo(ClaimRequestStatus.APPROVED);
+        assertThat(requestClaim.getTransactionHash()).isEqualTo("0x1");
         verify(requestClaimRepository).save(requestClaim);
         verify(requestRepository).save(request);
-
-        verify(rabbitTemplate).convertAndSend(sig);
     }
 
     @Test

@@ -1,5 +1,6 @@
-package io.fundrequest.platform.admin.claim;
+package io.fundrequest.platform.admin.claim.controller;
 
+import io.fundrequest.platform.admin.claim.service.ClaimModerationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,9 @@ public class ClaimController {
     }
 
     @GetMapping("/claims")
-    public ModelAndView showClaimsPage(Model model) {
+    public ModelAndView showClaimsPage(final Model model) {
         model.addAttribute("pendingClaims", claimModerationService.listPendingRequestClaims());
+        model.addAttribute("failedClaims", claimModerationService.listFailedRequestClaims());
         return new ModelAndView("claims");
     }
 

@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 )
 public interface AzraelClient {
 
-    @RequestMapping(method = RequestMethod.POST, value = "/rest/claims", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, value = "/rest/claims/sign", consumes = MediaType.APPLICATION_JSON_VALUE)
     ClaimSignature getSignature(SignClaimCommand signClaimCommand);
 
+    @RequestMapping(method = RequestMethod.POST, value = "/rest/claims/submit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ClaimTransaction submitClaim(ClaimSignature claimSignature);
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/v1/transactions/{hash}")
     TransactionStatus getTransactionStatus(@PathVariable("hash") String hash);
-
 }

@@ -5,6 +5,7 @@ import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.transactions.TransactionStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import static io.fundrequest.core.web3j.AddressUtils.prettify;
 
 @Component
 @Slf4j
+@ConditionalOnProperty(value = "io.fundrequest.pending-fund-cleaner.enabled", havingValue = "true")
 public class PendingFundCleaner {
 
     private final PendingFundService pendingFundService;
