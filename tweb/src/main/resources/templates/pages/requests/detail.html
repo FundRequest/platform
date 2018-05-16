@@ -39,9 +39,9 @@
                                   th:classappend="'badge--' + ${#strings.toLowerCase(#strings.replace(request.status, ' ', '_'))}"
                                   th:text="${request.status}">Claimed</span>
                                 <span class="request-details__icons">
-                          <!--<i class="fab fa-linkedin-in"></i>-->
-                          <!--<i class="fab fa-twitter"></i>-->
-                      </span>
+                                      <!--<i class="fab fa-linkedin-in"></i>-->
+                                      <!--<i class="fab fa-twitter"></i>-->
+                                </span>
                             </div>
                         </div>
                         <div class="request-details__funding-details mb-1">
@@ -55,7 +55,7 @@
                             <div class="request-details__crypto">
                                 <div class="request-details__fund" th:if="${request.funds.fndFunds != null}">
                                     <img class="request-details__fund-logo"
-                                         th:src="${request.funds.fndFunds.tokenImage}" />
+                                         th:src="@{/assets/img/tokens/__${request.funds.fndFunds.tokenImage}__}" />
                                     <span class="request-details__fund-amount"
                                           th:text="${#numbers.formatDecimal(request.funds.fndFunds.totalAmount,1,2,'POINT')}">-</span>
                                     <span class="request-details__fund-currency"
@@ -63,7 +63,7 @@
                                 </div>
                                 <div class="request-details__fund" th:if="${request.funds.otherFunds != null}">
                                     <img class="request-details__fund-logo"
-                                         th:src="${request.funds.otherFunds.tokenImage}" />
+                                         th:src="@{/assets/img/tokens/__${request.funds.otherFunds.tokenImage}__}" />
                                     <span class="request-details__fund-amount"
                                           th:text="${#numbers.formatDecimal(request.funds.otherFunds.totalAmount,1,2,'POINT')}">-</span>
                                     <span class="request-details__fund-currency"
