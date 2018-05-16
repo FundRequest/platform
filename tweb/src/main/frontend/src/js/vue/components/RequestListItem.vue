@@ -26,16 +26,16 @@
             <div class="request-details__funding-details">
                 <div class="request-details__price" v-if="req.funds.usdFunds != null">
                     <span class="request-details__fund-currency">$</span>
-                    <span class="request-details__fund-amount">{{formatPrice(req.funds.usdFunds, 0)}}</span>
+                    <span class="request-details__fund-amount">{{req.funds.usdFunds, 0 | toUsd}}</span>
                     <span class="disclaimer-asterix">*</span>
                 </div>
                 <div class="request-details__crypto">
                     <div class="request-details__fund" v-if="req.funds.fndFunds != null">
-                        <span class="request-details__fund-amount">{{formatPrice(req.funds.fndFunds.totalAmount)}}</span>
+                        <span class="request-details__fund-amount">{{req.funds.fndFunds.totalAmount | toCrypto}}</span>
                         <span class="request-details__fund-currency">{{req.funds.fndFunds.tokenSymbol}}</span>
                     </div>
                     <div class="request-details__fund" v-if="req.funds.otherFunds != null">
-                        <span class="request-details__fund-amount">{{formatPrice(req.funds.otherFunds.totalAmount)}}</span>
+                        <span class="request-details__fund-amount">{{req.funds.otherFunds.totalAmount | toCrypto}}</span>
                         <span class="request-details__fund-currency">{{req.funds.otherFunds.tokenSymbol}}</span>
                     </div>
                 </div>
@@ -51,13 +51,18 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
     import RequestDto from "../dtos/RequestDto";
-    import Utils from "../../classes/Utils";
     import {Locations} from "../../classes/Locations";
     import FontSizeFit from "./FontSizeFit";
+    import ToCrypto from "../filters/formatters/ToCrypto";
+    import ToUsd from "../filters/formatters/ToUsd";
 
     @Component({
         components: {
             FontSizeFit
+        },
+        filters: {
+            toCrypto: ToCrypto.filter,
+            toUsd: ToUsd.filter
         }
     })
     export default class RequestListItem extends Vue {
@@ -72,10 +77,6 @@
 
         public get req() {
             return this.requestItem;
-        }
-
-        public formatPrice(value, decimals: number = 2): string {
-            return Utils.formatTokenPrice(value, decimals);
         }
 
         public showActions(event: Event) {
