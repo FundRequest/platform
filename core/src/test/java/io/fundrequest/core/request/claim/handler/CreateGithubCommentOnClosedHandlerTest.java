@@ -6,11 +6,12 @@ import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.CreateGithubComment;
-import io.fundrequest.platform.github.GitHubCommentFactory;
+import io.fundrequest.platform.github.GithubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
-import io.fundrequest.platform.github.GithubSolverResolver;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.github.parser.GithubUser;
+import io.fundrequest.platform.github.scraper.GithubScraper;
+import io.fundrequest.platform.github.scraper.model.GithubIssue;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,7 +21,6 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,21 +39,21 @@ public class CreateGithubCommentOnClosedHandlerTest {
     private CreateGithubCommentOnClosedHandler handler;
 
     private GithubGateway githubGateway;
-    private GitHubCommentFactory gitHubCommentFactory;
-    private GithubSolverResolver githubSolverResolver;
+    private GithubCommentFactory githubCommentFactory;
+    private GithubScraper githubScraper;
     private String githubUser = "ytruyt";
 
     @Before
     public void setUp() {
         githubGateway = mock(GithubGateway.class);
-        gitHubCommentFactory = mock(GitHubCommentFactory.class);
-        githubSolverResolver = mock(GithubSolverResolver.class);
-        handler = new CreateGithubCommentOnClosedHandler(githubGateway, githubSolverResolver, gitHubCommentFactory, true, githubUser);
+        githubCommentFactory = mock(GithubCommentFactory.class);
+        githubScraper = mock(GithubScraper.class);
+        handler = new CreateGithubCommentOnClosedHandler(githubGateway, githubScraper, githubCommentFactory, true, githubUser);
     }
 
     @Test
     public void ignoresGithubComment() {
-        handler = new CreateGithubCommentOnClosedHandler(githubGateway, githubSolverResolver, gitHubCommentFactory, false, githubUser);
+        handler = new CreateGithubCommentOnClosedHandler(githubGateway, githubScraper, githubCommentFactory, false, githubUser);
 
         handler.createGithubCommentOnRequestClaimed(mock((RequestClaimedEvent.class)));
 
@@ -69,8 +69,8 @@ public class CreateGithubCommentOnClosedHandlerTest {
         final List<GithubIssueCommentsResult> existingComments = Arrays.asList(createCommentFromGithubUserMock(0));
 
         when(githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(existingComments);
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of(SOLVER));
-        when(gitHubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder().solver(SOLVER).build());
+        when(githubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
 
         handler.createGithubCommentOnRequestClaimed(event);
 
@@ -95,8 +95,8 @@ public class CreateGithubCommentOnClosedHandlerTest {
         final List<GithubIssueCommentsResult> existingComments = Arrays.asList(firstComment, secondComment);
 
         when(githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(existingComments);
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of(SOLVER));
-        when(gitHubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder().solver(SOLVER).build());
+        when(githubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
 
         handler.createGithubCommentOnRequestClaimed(event);
 
@@ -122,8 +122,8 @@ public class CreateGithubCommentOnClosedHandlerTest {
         final List<GithubIssueCommentsResult> existingComments = Arrays.asList(firstComment, secondComment, thirdComment);
 
         when(githubGateway.getCommentsForIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(existingComments);
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of(SOLVER));
-        when(gitHubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder().solver(SOLVER).build());
+        when(githubCommentFactory.createClosedComment(request.getId(), SOLVER)).thenReturn(EXPECTED_MESSAGE);
 
         handler.createGithubCommentOnRequestClaimed(event);
 
@@ -143,7 +143,7 @@ public class CreateGithubCommentOnClosedHandlerTest {
         final RequestDto request = event.getRequestDto();
         final IssueInformationDto issueInformation = request.getIssueInformation();
 
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.empty());
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder().build());
 
         try {
             handler.createGithubCommentOnRequestClaimed(event);

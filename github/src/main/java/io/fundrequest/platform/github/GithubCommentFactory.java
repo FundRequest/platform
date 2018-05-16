@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GitHubCommentFactory {
+public class GithubCommentFactory {
 
     private static final String LINE_BREAK = "\r\n";
     private static final String COMMENT_HEADER =
@@ -19,7 +19,7 @@ public class GitHubCommentFactory {
     private static final String FUNDED_COMMENT_TEMPLATE =
             COMMENT_HEADER
             + "This issue has been funded using [FundRequest](https://fundrequest.io). A developer can claim the reward by submitting a pull request referencing this issue. "
-            + "([How to Close Issues via Pull Requests?](https://help.github.com/articles/closing-issues-using-keywords)) e.g. `fixes #%2$s`"
+            + "([How to Close Issues via Pull Requests?](https://help.github.com/articles/closing-issues-using-keywords)) e.g. `fixes #%3$s`"
             + LINE_BREAK
             + LINE_BREAK
             + "* For more help on how to claim on issue, please visit our [help section](https://help.fundrequest.io)."
@@ -41,12 +41,12 @@ public class GitHubCommentFactory {
 
     private final String badgeBasepath;
 
-    public GitHubCommentFactory(@Value("${io.fundrequest.badge.basepath:https://fundrequest.io}") final String badgeBasepath) {
+    public GithubCommentFactory(@Value("${io.fundrequest.badge.basepath:https://fundrequest.io}") final String badgeBasepath) {
         this.badgeBasepath = badgeBasepath;
     }
 
-    public String createFundedComment(final Long requestId) {
-        return String.format(FUNDED_COMMENT_TEMPLATE, badgeBasepath, requestId);
+    public String createFundedComment(final Long requestId, final String githubIssueNumber) {
+        return String.format(FUNDED_COMMENT_TEMPLATE, badgeBasepath, requestId, githubIssueNumber);
     }
 
     public String createResolvedComment(final Long requestId, final String solver) {
@@ -58,6 +58,6 @@ public class GitHubCommentFactory {
     }
 
     private String create(final String commentTemplate, final Long requestId, final String solver) {
-        return String.format(commentTemplate, badgeBasepath, requestId,solver);
+        return String.format(commentTemplate, badgeBasepath, requestId, solver);
     }
 }

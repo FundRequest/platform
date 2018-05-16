@@ -5,29 +5,31 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.github.CreateGithubComment;
-import io.fundrequest.platform.github.GitHubCommentFactory;
+import io.fundrequest.platform.github.GithubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
-import io.fundrequest.platform.github.GithubSolverResolver;
+import io.fundrequest.platform.github.scraper.GithubScraper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.util.Optional;
+
 @Component
 public class CreateGithubCommentOnResolvedHandler {
 
     private final GithubGateway githubGateway;
-    private final GithubSolverResolver githubSolverResolver;
-    private final GitHubCommentFactory gitHubCommentFactory;
+    private final GithubScraper githubScraper;
+    private final GithubCommentFactory githubCommentFactory;
     private final Boolean addComment;
 
     public CreateGithubCommentOnResolvedHandler(final GithubGateway githubGateway,
-                                                final GithubSolverResolver githubSolverResolver,
-                                                final GitHubCommentFactory gitHubCommentFactory,
+                                                final GithubScraper githubScraper,
+                                                final GithubCommentFactory githubCommentFactory,
                                                 @Value("${github.add-comments:false}") final Boolean addComment) {
         this.githubGateway = githubGateway;
-        this.githubSolverResolver = githubSolverResolver;
-        this.gitHubCommentFactory = gitHubCommentFactory;
+        this.githubScraper = githubScraper;
+        this.githubCommentFactory = githubCommentFactory;
         this.addComment = addComment;
     }
 
@@ -37,9 +39,10 @@ public class CreateGithubCommentOnResolvedHandler {
             final RequestDto request = event.getRequestDto();
             final IssueInformationDto issueInformation = request.getIssueInformation();
             if (issueInformation.getPlatform() == Platform.GITHUB) {
-                final String solver = githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).orElseThrow(() -> new RuntimeException("No solver found for request " + request.getId()));
+                final String solver = Optional.ofNullable(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).getSolver())
+                                              .orElseThrow(() -> new RuntimeException("No solver found for request " + request.getId()));
                 final CreateGithubComment comment = new CreateGithubComment();
-                comment.setBody(gitHubCommentFactory.createResolvedComment(request.getId(), solver));
+                comment.setBody(githubCommentFactory.createResolvedComment(request.getId(), solver));
                 githubGateway.createCommentOnIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), comment);
             }
         }
