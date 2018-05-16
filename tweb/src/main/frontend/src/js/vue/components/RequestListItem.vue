@@ -18,8 +18,7 @@
                     <span class="request-details__tech" v-for="tech in req.technologies">{{tech}}</span>
                 </div>
                 <div class="request-details__icons">
-                    <i class="fab fa-github"></i>
-                    <i class="fab fa-github-alt"></i>
+                    <a v-bind:href="getGithubIssueUrl(req.platform, req.owner, req.repo, req.issueNumber)"><i class="fab fa-github"></i></a>
                     <i class="fa fa-comment"></i>
                 </div>
             </div>
@@ -87,6 +86,12 @@
             return Locations.getRequestDetailUrl(id);
         }
 
+        public getGithubIssueUrl(platform: string, owner: string, repo: string, issueNumber: string) {
+            if (platform.toUpperCase() == 'GITHUB') {
+                return `https://github.com/${owner}/${repo}/issues/${issueNumber}`;
+            }
+            return "#";
+        }
     }
 </script>
 

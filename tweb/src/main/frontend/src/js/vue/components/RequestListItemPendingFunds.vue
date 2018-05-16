@@ -17,9 +17,7 @@
                     <span class="request-details__badge badge badge-pill badge--pending">pending</span>
                 </div>
                 <div class="request-details__icons">
-                    <i class="fab fa-github"></i>
-                    <i class="fab fa-github-alt"></i>
-                    <i class="fa fa-comment"></i>
+                    <a v-bind:href="getGithubIssueUrl(req.platform, req.owner, req.repo, req.number)"><i class="fab fa-github"></i></a>
                 </div>
             </div>
             <div class="request-details__funding-details">
@@ -70,6 +68,13 @@
 
         public showActions(e) {
             null;
+        }
+
+        public getGithubIssueUrl(platform: string, owner: string, repo: string, issueNumber: string) {
+            if (platform.toUpperCase() == 'GITHUB') {
+                return `https://github.com/${owner}/${repo}/issues/${issueNumber}`;
+            }
+            return "#";
         }
     }
 </script>
