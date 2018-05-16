@@ -25,7 +25,7 @@
                             <div class="rewards-list__text">
                                 <span th:text="#{${'enum.BountyType.' + paidBounty.type}}"></span>
                                 <small>
-                                    <a class="rewards-list__link" th:href="${'https://etherscan.io/tx/'+paidBounty.transactionHash}">View on etherscan</a>
+                                    <a class="rewards-list__link" th:href="${'https://etherscan.io/tx/'+paidBounty.transactionHash}" target="_blank">View on etherscan</a>
                                 </small>
                             </div>
                             <div>
