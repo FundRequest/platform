@@ -19,8 +19,22 @@
                         <span th:text="${bounty.getTotalRewards()}"></span> FND
                     </small>
                 </h5>
+                <div class="card-body">
+                    <div class="rewards-list">
+                        <div class="rewards-list__item" th:each="paidBounty : ${paidBounties} ">
+                            <div class="rewards-list__text">
+                                <span th:text="#{${'enum.BountyType.' + paidBounty.type}}"></span>
+                            </div>
+                            <div>
+                                <small>
+                                    <a class="rewards-list__link" th:href="${'https://etherscan.io/tx/'+paidBounty.transactionHash}">View on etherscan</a>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-footer card-footer--light text-center">
-                    <div class="font-weight-bold">Rewards will be transferred 7th of May.</div>
+                    <div class="font-weight-bold">Rewards will be transferred each Monday.</div>
                     <div class="text-secondary font-weight-bold"
                          th:classappend="${profile.hadEtherAddress() ? 'd-none' : ''}"
                          th:if="${bounty.getTotalRewards() > 0}"

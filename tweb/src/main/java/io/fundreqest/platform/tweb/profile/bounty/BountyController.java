@@ -45,6 +45,7 @@ public class BountyController {
         mav.addObject("linkedInVerification", linkedInService.getVerification(principal));
         mav.addObject("profile", profileService.getUserProfile(principal));
         mav.addObject("bounty", bountyService.getBounties(principal));
+        mav.addObject("paidBounties", bountyService.getPaidBounties(principal));
         return mav;
     }
 }

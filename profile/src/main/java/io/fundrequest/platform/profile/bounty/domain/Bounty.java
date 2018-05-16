@@ -34,6 +34,9 @@ public class Bounty extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     private BountyStatus status;
 
+    @Column(name = "transaction_hash")
+    private String transactionHash;
+
 
     @Builder
     Bounty(String userId, BountyType type) {
@@ -56,5 +59,9 @@ public class Bounty extends AbstractEntity {
 
     public BountyStatus getStatus() {
         return status;
+    }
+
+    public String getTransactionHash() {
+        return transactionHash;
     }
 }
