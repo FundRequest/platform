@@ -402,10 +402,10 @@
                                                                                   {{selectedToken.symbol}}. One time
                                                                                   only.
                                             </li>
-                                            <li class="bullet-steps__item -blue">So when clicking 'Send transaction'
-                                                                                 you'll have submit 2 transactions. The
-                                                                                 first one is to approve the tokens, the
-                                                                                 2nd one is to fund.
+                                            <li class="bullet-steps__item -blue">So when clicking 'Continue transaction' you'll
+                                                                                 be offered 2 transactions. The first one is
+                                                                                 for you to approve funding in {{selectedToken.symbol}} tokens,
+                                                                                 the 2nd one is to transfer the {{selectedToken.symbol}} tokens to the request.
                                             </li>
                                         </ul>
                                         <ul class="bullet-steps"
@@ -420,7 +420,7 @@
                                                 This will take 2 transactions, a first one to set the allowance to 0, a
                                                 2nd one to approve the extra funding.
                                             </li>
-                                            <li class="bullet-steps__item -blue">So when clicking 'Send transaction'
+                                            <li class="bullet-steps__item -blue">So when clicking 'Continue transaction'
                                                                                  you'll have submit 3 transactions. The
                                                                                  first 2 are to approve the tokens, the
                                                                                  3th one is to fund.
@@ -432,7 +432,7 @@
                                 <div class="row">
                                     <div class="col-12 d-flex justify-content-end">
                                         <button class="btn btn-secondary" v-on:click="fund()">
-                                            <span>Start transaction</span>
+                                            <span>Continue transaction</span>
                                         </button>
                                     </div>
                                 </div>
