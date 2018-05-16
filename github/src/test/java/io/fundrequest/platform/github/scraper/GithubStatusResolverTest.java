@@ -9,13 +9,13 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GithubStatusParserTest {
+public class GithubStatusResolverTest {
 
-    private GithubStatusParser parser;
+    private GithubStatusResolver parser;
 
     @Before
     public void setUp() {
-        parser = new GithubStatusParser();
+        parser = new GithubStatusResolver();
     }
 
     @Test
@@ -25,7 +25,7 @@ public class GithubStatusParserTest {
 
         when(document.select("#partial-discussion-header .State").text()).thenReturn(expectedStatus);
 
-        final String returnedStatus = parser.parse(document);
+        final String returnedStatus = parser.resolve(document);
 
         assertThat(returnedStatus).isEqualTo(expectedStatus);
     }
@@ -37,7 +37,7 @@ public class GithubStatusParserTest {
 
         when(document.select("#partial-discussion-header .State").text()).thenReturn(expectedStatus);
 
-        final String returnedStatus = parser.parse(document);
+        final String returnedStatus = parser.resolve(document);
 
         assertThat(returnedStatus).isEqualTo(expectedStatus);
     }

@@ -17,7 +17,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GithubScraperHealthCheckTest {
+public class GithubScraperSolverHealthCheckTest {
 
     private static final String OWNER = "hgfcjgvhk";
     private static final String REPO = "fyjcgkjvhb";
@@ -29,24 +29,30 @@ public class GithubScraperHealthCheckTest {
     private static final String URL_1 = URL_PREFIX + NUMBER_1;
     private static final String URL_2 = URL_PREFIX + NUMBER_2;
 
-    private GithubScraperHealthCheck githubScraperHealthCheck;
+    private GithubScraperSolverHealthCheck githubScraperSolverHealthCheck;
     private GithubScraper githubScraper;
 
     @Before
     public void setUp() {
         githubScraper = mock(GithubScraper.class);
-        final GithubScraperHealthCheckProperties githubScraperHealthCheckProperties = GithubScraperHealthCheckProperties.builder()
-                                                                                                                        .owner(OWNER)
-                                                                                                                        .repo(REPO)
-                                                                                                                        .issues(initChecksMap())
-                                                                                                                        .build();
-        githubScraperHealthCheck = new GithubScraperHealthCheck(githubScraper, githubScraperHealthCheckProperties);
+        final GithubScraperHealthChecksProperties githubScraperHealthChecksProperties = GithubScraperHealthChecksProperties.builder()
+                                                                                                                           .owner(OWNER)
+                                                                                                                           .repo(REPO)
+                                                                                                                           .issues(initChecksMap())
+                                                                                                                           .build();
+        githubScraperSolverHealthCheck = new GithubScraperSolverHealthCheck(githubScraper, githubScraperHealthChecksProperties);
     }
 
-    private Map<String, String> initChecksMap() {
-        final Map<String, String> checksMap = new HashMap<>();
-        checksMap.put(NUMBER_1, EXPECTED_SOLVER_1);
-        checksMap.put(NUMBER_2, EXPECTED_SOLVER_2);
+    private Map<String, GithubScraperHealthCheckProperties> initChecksMap() {
+        final Map<String, GithubScraperHealthCheckProperties> checksMap = new HashMap<>();
+        checksMap.put(NUMBER_1, GithubScraperHealthCheckProperties.builder()
+                                                                  .expectedSolver(EXPECTED_SOLVER_1)
+                                                                  .expectedStatus("closed")
+                                                                  .build());
+        checksMap.put(NUMBER_2, GithubScraperHealthCheckProperties.builder()
+                                                                  .expectedSolver(EXPECTED_SOLVER_2)
+                                                                  .expectedStatus("closed")
+                                                                  .build());
         return checksMap;
     }
 
@@ -55,12 +61,10 @@ public class GithubScraperHealthCheckTest {
         final List<Health> expectedHealths = Arrays.asList(Health.up().withDetail("checkedURL", URL_1).build(),
                                                            Health.up().withDetail("checkedURL", URL_2).build());
 
-        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_1)).thenReturn(GithubIssue.builder().solver(EXPECTED_SOLVER_1).build());
-        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_2)).thenReturn(GithubIssue.builder().solver(EXPECTED_SOLVER_2).build());
+        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_1)).thenReturn(GithubIssue.builder().number(NUMBER_1).solver(EXPECTED_SOLVER_1).build());
+        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_2)).thenReturn(GithubIssue.builder().number(NUMBER_2).solver(EXPECTED_SOLVER_2).build());
 
-        final Health result = githubScraperHealthCheck.health();
-
-
+        final Health result = githubScraperSolverHealthCheck.health();
 
         assertThat(result.getStatus()).isEqualTo(Status.UP);
         assertThat(result.getDetails().get("healths")).isEqualTo(expectedHealths);
@@ -72,10 +76,10 @@ public class GithubScraperHealthCheckTest {
         final List<Health> expectedHealths = Arrays.asList(Health.down().withDetail("problem", "No solver found").withDetail("checkedURL", URL_1).build(),
                                                            Health.up().withDetail("checkedURL", URL_2).build());
 
-        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_1)).thenReturn(GithubIssue.builder().build());
-        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_2)).thenReturn(GithubIssue.builder().solver(EXPECTED_SOLVER_2).build());
+        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_1)).thenReturn(GithubIssue.builder().number(NUMBER_1).build());
+        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_2)).thenReturn(GithubIssue.builder().number(NUMBER_2).solver(EXPECTED_SOLVER_2).build());
 
-        final Health result = githubScraperHealthCheck.health();
+        final Health result = githubScraperSolverHealthCheck.health();
 
         assertThat(result.getStatus()).isEqualTo(Status.DOWN);
         assertThat(result.getDetails().get("healths")).isEqualTo(expectedHealths);
@@ -92,10 +96,10 @@ public class GithubScraperHealthCheckTest {
                                                                  .withDetail("checkedURL", URL_2)
                                                                  .build());
 
-        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_1)).thenReturn(GithubIssue.builder().solver(EXPECTED_SOLVER_1).build());
-        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_2)).thenReturn(GithubIssue.builder().solver(fetchedSolver).build());
+        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_1)).thenReturn(GithubIssue.builder().number(NUMBER_1).solver(EXPECTED_SOLVER_1).build());
+        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_2)).thenReturn(GithubIssue.builder().number(NUMBER_2).solver(fetchedSolver).build());
 
-        final Health result = githubScraperHealthCheck.health();
+        final Health result = githubScraperSolverHealthCheck.health();
 
         assertThat(result.getStatus()).isEqualTo(Status.DOWN);
         assertThat(result.getDetails().get("healths")).isEqualTo(expectedHealths);
@@ -103,15 +107,11 @@ public class GithubScraperHealthCheckTest {
 
     @Test
     public void health_down_when1ThrowsException() {
-        final List<Health> expectedHealths = Arrays.asList(Health.up().withDetail("checkedURL", URL_1).build(),
-                                                           Health.down().withDetail("problem", "Exception thrown while fetching solver").withDetail("checkedURL", URL_2).build());
-
-        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_1)).thenReturn(GithubIssue.builder().solver(EXPECTED_SOLVER_1).build());
+        when(githubScraper.fetchGithubIssue(OWNER, REPO, NUMBER_1)).thenReturn(GithubIssue.builder().number(NUMBER_1).solver(EXPECTED_SOLVER_1).build());
         doThrow(new RuntimeException()).when(githubScraper).fetchGithubIssue(OWNER, REPO, NUMBER_2);
 
-        final Health result = githubScraperHealthCheck.health();
+        final Health result = githubScraperSolverHealthCheck.health();
 
         assertThat(result.getStatus()).isEqualTo(Status.DOWN);
-        assertThat(result.getDetails().get("healths")).isEqualTo(expectedHealths);
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.FilterType;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@EnableConfigurationProperties(GithubScraperHealthCheckProperties.class)
+@EnableConfigurationProperties(GithubScraperHealthChecksProperties.class)
 @EnableFeignClients("io.fundrequest.platform.github")
 @ComponentScan(
         basePackageClasses = {FundRequestGithub.class, },

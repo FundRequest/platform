@@ -11,15 +11,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GithubSolverParserTest {
+public class GithubSolverResolverTest {
 
-    private GithubSolverParser parser;
+    private GithubSolverResolver parser;
     private GithubGateway githubGateway;
 
     @Before
     public void setUp() {
         githubGateway = mock(GithubGateway.class);
-        parser = new GithubSolverParser(githubGateway);
+        parser = new GithubSolverResolver(githubGateway);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class GithubSolverParserTest {
                                                                                       .build())
                                                 .build();
 
-        final String returnedSolver = parser.parse(doc, owner, repo);
+        final String returnedSolver = parser.resolve(doc, owner, repo);
 
         assertThat(returnedSolver).isEqualTo(solver);
     }
@@ -74,7 +74,7 @@ public class GithubSolverParserTest {
                                                                                                   .user(GithubUser.builder().login(solver).build())
                                                                                                   .build());
 
-        final String returnedSolver = parser.parse(doc, owner, repo);
+        final String returnedSolver = parser.resolve(doc, owner, repo);
 
         assertThat(returnedSolver).isEqualTo(solver);
     }
@@ -85,7 +85,7 @@ public class GithubSolverParserTest {
         final String repo = "hfcjgv";
         final Document doc = DocumentMockBuilder.documentBuilder().build();
 
-        final String returnedSolver = parser.parse(doc, owner, repo);
+        final String returnedSolver = parser.resolve(doc, owner, repo);
 
         assertThat(returnedSolver).isNull();
     }
@@ -103,7 +103,7 @@ public class GithubSolverParserTest {
                                                                                       .build())
                                                 .build();
 
-        final String returnedSolver = parser.parse(doc, owner, repo);
+        final String returnedSolver = parser.resolve(doc, owner, repo);
 
         assertThat(returnedSolver).isNull();;
     }
@@ -120,7 +120,7 @@ public class GithubSolverParserTest {
                                                                                       .build())
                                                 .build();
 
-        final String returnedSolver = parser.parse(doc, owner, repo);
+        final String returnedSolver = parser.resolve(doc, owner, repo);
 
         assertThat(returnedSolver).isNull();
     }
@@ -149,7 +149,7 @@ public class GithubSolverParserTest {
                                                                                                   .user(GithubUser.builder().login("").build())
                                                                                                   .build());
 
-        final String returnedSolver = parser.parse(doc, owner, repo);
+        final String returnedSolver = parser.resolve(doc, owner, repo);
 
         assertThat(returnedSolver).isNull();
     }

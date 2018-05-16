@@ -11,13 +11,13 @@ import java.io.IOException;
 public class GithubScraper {
 
     private final JsoupSpringWrapper jsoup;
-    private final GithubSolverParser solverParser;
-    private final GithubStatusParser statusParser;
+    private final GithubSolverResolver solverResolver;
+    private final GithubStatusResolver statusResolver;
 
-    public GithubScraper(final JsoupSpringWrapper jsoup, final GithubSolverParser solverParser, final GithubStatusParser statusParser) {
+    public GithubScraper(final JsoupSpringWrapper jsoup, final GithubSolverResolver solverResolver, final GithubStatusResolver statusResolver) {
         this.jsoup = jsoup;
-        this.solverParser = solverParser;
-        this.statusParser = statusParser;
+        this.solverResolver = solverResolver;
+        this.statusResolver = statusResolver;
     }
 
     public GithubIssue fetchGithubIssue(final String owner, final String repo, final String number) {
@@ -29,8 +29,8 @@ public class GithubScraper {
         }
         return GithubIssue.builder()
                           .number(number)
-                          .solver(solverParser.parse(document, owner, repo))
-                          .status(statusParser.parse(document))
+                          .solver(solverResolver.resolve(document, owner, repo))
+                          .status(statusResolver.resolve(document))
                           .build();
     }
 }

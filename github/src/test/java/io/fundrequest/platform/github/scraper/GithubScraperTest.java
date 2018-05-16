@@ -18,14 +18,14 @@ public class GithubScraperTest {
 
     private GithubScraper scraper;
     private JsoupSpringWrapper jsoup;
-    private GithubSolverParser solverParser;
-    private GithubStatusParser statusParser;
+    private GithubSolverResolver solverParser;
+    private GithubStatusResolver statusParser;
 
     @Before
     public void setUp() {
         jsoup = mock(JsoupSpringWrapper.class, RETURNS_DEEP_STUBS);
-        solverParser = mock(GithubSolverParser.class);
-        statusParser = mock(GithubStatusParser.class);
+        solverParser = mock(GithubSolverResolver.class);
+        statusParser = mock(GithubStatusResolver.class);
         scraper = new GithubScraper(jsoup, solverParser, statusParser);
     }
 
@@ -39,8 +39,8 @@ public class GithubScraperTest {
         final Document document = mock(Document.class);
 
         when(jsoup.connect("https://github.com/" + owner + "/" + repo + "/issues/" + number).get()).thenReturn(document);
-        when(solverParser.parse(document, owner, repo)).thenReturn(expectedSolver);
-        when(statusParser.parse(document)).thenReturn(expectedStatus);
+        when(solverParser.resolve(document, owner, repo)).thenReturn(expectedSolver);
+        when(statusParser.resolve(document)).thenReturn(expectedStatus);
 
         final GithubIssue returnedIssue = scraper.fetchGithubIssue(owner, repo, number);
 

@@ -9,16 +9,16 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GithubSolverParser {
+public class GithubSolverResolver {
 
     private final GithubGateway githubGateway;
 
-    public GithubSolverParser(final GithubGateway githubGateway) {
+    public GithubSolverResolver(final GithubGateway githubGateway) {
         this.githubGateway = githubGateway;
     }
 
-    public String parse(final Document doc, final String owner, final String repo) {
-        return doc.select(".discussion-item")
+    public String resolve(final Document document, final String owner, final String repo) {
+        return document.select(".discussion-item")
                   .stream()
                   .filter(this::isPullRequest)
                   .filter(this::isMerged)
