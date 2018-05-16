@@ -302,33 +302,4 @@
             }
         }
     }
-    /*
-      public updateQr() {
-        this.requestService.requestQRValue(new FundRequestCommand(
-          this.requestDetails.platform,
-          this.requestDetails.platformId,
-          this.fundAmount
-        )).then(
-          res => { // Success
-            this.qrValue = res;
-          },
-          msg => { // Error
-          }
-        ).catch();
-      }
-
-        return await this._http.post(ApiUrls.qrFund, body, {responseType: 'text'}).toPromise();
-
-    let body = {
-          platform: command.platform,
-          platformId: command.platformId,
-          amount: '' + this._web3.toWei(command.amount, 'ether'),
-          fundrequestAddress: this._cs.getFundRequestContractAddress(),
-          tokenAddress: this._cs.getTokenContractAddress()
-        };
-        return await this._http.post(ApiUrls.qrFund, body, {responseType: 'text'}).toPromise();
-
-                                            <img class="img-responsive" [src]="'assets/img/qr-code.svg'"  />
-
-     */
 </script>
