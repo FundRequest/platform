@@ -19,7 +19,8 @@
                 </div>
                 <div class="request-details__icons">
                     <a v-bind:href="getGithubIssueUrl(req.platform, req.owner, req.repo, req.issueNumber)"><i class="fab fa-github"></i></a>
-                    <i class="fa fa-comment"></i>
+                    <a v-bind:href="getRequestDetailUrl(req.id)+'#comments'"><i class="fa fa-comment"></i></a>
+                    <span>Last modified {{req.lastModifiedDate}}</span>
                 </div>
             </div>
             <div class="request-details__funding-details">
