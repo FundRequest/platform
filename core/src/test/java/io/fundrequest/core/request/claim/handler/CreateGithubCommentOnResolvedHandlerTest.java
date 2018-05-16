@@ -5,15 +5,15 @@ import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.CreateGithubComment;
-import io.fundrequest.platform.github.GitHubCommentFactory;
+import io.fundrequest.platform.github.GithubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
-import io.fundrequest.platform.github.GithubSolverResolver;
+import io.fundrequest.platform.github.scraper.GithubScraper;
+import io.fundrequest.platform.github.scraper.model.GithubIssue;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -27,20 +27,20 @@ public class CreateGithubCommentOnResolvedHandlerTest {
 
     private CreateGithubCommentOnResolvedHandler handler;
     private GithubGateway githubGateway;
-    private GitHubCommentFactory gitHubCommentFactory;
-    private GithubSolverResolver githubSolverResolver;
+    private GithubCommentFactory githubCommentFactory;
+    private GithubScraper githubScraper;
 
     @Before
     public void setUp() {
         githubGateway = mock(GithubGateway.class);
-        gitHubCommentFactory = mock(GitHubCommentFactory.class);
-        githubSolverResolver = mock(GithubSolverResolver.class);
-        handler = new CreateGithubCommentOnResolvedHandler(githubGateway, githubSolverResolver, gitHubCommentFactory, true);
+        githubCommentFactory = mock(GithubCommentFactory.class);
+        githubScraper = mock(GithubScraper.class);
+        handler = new CreateGithubCommentOnResolvedHandler(githubGateway, githubScraper, githubCommentFactory, true);
     }
 
     @Test
     public void ignoresGithubComment() {
-        handler = new CreateGithubCommentOnResolvedHandler(githubGateway, githubSolverResolver, gitHubCommentFactory, false);
+        handler = new CreateGithubCommentOnResolvedHandler(githubGateway, githubScraper, githubCommentFactory, false);
 
         handler.createGithubCommentOnRequestClaimable(mock((RequestClaimableEvent.class)));
 
@@ -56,8 +56,10 @@ public class CreateGithubCommentOnResolvedHandlerTest {
         final String solver = "gdhfjghiuyutfyd";
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
 
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of(solver));
-        when(gitHubCommentFactory.createResolvedComment(request.getId(), solver)).thenReturn(expectedMessage);
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
+                                                                                                                                                          .solver(solver)
+                                                                                                                                                          .build());
+        when(githubCommentFactory.createResolvedComment(request.getId(), solver)).thenReturn(expectedMessage);
 
         handler.createGithubCommentOnRequestClaimable(event);
 
@@ -71,14 +73,10 @@ public class CreateGithubCommentOnResolvedHandlerTest {
     @Test
     public void postsGithubComment_noSolverFound() {
         final RequestClaimableEvent event = new RequestClaimableEvent(RequestDtoMother.freeCodeCampNoUserStories(), LocalDateTime.now());
-        final String expectedMessage = "ytufg";
         final RequestDto request = event.getRequestDto();
         final IssueInformationDto issueInformation = request.getIssueInformation();
-        final String solver = "gdhfjghiuyutfyd";
-        final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
 
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.empty());
-        when(gitHubCommentFactory.createResolvedComment(request.getId(), solver)).thenReturn(expectedMessage);
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder().build());
 
         try {
             handler.createGithubCommentOnRequestClaimable(event);

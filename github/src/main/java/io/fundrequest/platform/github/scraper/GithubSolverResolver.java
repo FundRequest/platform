@@ -1,15 +1,12 @@
-package io.fundrequest.platform.github;
+package io.fundrequest.platform.github.scraper;
 
+import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.parser.GithubResult;
 import org.apache.commons.lang.StringUtils;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.Optional;
 
 @Component
 public class GithubSolverResolver {
@@ -20,19 +17,15 @@ public class GithubSolverResolver {
         this.githubGateway = githubGateway;
     }
 
-    public Optional<String> resolveSolver(final String owner, final String repo, final String number) {
-        Document doc = null;
-        try {
-            doc = Jsoup.connect("https://github.com/" + owner + "/" + repo + "/issues/" + number).get();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Elements discussionItems = doc.select(".discussion-item");
-        return discussionItems.stream()
-                              .filter(this::isPullRequest)
-                              .filter(this::isMerged)
-                              .map(discussionItem -> getAuthor(discussionItem, owner, repo))
-                              .findFirst();
+    public String resolve(final Document document, final String owner, final String repo) {
+        return document.select(".discussion-item")
+                  .stream()
+                  .filter(this::isPullRequest)
+                  .filter(this::isMerged)
+                  .map(discussionItem -> getAuthor(discussionItem, owner, repo))
+                  .filter(StringUtils::isNotEmpty)
+                  .findFirst()
+                  .orElse(null);
     }
 
     private String getAuthor(final Element discussionItem, final String owner, final String repo) {

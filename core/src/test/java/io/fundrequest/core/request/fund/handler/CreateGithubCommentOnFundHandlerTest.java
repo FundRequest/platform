@@ -6,7 +6,7 @@ import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.CreateGithubComment;
-import io.fundrequest.platform.github.GitHubCommentFactory;
+import io.fundrequest.platform.github.GithubCommentFactory;
 import io.fundrequest.platform.github.GithubGateway;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,20 +23,20 @@ public class CreateGithubCommentOnFundHandlerTest {
 
     private CreateGithubCommentOnFundHandler handler;
     private GithubGateway githubGateway;
-    private GitHubCommentFactory gitHubCommentFactory;
+    private GithubCommentFactory githubCommentFactory;
     private RequestService requestService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         githubGateway = mock(GithubGateway.class);
-        gitHubCommentFactory = mock(GitHubCommentFactory.class);
+        githubCommentFactory = mock(GithubCommentFactory.class);
         requestService = mock(RequestService.class);
-        handler = new CreateGithubCommentOnFundHandler(githubGateway, gitHubCommentFactory, requestService, true, "fundrequest-notifier");
+        handler = new CreateGithubCommentOnFundHandler(githubGateway, githubCommentFactory, requestService, true, "fundrequest-notifier");
     }
 
     @Test
-    public void ignoresGithubComment() throws Exception {
-        handler = new CreateGithubCommentOnFundHandler(githubGateway, gitHubCommentFactory, requestService, false, "fundrequest-notifier");
+    public void ignoresGithubComment() {
+        handler = new CreateGithubCommentOnFundHandler(githubGateway, githubCommentFactory, requestService, false, "fundrequest-notifier");
 
         handler.createGithubCommentOnRequestFunded(createEvent(65478L));
 
@@ -52,7 +52,7 @@ public class CreateGithubCommentOnFundHandlerTest {
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
 
-        when(gitHubCommentFactory.createFundedComment(requestId)).thenReturn(expectedMessage);
+        when(githubCommentFactory.createFundedComment(requestId, issueInformation.getNumber())).thenReturn(expectedMessage);
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
 
         handler.createGithubCommentOnRequestFunded(event);

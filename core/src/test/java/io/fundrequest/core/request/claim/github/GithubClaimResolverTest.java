@@ -11,7 +11,8 @@ import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
-import io.fundrequest.platform.github.GithubSolverResolver;
+import io.fundrequest.platform.github.scraper.GithubScraper;
+import io.fundrequest.platform.github.scraper.model.GithubIssue;
 import io.fundrequest.platform.keycloak.KeycloakRepository;
 import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.keycloak.UserIdentity;
@@ -19,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.security.Principal;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,16 +29,16 @@ import static org.mockito.Mockito.when;
 public class GithubClaimResolverTest {
 
     private GithubClaimResolver claimResolver;
-    private GithubSolverResolver githubSolverResolver;
+    private GithubScraper githubScraper;
     private AzraelClient azraelClient;
     private KeycloakRepository keycloakRepository;
 
     @Before
-    public void setUp() throws Exception {
-        githubSolverResolver = mock(GithubSolverResolver.class);
+    public void setUp() {
+        githubScraper = mock(GithubScraper.class);
         azraelClient = mock(AzraelClient.class);
         keycloakRepository = mock(KeycloakRepository.class);
-        claimResolver = new GithubClaimResolver(githubSolverResolver, azraelClient, keycloakRepository);
+        claimResolver = new GithubClaimResolver(githubScraper, azraelClient, keycloakRepository);
     }
 
     @Test
@@ -48,7 +48,10 @@ public class GithubClaimResolverTest {
         requestDto.setStatus(RequestStatus.FUNDED);
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
 
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
+                                                                                                                                                          .solver("davyvanroy")
+                                                                                                                                                          .status("Closed")
+                                                                                                                                                          .build());
         when(keycloakRepository.getUserIdentities(principal.getName())).thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
 
         final UserClaimableDto result = claimResolver.userClaimableResult(principal, requestDto);
@@ -58,12 +61,50 @@ public class GithubClaimResolverTest {
     }
 
     @Test
-    public void userClaimableResultNoPrincipal() {
+    public void userClaimableResult_issueNotClosed() {
+        final Principal principal = PrincipalMother.davyvanroy();
         final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
         requestDto.setStatus(RequestStatus.FUNDED);
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
 
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
+                                                                                                                                                          .status("Open")
+                                                                                                                                                          .build());
+
+        final UserClaimableDto result = claimResolver.userClaimableResult(principal, requestDto);
+
+        assertThat(result.isClaimable()).isFalse();
+        assertThat(result.isClaimableByUser()).isFalse();
+    }
+
+    @Test
+    public void userClaimableResult_noSolver() {
+        final Principal principal = PrincipalMother.davyvanroy();
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setStatus(RequestStatus.FUNDED);
+        final IssueInformationDto issueInformation = requestDto.getIssueInformation();
+
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
+                                                                                                                                                          .status("Closed")
+                                                                                                                                                          .build());
+        when(keycloakRepository.getUserIdentities(principal.getName())).thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
+
+        final UserClaimableDto result = claimResolver.userClaimableResult(principal, requestDto);
+
+        assertThat(result.isClaimable()).isFalse();
+        assertThat(result.isClaimableByUser()).isFalse();
+    }
+
+    @Test
+    public void userClaimableResult_noPrincipal() {
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setStatus(RequestStatus.FUNDED);
+        final IssueInformationDto issueInformation = requestDto.getIssueInformation();
+
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
+                                                                                                                                                          .solver("davyvanroy")
+                                                                                                                                                          .status("Closed")
+                                                                                                                                                          .build());
 
         final UserClaimableDto result = claimResolver.userClaimableResult(null, requestDto);
 
@@ -72,13 +113,16 @@ public class GithubClaimResolverTest {
     }
 
     @Test
-    public void userClaimableResultClaimRequested() {
+    public void userClaimableResult_statusClaimRequested() {
         final Principal principal = PrincipalMother.davyvanroy();
         final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
         requestDto.setStatus(RequestStatus.CLAIM_REQUESTED);
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
 
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
+                                                                                                                                                          .solver("davyvanroy")
+                                                                                                                                                          .status("Closed")
+                                                                                                                                                          .build());
         when(keycloakRepository.getUserIdentities(principal.getName())).thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
 
         final UserClaimableDto result = claimResolver.userClaimableResult(principal, requestDto);
@@ -93,10 +137,40 @@ public class GithubClaimResolverTest {
         final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
 
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
+                                                                                                                                                          .solver("davyvanroy")
+                                                                                                                                                          .status("Closed")
+                                                                                                                                                          .build());
         when(keycloakRepository.getUserIdentities(principal.getName())).thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
 
         assertThat(claimResolver.canClaim(principal, requestDto)).isTrue();
+    }
+
+    @Test
+    public void canClaim_differentUser() {
+        final Principal principal = PrincipalMother.davyvanroy();
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        final IssueInformationDto issueInformation = requestDto.getIssueInformation();
+
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
+                                                                                                                                                          .solver("dfgj")
+                                                                                                                                                          .status("Closed")
+                                                                                                                                                          .build());
+        when(keycloakRepository.getUserIdentities(principal.getName())).thenReturn(Stream.of(UserIdentity.builder().provider(Provider.GITHUB).username("davyvanroy").build()));
+
+        assertThat(claimResolver.canClaim(principal, requestDto)).isFalse();
+    }
+
+    @Test
+    public void canClaim_issueNotClosed() {
+        final Principal principal = PrincipalMother.davyvanroy();
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        final IssueInformationDto issueInformation = requestDto.getIssueInformation();
+
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
+                                                                                                                                                          .status("Open")
+                                                                                                                                                          .build());
+        assertThat(claimResolver.canClaim(principal, requestDto)).isFalse();
     }
 
     @Test
@@ -111,7 +185,10 @@ public class GithubClaimResolverTest {
                                                                                                   .provider(Provider.GITHUB)
                                                                                                   .username("davyvanroy")
                                                                                                   .build()));
-        when(githubSolverResolver.resolveSolver(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(Optional.of("davyvanroy"));
+        when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
+                                                                                                                                                          .solver("davyvanroy")
+                                                                                                                                                          .status("Closed")
+                                                                                                                                                          .build());
         when(azraelClient.getSignature(signClaimCommand)).thenReturn(claimSignature);
 
         SignedClaim result = claimResolver.getSignedClaim(() -> "davyvanroy", userClaimRequest, request);

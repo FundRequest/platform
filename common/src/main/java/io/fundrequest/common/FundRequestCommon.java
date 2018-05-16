@@ -1,38 +1,22 @@
-package io.fundrequest.platform.admin;
+package io.fundrequest.common;
 
-import io.fundrequest.common.FundRequestCommon;
 import io.fundrequest.common.infrastructure.IgnoreDuringComponentScan;
-import io.fundrequest.core.FundRequestCore;
-import io.fundrequest.platform.github.FundRequestGithub;
-import io.fundrequest.platform.keycloak.FundRequestKeycloak;
-import io.fundrequest.platform.profile.ProfileApplication;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.TypeExcludeFilter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
+@EnableConfigurationProperties()
 @ComponentScan(
-        basePackageClasses = {
-                AdminApplication.class,
-                FundRequestKeycloak.class,
-                FundRequestGithub.class,
-                FundRequestCommon.class,
-                FundRequestCore.class,
-                ProfileApplication.class,
-        },
+        basePackageClasses = {FundRequestCommon.class},
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class),
                 @ComponentScan.Filter(IgnoreDuringComponentScan.class)})
-public class AdminApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(AdminApplication.class, args);
-    }
-
+public class FundRequestCommon {
 }

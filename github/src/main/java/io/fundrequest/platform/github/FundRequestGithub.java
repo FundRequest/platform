@@ -12,10 +12,10 @@ import org.springframework.context.annotation.FilterType;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@EnableConfigurationProperties(GithubSolverHealthCheckProperties.class)
+@EnableConfigurationProperties(GithubScraperHealthChecksProperties.class)
 @EnableFeignClients("io.fundrequest.platform.github")
 @ComponentScan(
-        basePackageClasses = {FundRequestGithub.class},
+        basePackageClasses = {FundRequestGithub.class, },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class),

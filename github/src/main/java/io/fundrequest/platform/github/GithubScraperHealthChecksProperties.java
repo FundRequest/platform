@@ -10,12 +10,12 @@ import java.util.Map;
 
 @Data
 @Builder
-@ConfigurationProperties("io.fundrequest.health.github.solver")
 @NoArgsConstructor
 @AllArgsConstructor
-public class GithubSolverHealthCheckProperties {
+@ConfigurationProperties("io.fundrequest.health.github.scraper")
+public class GithubScraperHealthChecksProperties {
 
     private String owner;
     private String repo;
-    private Map<String, String> issues;
+    private Map<String, GithubScraperHealthCheckProperties> issues;
 }

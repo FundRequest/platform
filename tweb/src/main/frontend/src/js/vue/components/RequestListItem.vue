@@ -68,8 +68,15 @@
     export default class RequestListItem extends Vue {
         @Prop({required: true}) request!: any;
 
+        public requestItem: RequestDto = null;
+
+        mounted() {
+            this.requestItem = Object.assign(new RequestDto(), this.request);
+            this.requestItem.technologies = this.requestItem.technologies.sort();
+        }
+
         public get req() {
-            return Object.assign(new RequestDto(), this.request);
+            return this.requestItem;
         }
 
         public showActions(event: Event) {

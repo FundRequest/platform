@@ -5,14 +5,14 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GitHubCommentFactoryTest {
+public class GithubCommentFactoryTest {
 
     private final static String EXPECTED_FUNDED_COMMENT =
             "[![](https://fundrequest.io/requests/156/badge)](https://fundrequest.io/requests/156)"
             + " [![](https://fundrequest.io/assets/img/powered-by-fundrequest-badge.svg)](https://fundrequest.io)"
             + "\r\n"
             + "This issue has been funded using [FundRequest](https://fundrequest.io). A developer can claim the reward by submitting a pull request referencing this issue. "
-            + "([How to Close Issues via Pull Requests?](https://help.github.com/articles/closing-issues-using-keywords)) e.g. `fixes #156`"
+            + "([How to Close Issues via Pull Requests?](https://help.github.com/articles/closing-issues-using-keywords)) e.g. `fixes #8765`"
             + "\r\n"
             + "\r\n* For more help on how to claim on issue, please visit our [help section](https://help.fundrequest.io)."
 //            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
@@ -38,18 +38,19 @@ public class GitHubCommentFactoryTest {
 //            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
             + "\r\n* Looking for more? Feel free to [browse](https://fundrequest.io/requests) through all funded requests.";
 
-    private GitHubCommentFactory gitHubCommentFactory;
+    private GithubCommentFactory githubCommentFactory;
 
     @Before
     public void setUp() {
-        gitHubCommentFactory = new GitHubCommentFactory("https://fundrequest.io");
+        githubCommentFactory = new GithubCommentFactory("https://fundrequest.io");
     }
 
     @Test
     public void createFundedComment() {
         final long requestId = 156;
+        final String githubIssueNumber = "8765";
 
-        final String result = gitHubCommentFactory.createFundedComment(requestId);
+        final String result = githubCommentFactory.createFundedComment(requestId, githubIssueNumber);
 
         assertThat(result).isEqualTo(EXPECTED_FUNDED_COMMENT);
     }
@@ -59,7 +60,7 @@ public class GitHubCommentFactoryTest {
         final long requestId = 635;
         final String solver = "dfghd-ghjgfg";
 
-        final String result = gitHubCommentFactory.createResolvedComment(requestId, solver);
+        final String result = githubCommentFactory.createResolvedComment(requestId, solver);
 
         assertThat(result).isEqualTo(EXPECTED_RESOLVED_COMMENT);
     }
@@ -69,7 +70,7 @@ public class GitHubCommentFactoryTest {
         final long requestId = 5473;
         final String solver = "ljn-ytd";
 
-        final String result = gitHubCommentFactory.createClosedComment(requestId, solver);
+        final String result = githubCommentFactory.createClosedComment(requestId, solver);
 
         assertThat(result).isEqualTo(EXPECTED_CLOSED_COMMENT);
     }
