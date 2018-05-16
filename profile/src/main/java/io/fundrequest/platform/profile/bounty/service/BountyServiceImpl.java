@@ -48,12 +48,14 @@ class BountyServiceImpl implements BountyService {
         int twitterRewards = byType.getOrDefault(BountyType.TWITTER_TWEET_FOLLOW, new ArrayList<>()).size() * BountyType.TWITTER_TWEET_FOLLOW.getReward();
         int linkedInRewards = byType.getOrDefault(BountyType.POST_LINKEDIN_UPDATE, new ArrayList<>()).size() * BountyType.POST_LINKEDIN_UPDATE.getReward();
         int telegramRewards = byType.getOrDefault(BountyType.LINK_TELEGRAM, new ArrayList<>()).size() * BountyType.LINK_TELEGRAM.getReward();
+        int surveyRewards = byType.getOrDefault(BountyType.SURVEY, new ArrayList<>()).size() * BountyType.SURVEY.getReward();
         int otherRewards =
                 byType.getOrDefault(BountyType.LINK_GITHUB, new ArrayList<>()).size() * BountyType.LINK_GITHUB.getReward()
                 + byType.getOrDefault(BountyType.LINK_STACK_OVERFLOW, new ArrayList<>()).size() * BountyType.LINK_STACK_OVERFLOW.getReward()
                 + linkedInRewards
                 + twitterRewards
-                + telegramRewards;
+                + telegramRewards
+                + surveyRewards;
 
         return BountyDTO.builder()
                         .referralRewards(referralRewards)
@@ -62,6 +64,7 @@ class BountyServiceImpl implements BountyService {
                         .twitterRewards(twitterRewards)
                         .linkedInRewards(linkedInRewards)
                         .telegramRewards(telegramRewards)
+                        .surveyRewards(surveyRewards)
                         .build();
     }
 

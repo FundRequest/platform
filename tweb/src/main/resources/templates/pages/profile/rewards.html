@@ -185,8 +185,7 @@
                             <span>You must have filled in the platform survey correctly</span>
                         </div>
                         <div class="rewards-list__item">
-                            <div class="rewards-list__text">Fill in survey <small th:if="${survey.transactionHash}"><a
-                                th:href="${'https://etherscan.io/tx/'+survey.transactionHash}" target="_blank">View on etherscan</a></small></div>
+                            <div class="rewards-list__text">Fill in survey</div>
                             <div>
                                 <span class="text-muted" th:if="${survey.status.name() == 'UNVERIFIED'}">Verification pending</span>
                                 <span class="text-success" th:if="${survey.status.name() == 'VERIFIED'}">30 FND</span>
