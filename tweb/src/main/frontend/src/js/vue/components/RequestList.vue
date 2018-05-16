@@ -34,7 +34,7 @@
                     <div class="md-form" v-if="technologies && technologies.length > 0">
                         <v-select
                                 v-bind:value="listFilter.tech"
-                                v-bind:options="technologies"
+                                v-bind:options="technologiesSelect"
                                 v-bind:class="{filled: listFilter.tech && listFilter.tech.length > 0}"
                                 v-on:input="setTechFilter"
                                 id="technologies" inputId="technologies" multiple></v-select>
@@ -108,6 +108,7 @@
         public sortBy: string = "";
         public hasNoResults: boolean = false;
         public isEmpty: boolean = false;
+        public technologiesSelect: string[];
 
         public listFilter: RequestListFilter = Object.assign(new RequestListFilter(), {
             search: null,
@@ -119,6 +120,7 @@
         mounted() {
             this.requestList = new RequestListModel(this.requests);
             this._filterItems(this.listFilter, this.sortBy);
+            this.technologiesSelect = this.technologies.sort();
         }
 
         public setFaseFilter(fase: string) {

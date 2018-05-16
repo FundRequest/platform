@@ -13,7 +13,8 @@
                     <span class="request-details__number">#{{req.issueNumber}}</span>
                 </div>
                 <div class="request-details__status">
-                    <span class="request-details__badge badge badge-pill" v-bind:class="`badge--${req.status.toLowerCase().replace(' ', '_')}`">{{req.status}}</span>
+                    <span class="request-details__badge badge badge-pill"
+                          v-bind:class="`badge--${req.status.toLowerCase().replace(' ', '_')}`">{{req.status}}</span>
                     <span class="request-details__tech" v-for="tech in req.technologies">{{tech}}</span>
                 </div>
                 <div class="request-details__icons">
@@ -50,8 +51,8 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
     import RequestDto from "../dtos/RequestDto";
-    import Utils from '../../classes/Utils';
-    import {Locations} from '../../classes/Locations';
+    import Utils from "../../classes/Utils";
+    import {Locations} from "../../classes/Locations";
     import FontSizeFit from "./FontSizeFit";
 
     @Component({
@@ -62,8 +63,15 @@
     export default class RequestListItem extends Vue {
         @Prop({required: true}) request!: any;
 
+        public requestItem: RequestDto = null;
+
+        mounted() {
+            this.requestItem = Object.assign(new RequestDto(), this.request);
+            this.requestItem.technologies = this.requestItem.technologies.sort();
+        }
+
         public get req() {
-            return Object.assign(new RequestDto(), this.request);
+            return this.requestItem;
         }
 
         public formatPrice(value, decimals: number = 2): string {
@@ -71,7 +79,7 @@
         }
 
         public showActions(event: Event) {
-            console.log('show actions');
+            //console.log("show actions");
         }
 
         public getRequestDetailUrl(id) {
