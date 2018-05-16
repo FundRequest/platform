@@ -49,7 +49,7 @@
                                  th:if="${request.funds != null and request.funds.usdFunds != null}">
                                 <span class="request-details__fund-currency">$</span>
                                 <span class="request-details__fund-amount"
-                                      th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,0,'POINT')}">-</span>
+                                      th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,'COMMA',0,'POINT')}">-</span>
                                 <span class="disclaimer-asterix">*</span>
                             </div>
                             <div class="request-details__crypto">
@@ -57,7 +57,7 @@
                                     <img class="request-details__fund-logo"
                                          th:src="${request.funds.fndFunds.tokenImage}" />
                                     <span class="request-details__fund-amount"
-                                          th:text="${#numbers.formatDecimal(request.funds.fndFunds.totalAmount,1,2,'POINT')}">-</span>
+                                          th:text="${#numbers.formatDecimal(request.funds.fndFunds.totalAmount,1,'COMMA',2,'POINT')}">-</span>
                                     <span class="request-details__fund-currency"
                                           th:text="${request.funds.fndFunds.tokenSymbol}">FND</span>
                                 </div>
@@ -65,7 +65,7 @@
                                     <img class="request-details__fund-logo"
                                          th:src="${request.funds.otherFunds.tokenImage}" />
                                     <span class="request-details__fund-amount"
-                                          th:text="${#numbers.formatDecimal(request.funds.otherFunds.totalAmount,1,2,'POINT')}">-</span>
+                                          th:text="${#numbers.formatDecimal(request.funds.otherFunds.totalAmount,1,'COMMA',2,'POINT')}">-</span>
                                     <span class="request-details__fund-currency"
                                           th:text="${request.funds.otherFunds.tokenSymbol}">FND</span>
                                 </div>
@@ -131,13 +131,13 @@
                                     </div>
                                     <div class="request-details__fund" th:if="${transfer.fndFunds != null}">
                                         <span class="request-details__fund-amount"
-                                              th:text="${#numbers.formatDecimal(transfer.fndFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                              th:text="${#numbers.formatDecimal(transfer.fndFunds.totalAmount,1,'COMMA',2,'POINT')}">100,00</span>
                                         <span class="request-details__fund-currency"
                                               th:text="${transfer.fndFunds.tokenSymbol}">FND</span>
                                     </div>
                                     <div class="request-details__fund" th:if="${transfer.otherFunds != null}">
                                         <span class="request-details__fund-amount"
-                                              th:text="${#numbers.formatDecimal(transfer.otherFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                              th:text="${#numbers.formatDecimal(transfer.otherFunds.totalAmount,1,'COMMA',2,'POINT')}">100,00</span>
                                         <span class="request-details__fund-currency"
                                               th:text="${transfer.otherFunds.tokenSymbol}">XYZ</span>
                                     </div>
@@ -149,13 +149,13 @@
                                 </div>
                                 <div class="request-details__fund" th:if="${fundedBy.fndFunds != null}">
                                     <span class="request-details__fund-amount"
-                                          th:text="${#numbers.formatDecimal(fundedBy.fndFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                          th:text="${#numbers.formatDecimal(fundedBy.fndFunds.totalAmount,1,'COMMA',2,'POINT')}">100,00</span>
                                     <span class="request-details__fund-currency"
                                           th:text="${fundedBy.fndFunds.tokenSymbol}">FND</span>
                                 </div>
                                 <div class="request-details__fund" th:if="${fundedBy.otherFunds != null}">
                                     <span class="request-details__fund-amount"
-                                          th:text="${#numbers.formatDecimal(fundedBy.otherFunds.totalAmount,1,2,'POINT')}">100,00</span>
+                                          th:text="${#numbers.formatDecimal(fundedBy.otherFunds.totalAmount,1,'COMMA',2,'POINT')}">100,00</span>
                                     <span class="request-details__fund-currency"
                                           th:text="${fundedBy.otherFunds.tokenSymbol}">XYZ</span>
                                 </div>
@@ -166,7 +166,7 @@
                                 </div>
                                 <div class="request-details__price" th:if="${fundedBy.usdFunds != null}">
                                     <span class="request-details__fund-amount"
-                                          th:text="${#numbers.formatDecimal(fundedBy.usdFunds,1,2,'POINT')}">58</span>
+                                          th:text="${#numbers.formatDecimal(fundedBy.usdFunds,1,'COMMA',2,'POINT')}">58</span>
                                     <span class="request-details__fund-currency">USD</span>
                                     <span class="disclaimer-asterix">*</span>
                                 </div>
