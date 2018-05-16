@@ -20,6 +20,7 @@ public class UserProfile {
     private UserProfileProvider twitter;
     private UserProfileProvider stackoverflow;
     private UserProfileProvider google;
+    private String emailSignedVerification;
 
     public boolean hadEtherAddress() {
         return etherAddress != null && etherAddress.length() > 0;
