@@ -24,11 +24,13 @@
                         <div class="rewards-list__item" th:each="paidBounty : ${paidBounties} ">
                             <div class="rewards-list__text">
                                 <span th:text="#{${'enum.BountyType.' + paidBounty.type}}"></span>
-                            </div>
-                            <div>
                                 <small>
                                     <a class="rewards-list__link" th:href="${'https://etherscan.io/tx/'+paidBounty.transactionHash}">View on etherscan</a>
                                 </small>
+                            </div>
+                            <div>
+                            <span class="text-success"
+                                  th:text="${paidBounty.amount + ' FND'}">15 FND</span>
                             </div>
                         </div>
                     </div>
@@ -183,11 +185,11 @@
                             <span>You must have filled in the platform survey correctly</span>
                         </div>
                         <div class="rewards-list__item">
-                            <div class="rewards-list__text">Fill in survey</div>
+                            <div class="rewards-list__text">Fill in survey <small th:if="${survey.transactionHash}"><a
+                                th:href="${'https://etherscan.io/tx/'+survey.transactionHash}" target="_blank">View on etherscan</a></small></div>
                             <div>
                                 <span class="text-muted" th:if="${survey.status.name() == 'UNVERIFIED'}">Verification pending</span>
-                                <span class="text-muted" th:if="${survey.status.name() == 'VERIFIED'}">Verified <small><a
-                                    th:href="${'https://etherscan.io/tx/'+survey.transactionHash}" target="_blank">View on etherscan</a></small></span>
+                                <span class="text-success" th:if="${survey.status.name() == 'VERIFIED'}">30 FND</span>
                             </div>
                         </div>
                     </div>
