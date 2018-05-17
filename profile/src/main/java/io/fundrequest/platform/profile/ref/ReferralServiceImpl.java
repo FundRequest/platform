@@ -27,7 +27,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
@@ -117,7 +116,7 @@ class ReferralServiceImpl implements ReferralService {
 
     @Override
     @Transactional
-    public void createNewRef(@Valid CreateRefCommand command) {
+    public void createNewRef(CreateRefCommand command) {
         String referrer = command.getRef();
         String referee = command.getPrincipal().getName();
         validReferral(referrer, referee);
