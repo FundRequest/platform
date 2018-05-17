@@ -35,7 +35,6 @@ export default class RequestsList {
 
     private _sortBy(requests: RequestDto[], sortBy:  { value: string, asc: boolean }) {
         if (sortBy) {
-            console.log(sortBy, sortBy.value, sortBy.asc);
             let property = sortBy.value;
             let direction = sortBy.asc;
 
@@ -61,7 +60,8 @@ export default class RequestsList {
 
     private _getSortFunction(property) {
         let sortFunction;
-        if (property.toLowerCase() == 'fundings') {
+        console.log(property.toLocaleString());
+        if (property.toLowerCase() == 'funding') {
             // sort fndFunds.totalAmount from high to low
             sortFunction = this._getSortByFundingFunction();
         } else {
