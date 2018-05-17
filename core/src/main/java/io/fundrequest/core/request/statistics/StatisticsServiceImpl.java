@@ -9,7 +9,6 @@ import io.fundrequest.core.request.fund.infrastructure.TokenAmountDto;
 import io.fundrequest.core.request.statistics.dto.StatisticsDto;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.event.EventListener;
@@ -60,7 +59,6 @@ class StatisticsServiceImpl implements StatisticsService {
                 .build();
     }
 
-    @NotNull
     private String getMostFunded(List<Object[]> objects) {
         return objects
                 .stream()
