@@ -173,7 +173,7 @@
         }
 
         private get fundAmountValue(): number {
-            return Number(this.fundAmount.replace(',', ''));
+            return Number(this.fundAmount.replace(/,/g, ''));
         }
 
         private _handleTransactionError(err): void {

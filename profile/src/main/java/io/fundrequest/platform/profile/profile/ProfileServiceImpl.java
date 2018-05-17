@@ -8,6 +8,7 @@ import io.fundrequest.platform.profile.profile.dto.UserLinkedProviderEvent;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import io.fundrequest.platform.profile.profile.dto.UserProfileProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.common.util.Base64Url;
@@ -21,6 +22,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -36,13 +39,16 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final KeycloakRepository keycloakRepository;
     private final String keycloakUrl;
+    private String intercomHmacKey;
     private final ApplicationEventPublisher eventPublisher;
 
     public ProfileServiceImpl(final KeycloakRepository keycloakRepository,
                               final @Value("${keycloak.auth-server-url}") String keycloakUrl,
+                              final @Value("${io.fundrequest.intercom.secret}") String intercomHmacKey,
                               final ApplicationEventPublisher eventPublisher) {
         this.keycloakRepository = keycloakRepository;
         this.keycloakUrl = keycloakUrl;
+        this.intercomHmacKey = intercomHmacKey;
         this.eventPublisher = eventPublisher;
     }
 
@@ -77,7 +83,21 @@ public class ProfileServiceImpl implements ProfileService {
                           .twitter(providers.get(Provider.TWITTER))
                           .google(providers.get(Provider.GOOGLE))
                           .stackoverflow(providers.get(Provider.STACKOVERFLOW))
+                          .emailSignedVerification(getEmailSignedVerification(user.getEmail()))
                           .build();
+    }
+
+    private String getEmailSignedVerification(String email) {
+        try {
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(intercomHmacKey.getBytes("UTF-8"), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+            return Hex.encodeHexString(sha256_HMAC.doFinal(email.getBytes("UTF-8")));
+
+        } catch (Exception e) {
+            log.error("Error creating hmac verified email", e);
+            return null;
+        }
     }
 
     @Override

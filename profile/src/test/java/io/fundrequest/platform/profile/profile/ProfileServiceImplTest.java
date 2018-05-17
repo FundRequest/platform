@@ -23,7 +23,7 @@ public class ProfileServiceImplTest {
     @Before
     public void setUp() throws Exception {
         keycloakRepository = mock(KeycloakRepository.class);
-        profileService = new ProfileServiceImpl(keycloakRepository, "url", mock(ApplicationEventPublisher.class));
+        profileService = new ProfileServiceImpl(keycloakRepository, "url", "secret", mock(ApplicationEventPublisher.class));
     }
 
     @Test
@@ -37,5 +37,17 @@ public class ProfileServiceImplTest {
         UserProfile userProfile = profileService.getUserProfile("davy");
 
         assertThat(userProfile.getCreatedAt()).isEqualTo(creationDate.getTime());
+    }
+
+    @Test
+    public void getUserProfileReturnsEmailVerifiedSignature() throws Exception {
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setEmail("davy.van.roy@gmail.com");
+        when(keycloakRepository.getUser("davy")).thenReturn(userRepresentation);
+        when(keycloakRepository.getUserIdentities("davy")).thenReturn(Stream.empty());
+
+        UserProfile userProfile = profileService.getUserProfile("davy");
+
+        assertThat(userProfile.getEmailSignedVerification()).isEqualTo("424a4f5feb0d4adeec05c717f6260c734a0ca036a133c7d29e911ac3c4fbb775");
     }
 }
