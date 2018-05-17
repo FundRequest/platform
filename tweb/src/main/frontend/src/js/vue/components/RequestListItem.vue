@@ -82,7 +82,6 @@
         mounted() {
             this.requestItem = Object.assign(new RequestDto(), this.request);
             this.requestItem.technologies = this.requestItem.technologies.sort();
-            console.log(this.request);
         }
 
         public get req() {
