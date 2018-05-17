@@ -6,7 +6,8 @@
     app_id: "u88cl7tr",
     name: /*[[${profile} ? ${profile.name} : ${null}]]*/ 'Name',
     email: /*[[${profile} ? ${profile.email} : ${null}]]*/ 'Email',
-    created_at: /*[[${profile} ? ${profile.createdAt / 1000} : ${null}]]*/ 0
+    created_at: /*[[${profile} ? ${profile.createdAt / 1000} : ${null}]]*/ 0,
+    user_hash: /*[[${profile} ? ${profile.emailSignedVerification} : ${null}]]*/ 'hash'
   };
 
   /*]]>*/
