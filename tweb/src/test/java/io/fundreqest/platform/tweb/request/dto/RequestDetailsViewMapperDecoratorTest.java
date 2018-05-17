@@ -55,6 +55,7 @@ public class RequestDetailsViewMapperDecoratorTest {
         assertThat(result.getTitle()).isEqualTo(issueInformation.getTitle());
         assertThat(result.getStarred()).isEqualTo(requestDto.isLoggedInUserIsWatcher());
         assertThat(result.getStatus()).isEqualTo(status);
+        assertThat(result.getDescription()).isEqualTo(githubResult.getBody());
     }
 
     @Test

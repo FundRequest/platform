@@ -22,17 +22,17 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 )
 interface GithubClient {
 
-    @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}", method = GET)
+    @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}", method = GET, headers = "Accept=application/vnd.github.html+json")
     GithubResult getIssue(@PathVariable("owner") String owner,
                           @PathVariable("repo") String repo,
                           @PathVariable("number") String number);
 
-    @RequestMapping(value = "/repos/{owner}/{repo}/pulls/{number}", method = GET)
+    @RequestMapping(value = "/repos/{owner}/{repo}/pulls/{number}", method = GET, headers = "Accept=application/vnd.github.html+json")
     GithubResult getPullrequest(@PathVariable("owner") String owner,
                                 @PathVariable("repo") String repo,
                                 @PathVariable("number") String number);
 
-    @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}/comments", method = GET)
+    @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}/comments", method = GET, headers = "Accept=application/vnd.github.html+json")
     List<GithubIssueCommentsResult> getCommentsForIssue(@PathVariable("owner") String owner,
                                                         @PathVariable("repo") String repo,
                                                         @PathVariable("number") String number);

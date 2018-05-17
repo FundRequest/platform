@@ -45,11 +45,9 @@
                     <div class="md-form">
                         <fnd-select v-bind:id="'list-sort'"
                                     v-bind:value="sortBy"
+                                    v-bind:options="sorting"
                                     v-on:input="setSortBy">
-                            <option value="" selected="selected" disabled="disabled">SORT BY</option>
-                            <option value="title" selected="selected">Title</option>
-                            <option value="fundings">Funding</option>
-                            <option value="lastModifiedDate__desc">Last modified</option>
+                            <option v-bind:value="null" selected="selected" disabled="disabled">SORT BY</option>
                         </fnd-select>
                     </div>
                 </div>
@@ -57,7 +55,7 @@
         </div>
         <div class="request-list__block card" v-if="!hasNoResults">
             <request-list-item v-for="request in filteredRequests" v-bind:request="request"
-                             v-bind:key="request.id"></request-list-item>
+                               v-bind:key="request.id"></request-list-item>
         </div>
         <div v-bind:class="{'mt-5': isEmpty}" v-if="hasNoResults">
             <div class="request-list__block request-list__block--non-found card">
@@ -84,7 +82,7 @@
     import RequestListItem from "./RequestListItem";
 
     import RequestListModel from "../models/RequestList";
-    import RequestListFilter from '../models/RequestListFilter';
+    import RequestListFilter from "../models/RequestListFilter";
     import RequestDto from "../dtos/RequestDto";
     import ListFilterDto from "../dtos/ListFilterDto";
 
@@ -103,21 +101,33 @@
         @Prop() projects: string[];
         @Prop({required: true}) requests: RequestDto[];
 
+        public sorting: Array<{ title: string, value: { value: string, asc: boolean } }> = [{
+            title: "Funding",
+            value: {value: "funding", asc: true}
+        }, {
+            title: "Last Modified",
+            value: {value: "lastModifiedDate", asc: false}
+        }, {
+            title: "Title",
+            value: {value: "title", asc: true}
+        }];
+
         public requestList: RequestListModel = new RequestListModel([]);
         public filteredRequests: RequestDto[] = [];
-        public sortBy: string = "lastModifiedDate__desc";
+        public sortBy: { value: string, asc: boolean } = null;
         public hasNoResults: boolean = false;
         public isEmpty: boolean = false;
-        public technologiesSelect: string[];
+        public technologiesSelect: string[] = [];
 
         public listFilter: RequestListFilter = Object.assign(new RequestListFilter(), {
             search: null,
             tech: [],
             project: null,
-            fase: "all",
+            fase: "all"
         });
 
         mounted() {
+            this.sortBy = this.sorting[1].value;
             this.requestList = new RequestListModel(this.requests);
             this._filterItems(this.listFilter, this.sortBy);
             this.technologiesSelect = this.technologies.sort();
@@ -153,7 +163,7 @@
             this._filterItems(filter, this.sortBy);
         }
 
-        public setSortBy(sortBy: string) {
+        public setSortBy(sortBy: { value: string, asc: boolean }) {
             this.sortBy = sortBy;
             this._filterItems(this.listFilter, sortBy);
         }
@@ -163,7 +173,7 @@
             this.isEmpty = !this.listFilter.isFiltered && isEmpty;
         }
 
-        private _filterItems(filter: RequestListFilter, sortBy: string) {
+        private _filterItems(filter: RequestListFilter, sortBy: { value: string, asc: boolean }) {
             this.filteredRequests = this.requestList.getRequests(filter, sortBy);
             this._setIsEmpty(this.filteredRequests.length <= 0);
         }

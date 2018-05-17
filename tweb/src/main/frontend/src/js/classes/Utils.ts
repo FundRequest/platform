@@ -173,6 +173,16 @@ export default class Utils {
         return Utils.formatToUsd(value, decimals); // for now we use the same formatting
     }
 
+    public static formatDatetime(value: string) {
+        let date = new Date(value);
+        let options = {
+            weekday: "long", year: "numeric", month: "short",
+            day: "numeric", hour: "2-digit", minute: "2-digit"
+        };
+
+        return date.toLocaleTimeString("en-us", options);
+    }
+
     private static async _validateElementValue(validations: string[], value: string): Promise<boolean> {
         let isValid = true;
 

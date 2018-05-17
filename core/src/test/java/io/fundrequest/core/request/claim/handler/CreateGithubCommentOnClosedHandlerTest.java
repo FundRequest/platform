@@ -18,7 +18,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -157,7 +157,8 @@ public class CreateGithubCommentOnClosedHandlerTest {
         return new GithubIssueCommentsResult(Math.abs(UUID.randomUUID().getMostSignificantBits()),
                                              GithubUser.builder().login(githubUser).build(),
                                              "hdfgjh",
-                                             ZonedDateTime.now().plusDays(createdOfsetDays),
+                                             OffsetDateTime.now().plusDays(createdOfsetDays),
+                                             OffsetDateTime.now().plusDays(createdOfsetDays),
                                              "gdfhgjhhjlkj;lk");
     }
 }

@@ -5,6 +5,8 @@ import io.fundrequest.core.infrastructure.mapping.BaseMapper;
 import io.fundrequest.core.request.view.RequestDto;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
+
 @Component
 public class RequestViewMapper implements BaseMapper<RequestDto, RequestView> {
 
@@ -33,8 +35,8 @@ public class RequestViewMapper implements BaseMapper<RequestDto, RequestView> {
                           .starred(r.isLoggedInUserIsWatcher())
                           .technologies(r.getTechnologies())
                           .funds(r.getFunds())
-                          .creationDate(r.getCreationDate())
-                          .lastModifiedDate(r.getLastModifiedDate())
+                          .creationDate(r.getCreationDate() != null ? r.getCreationDate().atZone(ZoneId.systemDefault()) : null)
+                          .lastModifiedDate(r.getLastModifiedDate() != null ? r.getLastModifiedDate().atZone(ZoneId.systemDefault()) : null)
                           .build();
     }
 }
