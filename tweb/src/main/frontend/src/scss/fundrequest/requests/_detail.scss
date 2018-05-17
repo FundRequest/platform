@@ -279,7 +279,10 @@
         justify-content: center;
         padding: 0 1rem;
         margin-left: 1rem;
-        border-left: 1px solid $gray-a100;
+
+        @include media-breakpoint-up(md) {
+            border-left: 1px solid $gray-a100;
+        }
     }
 
     &__actions {
@@ -385,7 +388,6 @@
                 max-width: calc(100% - 18rem); // - actions width
             }
         }
-
 
         &__content {
             @include media-breakpoint-up(md) {
