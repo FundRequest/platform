@@ -8,7 +8,7 @@ export default class RequestsList {
         this.requests = requests;
     }
 
-    public getRequests(filter: RequestListFilter, sortBy: string = null): RequestDto[] {
+    public getRequests(filter: RequestListFilter, sortBy: { value: string, asc: boolean } = null): RequestDto[] {
         let requests = this._filter(this.requests, filter);
         return this._sortBy(requests, sortBy);
     }
@@ -33,30 +33,30 @@ export default class RequestsList {
         });
     }
 
-    private _sortBy(requests: RequestDto[], sortBy: string) {
+    private _sortBy(requests: RequestDto[], sortBy:  { value: string, asc: boolean }) {
         if (sortBy) {
-            let splitted = sortBy.split('__');
-            let property = splitted[0];
-            let direction = splitted[1] ? splitted[1] : 'asc';
+            console.log(sortBy, sortBy.value, sortBy.asc);
+            let property = sortBy.value;
+            let direction = sortBy.asc;
 
             return this._sortByPropertyAndDirection(requests, property, direction);
         }
         return requests;
     }
 
-    private _sortByPropertyAndDirection(requests: RequestDto[], property: string, direction: string) {
+    private _sortByPropertyAndDirection(requests: RequestDto[], property: string, asc: boolean) {
         let sortFunction = this._getSortFunction(property);
         let sortedRequests = requests.sort(sortFunction);
-        return this._applyDirection(sortedRequests, direction);
+        return this._applyDirection(sortedRequests, asc);
     }
 
 
-    private _applyDirection(requests: RequestDto[], direction: string) {
-        if (direction == 'asc') {
+    private _applyDirection(requests: RequestDto[], asc: boolean) {
+        if (asc) {
             return requests;
         } else {
             return requests.reverse();
-        };
+        }
     }
 
     private _getSortFunction(property) {
@@ -82,7 +82,7 @@ export default class RequestsList {
             }
 
             return result;
-        }
+        };
     }
 
     private _getSortByPropertyFunction(sortBy: string) {
@@ -103,6 +103,6 @@ export default class RequestsList {
             }
 
             return result;
-        }
+        };
     }
 }
