@@ -60,7 +60,6 @@ export default class RequestsList {
 
     private _getSortFunction(property) {
         let sortFunction;
-        console.log(property.toLocaleString());
         if (property.toLowerCase() == 'funding') {
             // sort fndFunds.totalAmount from high to low
             sortFunction = this._getSortByFundingFunction();
