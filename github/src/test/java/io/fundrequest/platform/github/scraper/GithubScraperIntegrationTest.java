@@ -21,9 +21,6 @@ public class GithubScraperIntegrationTest {
     @Autowired
     private GithubScraper scraper;
 
-    @Autowired
-    private Environment env;
-
     @Test
     public void fetch() {
         final String owner = "FundRequest";
