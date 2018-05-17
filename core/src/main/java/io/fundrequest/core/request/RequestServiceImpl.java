@@ -141,10 +141,9 @@ class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<CommentDto> getComments(Long requestId) {
         Request request = requestRepository.findOne(requestId).orElseThrow(() -> new EntityNotFoundException("Request not found"));
-        return mappers.mapList(
-                GithubIssueCommentsResult.class,
-                CommentDto.class,
-                githubGateway.getCommentsForIssue(request.getIssueInformation().getOwner(), request.getIssueInformation().getRepo(), request.getIssueInformation().getNumber()));
+        return mappers.mapList(GithubIssueCommentsResult.class, CommentDto.class, githubGateway.getCommentsForIssue(request.getIssueInformation().getOwner(),
+                                                                                                                    request.getIssueInformation().getRepo(),
+                                                                                                                    request.getIssueInformation().getNumber()));
     }
 
     @Override
