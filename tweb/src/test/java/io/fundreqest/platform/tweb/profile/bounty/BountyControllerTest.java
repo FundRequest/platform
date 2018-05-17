@@ -6,7 +6,6 @@ import io.fundrequest.platform.profile.bounty.domain.BountyType;
 import io.fundrequest.platform.profile.bounty.dto.PaidBountyDto;
 import io.fundrequest.platform.profile.bounty.service.BountyService;
 import io.fundrequest.platform.profile.github.GithubBountyService;
-import io.fundrequest.platform.profile.linkedin.LinkedInService;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
 import io.fundrequest.platform.profile.survey.domain.SurveyService;
@@ -34,8 +33,7 @@ public class BountyControllerTest extends AbstractControllerTest<BountyControlle
                 mock(GithubBountyService.class),
                 mock(StackOverflowBountyService.class),
                 bountyService,
-                mock(ProfileService.class),
-                mock(LinkedInService.class)
+                mock(ProfileService.class)
         );
     }
 

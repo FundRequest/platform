@@ -18,9 +18,10 @@
                     <span class="request-details__tech" v-for="tech in req.technologies">{{tech}}</span>
                 </div>
                 <div class="request-details__icons">
-                    <i class="fab fa-github"></i>
-                    <i class="fab fa-github-alt"></i>
-                    <i class="fa fa-comment"></i>
+                    <a v-bind:href="getGithubIssueUrl(req.platform, req.owner, req.repo, req.issueNumber)"><i
+                            class="fab fa-github"></i></a>
+                    <a v-bind:href="`${getRequestDetailUrl(req.id)}#comments`"><i class="fa fa-comment"></i></a>
+                    <span>Last modified <timeago :since="req.lastModifiedDate" :auto-update="60" :title="req.lastModifiedDate | toDatetime"></timeago></span>
                 </div>
             </div>
             <div class="request-details__funding-details">
@@ -52,9 +53,16 @@
     import {Component, Prop, Vue} from "vue-property-decorator";
     import RequestDto from "../dtos/RequestDto";
     import {Locations} from "../../classes/Locations";
+    import VueTimeago from "vue-timeago";
     import FontSizeFit from "./FontSizeFit";
     import ToCrypto from "../filters/formatters/ToCrypto";
     import ToUsd from "../filters/formatters/ToUsd";
+    import ToDatetime from '../filters/formatters/ToDatetime';
+
+    Vue.use(VueTimeago, {
+        name: "Timeago", // Component name, `Timeago` by default
+        locale: undefined // Default locale
+    });
 
     @Component({
         components: {
@@ -62,7 +70,8 @@
         },
         filters: {
             toCrypto: ToCrypto.filter,
-            toUsd: ToUsd.filter
+            toUsd: ToUsd.filter,
+            toDatetime: ToDatetime.filter
         }
     })
     export default class RequestListItem extends Vue {
@@ -87,6 +96,12 @@
             return Locations.getRequestDetailUrl(id);
         }
 
+        public getGithubIssueUrl(platform: string, owner: string, repo: string, issueNumber: string) {
+            if (platform.toUpperCase() == "GITHUB") {
+                return `https://github.com/${owner}/${repo}/issues/${issueNumber}`;
+            }
+            return "#no-link";
+        }
     }
 </script>
 

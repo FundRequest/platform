@@ -19,6 +19,13 @@
     import RequestDto from "../dtos/RequestDto";
     import ListFilterDto from '../dtos/ListFilterDto';
 
+    import VueTimeago from "vue-timeago";
+
+    Vue.use(VueTimeago, {
+        name: "Timeago", // Component name, `Timeago` by default
+        locale: undefined // Default locale
+    });
+
     @Component({
         components: {
             FndSelect,
