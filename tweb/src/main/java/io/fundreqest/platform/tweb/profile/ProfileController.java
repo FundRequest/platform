@@ -1,7 +1,6 @@
 package io.fundreqest.platform.tweb.profile;
 
 import io.fundrequest.platform.keycloak.Provider;
-import io.fundrequest.platform.profile.linkedin.LinkedInService;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import io.fundrequest.platform.profile.ref.RefSignupEvent;
@@ -30,18 +29,16 @@ public class ProfileController {
     private ApplicationEventPublisher eventPublisher;
     private ProfileService profileService;
     private TelegramVerificationService telegramVerificationService;
-    private LinkedInService linkedInService;
     private ReferralService referralService;
 
 
     public ProfileController(final ApplicationEventPublisher eventPublisher,
                              final ProfileService profileService,
                              final TelegramVerificationService telegramVerificationService,
-                             final LinkedInService linkedInService, ReferralService referralService) {
+                             ReferralService referralService) {
         this.eventPublisher = eventPublisher;
         this.profileService = profileService;
         this.telegramVerificationService = telegramVerificationService;
-        this.linkedInService = linkedInService;
         this.referralService = referralService;
     }
 
@@ -59,7 +56,6 @@ public class ProfileController {
         mav.addObject("refLinkTwitter", URLEncoder.encode(getRefLink(principal, "twitter"), "UTF-8"));
         mav.addObject("refLinkLinkedin", URLEncoder.encode(getRefLink(principal, "linkedin"), "UTF-8"));
         mav.addObject("refLinkFacebook", URLEncoder.encode(getRefLink(principal, "facebook"), "UTF-8"));
-        mav.addObject("linkedInVerification", linkedInService.getVerification(principal));
         return mav;
     }
 
