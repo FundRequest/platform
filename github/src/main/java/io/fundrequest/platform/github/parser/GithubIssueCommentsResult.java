@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +17,9 @@ public class GithubIssueCommentsResult {
     private GithubUser user;
     private String title;
     @JsonProperty("created_at")
-    private ZonedDateTime createdAt;
+    private OffsetDateTime createdAt;
+    @JsonProperty("updated_at")
+    private OffsetDateTime updatedAt;
+    @JsonProperty("body_html")
     private String body;
 }

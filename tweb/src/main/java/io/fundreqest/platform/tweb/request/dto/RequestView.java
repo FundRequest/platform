@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 @Data
@@ -26,6 +26,6 @@ public class RequestView {
     private Set<String> technologies;
     private AllFundsDto funds;
     private Boolean starred;
-    private LocalDateTime creationDate;
-    private LocalDateTime lastModifiedDate;
+    private ZonedDateTime creationDate;
+    private ZonedDateTime lastModifiedDate;
 }

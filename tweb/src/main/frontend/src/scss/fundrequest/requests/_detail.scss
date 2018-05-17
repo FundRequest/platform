@@ -57,7 +57,12 @@
     }
 
     &__owner {
-        white-space: nowrap;
+        max-width: 100%;
+    }
+
+    &__last-modified-at {
+        line-height: 1;
+        max-width: 100%;
     }
 
     &__content {
@@ -325,6 +330,12 @@
             &:focus {
                 color: $yellow-600;
             }
+        }
+    }
+
+    & .card {
+        + .card {
+            margin-top: 1rem;
         }
     }
 }
