@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(
         name = "azrael-client",
         url = "${io.fundrequest.azrael.host}",
-        configuration = GithubFeignConfiguration.class
+        configuration = AzraelFeignConfiguration.class
 )
 public interface AzraelClient {
 
