@@ -18,9 +18,10 @@
                     <span class="request-details__tech" v-for="tech in req.technologies">{{tech}}</span>
                 </div>
                 <div class="request-details__icons">
-                    <a v-bind:href="getGithubIssueUrl(req.platform, req.owner, req.repo, req.issueNumber)"><i class="fab fa-github"></i></a>
-                    <a v-bind:href="getRequestDetailUrl(req.id)+'#comments'"><i class="fa fa-comment"></i></a>
-                    <span>Last modified <timeago :since="req.lastModifiedDate" :auto-update="60"></timeago></span>
+                    <a v-bind:href="getGithubIssueUrl(req.platform, req.owner, req.repo, req.issueNumber)"><i
+                            class="fab fa-github"></i></a>
+                    <a v-bind:href="`${getRequestDetailUrl(req.id)}#comments`"><i class="fa fa-comment"></i></a>
+                    <span>Last modified <timeago :since="req.lastModifiedDate" :auto-update="60" :title="req.lastModifiedDate"></timeago></span>
                 </div>
             </div>
             <div class="request-details__funding-details">
@@ -58,8 +59,8 @@
     import ToUsd from "../filters/formatters/ToUsd";
 
     Vue.use(VueTimeago, {
-        name: 'Timeago', // Component name, `Timeago` by default
-        locale: undefined, // Default locale
+        name: "Timeago", // Component name, `Timeago` by default
+        locale: undefined // Default locale
     });
 
     @Component({
@@ -95,10 +96,10 @@
         }
 
         public getGithubIssueUrl(platform: string, owner: string, repo: string, issueNumber: string) {
-            if (platform.toUpperCase() == 'GITHUB') {
+            if (platform.toUpperCase() == "GITHUB") {
                 return `https://github.com/${owner}/${repo}/issues/${issueNumber}`;
             }
-            return "#";
+            return "#no-link";
         }
     }
 </script>
