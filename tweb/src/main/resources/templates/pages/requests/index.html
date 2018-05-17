@@ -20,7 +20,8 @@
                 </h1>
                 <p class="page-description">
                     The best way to deep dive into all requests.
-                    Filter on technology or on a specific project so you can find the perfect request that fits your needs.
+                    Filter on technology or on a specific project so you can find the perfect request that fits your
+                    needs.
                 </p>
 
                 <div class="d-flex justify-content-between">
@@ -44,7 +45,7 @@
                     { value: &quot;resolved&quot;, count: '+${requestsPerFaseCount['RESOLVED']}+', title: &quot;Resolved&quot;, description: &quot;Showing an overview of all resolved requests.&quot; },
                     { value: &quot;closed&quot;, count: '+${requestsPerFaseCount['CLOSED']}+', title: &quot;Closed&quot;, description: &quot;Showing an overview of all closed requests.&quot; },
                  ]' "
-                :fase-filter-default="'open'"
+                      :fase-filter-default="'open'"
         >
             <template slot-scope="{faseFilter}">
                 <div class="card mb-5" v-if="faseFilter === 'open'">
@@ -53,7 +54,8 @@
                             <div class="col-12 col-md-4 request-list__statistic">
                                 <div class="request-list__statistic-title">Total funding</div>
                                 <div class="request-list__statistic-value">
-                                    <span>$</span><span th:text="${#numbers.formatDecimal(statistics.totalAvailableFunding,1,'COMMA',2,'POINT')}">2873</span>
+                                    <span>$</span><span
+                                        th:text="${#numbers.formatDecimal(statistics.totalAvailableFunding,1,'COMMA',2,'POINT')}">2873</span>
                                     <span class="disclaimer-asterix">*</span>
                                 </div>
                             </div>
@@ -86,36 +88,21 @@
             </div>
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body faq">
-                        <h4 class="faq__title">
-                            This is a first question, will other follow, what do you think?
-                        </h4>
-                        <div class="faq__answer">
-                            Hmm I'm not sure, one question is of course not a lot, so I
-                            guess the chance is very high that others will follow. My
-                            answer is Yes.
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h4 class="faq__title">
-                            This is a first question, will other follow, what do you think?
-                        </h4>
-                        <div class="faq__answer">
-                            Hmm I'm not sure, one question is of course not a lot, so I
-                            guess the chance is very high that others will follow. My
-                            answer is Yes.
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h4 class="faq__title">
-                            This is a first question, will other follow, what do you think?
-                        </h4>
-                        <div class="faq__answer">
-                            Hmm I'm not sure, one question is of course not a lot, so I
-                            guess the chance is very high that others will follow. My
-                            answer is Yes.
-                        </div>
-                    </div>
+                    <faq-item :title="`This is a first question, will other follow, what do you think?`">
+                        Hmm I'm not sure, one question is of course not a lot, so I
+                        guess the chance is very high that others will follow. My
+                        answer is Yes.
+                    </faq-item>
+                    <faq-item :title="`This is a first question, will other follow, what do you think?`">
+                        Hmm I'm not sure, one question is of course not a lot, so I
+                        guess the chance is very high that others will follow. My
+                        answer is Yes.
+                    </faq-item>
+                    <faq-item :title="`This is a first question, will other follow, what do you think?`">
+                        Hmm I'm not sure, one question is of course not a lot, so I
+                        guess the chance is very high that others will follow. My
+                        answer is Yes.
+                    </faq-item>
                 </div>
             </div>
         </div>
