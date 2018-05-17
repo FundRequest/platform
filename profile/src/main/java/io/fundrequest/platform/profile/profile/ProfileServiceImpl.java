@@ -53,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @CacheEvict(value = "user_profile", key = "#principal.name")
+    @CacheEvict(value = "user_profile", key = "#principal.name", beforeInvocation = true)
     public void userProviderIdentityLinked(Principal principal, Provider provider) {
         eventPublisher.publishEvent(UserLinkedProviderEvent.builder().principal(principal).provider(provider).build());
     }

@@ -19,8 +19,24 @@
                         <span th:text="${bounty.getTotalRewards()}"></span> FND
                     </small>
                 </h5>
+                <div class="card-body">
+                    <div class="rewards-list">
+                        <div class="rewards-list__item" th:each="paidBounty : ${paidBounties} ">
+                            <div class="rewards-list__text">
+                                <span th:text="#{${'enum.BountyType.' + paidBounty.type}}"></span>
+                                <small>
+                                    <a class="rewards-list__link" th:href="${'https://etherscan.io/tx/'+paidBounty.transactionHash}" target="_blank">View on etherscan</a>
+                                </small>
+                            </div>
+                            <div>
+                            <span class="text-success"
+                                  th:text="${paidBounty.amount + ' FND'}">15 FND</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-footer card-footer--light text-center">
-                    <div class="font-weight-bold">Rewards will be transferred 7th of May.</div>
+                    <div class="font-weight-bold">Rewards will be transferred each Monday.</div>
                     <div class="text-secondary font-weight-bold"
                          th:classappend="${profile.hadEtherAddress() ? 'd-none' : ''}"
                          th:if="${bounty.getTotalRewards() > 0}"
@@ -95,13 +111,13 @@
                         <hr/>
                     </div>
 
-                    <div class="rewards-list">
+                    <div class="rewards-list" th:if="${bounty.getLinkedInRewards() > 0 or bounty.getTwitterRewards() > 0 or bounty.getTelegramRewards() > 0}">
                         <div class="rewards-list__title">
                             <h5><a th:href="@{/profile#get-social}">Be social</a></h5>
                             <span>Connect your account and post a message</span>
                         </div>
-                        <div class="rewards-list__item">
-                            <th:block th:if="${bounty.getLinkedInRewards() > 0}">
+                        <div class="rewards-list__item" th:if="${bounty.getLinkedInRewards() > 0}">
+                            <th:block>
                                 <div class="rewards-list__text">
                                     <i class="fab fa-linkedin mr-1"></i>
                                     <span>Connected LinkedIn and shared</span>
@@ -110,17 +126,9 @@
                                 <span class="text-success"
                                       th:text="${T(io.fundrequest.platform.profile.bounty.domain.BountyType).POST_LINKEDIN_UPDATE.getReward() + ' FND'}">10 FND</span>
                             </th:block>
-                            <th:block th:if="${bounty.getLinkedInRewards() == 0}">
-                                <div class="rewards-list__text">
-                                    <i class="fab fa-linkedin mr-1"></i>
-                                    <span>Connect LinkedIn and share</span>
-                                </div>
-                                <a th:if="${bounty.getLinkedInRewards() == 0}"
-                                   class="rewards-list__link" th:href="@{/profile#get-social-linkedin}">Get 10 FND</a>
-                            </th:block>
                         </div>
-                        <div class="rewards-list__item">
-                            <th:block th:if="${bounty.getTwitterRewards() > 0}">
+                        <div class="rewards-list__item" th:if="${bounty.getTwitterRewards() > 0}">
+                            <th:block>
                                 <div class="rewards-list__text">
                                     <i class="fab fa-twitter mr-1"></i>
                                     <span>Connected Twitter and tweeted</span>
@@ -129,17 +137,8 @@
                                 <span class="text-success"
                                       th:text="${T(io.fundrequest.platform.profile.bounty.domain.BountyType).TWITTER_TWEET_FOLLOW.getReward() + ' FND'}">10 FND</span>
                             </th:block>
-                            <th:block th:if="${bounty.getTwitterRewards() == 0}">
-                                <div class="rewards-list__text">
-                                    <i class="fab fa-twitter mr-1"></i>
-                                    <span>Connect Twitter and tweet</span>
-                                </div>
-                                <a class="rewards-list__link" th:href="@{/profile#get-social-twitter}"
-                                   th:text="${'Get ' + T(io.fundrequest.platform.profile.bounty.domain.BountyType).TWITTER_TWEET_FOLLOW.getReward() + ' FND'}">Get
-                                    10 FND</a>
-                            </th:block>
                         </div>
-                        <div class="rewards-list__item">
+                        <div class="rewards-list__item" th:if="${bounty.getTelegramRewards() > 0}">
                             <th:block th:if="${bounty.getTelegramRewards() > 0}">
                                 <div class="rewards-list__text">
                                     <i class="fab fa-telegram mr-1"></i>
@@ -148,15 +147,6 @@
                                 </div>
                                 <span class="text-success"
                                       th:text="${T(io.fundrequest.platform.profile.bounty.domain.BountyType).LINK_TELEGRAM.getReward() + ' FND'}">5 FND</span>
-                            </th:block>
-                            <th:block th:if="${bounty.getTelegramRewards() == 0}">
-                                <div class="rewards-list__text">
-                                    <i class="fab fa-telegram mr-1"></i>
-                                    <span>Join Telegram and introduce yourself.</span>
-                                </div>
-                                <a class="rewards-list__link" th:href="@{/profile#get-social-telegram}"
-                                   th:text="${'Get ' + T(io.fundrequest.platform.profile.bounty.domain.BountyType).LINK_TELEGRAM.getReward() + ' FND'}">Get
-                                    5 FND</a>
                             </th:block>
                         </div>
                         <hr th:if="${survey}"/>
@@ -171,7 +161,8 @@
                         <div class="rewards-list__item">
                             <div class="rewards-list__text">Fill in survey</div>
                             <div>
-                                <span class="text-muted">Verification pending</span>
+                                <span class="text-muted" th:if="${survey.status.name() == 'UNVERIFIED'}">Verification pending</span>
+                                <span class="text-success" th:if="${survey.status.name() == 'VERIFIED'}">30 FND</span>
                             </div>
                         </div>
                     </div>

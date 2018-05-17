@@ -10,4 +10,5 @@ import java.time.LocalDateTime;
 public class SurveyDto {
     private LocalDateTime completionDate;
     private SurveyStatus status;
+    private String transactionHash;
 }

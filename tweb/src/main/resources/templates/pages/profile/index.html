@@ -74,38 +74,11 @@
                     </div>
                 </div>
             </div>
-
-            <div class="card card--blocked mb-5">
-                <a class="anchor" id="get-social"></a>
-                <h5 class="card-header card-header--label">
-                    <span th:if="${profile.isVerifiedDeveloper()}">Be social and be rewarded!</span>
-                    <span th:unless="${profile.isVerifiedDeveloper()}">Social rewards are only available for verified developers</span>
-                    <small class="text-muted">Rewards up to 25 FND</small>
-                </h5>
-                <div class="card-body text-center"
-                     th:classappend="${profile.isVerifiedDeveloper() ? '' : 'card-body--blocked'}">
-                    <div class="row">
-                        <div class="col-12 col-lg-4 mb-4 mb-lg-0 text-lg-center">
-                            <div th:replace="pages/profile/fragments/linkedin :: social-connect-block(platform=${profile.getLinkedin()}, verification=${linkedInVerification})"></div>
-                        </div>
-                        <div class="col-12 col-lg-4 mb-4 mb-lg-0 text-lg-center">
-                            <div th:replace="pages/profile/fragments/twitter :: social-connect-block(platform=${profile.getTwitter()}, bountyResult=${validatedTwitterBountyResult}, activeBounty=${activeBounty}, claimedTwitterBounty=${claimedTwitterBounty})"></div>
-                        </div>
-                        <div class="col-12 col-lg-4 text-lg-center">
-                            <div th:replace="pages/profile/fragments/telegram :: social-connect-block(username=${profile.getTelegramName()}, verified=${telegramVerified})"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
 <th:block layout:fragment="modals">
-    <th:block th:replace="pages/profile/fragments/linkedin :: modal"></th:block>
-    <th:block th:replace="pages/profile/fragments/twitter :: modal"></th:block>
-    <th:block
-            th:replace="pages/profile/fragments/telegram :: modal(profile=${profile}, verified=${telegramVerified}, verificationCommand=${telegramVerificationCommand})"></th:block>
 </th:block>
 
 <th:block layout:fragment="scripts">

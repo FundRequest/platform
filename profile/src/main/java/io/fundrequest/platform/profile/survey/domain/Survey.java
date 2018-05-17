@@ -32,6 +32,9 @@ public class Survey {
     @Column(name = "ether_address")
     private String etherAddress;
 
+    @Column(name = "transaction_hash")
+    private String transactionHash;
+
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
@@ -41,10 +44,11 @@ public class Survey {
     }
 
     @Builder
-    Survey(String userId, String email, String etherAddress, SurveyStatus status) {
+    Survey(String userId, String email, String etherAddress, String transactionHash, SurveyStatus status) {
         this.userId = userId;
         this.email = email;
         this.etherAddress = etherAddress;
+        this.transactionHash = transactionHash;
         this.status = status;
     }
 

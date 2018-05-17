@@ -12,10 +12,6 @@
 
     <artifactId>profile</artifactId>
 
-    <properties>
-        <twitter4j-core.version>4.0.6</twitter4j-core.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>io.fundrequest</groupId>
@@ -67,21 +63,11 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots</artifactId>
-            <version>3.6</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-sheets</artifactId>
             <version>v4-rev506-1.23.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-abilities</artifactId>
-            <version>3.6</version>
-        </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
@@ -89,11 +75,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-core</artifactId>
-            <version>${twitter4j-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -121,6 +102,21 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

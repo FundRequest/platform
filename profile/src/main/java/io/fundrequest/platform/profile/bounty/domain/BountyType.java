@@ -6,7 +6,8 @@ public enum BountyType {
     LINK_STACK_OVERFLOW(10),
     POST_LINKEDIN_UPDATE(10),
     TWITTER_TWEET_FOLLOW(10),
-    LINK_TELEGRAM(5);
+    LINK_TELEGRAM(5),
+    SURVEY(30);
     private final int reward;
 
     BountyType(int reward) {

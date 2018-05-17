@@ -10,6 +10,7 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Map;
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class),
                 @ComponentScan.Filter(IgnoreDuringComponentScan.class)})
+@ActiveProfiles("test")
 public class FundRequestGithubTestConfiguration {
 
     @Bean(name = "owner")

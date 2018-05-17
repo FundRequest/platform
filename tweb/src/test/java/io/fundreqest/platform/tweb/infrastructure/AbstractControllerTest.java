@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -20,6 +21,7 @@ public abstract class AbstractControllerTest<T> {
     protected abstract T setupController();
 
     @Before
+    @BeforeEach
     public void setUpMockMvc() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(setupController()).build();
     }

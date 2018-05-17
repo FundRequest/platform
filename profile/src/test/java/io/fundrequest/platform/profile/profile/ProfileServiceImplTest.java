@@ -31,6 +31,7 @@ public class ProfileServiceImplTest {
         UserRepresentation userRepresentation = new UserRepresentation();
         Date creationDate = DateUtil.parse("2018-01-31");
         userRepresentation.setCreatedTimestamp(creationDate.getTime());
+        userRepresentation.setEmail("davy.van.roy@gmail.com");
         when(keycloakRepository.getUser("davy")).thenReturn(userRepresentation);
         when(keycloakRepository.getUserIdentities("davy")).thenReturn(Stream.empty());
 
