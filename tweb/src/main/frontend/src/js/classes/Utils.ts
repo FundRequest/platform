@@ -155,6 +155,10 @@ export default class Utils {
             return /^[0-9]+(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
         }
     };
+    
+    public static getRandomString(): string {
+        return Math.random().toString(36).substring(16);
+    }
 
     public static formatToUsd(value: string | number, decimals: number = 2) {
         let number: number = 0;

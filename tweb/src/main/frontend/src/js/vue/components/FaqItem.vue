@@ -17,7 +17,6 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import {Locations} from "../../classes/Locations";
     import Utils from "../../classes/Utils";
     import bCollapse from "bootstrap-vue/es/components/collapse/collapse";
 
@@ -35,12 +34,12 @@
         public id: string = "";
 
         mounted() {
-            this.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            this.id = Utils.getRandomString();
         }
 
-        public get intercomArticleHtml() {
-            return Utils.getHTML(Locations.getHelpPageUrl(this.intercom));
-        }
+        //public get intercomArticleHtml() {
+        //    return Utils.getHTML(Locations.getHelpPageUrl(this.intercom));
+        //}
 
         public open() {
 
