@@ -86,9 +86,6 @@
                      th:classappend="${profile.isVerifiedDeveloper() ? '' : 'card-body--blocked'}">
                     <div class="row">
                         <div class="col-12 col-lg-4 mb-4 mb-lg-0 text-lg-center">
-                            <div th:replace="pages/profile/fragments/linkedin :: social-connect-block(platform=${profile.getLinkedin()}, verification=${linkedInVerification})"></div>
-                        </div>
-                        <div class="col-12 col-lg-4 mb-4 mb-lg-0 text-lg-center">
                             <div th:replace="pages/profile/fragments/twitter :: social-connect-block(platform=${profile.getTwitter()}, bountyResult=${validatedTwitterBountyResult}, activeBounty=${activeBounty}, claimedTwitterBounty=${claimedTwitterBounty})"></div>
                         </div>
                         <div class="col-12 col-lg-4 text-lg-center">
@@ -102,7 +99,6 @@
 </div>
 
 <th:block layout:fragment="modals">
-    <th:block th:replace="pages/profile/fragments/linkedin :: modal"></th:block>
     <th:block th:replace="pages/profile/fragments/twitter :: modal"></th:block>
     <th:block
             th:replace="pages/profile/fragments/telegram :: modal(profile=${profile}, verified=${telegramVerified}, verificationCommand=${telegramVerificationCommand})"></th:block>
