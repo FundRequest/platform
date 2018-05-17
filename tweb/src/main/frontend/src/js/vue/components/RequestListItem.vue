@@ -21,7 +21,7 @@
                     <a v-bind:href="getGithubIssueUrl(req.platform, req.owner, req.repo, req.issueNumber)"><i
                             class="fab fa-github"></i></a>
                     <a v-bind:href="`${getRequestDetailUrl(req.id)}#comments`"><i class="fa fa-comment"></i></a>
-                    <span>Last modified <timeago :since="req.lastModifiedDate" :auto-update="60" :title="req.lastModifiedDate"></timeago></span>
+                    <span>Last modified <timeago :since="req.lastModifiedDate" :auto-update="60" :title="req.lastModifiedDate | toDatetime"></timeago></span>
                 </div>
             </div>
             <div class="request-details__funding-details">
@@ -57,6 +57,7 @@
     import FontSizeFit from "./FontSizeFit";
     import ToCrypto from "../filters/formatters/ToCrypto";
     import ToUsd from "../filters/formatters/ToUsd";
+    import ToDatetime from '../filters/formatters/ToDatetime';
 
     Vue.use(VueTimeago, {
         name: "Timeago", // Component name, `Timeago` by default
@@ -69,7 +70,8 @@
         },
         filters: {
             toCrypto: ToCrypto.filter,
-            toUsd: ToUsd.filter
+            toUsd: ToUsd.filter,
+            toDatetime: ToDatetime.filter
         }
     })
     export default class RequestListItem extends Vue {
