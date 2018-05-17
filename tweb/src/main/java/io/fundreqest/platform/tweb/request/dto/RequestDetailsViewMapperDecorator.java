@@ -4,9 +4,6 @@ import io.fundreqest.platform.tweb.infrastructure.mav.EnumToCapitalizedStringMap
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.github.GithubGateway;
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -33,20 +30,10 @@ public abstract class RequestDetailsViewMapperDecorator implements RequestDetail
             view.setIssueNumber(issueInfo.getNumber());
             view.setTitle(issueInfo.getTitle());
             view.setStarred(r.isLoggedInUserIsWatcher());
-            view.setDescription(createHtmlDescription(issueInfo));
+            view.setDescription(githubGateway.getIssue(issueInfo.getOwner(), issueInfo.getRepo(), issueInfo.getNumber()).getBody());
             view.setFase(enumToCapitalizedStringMapper.map(r.getStatus().getFase()));
             view.setStatus(enumToCapitalizedStringMapper.map(r.getStatus()));
         }
         return view;
     }
-
-    private String createHtmlDescription(IssueInformationDto issueInfo) {
-        String body = githubGateway.getIssue(issueInfo.getOwner(), issueInfo.getRepo(), issueInfo.getNumber()).getBody();
-        Parser parser = Parser.builder().build();
-        Node document = parser.parse(body);
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        return renderer.render(document);
-    }
-
-
 }

@@ -1,5 +1,5 @@
 <template>
-    <span v-bind:style="{ fontSize: fontSize + 'px'}" ref="fontSizeFit"><slot></slot></span>
+    <span class="font-size-fit" v-bind:style="{ fontSize: fontSize + 'px'}" ref="fontSizeFit"><slot></slot></span>
 </template>
 
 <script lang="ts">
@@ -28,3 +28,9 @@
         }
     }
 </script>
+
+<style>
+    .font-size-fit {
+        white-space: nowrap;
+    }
+</style>

@@ -85,6 +85,7 @@
                         v-bind:fase-filter-default="'info'"
                         v-bind:filters="[
                     { value: 'info', title: 'Info', description: 'Detailed description of the request' },
+                    { value: 'comments', title: 'Comments', description: 'Comments posted on the request' },
                     { value: 'funded-by', title: 'Funded By', description: 'An overview of the funders and funds.' }
                  ]">
             <template slot-scope="{faseFilter}">
@@ -105,17 +106,29 @@
                         </div>
                     </div>
                 </div>
-                <!--
-                { value: 'comments', title: 'Comments', description: 'Comments posted on the request' },
-                <div class="card" v-if="faseFilter === 'comments'">
-                    <div class="card-header">
-                        Comments
-                    </div>
+
+                <div class="card comment" v-if="faseFilter === 'comments'" th:each="comment : ${githubComments}">
                     <div class="card-body">
-                        Comments
+                        <div class="request-details d-flex flex-wrap flex-md-nowrap align-items-start">
+                            <div class="request-details__logo">
+                                <div>
+                                    <img th:src="@{${comment.userAvatar}(size=45)}" th:alt-title="${comment.userName}"/>
+                                </div>
+                                <div class="request-details__owner mb-3">
+                                    <font-size-fit v-bind:max-size="15" th:text="${comment.userName}">FundRequest</font-size-fit>
+                                </div>
+                                <div class="request-details__last-modified-at">
+                                    <small>Commented</small>
+                                    <font-size-fit v-bind:max-size="15">
+                                        <timeago th:attr="'v-bind:since'='&quot;' + ${comment.createdAt} + '&quot;'" v-bind:auto-update="60"></timeago>
+                                    </font-size-fit>
+                                </div>
+                            </div>
+                            <div class="request-details__markdown" th:utext="${comment.body}"></div>
+                        </div>
                     </div>
                 </div>
-                  -->
+
                 <div class="card" v-if="faseFilter === 'funded-by'">
                     <div class="card-header">
                         Funders

@@ -11,9 +11,8 @@ export class DynamicContent {
             let path = element.dataset.dynamicContent;
             if (path.length > 0) {
                 Utils.getHTML(path).then((html) => {
-                    let span = document.createElement('span');
-                    span.innerHTML = html;
-                    element.parentNode.replaceChild(span, element);
+                    element.innerHTML = html;
+                    element.removeAttribute('data-dynamic-content');
                     this._reinitialize(element);
                 });
             }

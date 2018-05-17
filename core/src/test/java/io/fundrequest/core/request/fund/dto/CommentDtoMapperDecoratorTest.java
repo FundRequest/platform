@@ -24,10 +24,22 @@ public class CommentDtoMapperDecoratorTest {
 
     @Test
     public void maps() {
-        when(delegate.map(any())).thenReturn(CommentDto.builder().build());
-        CommentDto result = decorator.map(GithubIssueCommentsResult.builder().user(GithubUser.builder().login("davyvanroy").build()).body("# body").build());
+        final String login = "davyvanroy";
+        final String userUrl = "fxghcgjv";
+        final String userAvatarUrl = "fgjhkj";
 
-        assertThat(result.getUserName()).isEqualTo("davyvanroy");
-        assertThat(result.getBody()).contains("<h1>body</h1>");
+        when(delegate.map(any())).thenReturn(CommentDto.builder().build());
+
+        final CommentDto result = decorator.map(GithubIssueCommentsResult.builder()
+                                                                         .user(GithubUser.builder()
+                                                                                         .login(login)
+                                                                                         .url(userUrl)
+                                                                                         .avatarUrl(userAvatarUrl)
+                                                                                         .build())
+                                                                         .build());
+
+        assertThat(result.getUserName()).isEqualTo(login);
+        assertThat(result.getUserUrl()).isEqualTo(userUrl);
+        assertThat(result.getUserAvatar()).isEqualTo(userAvatarUrl);
     }
 }

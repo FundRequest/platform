@@ -51,7 +51,7 @@ public class PendingFundService {
                                     .tokenAddress(command.getTokenAddress())
                                     .transactionhash(command.getTransactionId())
                                     .issueInformation(issueInformation)
-                                    .userId(principal.getName())
+                                    .userId(principal == null ? null : principal.getName())
                                     .build();
         pendingFundRepository.save(pf);
     }
