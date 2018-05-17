@@ -36,13 +36,13 @@
         <text x="1655" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="1110">
             <span th:remove="tag" th:text="${#strings.toLowerCase(requestFase.name())}"></span>
             (<span th:remove="tag" th:if="${highestFunds != null}"
-                   th:text="${#numbers.formatDecimal(highestFunds.totalAmount,1,2,'POINT')}"></span>
+                   th:text="${#numbers.formatDecimal(highestFunds.totalAmount,1,'COMMA',2,'POINT')}"></span>
             <span th:remove="tag" th:text="${highestFunds.tokenSymbol}"></span>)
         </text>
         <text x="1655" y="140" transform="scale(.1)" textLength="1110">
             <span th:remove="tag" th:text="${#strings.toLowerCase(requestFase.name())}"></span>
             (<span th:remove="tag" th:if="${highestFunds != null}"
-                   th:text="${#numbers.formatDecimal(highestFunds.totalAmount,1,2,'POINT')}"></span>
+                   th:text="${#numbers.formatDecimal(highestFunds.totalAmount,1,'COMMA',2,'POINT')}"></span>
             <span th:remove="tag" th:text="${highestFunds.tokenSymbol}"></span>)
         </text>
     </g>

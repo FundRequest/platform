@@ -1,5 +1,6 @@
 package io.fundrequest.platform.admin;
 
+import io.fundrequest.common.FundRequestCommon;
 import io.fundrequest.common.infrastructure.IgnoreDuringComponentScan;
 import io.fundrequest.core.FundRequestCore;
 import io.fundrequest.platform.github.FundRequestGithub;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.FilterType;
                 AdminApplication.class,
                 FundRequestKeycloak.class,
                 FundRequestGithub.class,
+                FundRequestCommon.class,
                 FundRequestCore.class,
                 ProfileApplication.class,
         },

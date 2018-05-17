@@ -9,7 +9,6 @@ import StatisticTile from './components/StatisticTile.vue';
 import WizardComponent from './components/WizardComponent.vue';
 import StarredLink from './components/StarredLink.vue';
 
-import './filters';
 import {EventBus} from './EventBus';
 import {DynamicContent} from '../app/DynamicContent';
 

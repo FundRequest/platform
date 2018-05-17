@@ -3,9 +3,9 @@ import Github from './Github';
 import BigNumber from 'bignumber.js';
 
 export default class Utils {
-    
+
     public static biggestNumber(): BigNumber {
-        return new BigNumber("1.157920892e77").minus(1);
+        return new BigNumber('1.157920892e77').minus(1);
     }
 
     public static showLoading() {
@@ -32,15 +32,6 @@ export default class Utils {
         }
 
         return newWindow;
-    }
-
-    public static formatTokenPrice(value, decimals: number = 2) {
-        if (value) {
-            let val = (value / 1).toFixed(decimals);
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        } else {
-            return value;
-        }
     }
 
     public static arrayContainsRegex(stringArray: string[], regex: RegExp): boolean {
@@ -74,7 +65,7 @@ export default class Utils {
             type: 'POST',
             url: url,
             data: JSON.stringify(body),
-            contentType: "application/json",
+            contentType: 'application/json',
             dataType: 'json'
         }).promise();
     }
@@ -164,6 +155,23 @@ export default class Utils {
             return /^[0-9]+(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
         }
     };
+
+    public static formatToUsd(value: string | number, decimals: number = 2) {
+        let number: number = 0;
+        if (typeof value == 'string') {
+            if (this.validators.currency(value)) {
+                number = Number(value.replace(',', ''));
+            }
+        } else {
+            number = value;
+        }
+
+        return new Intl.NumberFormat('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals}).format(number);
+    }
+
+    public static formatToCrypto(value: string | number, decimals: number = 2) {
+        return Utils.formatToUsd(value, decimals); // for now we use the same formatting
+    }
 
     private static async _validateElementValue(validations: string[], value: string): Promise<boolean> {
         let isValid = true;

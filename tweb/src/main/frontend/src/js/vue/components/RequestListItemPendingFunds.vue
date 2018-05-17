@@ -25,16 +25,16 @@
             <div class="request-details__funding-details">
                 <div class="request-details__price" v-if="req.funds.usdFunds != null">
                     <span class="request-details__fund-currency">$</span>
-                    <span class="request-details__fund-amount">{{formatPrice(req.funds.usdFunds, 0)}}</span>
+                    <span class="request-details__fund-amount">{{req.funds.usdFunds | toUsd}}</span>
                     <span class="disclaimer-asterix">*</span>
                 </div>
                 <div class="request-details__crypto">
                     <div class="request-details__fund" v-if="req.funds.fndFunds != null">
-                        <span class="request-details__fund-amount">{{formatPrice(req.funds.fndFunds.totalAmount)}}</span>
+                        <span class="request-details__fund-amount">{{req.funds.fndFunds.totalAmount | toCrypto}}</span>
                         <span class="request-details__fund-currency">{{req.funds.fndFunds.tokenSymbol}}</span>
                     </div>
                     <div class="request-details__fund" v-if="req.funds.otherFunds != null">
-                        <span class="request-details__fund-amount">{{formatPrice(req.funds.otherFunds.totalAmount)}}</span>
+                        <span class="request-details__fund-amount">{{req.funds.otherFunds.totalAmount | toCrypto}}</span>
                         <span class="request-details__fund-currency">{{req.funds.otherFunds.tokenSymbol}}</span>
                     </div>
                 </div>
@@ -49,20 +49,23 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import Utils from "../../classes/Utils";
+    import ToCrypto from '../filters/formatters/ToCrypto';
     import {RequestListItemPendingFundDto} from "../dtos/RequestListItemPendingFundDto";
     import FontSizeFit from "./FontSizeFit";
 
-    @Component
+    @Component({
+        components: {
+            FontSizeFit
+        },
+        filters: {
+            toCrypto: ToCrypto.filter
+        }
+    })
     export default class RequestListItemPendingFund extends Vue {
         @Prop({required: true}) request!: any;
 
         public get req(): RequestListItemPendingFundDto {
             return Object.assign(new RequestListItemPendingFundDto(), this.request);
-        }
-
-        public formatPrice(value, decimals: number = 2) {
-            return Utils.formatTokenPrice(value, decimals);
         }
 
         public showActions(e) {

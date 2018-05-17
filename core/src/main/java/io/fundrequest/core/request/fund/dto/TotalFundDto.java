@@ -15,8 +15,8 @@ public class TotalFundDto {
 
 
     public String getTokenImage() {
-        if (StringUtils.isNotBlank(tokenAddress)) {
-            return "https://cdn.rawgit.com/TrustWallet/tokens/master/images/" + tokenAddress.toLowerCase() + ".png";
+        if (StringUtils.isNotBlank(tokenSymbol)) {
+            return tokenSymbol.toLowerCase() + ".png";
         } else {
             return "";
         }

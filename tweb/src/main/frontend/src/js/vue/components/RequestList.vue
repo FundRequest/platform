@@ -105,7 +105,7 @@
 
         public requestList: RequestListModel = new RequestListModel([]);
         public filteredRequests: RequestDto[] = [];
-        public sortBy: string = "";
+        public sortBy: string = "lastModifiedDate__desc";
         public hasNoResults: boolean = false;
         public isEmpty: boolean = false;
         public technologiesSelect: string[];
