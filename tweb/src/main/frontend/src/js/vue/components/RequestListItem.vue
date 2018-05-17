@@ -20,7 +20,7 @@
                 <div class="request-details__icons">
                     <a v-bind:href="getGithubIssueUrl(req.platform, req.owner, req.repo, req.issueNumber)"><i class="fab fa-github"></i></a>
                     <a v-bind:href="getRequestDetailUrl(req.id)+'#comments'"><i class="fa fa-comment"></i></a>
-                    <span>Last modified {{req.lastModifiedDate}}</span>
+                    <span>Last modified <timeago :since="req.lastModifiedDate" :auto-update="60"></timeago></span>
                 </div>
             </div>
             <div class="request-details__funding-details">
@@ -52,9 +52,15 @@
     import {Component, Prop, Vue} from "vue-property-decorator";
     import RequestDto from "../dtos/RequestDto";
     import {Locations} from "../../classes/Locations";
+    import VueTimeago from "vue-timeago";
     import FontSizeFit from "./FontSizeFit";
     import ToCrypto from "../filters/formatters/ToCrypto";
     import ToUsd from "../filters/formatters/ToUsd";
+
+    Vue.use(VueTimeago, {
+        name: 'Timeago', // Component name, `Timeago` by default
+        locale: undefined, // Default locale
+    });
 
     @Component({
         components: {
@@ -73,6 +79,7 @@
         mounted() {
             this.requestItem = Object.assign(new RequestDto(), this.request);
             this.requestItem.technologies = this.requestItem.technologies.sort();
+            console.log(this.request);
         }
 
         public get req() {
