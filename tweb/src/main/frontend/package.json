@@ -92,6 +92,7 @@
     "requirejs": "^2.3.5",
     "sweetalert2": "^7.19.3",
     "toastr": "^2.1.4",
+    "uuid": "^3.2.1",
     "v-money": "github:nholden/v-money",
     "vue": "^2.5.2",
     "vue-class-component": "^6.0.0",

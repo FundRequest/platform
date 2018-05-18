@@ -1,6 +1,8 @@
 import * as $ from 'jquery';
 import Github from './Github';
 import BigNumber from 'bignumber.js';
+import uuid from 'uuid/v4';
+
 
 export default class Utils {
 
@@ -156,8 +158,8 @@ export default class Utils {
         }
     };
     
-    public static getRandomString(): string {
-        return Math.random().toString(36).substring(16);
+    public static generateUUID(): string {
+        return uuid();
     }
 
     public static formatToUsd(value: string | number, decimals: number = 2) {

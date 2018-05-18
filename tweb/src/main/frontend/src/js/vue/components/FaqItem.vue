@@ -34,7 +34,7 @@
         public id: string = "";
 
         mounted() {
-            this.id = Utils.getRandomString();
+            this.id = Utils.generateUUID();
         }
 
         //public get intercomArticleHtml() {
