@@ -31,6 +31,7 @@ class FAQServiceImplTest {
 
     private static final String OWNER = "FundRequest";
     private static final String REPO = "FAQ";
+    private static final String MASTER = "master";
     private static final String FILE_PATH = "FAQ.xml";
 
     private FAQServiceImpl service;
@@ -45,7 +46,7 @@ class FAQServiceImplTest {
         xmlMapper = mock(XmlMapper.class);
         faqItemMapper = mock(FaqItemMapper.class);
         cacheManager = mock(CacheManager.class);
-        service = new FAQServiceImpl(githubGateway, OWNER, REPO, FILE_PATH, xmlMapper, faqItemMapper, cacheManager);
+        service = new FAQServiceImpl(githubGateway, OWNER, REPO, MASTER, FILE_PATH, xmlMapper, faqItemMapper, cacheManager);
     }
 
     @Test
@@ -67,12 +68,12 @@ class FAQServiceImplTest {
         final List<FaqItem> faqItems3 = new ArrayList<>();
         final Cache cache = mock(Cache.class);
 
-        when(githubGateway.getContentsAsRaw(OWNER, REPO, FILE_PATH)).thenReturn(faqsXml);
+        when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
         when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPages(pages));
         when(faqItemMapper.mapToList(same(faq1))).thenReturn(faqItems1);
         when(faqItemMapper.mapToList(same(faq2))).thenReturn(faqItems2);
         when(faqItemMapper.mapToList(same(faq3))).thenReturn(faqItems3);
-        when(cacheManager.getCache("faq")).thenReturn(cache);
+        when(cacheManager.getCache("faqs")).thenReturn(cache);
 
         service.refreshFAQs();
 
@@ -88,7 +89,7 @@ class FAQServiceImplTest {
         final List<Faq> faqs = new ArrayList<>();
         final List<FaqItem> faqItems = new ArrayList<>();
 
-        when(githubGateway.getContentsAsRaw(OWNER, REPO, FILE_PATH)).thenReturn(faqsXml);
+        when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
         when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage(pageName, faqs));
         when(faqItemMapper.mapToList(same(faqs))).thenReturn(faqItems);
 
@@ -103,7 +104,7 @@ class FAQServiceImplTest {
         final String pageName = "nbn";
         final IOException ioException = new IOException();
 
-        when(githubGateway.getContentsAsRaw(OWNER, REPO, FILE_PATH)).thenReturn(faqsXml);
+        when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
         doThrow(ioException).when(xmlMapper).readValue(faqsXml, Faqs.class);
 
         try {

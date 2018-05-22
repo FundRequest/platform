@@ -3,6 +3,7 @@ package io.fundreqest.platform.tweb;
 import io.fundrequest.common.FundRequestCommon;
 import io.fundrequest.common.infrastructure.IgnoreDuringComponentScan;
 import io.fundrequest.core.FundRequestCore;
+import io.fundrequest.platform.faq.FundRequestFAQ;
 import io.fundrequest.platform.github.FundRequestGithub;
 import io.fundrequest.platform.keycloak.FundRequestKeycloak;
 import io.fundrequest.platform.profile.ProfileApplication;
@@ -23,7 +24,8 @@ import org.springframework.context.annotation.FilterType;
                 WebApplication.class,
                 FundRequestCore.class,
                 ProfileApplication.class,
-                FundRequestCommon.class
+                FundRequestCommon.class,
+                FundRequestFAQ.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
