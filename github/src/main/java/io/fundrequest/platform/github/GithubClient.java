@@ -59,4 +59,13 @@ interface GithubClient {
     @RequestMapping(value = "/rate_limit", method = GET)
     GithubRateLimits getRateLimit();
 
+    @RequestMapping(value = "/repos/{owner}/{repo}/contents/{filePath}", method = GET, headers = "Accept=application/vnd.github.raw")
+    String getContentsAsRaw(@PathVariable("owner") String owner,
+                            @PathVariable("repo") String repo,
+                            @PathVariable("filePath") String filePath);
+
+    @RequestMapping(value = "/repos/{owner}/{repo}/contents/{filePath}", method = GET, headers = "Accept=application/vnd.github.html")
+    String getContentsAsHtml(@PathVariable("owner") String owner,
+                             @PathVariable("repo") String repo,
+                             @PathVariable("filePath") String filePath);
 }

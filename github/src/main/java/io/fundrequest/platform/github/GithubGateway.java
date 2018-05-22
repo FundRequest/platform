@@ -64,4 +64,12 @@ public class GithubGateway {
     public GithubRateLimits getRateLimit() {
         return githubClient.getRateLimit();
     }
+
+    public String getContentsAsRaw(final String owner, final String repo, final String filePath) {
+        return githubClient.getContentsAsRaw(owner, repo, filePath);
+    }
+
+    public String getContentsAsHtml(final String owner, final String repo, final String filePath) {
+        return githubClient.getContentsAsHtml(owner, repo, filePath);
+    }
 }
