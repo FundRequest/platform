@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +21,7 @@ class FaqItemDtoMapperTest {
     private static final String OWNER = "hjgfkh";
     private static final String REPO = "asd";
 
-    private FaqItemMapper mapper;
+    private FaqItemDtoMapper mapper;
     private GithubGateway githubGateway;
     private JsoupSpringWrapper jsoup;
 
@@ -28,7 +29,7 @@ class FaqItemDtoMapperTest {
     public void setUp() {
         githubGateway = mock(GithubGateway.class);
         jsoup = mock(JsoupSpringWrapper.class);
-        mapper = new FaqItemMapper(githubGateway, OWNER, REPO, jsoup);
+        mapper = new FaqItemDtoMapper(githubGateway, OWNER, REPO, jsoup);
     }
 
     @Test
@@ -44,6 +45,7 @@ class FaqItemDtoMapperTest {
         when(githubGateway.getContentsAsHtml(OWNER, REPO, filePath)).thenReturn(contentHtml);
         when(jsoup.parse(contentHtml)).thenReturn(contentDocument);
         when(contentDocument.select(".markdown-body")).thenReturn(markdownElements);
+        when(markdownElements.isEmpty()).thenReturn(false);
         when(markdownElements.get(0)).thenReturn(markdownElement);
         when(markdownElement.html()).thenReturn(expectedBody);
 
@@ -51,6 +53,27 @@ class FaqItemDtoMapperTest {
 
         assertThat(result.getTitle()).isEqualTo(title);
         assertThat(result.getBody()).isEqualTo(expectedBody);
+    }
+
+    @Test
+    public void map_emptyMD() {
+        final String title = "ghfgjhk";
+        final String filePath = "iouyi";
+        final String contentHtml = "dsafg";
+        final String expectedBody = "<h1>Cdfghjhkj</h1>";
+        final Document contentDocument = mock(Document.class);
+        final Elements markdownElements = mock(Elements.class);
+        final Element markdownElement = mock(Element.class);
+
+        when(githubGateway.getContentsAsHtml(OWNER, REPO, filePath)).thenReturn(contentHtml);
+        when(jsoup.parse(contentHtml)).thenReturn(contentDocument);
+        when(contentDocument.select(".markdown-body")).thenReturn(markdownElements);
+        when(markdownElements.isEmpty()).thenReturn(true);
+        doThrow(new IndexOutOfBoundsException()).when(markdownElements).get(0);
+
+        final FaqItemDto result = mapper.map(Faq.builder().title(title).filePath(filePath).build());
+
+        assertThat(result).isNull();
     }
 
     @Test

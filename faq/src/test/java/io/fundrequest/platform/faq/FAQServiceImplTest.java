@@ -17,10 +17,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -37,16 +38,16 @@ class FAQServiceImplTest {
     private FAQServiceImpl service;
     private GithubGateway githubGateway;
     private XmlMapper xmlMapper;
-    private FaqItemMapper faqItemMapper;
+    private FaqItemDtoMapper faqItemDtoMapper;
     private CacheManager cacheManager;
 
     @BeforeEach
     void setUp() {
         githubGateway = mock(GithubGateway.class);
         xmlMapper = mock(XmlMapper.class);
-        faqItemMapper = mock(FaqItemMapper.class);
+        faqItemDtoMapper = mock(FaqItemDtoMapper.class);
         cacheManager = mock(CacheManager.class);
-        service = new FAQServiceImpl(githubGateway, OWNER, REPO, MASTER, FILE_PATH, xmlMapper, faqItemMapper, cacheManager);
+        service = new FAQServiceImpl(githubGateway, OWNER, REPO, MASTER, FILE_PATH, xmlMapper, faqItemDtoMapper, cacheManager);
     }
 
     @Test
@@ -63,23 +64,23 @@ class FAQServiceImplTest {
         pages.put(pageName1, faq1);
         pages.put(pageName2, faq2);
         pages.put(pageName3, faq3);
-        final List<FaqItemDto> faqItems1 = new ArrayList<>();
-        final List<FaqItemDto> faqItems2 = new ArrayList<>();
-        final List<FaqItemDto> faqItems3 = new ArrayList<>();
+        final List<FaqItemDto> faqItems1 = Arrays.asList(mock(FaqItemDto.class));
+        final List<FaqItemDto> faqItems2 = Arrays.asList(mock(FaqItemDto.class), mock(FaqItemDto.class));
+        final List<FaqItemDto> faqItems3 = Arrays.asList(mock(FaqItemDto.class), null, mock(FaqItemDto.class));
         final Cache cache = mock(Cache.class);
 
         when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
         when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPages(pages));
-        when(faqItemMapper.mapToList(same(faq1))).thenReturn(faqItems1);
-        when(faqItemMapper.mapToList(same(faq2))).thenReturn(faqItems2);
-        when(faqItemMapper.mapToList(same(faq3))).thenReturn(faqItems3);
+        when(faqItemDtoMapper.mapToList(same(faq1))).thenReturn(faqItems1);
+        when(faqItemDtoMapper.mapToList(same(faq2))).thenReturn(faqItems2);
+        when(faqItemDtoMapper.mapToList(same(faq3))).thenReturn(faqItems3);
         when(cacheManager.getCache("faqs")).thenReturn(cache);
 
         service.refreshFAQs();
 
-        verify(cache).put(eq(pageName1), same(faqItems1));
-        verify(cache).put(eq(pageName2), same(faqItems2));
-        verify(cache).put(eq(pageName3), same(faqItems3));
+        verify(cache).put(pageName1, faqItems1);
+        verify(cache).put(pageName2, faqItems2);
+        verify(cache).put(pageName3, faqItems3.stream().filter(Objects::nonNull).collect(toList()));
     }
 
     @Test
@@ -87,15 +88,15 @@ class FAQServiceImplTest {
         final String faqsXml = "fadgszdbg";
         final String pageName = "fghggfsshdg";
         final List<Faq> faqs = new ArrayList<>();
-        final List<FaqItemDto> faqItems = new ArrayList<>();
+        final List<FaqItemDto> faqItems = Arrays.asList(mock(FaqItemDto.class), null, mock(FaqItemDto.class));
 
         when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
         when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage(pageName, faqs));
-        when(faqItemMapper.mapToList(same(faqs))).thenReturn(faqItems);
+        when(faqItemDtoMapper.mapToList(same(faqs))).thenReturn(faqItems);
 
         final List<FaqItemDto> result = service.getFAQsForPage(pageName);
 
-        assertThat(result).isSameAs(faqItems);
+        assertThat(result).isEqualTo(faqItems.stream().filter(Objects::nonNull).collect(toList()));
     }
 
     @Test
@@ -114,6 +115,21 @@ class FAQServiceImplTest {
             assertThat(e.getMessage()).isEqualTo("Something went wrong while trying to parse FAQ.xml");
             assertThat(e.getCause()).isEqualTo(ioException);
         }
+    }
+
+    @Test
+    public void getFAQsForPage_noFAQsFound() throws IOException {
+        final String faqsXml = "fadgszdbg";
+        final List<Faq> faqs = new ArrayList<>();
+        final List<FaqItemDto> faqItems = new ArrayList<>();
+
+        when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
+        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage("fghggfsshdg", faqs));
+        when(faqItemDtoMapper.mapToList(same(faqs))).thenReturn(faqItems);
+
+        final List<FaqItemDto> result = service.getFAQsForPage("pageName");
+
+        assertThat(result).isEmpty();
     }
 
     private Faqs buildFaqsObjectWithPage(final String pageName, final List<Faq> faqs) {

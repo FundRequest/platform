@@ -13,7 +13,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class FAQServiceImpl implements FAQService {
@@ -26,7 +30,7 @@ public class FAQServiceImpl implements FAQService {
     private final String branch;
     private final String filePath;
     private final XmlMapper xmlMapper;
-    private final FaqItemMapper faqItemMapper;
+    private final FaqItemDtoMapper faqItemDtoMapper;
     private final CacheManager cacheManager;
 
     public FAQServiceImpl(final GithubGateway githubGateway,
@@ -35,7 +39,7 @@ public class FAQServiceImpl implements FAQService {
                           @Value("${io.fundrequest.faq.branch:master}") final String branch,
                           @Value("${io.fundrequest.faq.repo:FAQ.xml}") final String filePath,
                           final XmlMapper xmlMapper,
-                          final FaqItemMapper faqItemMapper,
+                          final FaqItemDtoMapper faqItemDtoMapper,
                           final CacheManager cacheManager) {
         this.githubGateway = githubGateway;
         this.owner = owner;
@@ -43,7 +47,7 @@ public class FAQServiceImpl implements FAQService {
         this.branch = branch;
         this.filePath = filePath;
         this.xmlMapper = xmlMapper;
-        this.faqItemMapper = faqItemMapper;
+        this.faqItemDtoMapper = faqItemDtoMapper;
         this.cacheManager = cacheManager;
     }
 
@@ -58,8 +62,7 @@ public class FAQServiceImpl implements FAQService {
         }
         faqs.getPages()
             .forEach(page -> cacheManager.getCache("faqs")
-                                         .put(page.getName(), faqItemMapper.mapToList(page.getFaqs())));
-
+                                         .put(page.getName(), filterNulls(faqItemDtoMapper.mapToList(page.getFaqs()))));
     }
 
     @Cacheable(cacheNames = "faqs", key = "#pageName")
@@ -74,7 +77,11 @@ public class FAQServiceImpl implements FAQService {
         return faqs.getPages()
                    .stream()
                    .filter(page -> page.getName().equalsIgnoreCase(pageName))
-                   .findFirst().map(page -> faqItemMapper.mapToList(page.getFaqs()))
-                   .orElseThrow(() -> new RuntimeException("No page definition for " + pageName + " found in FAQ.xml"));
+                   .findFirst().map(page -> filterNulls(faqItemDtoMapper.mapToList(page.getFaqs())))
+                   .orElse(new ArrayList<>());
+    }
+
+    private List<FaqItemDto> filterNulls(final List<FaqItemDto> faqItems) {
+        return faqItems.stream().filter(Objects::nonNull).collect(toList());
     }
 }
