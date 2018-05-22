@@ -195,6 +195,27 @@ public class RequestServiceImplTest {
     }
 
     @Test
+    public void getUserClaimableResultUpdatesStatusToFunded() {
+        final Principal principal = PrincipalMother.davyvanroy();
+        final long requestId = 1L;
+        final Request request = RequestMother.fundRequestArea51().build();
+        request.setStatus(RequestStatus.CLAIMABLE);
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        final UserClaimableDto expected = UserClaimableDto.builder().claimable(false).build();
+        final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
+
+        when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
+        when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
+        when(githubClaimResolver.userClaimableResult(principal, requestDto)).thenReturn(expected);
+
+        UserClaimableDto result = requestService.getUserClaimableResult(principal, requestId);
+
+        assertThat(result).isEqualTo(expected);
+        verify(requestRepository).save(requestArgumentCaptor.capture());
+        assertThat(requestArgumentCaptor.getValue().getStatus()).isEqualTo(RequestStatus.FUNDED);
+    }
+
+    @Test
     public void createWithNewIssue() {
         CreateRequestCommand command = createCommand();
         when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.empty());
