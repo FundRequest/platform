@@ -1,7 +1,7 @@
 package io.fundrequest.platform.faq;
 
 import io.fundrequest.common.infrastructure.JsoupSpringWrapper;
-import io.fundrequest.platform.faq.model.FaqItem;
+import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.faq.parser.Faq;
 import io.fundrequest.platform.github.GithubGateway;
 import org.jsoup.nodes.Document;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class FaqItemMapperTest {
+class FaqItemDtoMapperTest {
 
     private static final String OWNER = "hjgfkh";
     private static final String REPO = "asd";
@@ -47,7 +47,7 @@ class FaqItemMapperTest {
         when(markdownElements.get(0)).thenReturn(markdownElement);
         when(markdownElement.html()).thenReturn(expectedBody);
 
-        final FaqItem result = mapper.map(Faq.builder().title(title).filePath(filePath).build());
+        final FaqItemDto result = mapper.map(Faq.builder().title(title).filePath(filePath).build());
 
         assertThat(result.getTitle()).isEqualTo(title);
         assertThat(result.getBody()).isEqualTo(expectedBody);
@@ -68,7 +68,7 @@ class FaqItemMapperTest {
         when(contentDocument.select(".markdown-body")).thenReturn(markdownElements);
 
         try {
-            final FaqItem result = mapper.map(Faq.builder().title(title).filePath(filePath).build());
+            final FaqItemDto result = mapper.map(Faq.builder().title(title).filePath(filePath).build());
             fail("A new RuntimException(\"Something went wrong during the mapping of FaqItem '" + title + "'\")");
         } catch (RuntimeException e) {
             assertThat(e.getMessage()).isEqualTo("Something went wrong during the mapping of FaqItem '" + title + "'");

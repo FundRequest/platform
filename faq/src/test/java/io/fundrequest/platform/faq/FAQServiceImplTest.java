@@ -1,7 +1,7 @@
 package io.fundrequest.platform.faq;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import io.fundrequest.platform.faq.model.FaqItem;
+import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.faq.parser.Faq;
 import io.fundrequest.platform.faq.parser.Faqs;
 import io.fundrequest.platform.faq.parser.Page;
@@ -63,9 +63,9 @@ class FAQServiceImplTest {
         pages.put(pageName1, faq1);
         pages.put(pageName2, faq2);
         pages.put(pageName3, faq3);
-        final List<FaqItem> faqItems1 = new ArrayList<>();
-        final List<FaqItem> faqItems2 = new ArrayList<>();
-        final List<FaqItem> faqItems3 = new ArrayList<>();
+        final List<FaqItemDto> faqItems1 = new ArrayList<>();
+        final List<FaqItemDto> faqItems2 = new ArrayList<>();
+        final List<FaqItemDto> faqItems3 = new ArrayList<>();
         final Cache cache = mock(Cache.class);
 
         when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
@@ -87,13 +87,13 @@ class FAQServiceImplTest {
         final String faqsXml = "fadgszdbg";
         final String pageName = "fghggfsshdg";
         final List<Faq> faqs = new ArrayList<>();
-        final List<FaqItem> faqItems = new ArrayList<>();
+        final List<FaqItemDto> faqItems = new ArrayList<>();
 
         when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
         when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage(pageName, faqs));
         when(faqItemMapper.mapToList(same(faqs))).thenReturn(faqItems);
 
-        final List<FaqItem> result = service.getFAQsForPage(pageName);
+        final List<FaqItemDto> result = service.getFAQsForPage(pageName);
 
         assertThat(result).isSameAs(faqItems);
     }

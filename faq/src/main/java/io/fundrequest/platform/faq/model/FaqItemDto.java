@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FaqItem {
+public class FaqItemDto {
     private String title;
     private String body;
 }

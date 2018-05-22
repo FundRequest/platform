@@ -1,7 +1,7 @@
 package io.fundrequest.platform.faq;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import io.fundrequest.platform.faq.model.FaqItem;
+import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.faq.parser.Faqs;
 import io.fundrequest.platform.github.GithubGateway;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,7 +63,7 @@ public class FAQServiceImpl implements FAQService {
     }
 
     @Cacheable(cacheNames = "faqs", key = "#pageName")
-    public List<FaqItem> getFAQsForPage(final String pageName) {
+    public List<FaqItemDto> getFAQsForPage(final String pageName) {
         // This method is a fallback in case refreshFAQs failed or didn't ran for some reason
         final Faqs faqs;
         try {

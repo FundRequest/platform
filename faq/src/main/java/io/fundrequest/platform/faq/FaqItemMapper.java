@@ -2,7 +2,7 @@ package io.fundrequest.platform.faq;
 
 import io.fundrequest.common.infrastructure.JsoupSpringWrapper;
 import io.fundrequest.core.infrastructure.mapping.BaseMapper;
-import io.fundrequest.platform.faq.model.FaqItem;
+import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.faq.parser.Faq;
 import io.fundrequest.platform.github.GithubGateway;
 import org.jsoup.nodes.Document;
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FaqItemMapper implements BaseMapper<Faq, FaqItem> {
+public class FaqItemMapper implements BaseMapper<Faq, FaqItemDto> {
 
     private final GithubGateway githubGateway;
     private final String owner;
@@ -29,7 +29,7 @@ public class FaqItemMapper implements BaseMapper<Faq, FaqItem> {
     }
 
     @Override
-    public FaqItem map(final Faq faq) {
+    public FaqItemDto map(final Faq faq) {
         if (faq == null) {
             return null;
         }
@@ -37,10 +37,10 @@ public class FaqItemMapper implements BaseMapper<Faq, FaqItem> {
             final Document document = jsoup.parse(githubGateway.getContentsAsHtml(owner, repo, faq.getFilePath()));
             final String body = document.select(".markdown-body").get(0).html();
 
-            return FaqItem.builder()
-                          .title(faq.getTitle())
-                          .body(body)
-                          .build();
+            return FaqItemDto.builder()
+                             .title(faq.getTitle())
+                             .body(body)
+                             .build();
         } catch (Exception e) {
             throw new RuntimeException("Something went wrong during the mapping of FaqItem '" + faq.getTitle() + "'", e);
         }
