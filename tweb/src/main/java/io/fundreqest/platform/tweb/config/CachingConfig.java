@@ -38,7 +38,7 @@ public class CachingConfig {
                                         buildCache("projects", 7, DAYS),
                                         buildCache("technologies", 7, DAYS),
                                         buildCache("statistics", 7, DAYS),
-                                        buildCache("faqs", 1, DAYS)));
+                                        new CaffeineCache("faqs", Caffeine.newBuilder().build())));
         return manager;
     }
 
