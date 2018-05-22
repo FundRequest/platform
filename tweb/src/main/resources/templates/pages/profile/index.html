@@ -65,11 +65,11 @@
                 <div class="card-body text-center">
                     <div class="row">
                         <div class="col-12 col-md-6 mb-4 mb-md-0">
-                            <div th:replace="pages/profile/fragments/developer :: block(platform=${profile.getGithub()}, title='Github', platformName='github', verification=${githubVerification})"></div>
+                            <div th:replace="pages/profile/fragments/developer :: block(platform=${profile.getGithub()},verified=${isVerifiedGithub}, title='Github', platformName='github', verification=${githubVerification})"></div>
                         </div>
 
                         <div class="col-12 col-md-6 mb-0">
-                            <div th:replace="pages/profile/fragments/developer :: block(platform=${profile.getStackoverflow()}, title='Stack Overflow', platformName='stack-overflow', verification=${stackOverflowVerification})"></div>
+                            <div th:replace="pages/profile/fragments/developer :: block(platform=${profile.getStackoverflow()},verified=${isVerifiedStackOverflow}, title='Stack Overflow', platformName='stack-overflow', verification=${stackOverflowVerification})"></div>
                         </div>
                     </div>
                 </div>

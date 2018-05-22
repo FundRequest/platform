@@ -5,13 +5,13 @@
 
 <div th:fragment="block(platform, title, platformName, verification)"
      class="card card--developer"
-     th:classappend="${platform != null ? 'card--developer--success' : 'card--developer--primary'}">
+     th:classappend="${platform != null ? verified ? 'card--developer--success' : 'card--developer--warning' : 'card--developer--primary'}">
   <h5 class="card-header">
     <div>
       <span th:text="${title}">Github</span>
       <i class="fab" th:classappend="'fa-' + ${platformName}"></i>
     </div>
-    <div th:if="${platform != null}" class="text-success">
+    <div th:if="${platform != null}" th:classappend="${verified ? 'text-success' : 'text-warning'}">
       <span th:text="${platform.getUsername()}">Github username</span>
     </div>
   </h5>
@@ -21,7 +21,8 @@
          th:href="${'/profile/link/'+platformName}">Connect</a>
     </div>
     <div class="card-text" th:if="${platform != null}">
-      <i class="text-success fa fa-4x fa-check"></i>
+      <i th:if="${verified}" class="text-success fa fa-4x fa-check"></i>
+      <p th:unless="${verified}">Your account is too recent. We are unable to verify you as a developer.</p>
     </div>
   </div>
 </div>

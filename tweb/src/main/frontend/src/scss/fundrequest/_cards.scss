@@ -151,6 +151,11 @@
         border-top-color: $success-color;
     }
 
+    &--developer--warning {
+        justify-content: flex-end;
+        border-top-color: $warning-color;
+    }
+
     &-footer {
         &--light {
             background-color: $white;

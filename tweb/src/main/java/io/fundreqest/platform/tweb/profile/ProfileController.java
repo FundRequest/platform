@@ -1,14 +1,16 @@
 package io.fundreqest.platform.tweb.profile;
 
 import io.fundrequest.platform.keycloak.Provider;
+import io.fundrequest.platform.profile.github.GithubBountyService;
 import io.fundrequest.platform.profile.profile.ProfileService;
-import io.fundrequest.platform.profile.profile.dto.UserProfile;
+import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
 import io.fundrequest.platform.profile.ref.RefSignupEvent;
 import io.fundrequest.platform.profile.ref.ReferralService;
+import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
+import io.fundrequest.platform.profile.stackoverflow.dto.StackOverflowVerificationDto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,30 +28,48 @@ public class ProfileController {
     private ApplicationEventPublisher eventPublisher;
     private ProfileService profileService;
     private ReferralService referralService;
+    private GithubBountyService githubBountyService;
+    private StackOverflowBountyService stackOverflowBountyService;
 
 
     public ProfileController(final ApplicationEventPublisher eventPublisher,
                              final ProfileService profileService,
-                             ReferralService referralService) {
+                             final ReferralService referralService,
+                             final GithubBountyService githubBountyService,
+                             final StackOverflowBountyService stackOverflowBountyService) {
         this.eventPublisher = eventPublisher;
         this.profileService = profileService;
         this.referralService = referralService;
+        this.githubBountyService = githubBountyService;
+        this.stackOverflowBountyService = stackOverflowBountyService;
     }
 
     @GetMapping("/profile")
-    public ModelAndView showProfile(Principal principal, @RequestParam(value = "ref", required = false) String ref, HttpServletRequest request, Model model) throws Exception {
+    public ModelAndView showProfile(Principal principal, @RequestParam(value = "ref", required = false) String ref) throws Exception {
         if (StringUtils.isNotBlank(ref)) {
             eventPublisher.publishEvent(RefSignupEvent.builder().principal(principal).ref(ref).build());
             return redirectToProfile();
         }
-        final ModelAndView mav = new ModelAndView("pages/profile/index");
-        final UserProfile userProfile = (UserProfile) model.asMap().get("profile");
 
+        final ModelAndView mav = new ModelAndView("pages/profile/index");
+
+        mav.addObject("isVerifiedGithub", isVerifiedGithub(principal));
+        mav.addObject("isVerifiedStackOverflow", isVerifiedStackOverflow(principal));
         mav.addObject("refLink", getRefLink(principal, "web"));
         mav.addObject("refLinkTwitter", URLEncoder.encode(getRefLink(principal, "twitter"), "UTF-8"));
         mav.addObject("refLinkLinkedin", URLEncoder.encode(getRefLink(principal, "linkedin"), "UTF-8"));
         mav.addObject("refLinkFacebook", URLEncoder.encode(getRefLink(principal, "facebook"), "UTF-8"));
         return mav;
+    }
+
+    private boolean isVerifiedStackOverflow(final Principal principal) {
+        final StackOverflowVerificationDto verification = stackOverflowBountyService.getVerification(principal);
+        return verification != null && verification.isApproved();
+    }
+
+    private boolean isVerifiedGithub(final Principal principal) {
+        final GithubVerificationDto verification = githubBountyService.getVerification(principal);
+        return verification != null && verification.isApproved();
     }
 
     @GetMapping("/profile/link/{provider}")
