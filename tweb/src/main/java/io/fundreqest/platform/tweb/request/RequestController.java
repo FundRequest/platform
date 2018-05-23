@@ -10,13 +10,15 @@ import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.UserClaimRequest;
-import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
+import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.platform.faq.FAQService;
+import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +46,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RequestController extends AbstractController {
 
+    private static final String FAQ_REQUESTS_PAGE = "requests";
+    private static final String FAQ_REQUEST_DETAIL_PAGE = "requestDetail";
+
     private final RequestService requestService;
     private final PendingFundService pendingFundService;
     private final StatisticsService statisticsService;
@@ -51,6 +56,7 @@ public class RequestController extends AbstractController {
     private final FundService fundService;
     private final ClaimService claimService;
     private final FiatService fiatService;
+    private final FAQService faqService;
     private final ObjectMapper objectMapper;
     private final Mappers mappers;
 
@@ -60,6 +66,7 @@ public class RequestController extends AbstractController {
                              final ProfileService profileService, FundService fundService,
                              final ClaimService claimService,
                              final FiatService fiatService,
+                             final FAQService faqService,
                              final ObjectMapper objectMapper,
                              final Mappers mappers) {
         this.requestService = requestService;
@@ -69,6 +76,7 @@ public class RequestController extends AbstractController {
         this.fundService = fundService;
         this.claimService = claimService;
         this.fiatService = fiatService;
+        this.faqService = faqService;
         this.objectMapper = objectMapper;
         this.mappers = mappers;
     }
@@ -83,6 +91,7 @@ public class RequestController extends AbstractController {
                 .withObject("statistics", statisticsService.getStatistics())
                 .withObject("projects", getAsJson(requestService.findAllProjects()))
                 .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
+                .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUESTS_PAGE))
                 .withView("pages/requests/index")
                 .build();
     }
@@ -95,6 +104,7 @@ public class RequestController extends AbstractController {
                 .withObject("requestJson", getAsJson(request))
                 .withObject("fundedBy", fundService.getFundedBy(principal, id))
                 .withObject("githubComments", requestService.getComments(id))
+                .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUEST_DETAIL_PAGE))
                 .withView("pages/requests/detail")
                 .build();
     }
@@ -164,12 +174,13 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/user/requests")
     public ModelAndView userRequests(Principal principal) {
-        List<RequestView> requests =  mappers.mapList(RequestDto.class, RequestView.class, requestService.findRequestsForUser(principal));
-
-        List<PendingFundDto> pendingFunds = pendingFundService.findByUser(principal);
+        final List<RequestView> requests =  mappers.mapList(RequestDto.class, RequestView.class, requestService.findRequestsForUser(principal));
+        final List<PendingFundDto> pendingFunds = pendingFundService.findByUser(principal);
+        final List<FaqItemDto> faqs = faqService.getFAQsForPage(FAQ_REQUESTS_PAGE);
         return modelAndView()
                 .withObject("requests", getAsJson(requests))
                 .withObject("pendingFunds", getAsJson(pendingFunds))
+                .withObject("faqs", faqs)
                 .withView("pages/user/requests")
                 .build();
     }

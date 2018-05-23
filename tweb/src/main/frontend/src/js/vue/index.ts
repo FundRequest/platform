@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import * as $ from 'jquery';
 
+import FaqItem from './components/FaqItem.vue';
 import FontSizeFit from './components/FontSizeFit.vue';
 import RequestDetail from './components/RequestDetail.vue';
 import RequestList from './components/RequestList.vue';
@@ -16,6 +17,7 @@ let v = new Vue({
     el: '#vue-app',
     data: {},
     components: {
+        'faq-item': FaqItem,
         'request-detail': RequestDetail,
         'request-list': RequestList,
         'request-list-pending-funds': RequestListPendingFunds,
