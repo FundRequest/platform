@@ -54,31 +54,27 @@ public class FAQServiceImpl implements FAQService {
     @Scheduled(fixedRate = DAY_IN_MILLIS)
     @EventListener(ContextRefreshedEvent.class)
     public void refreshFAQs() {
-        final Faqs faqs;
-        try {
-            faqs = xmlMapper.readValue(githubGateway.getContentsAsRaw(owner, repo, branch, filePath), Faqs.class);
-        } catch (IOException e) {
-            throw new RuntimeException("Something went wrong while trying to parse FAQ.xml", e);
-        }
-        faqs.getPages()
-            .forEach(page -> cacheManager.getCache("faqs")
-                                         .put(page.getName(), filterNulls(faqItemDtoMapper.mapToList(page.getFaqs()))));
+        fetchFAQs().getPages()
+                   .forEach(page -> cacheManager.getCache("faqs")
+                                                .put(page.getName(), filterNulls(faqItemDtoMapper.mapToList(page.getFaqs()))));
     }
 
     @Cacheable(cacheNames = "faqs", key = "#pageName")
     public List<FaqItemDto> getFAQsForPage(final String pageName) {
         // This method is a fallback in case refreshFAQs failed or didn't ran for some reason
-        final Faqs faqs;
+        return fetchFAQs().getPages()
+                          .stream()
+                          .filter(page -> page.getName().equalsIgnoreCase(pageName))
+                          .findFirst().map(page -> filterNulls(faqItemDtoMapper.mapToList(page.getFaqs())))
+                          .orElse(new ArrayList<>());
+    }
+
+    private Faqs fetchFAQs() {
         try {
-            faqs = xmlMapper.readValue(githubGateway.getContentsAsRaw(owner, repo, branch, filePath), Faqs.class);
+            return xmlMapper.readValue(githubGateway.getContentsAsRaw(owner, repo, branch, filePath), Faqs.class);
         } catch (IOException e) {
             throw new RuntimeException("Something went wrong while trying to parse FAQ.xml", e);
         }
-        return faqs.getPages()
-                   .stream()
-                   .filter(page -> page.getName().equalsIgnoreCase(pageName))
-                   .findFirst().map(page -> filterNulls(faqItemDtoMapper.mapToList(page.getFaqs())))
-                   .orElse(new ArrayList<>());
     }
 
     private List<FaqItemDto> filterNulls(final List<FaqItemDto> faqItems) {
