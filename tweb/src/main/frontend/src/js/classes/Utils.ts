@@ -1,6 +1,8 @@
 import * as $ from 'jquery';
 import Github from './Github';
 import BigNumber from 'bignumber.js';
+import uuid from 'uuid/v4';
+
 
 export default class Utils {
 
@@ -155,6 +157,10 @@ export default class Utils {
             return /^[0-9]+(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
         }
     };
+    
+    public static generateUUID(): string {
+        return uuid();
+    }
 
     public static formatToUsd(value: string | number, decimals: number = 2) {
         let number: number = 0;

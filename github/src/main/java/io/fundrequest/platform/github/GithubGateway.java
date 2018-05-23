@@ -14,15 +14,18 @@ import java.util.Map;
 @Component
 public class GithubGateway {
 
-    private GithubClient githubClient;
+    private final GithubApiClient githubApiClient;
+    private final GithubRawClient githubRawClient;
 
-    public GithubGateway(GithubClient githubClient) {
-        this.githubClient = githubClient;
+
+    public GithubGateway(final GithubApiClient githubApiClient, final GithubRawClient githubRawClient) {
+        this.githubApiClient = githubApiClient;
+        this.githubRawClient = githubRawClient;
     }
 
     @Cacheable(value = "github_issue")
     public GithubResult getIssue(String owner, String repo, String number) {
-        return githubClient.getIssue(owner, repo, number);
+        return githubApiClient.getIssue(owner, repo, number);
     }
 
     @CacheEvict(value = "github_issue")
@@ -31,12 +34,12 @@ public class GithubGateway {
     }
 
     public GithubResult getPullrequest(String owner, String repo, String number) {
-        return githubClient.getPullrequest(owner, repo, number);
+        return githubApiClient.getPullrequest(owner, repo, number);
     }
 
     @Cacheable(value = "github_comments")
     public List<GithubIssueCommentsResult> getCommentsForIssue(String owner, String repo, String number) {
-        return githubClient.getCommentsForIssue(owner, repo, number);
+        return githubApiClient.getCommentsForIssue(owner, repo, number);
     }
 
     @CacheEvict(value = "github_comments")
@@ -45,23 +48,31 @@ public class GithubGateway {
     }
 
     public void createCommentOnIssue(String owner, String repo, String number, CreateGithubComment comment) {
-        githubClient.createCommentOnIssue(owner, repo, number, comment);
+        githubApiClient.createCommentOnIssue(owner, repo, number, comment);
     }
 
     public void editCommentOnIssue(String owner, String repo, Long commentId, CreateGithubComment comment) {
-        githubClient.editCommentOnIssue(owner, repo, commentId, comment);
+        githubApiClient.editCommentOnIssue(owner, repo, commentId, comment);
     }
 
     @Cacheable(value = "github_repo_languages")
     public Map<String, Long> getLanguages(String owner, String repo) {
-        return githubClient.getLanguages(owner, repo);
+        return githubApiClient.getLanguages(owner, repo);
     }
 
     public GithubUser getUser(String username) {
-        return githubClient.getUser(username);
+        return githubApiClient.getUser(username);
     }
 
     public GithubRateLimits getRateLimit() {
-        return githubClient.getRateLimit();
+        return githubApiClient.getRateLimit();
+    }
+
+    public String getContentsAsRaw(final String owner, final String repo, final String branch, final String filePath) {
+        return githubRawClient.getContentsAsRaw(owner, repo, branch, filePath);
+    }
+
+    public String getContentsAsHtml(final String owner, final String repo, final String filePath) {
+        return githubApiClient.getContentsAsHtml(owner, repo, filePath);
     }
 }

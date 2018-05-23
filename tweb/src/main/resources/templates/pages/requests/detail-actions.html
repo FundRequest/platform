@@ -4,7 +4,7 @@
 
 
 
-<a id="btnAddFunds" class="btn btn-secondary mb-0" th:href="@{/requests/{id}/fund(id=${request.id})}" th:if="${request.status.name() == 'FUNDED' and userClaimable.claimable == false}">
+<a id="btnAddFunds" class="btn btn-secondary mb-0" th:href="@{/requests/{id}/fund(id=${request.id})}" th:if="${userClaimable.claimable == false}">
   Add Funds
 </a>
 
