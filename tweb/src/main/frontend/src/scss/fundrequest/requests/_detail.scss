@@ -299,6 +299,7 @@
     }
 
     &__star-link {
+        cursor: pointer;
         font-size: .75em;
         vertical-align: super;
 
@@ -308,6 +309,7 @@
         .far {
             display: inline;
         }
+
         color: $gray-600;
 
         &:hover,

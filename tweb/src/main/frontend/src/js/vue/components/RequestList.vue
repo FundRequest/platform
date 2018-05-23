@@ -130,7 +130,9 @@
             this.sortBy = this.sorting[1].value;
             this.requestList = new RequestListModel(this.requests);
             this._filterItems(this.listFilter, this.sortBy);
-            this.technologiesSelect = this.technologies.sort();
+            if(this.technologies) {
+                this.technologiesSelect = this.technologies.sort();
+            }
         }
 
         public setFaseFilter(fase: string) {
