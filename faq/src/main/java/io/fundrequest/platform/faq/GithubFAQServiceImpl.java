@@ -4,13 +4,12 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.faq.parser.Faqs;
 import io.fundrequest.platform.github.GithubGateway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,9 +18,8 @@ import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
-@Service
-public class FAQServiceImpl implements FAQService {
-
+public class GithubFAQServiceImpl implements FAQService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GithubFAQServiceImpl.class);
     private static final int DAY_IN_MILLIS = 86400000;
 
     private final GithubGateway githubGateway;
@@ -33,14 +31,15 @@ public class FAQServiceImpl implements FAQService {
     private final FaqItemDtoMapper faqItemDtoMapper;
     private final CacheManager cacheManager;
 
-    public FAQServiceImpl(final GithubGateway githubGateway,
-                          @Value("${io.fundrequest.faq.owner:FundRequest}") final String owner,
-                          @Value("${io.fundrequest.faq.repo:FAQ}") final String repo,
-                          @Value("${io.fundrequest.faq.branch:master}") final String branch,
-                          @Value("${io.fundrequest.faq.repo:FAQ.xml}") final String filePath,
-                          final XmlMapper xmlMapper,
-                          final FaqItemDtoMapper faqItemDtoMapper,
-                          final CacheManager cacheManager) {
+    public GithubFAQServiceImpl(final GithubGateway githubGateway,
+                                @Value("${io.fundrequest.faq.owner:FundRequest}") final String owner,
+                                @Value("${io.fundrequest.faq.repo:FAQ}") final String repo,
+                                @Value("${io.fundrequest.faq.branch:master}") final String branch,
+                                @Value("${io.fundrequest.faq.repo:FAQ.xml}") final String filePath,
+                                final XmlMapper xmlMapper,
+                                final FaqItemDtoMapper faqItemDtoMapper,
+                                final CacheManager cacheManager) {
+        LOGGER.info("GithubFAQServiceImpl is configured to be used");
         this.githubGateway = githubGateway;
         this.owner = owner;
         this.repo = repo;
@@ -52,11 +51,11 @@ public class FAQServiceImpl implements FAQService {
     }
 
     @Scheduled(fixedRate = DAY_IN_MILLIS)
-    @EventListener(ContextRefreshedEvent.class)
     public void refreshFAQs() {
         fetchFAQs().getPages()
                    .forEach(page -> cacheManager.getCache("faqs")
                                                 .put(page.getName(), filterNulls(faqItemDtoMapper.mapToList(page.getFaqs()))));
+        LOGGER.info("FAQ's are fetched from GitHub and stored in cache");
     }
 
     @Cacheable(cacheNames = "faqs", key = "#pageName")

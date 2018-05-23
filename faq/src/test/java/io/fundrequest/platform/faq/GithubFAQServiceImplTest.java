@@ -28,14 +28,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class FAQServiceImplTest {
+class GithubFAQServiceImplTest {
 
     private static final String OWNER = "FundRequest";
     private static final String REPO = "FAQ";
     private static final String MASTER = "master";
     private static final String FILE_PATH = "FAQ.xml";
 
-    private FAQServiceImpl service;
+    private GithubFAQServiceImpl service;
     private GithubGateway githubGateway;
     private XmlMapper xmlMapper;
     private FaqItemDtoMapper faqItemDtoMapper;
@@ -47,7 +47,7 @@ class FAQServiceImplTest {
         xmlMapper = mock(XmlMapper.class);
         faqItemDtoMapper = mock(FaqItemDtoMapper.class);
         cacheManager = mock(CacheManager.class);
-        service = new FAQServiceImpl(githubGateway, OWNER, REPO, MASTER, FILE_PATH, xmlMapper, faqItemDtoMapper, cacheManager);
+        service = new GithubFAQServiceImpl(githubGateway, OWNER, REPO, MASTER, FILE_PATH, xmlMapper, faqItemDtoMapper, cacheManager);
     }
 
     @Test
