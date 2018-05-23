@@ -46,8 +46,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RequestController extends AbstractController {
 
-    private static final String FAQ_REQUESTS_PAGE = "requests";
-    private static final String FAQ_REQUEST_DETAIL_PAGE = "requestDetail";
+    public static final String FAQ_REQUESTS_PAGE = "requests";
+    public static final String FAQ_REQUEST_DETAIL_PAGE = "requestDetail";
 
     private final RequestService requestService;
     private final PendingFundService pendingFundService;
