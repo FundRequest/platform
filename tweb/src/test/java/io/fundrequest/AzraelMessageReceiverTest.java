@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static io.fundrequest.core.request.domain.RequestMother.fundRequestArea51;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -107,6 +108,7 @@ public class AzraelMessageReceiverTest {
                                                                         new BigDecimal(dto.getAmount()),
                                                                         dto.getToken()));
         verify(fundService).clearTotalFundsCache(request.getId());
+        fail("Token must be added");
     }
 
     @Test

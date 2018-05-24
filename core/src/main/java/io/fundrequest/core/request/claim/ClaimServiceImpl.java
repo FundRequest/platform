@@ -1,11 +1,15 @@
 package io.fundrequest.core.request.claim;
 
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
+import io.fundrequest.core.request.claim.dto.ClaimDto;
+import io.fundrequest.core.request.claim.dto.ClaimsAggregate;
 import io.fundrequest.core.request.claim.event.ClaimRequestedEvent;
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
+import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.claim.infrastructure.RequestClaimRepository;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestStatus;
@@ -21,21 +25,27 @@ import java.security.Principal;
 @Service
 class ClaimServiceImpl implements ClaimService {
 
-    private RequestRepository requestRepository;
-    private RequestClaimRepository requestClaimRepository;
-    private GithubClaimResolver githubClaimResolver;
-    private Mappers mappers;
-    private ApplicationEventPublisher eventPublisher;
+    private final RequestRepository requestRepository;
+    private final ClaimRepository claimRepository;
+    private final RequestClaimRepository requestClaimRepository;
+    private final GithubClaimResolver githubClaimResolver;
+    private final Mappers mappers;
+    private final ClaimDtoAggregator claimDtoAggregator;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public ClaimServiceImpl(RequestRepository requestRepository,
-                            RequestClaimRepository requestClaimRepository,
-                            GithubClaimResolver githubClaimResolver,
-                            Mappers mappers,
-                            ApplicationEventPublisher eventPublisher) {
+    public ClaimServiceImpl(final RequestRepository requestRepository,
+                            final ClaimRepository claimRepository,
+                            final RequestClaimRepository requestClaimRepository,
+                            final GithubClaimResolver githubClaimResolver,
+                            final Mappers mappers,
+                            final ClaimDtoAggregator claimDtoAggregator,
+                            final ApplicationEventPublisher eventPublisher) {
         this.requestRepository = requestRepository;
+        this.claimRepository = claimRepository;
         this.requestClaimRepository = requestClaimRepository;
         this.githubClaimResolver = githubClaimResolver;
         this.mappers = mappers;
+        this.claimDtoAggregator = claimDtoAggregator;
         this.eventPublisher = eventPublisher;
     }
 
@@ -63,6 +73,11 @@ class ClaimServiceImpl implements ClaimService {
         requestRepository.save(request);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ClaimsAggregate getClaimedBy(final Principal principal, final long requestId) {
+        return claimDtoAggregator.aggregateClaims(mappers.mapList(Claim.class, ClaimDto.class, claimRepository.findByRequestId(requestId)));
+    }
 
     @EventListener
     public void onClaimed(final RequestClaimedEvent claimedEvent) {

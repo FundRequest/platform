@@ -2,13 +2,13 @@ package io.fundrequest.core.request.statistics;
 
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.fiat.FiatService;
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.TokenAmountDto;
 import io.fundrequest.core.request.statistics.dto.StatisticsDto;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
+import io.fundrequest.core.token.dto.TokenValueDto;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.event.EventListener;
@@ -88,11 +88,11 @@ class StatisticsServiceImpl implements StatisticsService {
 
     private double mapToUsd(TokenAmountDto f) {
         TokenInfoDto tokenInfo = tokenInfoService.getTokenInfo(f.getTokenAddress());
-        TotalFundDto dto = TotalFundDto.builder()
-                                       .totalAmount(fromWei(f.getTotalAmount(), tokenInfo.getDecimals()))
-                                       .tokenAddress(f.getTokenAddress())
-                                       .tokenSymbol(tokenInfo.getSymbol())
-                                       .build();
+        TokenValueDto dto = TokenValueDto.builder()
+                                         .totalAmount(fromWei(f.getTotalAmount(), tokenInfo.getDecimals()))
+                                         .tokenAddress(f.getTokenAddress())
+                                         .tokenSymbol(tokenInfo.getSymbol())
+                                         .build();
         return fiatService.getUsdPrice(dto);
     }
 }

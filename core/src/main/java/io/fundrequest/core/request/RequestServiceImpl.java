@@ -28,6 +28,7 @@ import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.token.model.TokenValue;
 import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.profile.profile.ProfileService;
@@ -172,18 +173,21 @@ class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
-    public Request requestClaimed(final RequestClaimedCommand command) {
+    public Request requestClaimed(RequestClaimedCommand command) {
         final Request request = updateStatus(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
                                                               .orElseThrow(ResourceNotFoundException::new),
                                              RequestStatus.CLAIMED);
-        final Claim claim = claimRepository.save(ClaimBuilder.aClaim()
-                                                             .withRequestId(request.getId())
-                                                             .withSolver(command.getSolver())
-                                                             .withTimestamp(command.getTimestamp())
-                                                             .withAmountInWei(command.getAmountInWei())
-                                                             .withTokenHash(command.getTokenHash())
-                                                             .withBlockchainEventId(command.getBlockchainEventId())
-                                                             .build());
+        Claim claim = claimRepository.save(ClaimBuilder.aClaim()
+                                                       .withRequestId(request.getId())
+                                                       .withSolver(command.getSolver())
+                                                       .withTimestamp(command.getTimestamp())
+                                                       .withTokenValue(TokenValue.builder()
+                                                                                 .tokenAddress(command.getTokenHash())
+                                                                                 .amountInWei(command.getAmountInWei())
+                                                                                 .build())
+                                                       .withBlockchainEventId(command.getBlockchainEventId())
+                                                       .build());
+
         eventPublisher.publishEvent(RequestClaimedEvent.builder()
                                                        .blockchainEventId(command.getBlockchainEventId())
                                                        .requestDto(mappers.map(Request.class, RequestDto.class, request))
