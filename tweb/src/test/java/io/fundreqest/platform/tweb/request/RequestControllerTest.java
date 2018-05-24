@@ -134,7 +134,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(mappers.map(RequestDto.class, RequestDetailsView.class, requestDto)).thenReturn(requestDetailsView);
         when(objectMapper.writeValueAsString(same(requestDetailsView))).thenReturn("requestDetailsView");
         when(fundService.getFundedBy(principal, requestId)).thenReturn(fundersDto);
-        when(claimService.getClaimedBy(principal, requestId)).thenReturn(claims);
+        when(claimService.getAggregatedClaimsForRequest(requestId)).thenReturn(claims);
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
         when(faqService.getFAQsForPage("requestDetail")).thenReturn(faqs);
 

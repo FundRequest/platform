@@ -103,7 +103,7 @@ public class RequestController extends AbstractController {
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
                 .withObject("fundedBy", fundService.getFundedBy(principal, id))
-                .withObject("claims", claimService.getClaimedBy(principal, id))
+                .withObject("claims", claimService.getAggregatedClaimsForRequest(id))
                 .withObject("githubComments", requestService.getComments(id))
                 .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUEST_DETAIL_PAGE))
                 .withView("pages/requests/detail")

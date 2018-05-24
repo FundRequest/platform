@@ -104,7 +104,7 @@ public class ClaimServiceImplTest {
         when(mappers.mapList(eq(Claim.class), eq(ClaimDto.class), same(claims))).thenReturn(claimDtos);
         when(claimDtoAggregator.aggregateClaims(same(claimDtos))).thenReturn(claimsAggregate);
 
-        final ClaimsAggregate result = claimService.getClaimedBy(principal, requestId);
+        final ClaimsAggregate result = claimService.getAggregatedClaimsForRequest(requestId);
 
         assertThat(result).isSameAs(claimsAggregate);
     }

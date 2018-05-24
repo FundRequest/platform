@@ -75,7 +75,7 @@ class ClaimServiceImpl implements ClaimService {
 
     @Override
     @Transactional(readOnly = true)
-    public ClaimsAggregate getClaimedBy(final Principal principal, final long requestId) {
+    public ClaimsAggregate getAggregatedClaimsForRequest(final long requestId) {
         return claimDtoAggregator.aggregateClaims(mappers.mapList(Claim.class, ClaimDto.class, claimRepository.findByRequestId(requestId)));
     }
 

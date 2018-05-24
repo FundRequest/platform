@@ -7,5 +7,5 @@ import java.security.Principal;
 public interface ClaimService {
     void claim(Principal user, UserClaimRequest userClaimRequest);
 
-    ClaimsAggregate getClaimedBy(Principal principal, long requestId);
+    ClaimsAggregate getAggregatedClaimsForRequest(long requestId);
 }
