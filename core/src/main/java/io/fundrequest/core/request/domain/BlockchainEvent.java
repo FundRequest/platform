@@ -1,36 +1,41 @@
-package io.fundrequest.core.request.fund.domain;
+package io.fundrequest.core.request.domain;
+
+import lombok.Getter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
+@Getter
 @Table(name = "processed_blockchain_event")
-public class ProcessedBlockchainEvent {
+public class BlockchainEvent {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(name = "transaction_hash")
     private String transactionHash;
+
+    @Column(name = "log_index")
+    private String logIndex;
 
     @Column(name = "process_date")
     private LocalDateTime processDate;
 
-    protected ProcessedBlockchainEvent() {
+    protected BlockchainEvent() {
     }
 
-    public ProcessedBlockchainEvent(String transactionHash) {
+    public BlockchainEvent(final String transactionHash, final String logIndex) {
         this.transactionHash = transactionHash;
+        this.logIndex = logIndex;
         this.processDate = LocalDateTime.now();
-    }
-
-    public String getTransactionHash() {
-        return transactionHash;
-    }
-
-    public LocalDateTime getProcessDate() {
-        return processDate;
     }
 
     @Override
@@ -41,12 +46,13 @@ public class ProcessedBlockchainEvent {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ProcessedBlockchainEvent that = (ProcessedBlockchainEvent) o;
-        return Objects.equals(transactionHash, that.transactionHash);
+        BlockchainEvent that = (BlockchainEvent) o;
+        return Objects.equals(transactionHash, that.transactionHash)
+               && Objects.equals(logIndex, that.logIndex);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(transactionHash);
+        return Objects.hash(transactionHash, logIndex);
     }
 }

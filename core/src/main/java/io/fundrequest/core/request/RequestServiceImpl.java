@@ -168,15 +168,17 @@ class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
-    public Request requestClaimed(RequestClaimedCommand command) {
-        Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId()).orElseThrow(ResourceNotFoundException::new);
-        request = updateStatus(request, RequestStatus.CLAIMED);
-        Claim claim = claimRepository.save(ClaimBuilder.aClaim()
-                                                       .withRequestId(request.getId())
-                                                       .withSolver(command.getSolver())
-                                                       .withTimestamp(command.getTimestamp())
-                                                       .withAmountInWei(command.getAmountInWei())
-                                                       .build());
+    public Request requestClaimed(final RequestClaimedCommand command) {
+        final Request request = updateStatus(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
+                                                              .orElseThrow(ResourceNotFoundException::new),
+                                             RequestStatus.CLAIMED);
+        final Claim claim = claimRepository.save(ClaimBuilder.aClaim()
+                                                             .withRequestId(request.getId())
+                                                             .withSolver(command.getSolver())
+                                                             .withTimestamp(command.getTimestamp())
+                                                             .withAmountInWei(command.getAmountInWei())
+                                                             .withBlockchainEvent()
+                                                             .build());
         eventPublisher.publishEvent(new RequestClaimedEvent(command.getTransactionId(),
                                                             mappers.map(Request.class, RequestDto.class, request),
                                                             mappers.map(Claim.class, ClaimDto.class, claim),

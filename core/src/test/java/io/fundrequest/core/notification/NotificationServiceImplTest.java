@@ -101,7 +101,6 @@ public class NotificationServiceImplTest {
         final FundDto fundDto = FundDtoMother.aFundDto();
 
         notificationService.onFunded(RequestFundedEvent.builder()
-                                                       .transactionId(TRANSACTION_ID)
                                                        .fundDto(fundDto)
                                                        .requestId(requestId)
                                                        .timestamp(LocalDateTime.now())
@@ -127,7 +126,6 @@ public class NotificationServiceImplTest {
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
 
         notificationService.onFunded(RequestFundedEvent.builder()
-                                                       .transactionId(TRANSACTION_ID)
                                                        .fundDto(fundDto)
                                                        .requestId(requestId)
                                                        .timestamp(LocalDateTime.now())

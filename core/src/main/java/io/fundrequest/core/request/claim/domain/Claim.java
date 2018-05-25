@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.claim.domain;
 
+import io.fundrequest.core.request.domain.BlockchainEvent;
 import io.fundrequest.db.infrastructure.AbstractEntity;
 
 import javax.persistence.Column;
@@ -7,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -29,17 +32,27 @@ public class Claim extends AbstractEntity {
     @Column(name = "time_stamp")
     private LocalDateTime timestamp;
 
+
+    @Column(name = "token_hash")
+    private String tokenHash;
+
     @Column(name = "request_id")
     private Long requestId;
+
+    @OneToOne
+    @JoinColumn(name="blockchain_event_id")
+    private BlockchainEvent blockchainEvent;
 
     protected Claim() {
     }
 
-    Claim(String solver, BigDecimal amountInWei, Long requestId, LocalDateTime timestamp) {
+    Claim(String solver, BigDecimal amountInWei, String tokenHash, Long requestId, LocalDateTime timestamp, BlockchainEvent blockchainEvent) {
         this.solver = solver;
         this.amountInWei = amountInWei;
+        this.tokenHash = tokenHash;
         this.requestId = requestId;
         this.timestamp = timestamp;
+        this.blockchainEvent = blockchainEvent;
     }
 
     void setId(Long id) {
@@ -58,12 +71,20 @@ public class Claim extends AbstractEntity {
         return amountInWei;
     }
 
+    public String getTokenHash() {
+        return tokenHash;
+    }
+
     public Long getRequestId() {
         return requestId;
     }
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public BlockchainEvent getBlockchainEvent() {
+        return blockchainEvent;
     }
 
     @Override
@@ -77,13 +98,14 @@ public class Claim extends AbstractEntity {
         Claim claim = (Claim) o;
         return Objects.equals(solver, claim.solver) &&
                Objects.equals(amountInWei, claim.amountInWei) &&
+               Objects.equals(tokenHash, claim.tokenHash) &&
                Objects.equals(timestamp, claim.timestamp) &&
-               Objects.equals(requestId, claim.requestId);
+               Objects.equals(requestId, claim.requestId) &&
+               Objects.equals(blockchainEvent, claim.blockchainEvent);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(solver, amountInWei, timestamp, requestId);
+        return Objects.hash(solver, amountInWei, tokenHash, timestamp, requestId, blockchainEvent);
     }
 }

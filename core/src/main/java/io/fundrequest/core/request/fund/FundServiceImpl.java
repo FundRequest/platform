@@ -14,6 +14,7 @@ import io.fundrequest.core.request.fund.dto.FunderDto;
 import io.fundrequest.core.request.fund.dto.FundersDto;
 import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
+import io.fundrequest.core.request.fund.infrastructure.BlockchainEventRepository;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
@@ -60,12 +61,16 @@ class FundServiceImpl implements FundService {
 
     @Autowired
     public FundServiceImpl(FundRepository fundRepository,
-                           PendingFundRepository pendingFundRepository, RequestRepository requestRepository,
+                           PendingFundRepository pendingFundRepository,
+                           RequestRepository requestRepository,
                            Mappers mappers,
                            ApplicationEventPublisher eventPublisher,
                            CacheManager cacheManager,
                            TokenInfoService tokenInfoService,
-                           FundRequestContractsService fundRequestContractsService, ProfileService profileService, FiatService fiatService) {
+                           FundRequestContractsService fundRequestContractsService,
+                           ProfileService profileService,
+                           FiatService fiatService,
+                           BlockchainEventRepository blockchainEventRepository) {
         this.fundRepository = fundRepository;
         this.pendingFundRepository = pendingFundRepository;
         this.requestRepository = requestRepository;
@@ -307,24 +312,21 @@ class FundServiceImpl implements FundService {
 
     @Override
     @Transactional
-    public void addFunds(FundsAddedCommand command) {
-        Fund fund = Fund.builder()
-                        .amountInWei(command.getAmountInWei())
-                        .requestId(command.getRequestId())
-                        .token(command.getToken())
-                        .timestamp(command.getTimestamp())
-                        .funder(command.getFunderAddress())
-                        .build();
-
-        final Optional<PendingFund> pendingFund = pendingFundRepository.findByTransactionHash(command.getTransactionId());
+    public void addFunds(final FundsAddedCommand command) {
+        final Fund.FundBuilder fundBuilder = Fund.builder()
+                                                 .amountInWei(command.getAmountInWei())
+                                                 .requestId(command.getRequestId())
+                                                 .token(command.getToken())
+                                                 .timestamp(command.getTimestamp())
+                                                 .funder(command.getFunderAddress());
+        final Optional<PendingFund> pendingFund = pendingFundRepository.findByTransactionHash(command.getTransactionHash());
         if (pendingFund.isPresent()) {
-            fund.setFunderUserId(pendingFund.get().getUserId());
+            fundBuilder.funderUserId(pendingFund.get().getUserId());
         }
-        fund = fundRepository.saveAndFlush(fund);
+        final Fund fund = fundRepository.saveAndFlush(fundBuilder.build());
         cacheManager.getCache("funds").evict(fund.getRequestId());
 
         eventPublisher.publishEvent(RequestFundedEvent.builder()
-                                                      .transactionId(command.getTransactionId())
                                                       .fundDto(mappers.map(Fund.class, FundDto.class, fund))
                                                       .requestId(command.getRequestId())
                                                       .timestamp(command.getTimestamp())

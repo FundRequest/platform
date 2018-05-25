@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.fund.domain;
 
+import io.fundrequest.core.request.domain.BlockchainEvent;
 import io.fundrequest.db.infrastructure.AbstractEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -37,21 +40,25 @@ public class Fund extends AbstractEntity {
     @Column(name = "request_id")
     private Long requestId;
 
-
     @Column(name = "time_stamp")
     private LocalDateTime timestamp;
+
+    @OneToOne
+    @JoinColumn(name="blockchain_event_id")
+    private BlockchainEvent blockchainEvent;
 
     protected Fund() {
     }
 
     @Builder
-    Fund(String funderUserId, String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp) {
+    Fund(String funderUserId, String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp, BlockchainEvent blockchainEvent) {
         this.funderUserId = funderUserId;
         this.funder = funder == null ? null : funder.toLowerCase();
         this.amountInWei = amountInWei;
         this.token = token;
         this.requestId = requestId;
         this.timestamp = timestamp;
+        this.blockchainEvent = blockchainEvent;
     }
 
     void setId(Long id) {
