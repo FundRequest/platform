@@ -51,7 +51,7 @@ public class AzraelMessageReceiver {
 
     @Transactional
     public void receiveFundedMessage(final String message) throws IOException {
-        LOGGER.debug("Recieved new message from Azrael: %s", message);
+        LOGGER.debug("Recieved new message from Azrael: " + message);
         final FundedEthDto incomingMessage = objectMapper.readValue(message, FundedEthDto.class);
         if (!isProcessed(incomingMessage.getTransactionHash(), incomingMessage.getLogIndex()) && StringUtils.isNotBlank(incomingMessage.getPlatformId())) {
             final BlockchainEvent blockchainEvent = blockchainEventRepository.saveAndFlush(new BlockchainEvent(incomingMessage.getTransactionHash(), incomingMessage.getLogIndex()));

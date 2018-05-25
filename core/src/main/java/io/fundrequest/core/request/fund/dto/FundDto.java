@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.fund.dto;
 
+import io.fundrequest.core.request.dto.BlockchainEventDto;
 import lombok.Data;
 
 import java.math.BigDecimal;

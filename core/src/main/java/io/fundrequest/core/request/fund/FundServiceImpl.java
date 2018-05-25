@@ -14,6 +14,7 @@ import io.fundrequest.core.request.fund.dto.FunderDto;
 import io.fundrequest.core.request.fund.dto.FundersDto;
 import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
+import io.fundrequest.core.request.fund.infrastructure.BlockchainEventRepository;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
@@ -68,7 +69,8 @@ class FundServiceImpl implements FundService {
                            TokenInfoService tokenInfoService,
                            FundRequestContractsService fundRequestContractsService,
                            ProfileService profileService,
-                           FiatService fiatService) {
+                           FiatService fiatService,
+                           BlockchainEventRepository blockchainEventRepository) {
         this.fundRepository = fundRepository;
         this.pendingFundRepository = pendingFundRepository;
         this.requestRepository = requestRepository;

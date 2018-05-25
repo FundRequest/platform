@@ -14,6 +14,7 @@ import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.dto.FundersDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
+import io.fundrequest.core.request.fund.infrastructure.BlockchainEventRepository;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
@@ -66,6 +67,7 @@ public class FundServiceImplTest {
     private ProfileService profileService;
     private FiatService fiatService;
     private Principal funder;
+    private BlockchainEventRepository blockchainEventRepository;
 
     @Before
     public void setUp() {
@@ -83,17 +85,18 @@ public class FundServiceImplTest {
         UserProfile user = UserProfileMother.davy();
         funder = user::getId;
         when(profileService.getUserProfile(funder.getName())).thenReturn(user);
-        fundService = new FundServiceImpl(fundRepository,
-                                          pendingFundRepository,
-                                          requestRepository,
-                                          mappers,
-                                          eventPublisher,
-                                          cacheManager,
-                                          tokenInfoService,
-                                          fundRequestContractsService,
-                                          profileService,
-                                          fiatService
-        );
+        blockchainEventRepository = mock(BlockchainEventRepository.class);fundService = new FundServiceImpl(
+                fundRepository,
+                pendingFundRepository,
+                requestRepository,
+                mappers,
+                eventPublisher,
+                cacheManager,
+                tokenInfoService,
+                fundRequestContractsService,
+                profileService,
+                fiatService,
+                                          blockchainEventRepository);
     }
 
     @Test
@@ -144,10 +147,11 @@ public class FundServiceImplTest {
         when(mappers.map(eq(Request.class), eq(RequestDto.class), any(Request.class))).thenReturn(requestDto);
         when(cacheManager.getCache("funds")).thenReturn(cache);
         when(pendingFundRepository.findByTransactionHash(command.getTransactionHash())).thenReturn(Optional.of(PendingFund.builder().userId(funder.getName()).build()));
+        when(blockchainEventRepository.findOne(command.getBlockchainEventId())).thenReturn(Optional.of(blockchainEvent));
 
         fundService.addFunds(command);
 
-        verifyFundsSaved(command, funder);
+        verifyFundsSaved(command, funder, blockchainEvent);
         verifyEventCreated(request.getId(), fundDto);
         verify(cache).evict(request.getId());
     }
@@ -277,7 +281,7 @@ public class FundServiceImplTest {
         assertThat(event.getRequestId()).isEqualTo(requestId);
     }
 
-    private void verifyFundsSaved(final FundsAddedCommand command, final Principal funder) {
+    private void verifyFundsSaved(final FundsAddedCommand command, final Principal funder, final BlockchainEvent blockchainEvent) {
         ArgumentCaptor<Fund> fundArgumentCaptor = ArgumentCaptor.forClass(Fund.class);
         verify(fundRepository).saveAndFlush(fundArgumentCaptor.capture());
         assertThat(fundArgumentCaptor.getValue().getRequestId()).isEqualTo(command.getRequestId());

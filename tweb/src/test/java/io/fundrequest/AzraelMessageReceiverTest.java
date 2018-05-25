@@ -63,7 +63,6 @@ public class AzraelMessageReceiverTest {
         final BlockchainEvent blockchainEvent = new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex());
         ReflectionTestUtils.setField(blockchainEvent, "id", 346L);
         final Long requestId = RequestDtoMother.freeCodeCampNoUserStories().getId();
-
         when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.empty());
         when(blockchainEventRepository.saveAndFlush(eq(new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex())))).thenReturn(blockchainEvent);
         when(requestService.createRequest(any())).thenReturn(requestId);
@@ -91,7 +90,6 @@ public class AzraelMessageReceiverTest {
         objectMapper.writeValue(w, dto);
         final BlockchainEvent blockchainEvent = new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex());
         ReflectionTestUtils.setField(blockchainEvent, "id", 346L);
-
         when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.empty());
         when(blockchainEventRepository.saveAndFlush(eq(new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex())))).thenReturn(blockchainEvent);
 

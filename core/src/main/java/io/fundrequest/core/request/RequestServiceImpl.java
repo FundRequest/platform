@@ -187,7 +187,8 @@ class RequestServiceImpl implements RequestService {
                                                        .blockchainEventId(command.getBlockchainEventId())
                                                        .requestDto(mappers.map(Request.class, RequestDto.class, request))
                                                        .claimDto(mappers.map(Claim.class, ClaimDto.class, claim))
-                                                       .solver(command.getSolver()).timestamp(command.getTimestamp())
+                                                       .solver(command.getSolver())
+                                                       .timestamp(command.getTimestamp())
                                                        .build());
         return request;
     }
