@@ -149,10 +149,9 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/requests/{id}/actions")
     public ModelAndView detailActions(Principal principal, @PathVariable Long id) {
-        RequestDto request = requestService.findRequest(id);
         return modelAndView()
                 .withObject("userClaimable", requestService.getUserClaimableResult(principal, id))
-                .withObject("request", request)
+                .withObject("request", requestService.findRequest(id))
                 .withView("pages/requests/detail-actions :: details")
                 .build();
     }
