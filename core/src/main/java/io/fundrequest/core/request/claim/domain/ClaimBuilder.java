@@ -7,6 +7,7 @@ public final class ClaimBuilder {
     private Long id;
     private String solver;
     private BigDecimal amountInWei;
+    private String tokenHash;
     private LocalDateTime timestamp;
     private Long requestId;
     private Long blockchainEventId;
@@ -33,6 +34,11 @@ public final class ClaimBuilder {
         return this;
     }
 
+    public ClaimBuilder withTokenHash(String tokenHash) {
+        this.tokenHash = tokenHash;
+        return this;
+    }
+
     public ClaimBuilder withTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
         return this;
@@ -49,7 +55,7 @@ public final class ClaimBuilder {
     }
 
     public Claim build() {
-        Claim claim = new Claim(solver, amountInWei, requestId, timestamp, blockchainEventId);
+        Claim claim = new Claim(solver, amountInWei, tokenHash, requestId, timestamp, blockchainEventId);
         claim.setId(id);
         return claim;
     }

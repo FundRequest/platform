@@ -13,6 +13,7 @@ ALTER TABLE fund ADD COLUMN blockchain_event_id VARCHAR(42) REFERENCES blockchai
 
 DELETE FROM claim;
 ALTER TABLE claim ADD COLUMN blockchain_event_id VARCHAR(42) REFERENCES blockchain_event(id);
+ALTER TABLE claim ADD COLUMN token_hash VARCHAR(50);
 
 DELETE FROM notification;
 ALTER TABLE notification ADD COLUMN blockchain_event_id VARCHAR(42) REFERENCES blockchain_event(id);

@@ -26,6 +26,9 @@ public class Claim extends AbstractEntity {
     @Column(name = "amount_in_wei")
     private BigDecimal amountInWei;
 
+    @Column(name = "token_hash")
+    private String tokenHash;
+
     @Column(name = "time_stamp")
     private LocalDateTime timestamp;
 
@@ -38,9 +41,10 @@ public class Claim extends AbstractEntity {
     protected Claim() {
     }
 
-    Claim(String solver, BigDecimal amountInWei, Long requestId, LocalDateTime timestamp, Long blockchainEventId) {
+    Claim(String solver, BigDecimal amountInWei, String tokenHash, Long requestId, LocalDateTime timestamp, Long blockchainEventId) {
         this.solver = solver;
         this.amountInWei = amountInWei;
+        this.tokenHash = tokenHash;
         this.requestId = requestId;
         this.timestamp = timestamp;
         this.blockchainEventId = blockchainEventId;
@@ -60,6 +64,10 @@ public class Claim extends AbstractEntity {
 
     public BigDecimal getAmountInWei() {
         return amountInWei;
+    }
+
+    public String getTokenHash() {
+        return tokenHash;
     }
 
     public Long getRequestId() {
@@ -85,6 +93,7 @@ public class Claim extends AbstractEntity {
         Claim claim = (Claim) o;
         return Objects.equals(solver, claim.solver) &&
                Objects.equals(amountInWei, claim.amountInWei) &&
+               Objects.equals(tokenHash, claim.tokenHash) &&
                Objects.equals(timestamp, claim.timestamp) &&
                Objects.equals(requestId, claim.requestId) &&
                Objects.equals(blockchainEventId, claim.blockchainEventId);
@@ -92,6 +101,6 @@ public class Claim extends AbstractEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(solver, amountInWei, timestamp, requestId, blockchainEventId);
+        return Objects.hash(solver, amountInWei, tokenHash, timestamp, requestId, blockchainEventId);
     }
 }

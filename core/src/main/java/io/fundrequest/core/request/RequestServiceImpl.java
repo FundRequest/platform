@@ -117,7 +117,7 @@ class RequestServiceImpl implements RequestService {
             request = updateStatus(request, RequestStatus.CLAIMABLE);
             eventPublisher.publishEvent(new RequestClaimableEvent(mappers.map(Request.class, RequestDto.class, request), LocalDateTime.now()));
         } else if (request.getStatus() == RequestStatus.CLAIMABLE && !result.isClaimable()) {
-            request = updateStatus(request, RequestStatus.FUNDED);
+            updateStatus(request, RequestStatus.FUNDED);
         }
         return result;
     }
@@ -177,6 +177,7 @@ class RequestServiceImpl implements RequestService {
                                                              .withSolver(command.getSolver())
                                                              .withTimestamp(command.getTimestamp())
                                                              .withAmountInWei(command.getAmountInWei())
+                                                             .withTokenHash(command.getTokenHash())
                                                              .withBlockchainEventId(command.getBlockchainEventId())
                                                              .build());
         eventPublisher.publishEvent(RequestClaimedEvent.builder()
