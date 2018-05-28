@@ -15,6 +15,7 @@ import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -31,6 +32,7 @@ public class ClaimServiceImplTest {
     private GithubClaimResolver githubClaimResolver;
     private Mappers mappers;
     private ClaimServiceImpl claimService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Before
     public void setUp() {
@@ -38,7 +40,8 @@ public class ClaimServiceImplTest {
         requestClaimRepository = mock(RequestClaimRepository.class);
         githubClaimResolver = mock(GithubClaimResolver.class);
         mappers = mock(Mappers.class);
-        claimService = new ClaimServiceImpl(requestRepository, requestClaimRepository, githubClaimResolver, mappers);
+        applicationEventPublisher = mock(ApplicationEventPublisher.class);
+        claimService = new ClaimServiceImpl(requestRepository, requestClaimRepository, githubClaimResolver, mappers, applicationEventPublisher);
     }
 
     @Test
