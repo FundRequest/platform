@@ -22,6 +22,7 @@ import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestTechnology;
 import io.fundrequest.core.request.erc67.ERC67;
+import io.fundrequest.core.request.erc67.Erc67Generator;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
@@ -60,6 +61,7 @@ class RequestServiceImpl implements RequestService {
     private GithubGateway githubGateway;
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
+    private Erc67Generator erc67Generator;
     private Environment environment;
 
     public RequestServiceImpl(final RequestRepository requestRepository,
@@ -70,7 +72,7 @@ class RequestServiceImpl implements RequestService {
                               final GithubGateway githubGateway,
                               final GithubClaimResolver githubClaimResolver,
                               final ApplicationEventPublisher eventPublisher,
-                              final Environment environment) {
+                              Erc67Generator erc67Generator, final Environment environment) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
@@ -79,6 +81,7 @@ class RequestServiceImpl implements RequestService {
         this.githubGateway = githubGateway;
         this.githubClaimResolver = githubClaimResolver;
         this.eventPublisher = eventPublisher;
+        this.erc67Generator = erc67Generator;
         this.environment = environment;
     }
 
@@ -216,12 +219,13 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     public String generateERC67(final CreateERC67FundRequest createERC67FundRequest) {
+
         return new ERC67.Builder()
                 .withAddress(createERC67FundRequest.getTokenAddress())
                 .withNetwork("ethereum")
                 .withParameter("value", "0")
                 .withParameter("gas", environment.getProperty("io.fundrequest.payments.erc67.gas", "200000"))
-                .withParameter("data", createERC67FundRequest.toByteData())
+                .withParameter("data", erc67Generator.toByteData(createERC67FundRequest))
                 .build()
                 .visualize();
     }

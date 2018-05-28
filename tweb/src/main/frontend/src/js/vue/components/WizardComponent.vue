@@ -230,7 +230,6 @@
                 platform: this.githubIssue.platform,
                 platformId: this.githubIssue.platformId,
                 amount: this.totalAmount,
-                fundrequestAddress: Contracts.getInstance().frContractAddress,
                 tokenAddress: Contracts.getInstance().tokenContractAddress
             })).erc67Link;
 
