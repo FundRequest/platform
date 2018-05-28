@@ -57,7 +57,7 @@ class ClaimServiceImpl implements ClaimService {
 
 
     @EventListener
-    public void onClaimed(RequestClaimedEvent claimedEvent) {
+    public void onClaimed(final RequestClaimedEvent claimedEvent) {
         requestClaimRepository.findByRequestId(claimedEvent.getRequestDto().getId())
                               .forEach(requestClaim -> {
                                   requestClaim.setStatus(ClaimRequestStatus.PROCESSED);

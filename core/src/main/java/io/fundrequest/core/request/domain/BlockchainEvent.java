@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Getter
-@Table(name = "processed_blockchain_event")
+@Table(name = "blockchain_event")
 public class BlockchainEvent {
 
     @Id

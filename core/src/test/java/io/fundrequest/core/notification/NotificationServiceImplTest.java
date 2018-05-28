@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 
 public class NotificationServiceImplTest {
 
-    public static final String TRANSACTION_ID = "0x99be7620e58d38ac63267ead0e67d5d7023754e6f6fe0113017f41a610867e44";
+    private static final Long BLOCKCHAIN_EVENT_ID = 45768L;
     private NotificationServiceImpl notificationService;
     private NotificationRepository notificationRepository;
     private ApplicationEventPublisher eventPublisher;
@@ -66,7 +66,13 @@ public class NotificationServiceImplTest {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
 
-        notificationService.onClaimed(new RequestClaimedEvent(TRANSACTION_ID, requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
+        notificationService.onClaimed(RequestClaimedEvent.builder()
+                                                         .blockchainEventId(BLOCKCHAIN_EVENT_ID)
+                                                         .requestDto(requestDto)
+                                                         .claimDto(new ClaimDto())
+                                                         .solver("davyvanroy")
+                                                         .timestamp(LocalDateTime.now())
+                                                         .build());
 
         assertRequestClaimedNotificationSaved(requestDto);
     }
@@ -83,8 +89,13 @@ public class NotificationServiceImplTest {
     public void onRequestClaimedPublishesNotification() {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
-        notificationService.onClaimed(new RequestClaimedEvent(TRANSACTION_ID, requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
-
+        notificationService.onClaimed(RequestClaimedEvent.builder()
+                                                         .blockchainEventId(BLOCKCHAIN_EVENT_ID)
+                                                         .requestDto(requestDto)
+                                                         .claimDto(new ClaimDto())
+                                                         .solver("davyvanroy")
+                                                         .timestamp(LocalDateTime.now())
+                                                         .build());
         assertRequestClaimedNotificationPublished();
     }
 

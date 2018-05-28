@@ -177,13 +177,14 @@ class RequestServiceImpl implements RequestService {
                                                              .withSolver(command.getSolver())
                                                              .withTimestamp(command.getTimestamp())
                                                              .withAmountInWei(command.getAmountInWei())
-                                                             .withBlockchainEvent()
+                                                             .withBlockchainEventId(command.getBlockchainEventId())
                                                              .build());
-        eventPublisher.publishEvent(new RequestClaimedEvent(command.getTransactionId(),
-                                                            mappers.map(Request.class, RequestDto.class, request),
-                                                            mappers.map(Claim.class, ClaimDto.class, claim),
-                                                            command.getSolver(),
-                                                            command.getTimestamp()));
+        eventPublisher.publishEvent(RequestClaimedEvent.builder()
+                                                       .blockchainEventId(command.getBlockchainEventId())
+                                                       .requestDto(mappers.map(Request.class, RequestDto.class, request))
+                                                       .claimDto(mappers.map(Claim.class, ClaimDto.class, claim))
+                                                       .solver(command.getSolver()).timestamp(command.getTimestamp())
+                                                       .build());
         return request;
     }
 

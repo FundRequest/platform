@@ -8,13 +8,13 @@ public abstract class NotificationDto {
 
     private Long id;
     private NotificationType type;
-    private String transactionId;
+    private Long blockchainEventId;
     private LocalDateTime date;
 
-    public NotificationDto(Long id, NotificationType type, String transactionId, LocalDateTime date) {
+    public NotificationDto(Long id, NotificationType type, Long blockchainEventId, LocalDateTime date) {
         this.id = id;
         this.type = type;
-        this.transactionId = transactionId;
+        this.blockchainEventId = blockchainEventId;
         this.date = date;
     }
 
@@ -42,11 +42,11 @@ public abstract class NotificationDto {
         this.id = id;
     }
 
-    public String getTransactionId() {
-        return transactionId;
+    public Long getBlockchainEventId() {
+        return blockchainEventId;
     }
 
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
+    public void setBlockchainEventId(Long blockchainEventId) {
+        this.blockchainEventId = blockchainEventId;
     }
 }

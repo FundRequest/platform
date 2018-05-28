@@ -318,7 +318,8 @@ class FundServiceImpl implements FundService {
                                                  .requestId(command.getRequestId())
                                                  .token(command.getToken())
                                                  .timestamp(command.getTimestamp())
-                                                 .funder(command.getFunderAddress());
+                                                 .funder(command.getFunderAddress())
+                                                 .blockchainEventId(command.getBlockchainEventId());
         final Optional<PendingFund> pendingFund = pendingFundRepository.findByTransactionHash(command.getTransactionHash());
         if (pendingFund.isPresent()) {
             fundBuilder.funderUserId(pendingFund.get().getUserId());

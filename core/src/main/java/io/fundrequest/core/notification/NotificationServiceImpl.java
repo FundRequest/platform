@@ -67,7 +67,7 @@ class NotificationServiceImpl implements NotificationService {
 
         return requestCreatedNotifications.stream()
                                           .map(n -> new RequestClaimedNotificationDto(n.getId(),
-                                                                                      n.getTransactionId(),
+                                                                                      n.getBlockchainEventId(),
                                                                                       n.getDate(),
                                                                                       requestMap.get(n.getRequestId()),
                                                                                       n.getSolver()))
@@ -90,7 +90,7 @@ class NotificationServiceImpl implements NotificationService {
 
         return requestFundedNotifications.stream()
                                          .map(n -> new RequestFundedNotificationDto(n.getId(),
-                                                                                    n.getTransactionId(),
+                                                                                    n.getBlockchainEventId(),
                                                                                     n.getDate(),
                                                                                     requestMap.get(fundedMap.get(n.getFundId()).getRequestId()),
                                                                                     fundedMap.get(n.getFundId())))
@@ -103,7 +103,7 @@ class NotificationServiceImpl implements NotificationService {
     public void onFunded(final RequestFundedEvent fundedEvent) {
         RequestFundedNotification notification = new RequestFundedNotification(NotificationType.REQUEST_FUNDED,
                                                                                fundedEvent.getTimestamp(),
-                                                                               fundedEvent.getFundDto().getBlockchainEvent().getTransactionHash(),
+                                                                               fundedEvent.getFundDto().getBlockchainEventId(),
                                                                                fundedEvent.getFundDto().getId());
         notification = notificationRepository.saveAndFlush(notification);
         publishNotification(createRequestFundedNotification(notification, fundedEvent.getRequestId(), fundedEvent.getFundDto()));
@@ -111,7 +111,7 @@ class NotificationServiceImpl implements NotificationService {
 
     private RequestFundedNotificationDto createRequestFundedNotification(RequestFundedNotification notification, Long requestId, FundDto fundDto) {
         return new RequestFundedNotificationDto(notification.getId(),
-                                                notification.getTransactionId(),
+                                                notification.getBlockchainEventId(),
                                                 notification.getDate(),
                                                 requestService.findRequest(requestId),
                                                 fundDto);
@@ -122,14 +122,14 @@ class NotificationServiceImpl implements NotificationService {
     public void onClaimed(final RequestClaimedEvent claimedEvent) {
         final RequestClaimedNotification notification = notificationRepository.saveAndFlush(new RequestClaimedNotification(NotificationType.REQUEST_CLAIMED,
                                                                                                                            claimedEvent.getTimestamp(),
-                                                                                                                           claimedEvent.getTransactionId(),
+                                                                                                                           claimedEvent.getBlockchainEventId(),
                                                                                                                            claimedEvent.getRequestDto().getId(),
                                                                                                                            claimedEvent.getSolver()));
         publishNotification(createRequestClaimedNotification(notification.getId(), claimedEvent));
     }
 
     private RequestClaimedNotificationDto createRequestClaimedNotification(final Long id, final RequestClaimedEvent claimedEvent) {
-        return new RequestClaimedNotificationDto(id, claimedEvent.getTransactionId(), claimedEvent.getTimestamp(), claimedEvent.getRequestDto(), claimedEvent.getSolver());
+        return new RequestClaimedNotificationDto(id, claimedEvent.getBlockchainEventId(), claimedEvent.getTimestamp(), claimedEvent.getRequestDto(), claimedEvent.getSolver());
     }
 
     private void publishNotification(final NotificationDto notification) {

@@ -15,8 +15,6 @@ public class RequestClaimedCommand {
     private Platform platform;
     private String platformId;
     private Long blockchainEventId;
-    private String transactionId;
-    private String logIndex;
     private String solver;
     private LocalDateTime timestamp;
     private BigDecimal amountInWei;

@@ -51,20 +51,24 @@ public class AzraelMessageReceiver {
 
     @Transactional
     public void receiveFundedMessage(final String message) throws IOException {
-        LOGGER.debug("Recieved new message from Azrael: " + message);
-        FundedEthDto result = objectMapper.readValue(message, FundedEthDto.class);
-        if (!isProcessed(result.getTransactionHash(), result.getLogIndex()) && StringUtils.isNotBlank(result.getPlatformId())) {
-            final BlockchainEvent blockchainEvent = blockchainEventRepository.saveAndFlush(new BlockchainEvent(result.getTransactionHash(), result.getLogIndex()));
-            final CreateRequestCommand createRequestCommand = new CreateRequestCommand();
-            createRequestCommand.setPlatform(getPlatform(result.getPlatform()));
-            createRequestCommand.setPlatformId(result.getPlatformId());
-            createRequestCommand.setFunds(new BigDecimal(result.getAmount()));
-            createRequestCommand.setTimestamp(getTimeStamp(result.getTimestamp()));
-            final Long newRequestId = requestService.createRequest(createRequestCommand);
-            fundRequest(result, newRequestId, blockchainEvent.getId());
+        LOGGER.debug("Recieved new message from Azrael: %s", message);
+        final FundedEthDto incomingMessage = objectMapper.readValue(message, FundedEthDto.class);
+        if (!isProcessed(incomingMessage.getTransactionHash(), incomingMessage.getLogIndex()) && StringUtils.isNotBlank(incomingMessage.getPlatformId())) {
+            final BlockchainEvent blockchainEvent = blockchainEventRepository.saveAndFlush(new BlockchainEvent(incomingMessage.getTransactionHash(), incomingMessage.getLogIndex()));
+            final Long newRequestId = requestService.createRequest(buildCreateRequestCommand(incomingMessage));
+            fundRequest(incomingMessage, newRequestId, blockchainEvent.getId());
             fundService.clearTotalFundsCache(newRequestId);
-            pendingFundService.removePendingFund(result.getTransactionHash());
+            pendingFundService.removePendingFund(incomingMessage.getTransactionHash());
         }
+    }
+
+    private CreateRequestCommand buildCreateRequestCommand(FundedEthDto incomingMessage) {
+        final CreateRequestCommand createRequestCommand = new CreateRequestCommand();
+        createRequestCommand.setPlatform(getPlatform(incomingMessage.getPlatform()));
+        createRequestCommand.setPlatformId(incomingMessage.getPlatformId());
+        createRequestCommand.setFunds(new BigDecimal(incomingMessage.getAmount()));
+        createRequestCommand.setTimestamp(getTimeStamp(incomingMessage.getTimestamp()));
+        return createRequestCommand;
     }
 
     private void fundRequest(final FundedEthDto dto, final Long requestId, Long blockchainEventId) {
@@ -85,19 +89,17 @@ public class AzraelMessageReceiver {
 
     @Transactional
     public void receiveClaimedMessage(final String message) throws IOException {
-        LOGGER.debug("Recieved new message from Azrael: " + message);
-        final ClaimedEthDto result = objectMapper.readValue(message, ClaimedEthDto.class);
-        if (!isProcessed(result.getTransactionHash(), result.getLogIndex())) {
-            final BlockchainEvent blockchainEvent = blockchainEventRepository.saveAndFlush(new BlockchainEvent(result.getTransactionHash(), result.getLogIndex()));
-            final Request request = requestService.requestClaimed(new RequestClaimedCommand(getPlatform(result.getPlatform()),
-                                                                                            result.getPlatformId(),
+        LOGGER.debug("Recieved new message from Azrael: %s", message);
+        final ClaimedEthDto incommingMessage = objectMapper.readValue(message, ClaimedEthDto.class);
+        if (!isProcessed(incommingMessage.getTransactionHash(), incommingMessage.getLogIndex())) {
+            final BlockchainEvent blockchainEvent = blockchainEventRepository.saveAndFlush(new BlockchainEvent(incommingMessage.getTransactionHash(), incommingMessage.getLogIndex()));
+            final Request request = requestService.requestClaimed(new RequestClaimedCommand(getPlatform(incommingMessage.getPlatform()),
+                                                                                            incommingMessage.getPlatformId(),
                                                                                             blockchainEvent.getId(),
-                                                                                            result.getTransactionHash(),
-                                                                                            result.getLogIndex(),
-                                                                                            result.getSolver(),
-                                                                                            getTimeStamp(result.getTimestamp()),
-                                                                                            new BigDecimal(result.getAmount()),
-                                                                                            result.getToken()));
+                                                                                            incommingMessage.getSolver(),
+                                                                                            getTimeStamp(incommingMessage.getTimestamp()),
+                                                                                            new BigDecimal(incommingMessage.getAmount()),
+                                                                                            incommingMessage.getToken()));
             fundService.clearTotalFundsCache(request.getId());
         }
     }
