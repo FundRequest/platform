@@ -1,10 +1,7 @@
 package io.fundreqest.platform.tweb.infrastructure.mav;
 
-import io.fundreqest.platform.tweb.fund.FundController;
-import io.fundreqest.platform.tweb.request.RequestController;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.statistics.StatisticsService;
-import io.fundrequest.platform.faq.FAQService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
@@ -32,8 +29,6 @@ public class InitalizerTest {
         when(context.getBean(RequestService.class)).thenReturn(requestService);
         StatisticsService statisticsService = mock(StatisticsService.class);
         when(context.getBean(StatisticsService.class)).thenReturn(statisticsService);
-        FAQService faqService = mock(FAQService.class);
-        when(context.getBean(FAQService.class)).thenReturn(faqService);
 
         initalizer.onApplicationEvent(event);
 
@@ -41,8 +36,5 @@ public class InitalizerTest {
         verify(requestService).findAllTechnologies();
         verify(requestService).findAllProjects();
         verify(statisticsService).getStatistics();
-        verify(faqService).getFAQsForPage(RequestController.FAQ_REQUEST_DETAIL_PAGE);
-        verify(faqService).getFAQsForPage(RequestController.FAQ_REQUESTS_PAGE);
-        verify(faqService).getFAQsForPage(FundController.FAQ_FUND_GITHUB);
     }
 }
