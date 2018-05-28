@@ -71,7 +71,7 @@ public class AzraelMessageReceiver {
         return createRequestCommand;
     }
 
-    private void fundRequest(final FundedEthDto dto, final Long requestId, Long blockchainEventId) {
+    private void fundRequest(final FundedEthDto dto, final Long requestId, final Long blockchainEventId) {
         fundService.addFunds(FundsAddedCommand.builder()
                                               .requestId(requestId)
                                               .amountInWei(new BigDecimal(dto.getAmount()))

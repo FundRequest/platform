@@ -53,12 +53,7 @@ public class NotificationServiceImplTest {
         eventPublisher = mock(ApplicationEventPublisher.class);
         requestService = mock(RequestService.class);
         fundService = mock(FundService.class);
-        notificationService = new NotificationServiceImpl(
-                notificationRepository,
-                eventPublisher,
-                requestService,
-                fundService
-        );
+        notificationService = new NotificationServiceImpl(notificationRepository, eventPublisher, requestService, fundService);
     }
 
     @Test
@@ -104,6 +99,7 @@ public class NotificationServiceImplTest {
         verify(eventPublisher).publishEvent(captor.capture());
         assertThat(captor.getValue().getDate()).isEqualToIgnoringSeconds(LocalDateTime.now());
         assertThat(captor.getValue().getType()).isEqualTo(NotificationType.REQUEST_CLAIMED);
+        assertThat(captor.getValue().getBlockchainEventId()).isEqualTo(BLOCKCHAIN_EVENT_ID);
     }
 
     @Test
@@ -153,6 +149,7 @@ public class NotificationServiceImplTest {
         assertThat(requestFundedNotificationDto.getRequestDto()).isEqualTo(requestDto);
         assertThat(requestFundedNotificationDto.getDate()).isEqualToIgnoringSeconds(LocalDateTime.now());
         assertThat(requestFundedNotificationDto.getType()).isEqualTo(NotificationType.REQUEST_FUNDED);
+        assertThat(requestFundedNotificationDto.getBlockchainEventId()).isEqualTo(fundDto.getBlockchainEventId());
     }
 
     @Test
