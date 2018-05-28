@@ -117,7 +117,7 @@ class RequestServiceImpl implements RequestService {
             request = updateStatus(request, RequestStatus.CLAIMABLE);
             eventPublisher.publishEvent(new RequestClaimableEvent(mappers.map(Request.class, RequestDto.class, request), LocalDateTime.now()));
         } else if (request.getStatus() == RequestStatus.CLAIMABLE && !result.isClaimable()) {
-            request = updateStatus(request, RequestStatus.FUNDED);
+            updateStatus(request, RequestStatus.FUNDED);
         }
         return result;
     }
@@ -168,20 +168,24 @@ class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
-    public Request requestClaimed(RequestClaimedCommand command) {
-        Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId()).orElseThrow(ResourceNotFoundException::new);
-        request = updateStatus(request, RequestStatus.CLAIMED);
-        Claim claim = claimRepository.save(ClaimBuilder.aClaim()
-                                                       .withRequestId(request.getId())
-                                                       .withSolver(command.getSolver())
-                                                       .withTimestamp(command.getTimestamp())
-                                                       .withAmountInWei(command.getAmountInWei())
+    public Request requestClaimed(final RequestClaimedCommand command) {
+        final Request request = updateStatus(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
+                                                              .orElseThrow(ResourceNotFoundException::new),
+                                             RequestStatus.CLAIMED);
+        final Claim claim = claimRepository.save(ClaimBuilder.aClaim()
+                                                             .withRequestId(request.getId())
+                                                             .withSolver(command.getSolver())
+                                                             .withTimestamp(command.getTimestamp())
+                                                             .withAmountInWei(command.getAmountInWei())
+                                                             .withTokenHash(command.getTokenHash())
+                                                             .withBlockchainEventId(command.getBlockchainEventId())
+                                                             .build());
+        eventPublisher.publishEvent(RequestClaimedEvent.builder()
+                                                       .blockchainEventId(command.getBlockchainEventId())
+                                                       .requestDto(mappers.map(Request.class, RequestDto.class, request))
+                                                       .claimDto(mappers.map(Claim.class, ClaimDto.class, claim))
+                                                       .solver(command.getSolver()).timestamp(command.getTimestamp())
                                                        .build());
-        eventPublisher.publishEvent(new RequestClaimedEvent(command.getTransactionId(),
-                                                            mappers.map(Request.class, RequestDto.class, request),
-                                                            mappers.map(Claim.class, ClaimDto.class, claim),
-                                                            command.getSolver(),
-                                                            command.getTimestamp()));
         return request;
     }
 

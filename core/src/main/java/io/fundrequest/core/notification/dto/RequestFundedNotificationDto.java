@@ -11,8 +11,8 @@ public class RequestFundedNotificationDto extends NotificationDto {
     private RequestDto requestDto;
     private FundDto fundDto;
 
-    public RequestFundedNotificationDto(Long id, String transactionId, LocalDateTime date, RequestDto requestDto, FundDto fundDto) {
-        super(id, NotificationType.REQUEST_FUNDED, transactionId, date);
+    public RequestFundedNotificationDto(Long id, Long blockchainEventId, LocalDateTime date, RequestDto requestDto, FundDto fundDto) {
+        super(id, NotificationType.REQUEST_FUNDED, blockchainEventId, date);
         this.requestDto = requestDto;
         this.fundDto = fundDto;
     }

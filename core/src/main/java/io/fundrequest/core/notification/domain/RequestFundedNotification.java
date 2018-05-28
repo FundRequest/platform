@@ -12,8 +12,8 @@ public class RequestFundedNotification extends Notification {
     protected RequestFundedNotification() {
     }
 
-    public RequestFundedNotification(NotificationType type, LocalDateTime date, String transactionId, Long fundId) {
-        super(type, date, transactionId);
+    public RequestFundedNotification(NotificationType type, LocalDateTime date, Long blockchainEventId, Long fundId) {
+        super(type, date, blockchainEventId);
         this.fundId = fundId;
     }
 

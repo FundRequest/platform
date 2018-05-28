@@ -5,19 +5,23 @@ import io.fundreqest.platform.tweb.request.messsaging.AzraelMessageReceiver;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.domain.BlockchainEvent;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
-import io.fundrequest.core.request.fund.domain.ProcessedBlockchainEvent;
-import io.fundrequest.core.request.fund.infrastructure.ProcessedBlockchainEventRepository;
+import io.fundrequest.core.request.fund.command.FundsAddedCommand;
+import io.fundrequest.core.request.fund.infrastructure.BlockchainEventRepository;
 import io.fundrequest.core.request.fund.messaging.dto.ClaimedEthDto;
 import io.fundrequest.core.request.fund.messaging.dto.FundedEthDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -26,6 +30,7 @@ import java.util.Optional;
 import static io.fundrequest.core.request.domain.RequestMother.fundRequestArea51;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -35,7 +40,7 @@ public class AzraelMessageReceiverTest {
 
     private AzraelMessageReceiver messageReceiver;
     private FundService fundService;
-    private ProcessedBlockchainEventRepository blockchainEventRepository;
+    private BlockchainEventRepository blockchainEventRepository;
     private ObjectMapper objectMapper;
     private RequestService requestService;
     private PendingFundService pendingFundService;
@@ -43,7 +48,7 @@ public class AzraelMessageReceiverTest {
     @Before
     public void setUp() throws Exception {
         fundService = mock(FundService.class);
-        blockchainEventRepository = mock(ProcessedBlockchainEventRepository.class);
+        blockchainEventRepository = mock(BlockchainEventRepository.class);
         requestService = mock(RequestService.class);
         pendingFundService = mock(PendingFundService.class);
         objectMapper = new ObjectMapper();
@@ -52,25 +57,43 @@ public class AzraelMessageReceiverTest {
 
     @Test
     public void receiveMessage() throws Exception {
-        FundedEthDto dto = createDto();
-        StringWriter w = new StringWriter();
+        final FundedEthDto dto = createDto();
+        final StringWriter w = new StringWriter();
         objectMapper.writeValue(w, dto);
-        when(blockchainEventRepository.findOne(dto.getTransactionHash())).thenReturn(Optional.empty());
-        when(requestService.createRequest(any())).thenReturn(RequestDtoMother.freeCodeCampNoUserStories().getId());
+        final BlockchainEvent blockchainEvent = new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex());
+        ReflectionTestUtils.setField(blockchainEvent, "id", 346L);
+        final Long requestId = RequestDtoMother.freeCodeCampNoUserStories().getId();
+
+        when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.empty());
+        when(blockchainEventRepository.saveAndFlush(eq(new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex())))).thenReturn(blockchainEvent);
+        when(requestService.createRequest(any())).thenReturn(requestId);
 
         messageReceiver.receiveFundedMessage(w.toString());
 
         verifyRequestCreated(dto);
-        verify(blockchainEventRepository).save(new ProcessedBlockchainEvent(dto.getTransactionHash()));
+        verify(fundService).addFunds(FundsAddedCommand.builder()
+                                                      .requestId(requestId)
+                                                      .amountInWei(new BigDecimal(dto.getAmount()))
+                                                      .timestamp(getTimeStamp(dto.getTimestamp()))
+                                                      .token(dto.getToken())
+                                                      .funderAddress(dto.getFrom())
+                                                      .transactionHash(dto.getTransactionHash())
+                                                      .blockchainEventId(blockchainEvent.getId())
+                                                      .build());
+        verify(fundService).clearTotalFundsCache(requestId);
+        verify(pendingFundService).removePendingFund(dto.getTransactionHash());
     }
-
 
     @Test
     public void receiveClaimMessage() throws Exception {
-        ClaimedEthDto dto = createClaimedEthDto();
-        StringWriter w = new StringWriter();
+        final ClaimedEthDto dto = createClaimedEthDto();
+        final StringWriter w = new StringWriter();
         objectMapper.writeValue(w, dto);
-        when(blockchainEventRepository.findOne(dto.getTransactionHash())).thenReturn(Optional.empty());
+        final BlockchainEvent blockchainEvent = new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex());
+        ReflectionTestUtils.setField(blockchainEvent, "id", 346L);
+
+        when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.empty());
+        when(blockchainEventRepository.saveAndFlush(eq(new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex())))).thenReturn(blockchainEvent);
 
         final Request request = fundRequestArea51().withId(1L).build();
         when(requestService.requestClaimed(any(RequestClaimedCommand.class))).thenReturn(request);
@@ -78,15 +101,23 @@ public class AzraelMessageReceiverTest {
         messageReceiver.receiveClaimedMessage(w.toString());
 
         verify(fundService).clearTotalFundsCache(request.getId());
-        verify(blockchainEventRepository).save(new ProcessedBlockchainEvent(dto.getTransactionHash()));
+        verify(requestService).requestClaimed(new RequestClaimedCommand(Platform.getPlatform(dto.getPlatform()).get(),
+                                                                        dto.getPlatformId(),
+                                                                        blockchainEvent.getId(),
+                                                                        dto.getSolver(),
+                                                                        getTimeStamp(dto.getTimestamp()),
+                                                                        new BigDecimal(dto.getAmount()),
+                                                                        dto.getToken()));
+        verify(fundService).clearTotalFundsCache(request.getId());
     }
 
     @Test
     public void receiveClaimMessageTransactionAlreadyProcessed() throws Exception {
-        ClaimedEthDto dto = new ClaimedEthDto();
+        ClaimedEthDto dto = createClaimedEthDto();
         StringWriter w = new StringWriter();
         objectMapper.writeValue(w, dto);
-        when(blockchainEventRepository.findOne(dto.getTransactionHash())).thenReturn(Optional.of(new ProcessedBlockchainEvent(dto.getTransactionHash())));
+
+        when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.of(mock(BlockchainEvent.class)));
 
         messageReceiver.receiveClaimedMessage(w.toString());
 
@@ -98,7 +129,6 @@ public class AzraelMessageReceiverTest {
                                             .atZone(ZoneOffset.UTC)
                                             .toLocalDateTime();
     }
-
 
     private void verifyRequestCreated(FundedEthDto dto) {
         ArgumentCaptor<CreateRequestCommand> captor = ArgumentCaptor.forClass(CreateRequestCommand.class);
@@ -113,7 +143,8 @@ public class AzraelMessageReceiverTest {
         FundedEthDto dto = createDto();
         StringWriter w = new StringWriter();
         objectMapper.writeValue(w, dto);
-        when(blockchainEventRepository.findOne(dto.getTransactionHash())).thenReturn(Optional.of(new ProcessedBlockchainEvent(dto.getTransactionHash())));
+
+        when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.of(mock(BlockchainEvent.class)));
 
         messageReceiver.receiveFundedMessage(w.toString());
 
@@ -128,6 +159,7 @@ public class AzraelMessageReceiverTest {
         dto.setSolverAddress("0x");
         dto.setSolver("davyvanroy");
         dto.setTransactionHash("0xh");
+        dto.setLogIndex("0xh11");
         return dto;
     }
 
@@ -139,6 +171,7 @@ public class AzraelMessageReceiverTest {
                            .token("0xe5dada80aa6477e85d09747f2842f7993d0df71c")
                            .from("0xbbee53d695c8f744b21b3ebb48c73700df375b49")
                            .transactionHash("0x4056a21aaec0e60a1ff76cfe5b08f3d3594e07de1aa88c93cc8ff0df0b9370f1")
+                           .logIndex("0xh12")
                            .build();
     }
 }
