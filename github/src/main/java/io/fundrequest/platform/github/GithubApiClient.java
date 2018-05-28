@@ -16,11 +16,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @FeignClient(
-        name = "github-client",
+        name = "github-api-client",
         url = "https://api.github.com/",
         configuration = GithubFeignConfiguration.class
 )
-interface GithubClient {
+interface GithubApiClient {
 
     @RequestMapping(value = "/repos/{owner}/{repo}/issues/{number}", method = GET, headers = "Accept=application/vnd.github.html+json")
     GithubResult getIssue(@PathVariable("owner") String owner,
@@ -59,4 +59,8 @@ interface GithubClient {
     @RequestMapping(value = "/rate_limit", method = GET)
     GithubRateLimits getRateLimit();
 
+    @RequestMapping(value = "/repos/{owner}/{repo}/contents/{filePath}", method = GET, headers = "Accept=application/vnd.github.html")
+    String getContentsAsHtml(@PathVariable("owner") String owner,
+                             @PathVariable("repo") String repo,
+                             @PathVariable("filePath") String filePath);
 }

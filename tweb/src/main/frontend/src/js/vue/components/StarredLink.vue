@@ -1,8 +1,8 @@
 <template>
-    <a href="#star" class="request-details__star-link" v-bind:class="{ '-starred': isStarred}" v-on:click="toggleStarred()">
+    <span class="request-details__star-link" v-bind:class="{ '-starred': isStarred}" v-on:click="toggleStarred()">
         <i class="fa fa-star"></i>
         <i class="far fa-star"></i>
-    </a>
+    </span>
 </template>
 
 <script lang="ts">

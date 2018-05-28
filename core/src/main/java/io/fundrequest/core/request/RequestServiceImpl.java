@@ -113,9 +113,11 @@ class RequestServiceImpl implements RequestService {
     public UserClaimableDto getUserClaimableResult(Principal principal, Long id) {
         Request request = findOne(id);
         UserClaimableDto result = githubClaimResolver.userClaimableResult(principal, mappers.map(Request.class, RequestDto.class, request));
-        if(request.getStatus() == RequestStatus.FUNDED && result.isClaimable()) {
+        if (request.getStatus() == RequestStatus.FUNDED && result.isClaimable()) {
             request = updateStatus(request, RequestStatus.CLAIMABLE);
             eventPublisher.publishEvent(new RequestClaimableEvent(mappers.map(Request.class, RequestDto.class, request), LocalDateTime.now()));
+        } else if (request.getStatus() == RequestStatus.CLAIMABLE && !result.isClaimable()) {
+            request = updateStatus(request, RequestStatus.FUNDED);
         }
         return result;
     }

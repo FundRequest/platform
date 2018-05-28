@@ -23,25 +23,22 @@ public class CachingConfig {
     @Bean
     public CacheManager cacheManager() {
         SimpleCacheManager manager = new SimpleCacheManager();
-        manager.setCaches(
-                Arrays.asList(
-                        buildCache("possible_tokens", 1, HOURS),
-                        buildCache("erc20.tokens.decimals", 30, DAYS),
-                        buildCache("erc20.tokens.name", 30, DAYS),
-                        buildCache("erc20.tokens.symbol", 30, DAYS),
-                        buildCache("token_price", 15, MINUTES),
-                        buildCache("funds", 7, DAYS),
-                        buildCache("github_issue", 1, DAYS),
-                        buildCache("github_comments", 1, DAYS),
-                        buildCache("loginUserData", 1, DAYS),
-                        buildCache("ref_links", 30, DAYS),
-                        buildCache("user_profile", 1, DAYS),
-                        buildCache("github_repo_languages", 1, DAYS),
-                        buildCache("projects", 7, DAYS),
-                        buildCache("technologies", 7, DAYS),
-                        buildCache("statistics", 7, DAYS)
-                             )
-                         );
+        manager.setCaches(Arrays.asList(buildCache("possible_tokens", 1, HOURS),
+                                        buildCache("erc20.tokens.decimals", 30, DAYS),
+                                        buildCache("erc20.tokens.name", 30, DAYS),
+                                        buildCache("erc20.tokens.symbol", 30, DAYS),
+                                        buildCache("token_price", 15, MINUTES),
+                                        buildCache("funds", 7, DAYS),
+                                        buildCache("github_issue", 1, DAYS),
+                                        buildCache("github_comments", 1, DAYS),
+                                        buildCache("loginUserData", 1, DAYS),
+                                        buildCache("ref_links", 30, DAYS),
+                                        buildCache("user_profile", 1, DAYS),
+                                        buildCache("github_repo_languages", 1, DAYS),
+                                        buildCache("projects", 7, DAYS),
+                                        buildCache("technologies", 7, DAYS),
+                                        buildCache("statistics", 7, DAYS),
+                                        new CaffeineCache("faqs", Caffeine.newBuilder().build())));
         return manager;
     }
 
@@ -52,5 +49,4 @@ public class CachingConfig {
                                                .ticker(Ticker.systemTicker())
                                                .build());
     }
-
 }
