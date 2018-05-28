@@ -70,7 +70,7 @@ public class Notification {
         Notification that = (Notification) o;
         return type == that.type &&
                Objects.equals(date, that.date) &&
-               Objects.equals(blockchainEventId, blockchainEventId);
+               Objects.equals(blockchainEventId, that.blockchainEventId);
     }
 
     @Override
