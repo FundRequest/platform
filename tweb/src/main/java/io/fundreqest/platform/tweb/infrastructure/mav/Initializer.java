@@ -8,7 +8,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Initalizer {
+public class Initializer {
 
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
