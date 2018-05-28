@@ -14,13 +14,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class IniitalizerTest {
+public class InitalizerTest {
 
-    private Iniitalizer iniitalizer;
+    private Initalizer initalizer;
 
     @BeforeEach
     void setUp() {
-        iniitalizer = new Iniitalizer();
+        initalizer = new Initalizer();
     }
 
     @Test
@@ -35,7 +35,7 @@ public class IniitalizerTest {
         FAQService faqService = mock(FAQService.class);
         when(context.getBean(FAQService.class)).thenReturn(faqService);
 
-        iniitalizer.onApplicationEvent(event);
+        initalizer.onApplicationEvent(event);
 
         verify(requestService).findAll();
         verify(requestService).findAllTechnologies();
