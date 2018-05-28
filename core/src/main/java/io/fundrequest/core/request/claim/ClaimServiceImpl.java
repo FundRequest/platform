@@ -3,7 +3,7 @@ package io.fundrequest.core.request.claim;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
-import io.fundrequest.core.request.claim.event.RequestClaimPendingEvent;
+import io.fundrequest.core.request.claim.event.ClaimRequestedEvent;
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.RequestClaimRepository;
@@ -25,7 +25,7 @@ class ClaimServiceImpl implements ClaimService {
     private RequestClaimRepository requestClaimRepository;
     private GithubClaimResolver githubClaimResolver;
     private Mappers mappers;
-    private ApplicationEventPublisher $;
+    private ApplicationEventPublisher eventPublisher;
 
     public ClaimServiceImpl(RequestRepository requestRepository,
                             RequestClaimRepository requestClaimRepository,
@@ -36,7 +36,7 @@ class ClaimServiceImpl implements ClaimService {
         this.requestClaimRepository = requestClaimRepository;
         this.githubClaimResolver = githubClaimResolver;
         this.mappers = mappers;
-        this.$ = eventPublisher;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -57,9 +57,9 @@ class ClaimServiceImpl implements ClaimService {
                                                       .build();
         requestClaimRepository.save(requestClaim);
         request.setStatus(RequestStatus.CLAIM_REQUESTED);
-        $.publishEvent(RequestClaimPendingEvent.builder()
-                                               .requestClaim(requestClaim)
-                                               .build());
+        eventPublisher.publishEvent(ClaimRequestedEvent.builder()
+                                                       .requestClaim(requestClaim)
+                                                       .build());
         requestRepository.save(request);
     }
 

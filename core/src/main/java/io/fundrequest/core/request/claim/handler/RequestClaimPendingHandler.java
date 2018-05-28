@@ -1,6 +1,6 @@
 package io.fundrequest.core.request.claim.handler;
 
-import io.fundrequest.core.request.claim.event.RequestClaimPendingEvent;
+import io.fundrequest.core.request.claim.event.ClaimRequestedEvent;
 import io.fundrequest.core.telegram.TelegramService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
@@ -18,11 +18,11 @@ public class RequestClaimPendingHandler {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void onRequestClaimPending(final RequestClaimPendingEvent requestClaimPendingEvent) {
+    public void onRequestClaimPending(final ClaimRequestedEvent claimRequestedEvent) {
         telegramService.sendMessageToChannel("Holy Moly, "
-                                             + requestClaimPendingEvent.getRequestClaim().getSolver()
+                                             + claimRequestedEvent.getRequestClaim().getSolver()
                                              + " just requested an approval for a claim! ("
-                                             + requestClaimPendingEvent.getRequestClaim().getRequestId()
+                                             + claimRequestedEvent.getRequestClaim().getRequestId()
                                              + ")");
     }
 }

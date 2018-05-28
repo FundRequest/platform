@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class RequestClaimPendingEvent {
+public class ClaimRequestedEvent {
 
     private final RequestClaim requestClaim;
 
     @Builder
-    public RequestClaimPendingEvent(RequestClaim requestClaim) {
+    public ClaimRequestedEvent(RequestClaim requestClaim) {
         this.requestClaim = requestClaim;
     }
 }
