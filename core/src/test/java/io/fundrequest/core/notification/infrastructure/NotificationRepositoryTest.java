@@ -18,22 +18,22 @@ public class NotificationRepositoryTest extends AbstractRepositoryTest {
     private NotificationRepository notificationRepository;
 
     @Test
-    public void save() throws Exception {
-        RequestClaimedNotification n = createNotification(1L, LocalDateTime.now());
+    public void save() {
+        RequestClaimedNotification n = createNotification(1L, LocalDateTime.now(), 45L);
 
         notificationRepository.saveAndFlush(n);
 
         assertThat(n).isNotNull();
     }
 
-    private RequestClaimedNotification createNotification(long requestId, LocalDateTime date) {
-        return new RequestClaimedNotification(NotificationType.REQUEST_CLAIMED, date, "0x4edf0b5620439f1df4d39e2665d338a5a411bbe07f91bd19300568e5c30916e3", requestId, "davyvanroy");
+    private RequestClaimedNotification createNotification(long requestId, LocalDateTime date, long blockchainEventId) {
+        return new RequestClaimedNotification(NotificationType.REQUEST_CLAIMED, date, blockchainEventId, requestId, "davyvanroy");
     }
 
     @Test
-    public void findLast() throws Exception {
+    public void findLast() {
         for (int i = 0; i < 20; i++) {
-            notificationRepository.save(createNotification((long) i, LocalDateTime.now().plusDays(i)));
+            notificationRepository.save(createNotification((long) i, LocalDateTime.now().plusDays(i), 45L));
         }
         notificationRepository.flush();
 

@@ -13,5 +13,5 @@ public class FundDto {
     private String token;
     private Long requestId;
     private LocalDateTime timestamp;
-
+    private Long blockchainEventId;
 }

@@ -299,14 +299,15 @@ public class RequestServiceImplTest {
 
     @Test
     public void requestClaimed() {
-        RequestClaimedCommand command = new RequestClaimedCommand();
+        final RequestClaimedCommand command = new RequestClaimedCommand();
         command.setTimestamp(LocalDateTime.now());
         command.setSolver("davyvanroy");
         command.setPlatform(Platform.GITHUB);
         command.setPlatformId("1");
-        Request request = RequestMother.freeCodeCampNoUserStories().build();
-        RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
-        ClaimDto claimDto = ClaimDtoMother.aClaimDto();
+        command.setBlockchainEventId(6453L);
+        final Request request = RequestMother.freeCodeCampNoUserStories().build();
+        final RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
+        final ClaimDto claimDto = ClaimDtoMother.aClaimDto();
         when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.of(request));
         when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
         when(mappers.map(eq(Claim.class), eq(ClaimDto.class), any(Claim.class))).thenReturn(claimDto);
@@ -335,12 +336,13 @@ public class RequestServiceImplTest {
         assertThat(comments.get(0)).isEqualTo(expected);
     }
 
-    private void verifyClaimEventPublished(RequestClaimedCommand command, RequestDto requestDto, ClaimDto claimDto) {
-        ArgumentCaptor<RequestClaimedEvent> captor = ArgumentCaptor.forClass(RequestClaimedEvent.class);
+    private void verifyClaimEventPublished(final RequestClaimedCommand command, final RequestDto requestDto, final ClaimDto claimDto) {
+        final ArgumentCaptor<RequestClaimedEvent> captor = ArgumentCaptor.forClass(RequestClaimedEvent.class);
         verify(eventPublisher).publishEvent(captor.capture());
         assertThat(captor.getValue().getSolver()).isEqualTo(command.getSolver());
         assertThat(captor.getValue().getRequestDto()).isEqualTo(requestDto);
         assertThat(captor.getValue().getTimestamp()).isEqualTo(command.getTimestamp());
         assertThat(captor.getValue().getClaimDto()).isEqualTo(claimDto);
+        assertThat(captor.getValue().getBlockchainEventId()).isEqualTo(command.getBlockchainEventId());
     }
 }

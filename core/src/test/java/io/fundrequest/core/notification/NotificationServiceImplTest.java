@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 
 public class NotificationServiceImplTest {
 
-    public static final String TRANSACTION_ID = "0x99be7620e58d38ac63267ead0e67d5d7023754e6f6fe0113017f41a610867e44";
+    private static final Long BLOCKCHAIN_EVENT_ID = 45768L;
     private NotificationServiceImpl notificationService;
     private NotificationRepository notificationRepository;
     private ApplicationEventPublisher eventPublisher;
@@ -53,12 +53,7 @@ public class NotificationServiceImplTest {
         eventPublisher = mock(ApplicationEventPublisher.class);
         requestService = mock(RequestService.class);
         fundService = mock(FundService.class);
-        notificationService = new NotificationServiceImpl(
-                notificationRepository,
-                eventPublisher,
-                requestService,
-                fundService
-        );
+        notificationService = new NotificationServiceImpl(notificationRepository, eventPublisher, requestService, fundService);
     }
 
     @Test
@@ -66,7 +61,13 @@ public class NotificationServiceImplTest {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
 
-        notificationService.onClaimed(new RequestClaimedEvent(TRANSACTION_ID, requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
+        notificationService.onClaimed(RequestClaimedEvent.builder()
+                                                         .blockchainEventId(BLOCKCHAIN_EVENT_ID)
+                                                         .requestDto(requestDto)
+                                                         .claimDto(new ClaimDto())
+                                                         .solver("davyvanroy")
+                                                         .timestamp(LocalDateTime.now())
+                                                         .build());
 
         assertRequestClaimedNotificationSaved(requestDto);
     }
@@ -83,8 +84,13 @@ public class NotificationServiceImplTest {
     public void onRequestClaimedPublishesNotification() {
         RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
 
-        notificationService.onClaimed(new RequestClaimedEvent(TRANSACTION_ID, requestDto, new ClaimDto(), "davyvanroy", LocalDateTime.now()));
-
+        notificationService.onClaimed(RequestClaimedEvent.builder()
+                                                         .blockchainEventId(BLOCKCHAIN_EVENT_ID)
+                                                         .requestDto(requestDto)
+                                                         .claimDto(new ClaimDto())
+                                                         .solver("davyvanroy")
+                                                         .timestamp(LocalDateTime.now())
+                                                         .build());
         assertRequestClaimedNotificationPublished();
     }
 
@@ -93,6 +99,7 @@ public class NotificationServiceImplTest {
         verify(eventPublisher).publishEvent(captor.capture());
         assertThat(captor.getValue().getDate()).isEqualToIgnoringSeconds(LocalDateTime.now());
         assertThat(captor.getValue().getType()).isEqualTo(NotificationType.REQUEST_CLAIMED);
+        assertThat(captor.getValue().getBlockchainEventId()).isEqualTo(BLOCKCHAIN_EVENT_ID);
     }
 
     @Test
@@ -101,7 +108,6 @@ public class NotificationServiceImplTest {
         final FundDto fundDto = FundDtoMother.aFundDto();
 
         notificationService.onFunded(RequestFundedEvent.builder()
-                                                       .transactionId(TRANSACTION_ID)
                                                        .fundDto(fundDto)
                                                        .requestId(requestId)
                                                        .timestamp(LocalDateTime.now())
@@ -127,7 +133,6 @@ public class NotificationServiceImplTest {
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
 
         notificationService.onFunded(RequestFundedEvent.builder()
-                                                       .transactionId(TRANSACTION_ID)
                                                        .fundDto(fundDto)
                                                        .requestId(requestId)
                                                        .timestamp(LocalDateTime.now())
@@ -144,6 +149,7 @@ public class NotificationServiceImplTest {
         assertThat(requestFundedNotificationDto.getRequestDto()).isEqualTo(requestDto);
         assertThat(requestFundedNotificationDto.getDate()).isEqualToIgnoringSeconds(LocalDateTime.now());
         assertThat(requestFundedNotificationDto.getType()).isEqualTo(NotificationType.REQUEST_FUNDED);
+        assertThat(requestFundedNotificationDto.getBlockchainEventId()).isEqualTo(fundDto.getBlockchainEventId());
     }
 
     @Test

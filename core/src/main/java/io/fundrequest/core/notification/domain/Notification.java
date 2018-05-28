@@ -28,8 +28,8 @@ public class Notification {
     private NotificationType type;
 
 
-    @Column(name = "transaction_id")
-    private String transactionId;
+    @Column(name = "blockchain_event_id")
+    private Long blockchainEventId;
 
     @Column(name = "notification_date")
     private LocalDateTime date;
@@ -37,10 +37,10 @@ public class Notification {
     protected Notification() {
     }
 
-    public Notification(NotificationType type, LocalDateTime date, String transactionId) {
+    public Notification(NotificationType type, LocalDateTime date, Long blockchainEventId) {
         this.type = type;
         this.date = date;
-        this.transactionId = transactionId;
+        this.blockchainEventId = blockchainEventId;
     }
 
     public Long getId() {
@@ -55,8 +55,8 @@ public class Notification {
         return date;
     }
 
-    public String getTransactionId() {
-        return transactionId;
+    public Long getBlockchainEventId() {
+        return blockchainEventId;
     }
 
     @Override
@@ -69,11 +69,12 @@ public class Notification {
         }
         Notification that = (Notification) o;
         return type == that.type &&
-               Objects.equals(date, that.date);
+               Objects.equals(date, that.date) &&
+               Objects.equals(blockchainEventId, that.blockchainEventId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, date);
+        return Objects.hash(type, date, blockchainEventId);
     }
 }

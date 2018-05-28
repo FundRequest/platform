@@ -10,8 +10,8 @@ public class RequestClaimedNotificationDto extends NotificationDto {
     private RequestDto requestDto;
     private String solver;
 
-    public RequestClaimedNotificationDto(Long id, String transactionId, LocalDateTime date, RequestDto requestDto, String solver) {
-        super(id, NotificationType.REQUEST_CLAIMED, transactionId, date);
+    public RequestClaimedNotificationDto(Long id, Long blockchainEventId, LocalDateTime date, RequestDto requestDto, String solver) {
+        super(id, NotificationType.REQUEST_CLAIMED, blockchainEventId, date);
         this.requestDto = requestDto;
         this.solver = solver;
     }
