@@ -10,7 +10,6 @@ public class ClaimDto {
     private Long id;
     private String solver;
     private BigDecimal amountInWei;
-    private String tokenHash;
     private Long requestId;
     private LocalDateTime timestamp;
     private Long blockchainEventId;

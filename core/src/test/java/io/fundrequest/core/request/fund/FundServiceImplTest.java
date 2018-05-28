@@ -151,7 +151,7 @@ public class FundServiceImplTest {
 
         fundService.addFunds(command);
 
-        verifyFundsSaved(command, funder, blockchainEvent);
+        verifyFundsSaved(command, funder);
         verifyEventCreated(request.getId(), fundDto);
         verify(cache).evict(request.getId());
     }
@@ -281,7 +281,7 @@ public class FundServiceImplTest {
         assertThat(event.getRequestId()).isEqualTo(requestId);
     }
 
-    private void verifyFundsSaved(final FundsAddedCommand command, final Principal funder, final BlockchainEvent blockchainEvent) {
+    private void verifyFundsSaved(final FundsAddedCommand command, final Principal funder) {
         ArgumentCaptor<Fund> fundArgumentCaptor = ArgumentCaptor.forClass(Fund.class);
         verify(fundRepository).saveAndFlush(fundArgumentCaptor.capture());
         assertThat(fundArgumentCaptor.getValue().getRequestId()).isEqualTo(command.getRequestId());

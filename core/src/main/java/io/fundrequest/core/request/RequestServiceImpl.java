@@ -72,7 +72,8 @@ class RequestServiceImpl implements RequestService {
                               final GithubGateway githubGateway,
                               final GithubClaimResolver githubClaimResolver,
                               final ApplicationEventPublisher eventPublisher,
-                              Erc67Generator erc67Generator, final Environment environment) {
+                              final Erc67Generator erc67Generator,
+                              final Environment environment) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;

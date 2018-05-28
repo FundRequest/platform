@@ -41,10 +41,9 @@ public class Claim extends AbstractEntity {
     protected Claim() {
     }
 
-    Claim(String solver, BigDecimal amountInWei, String tokenHash, Long requestId, LocalDateTime timestamp, Long blockchainEventId) {
+    Claim(String solver, BigDecimal amountInWei, Long requestId, LocalDateTime timestamp, Long blockchainEventId) {
         this.solver = solver;
         this.amountInWei = amountInWei;
-        this.tokenHash = tokenHash;
         this.requestId = requestId;
         this.timestamp = timestamp;
         this.blockchainEventId = blockchainEventId;
