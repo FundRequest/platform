@@ -1,0 +1,1 @@
+ALTER TABLE fund CHANGE token token_hash VARCHAR(50);

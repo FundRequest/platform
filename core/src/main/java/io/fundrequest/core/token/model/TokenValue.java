@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 public class TokenValue implements Serializable {
     private static final long serialVersionUID = 3367000560837244733L;
 
-    @Column(name = "token_address")
+    @Column(name = "token_hash")
     private String tokenAddress;
     @Column(name = "amount_in_wei")
     private BigDecimal amountInWei;
