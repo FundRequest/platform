@@ -19,6 +19,7 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
+import io.fundrequest.core.request.erc67.Erc67Generator;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
@@ -68,6 +69,7 @@ public class RequestServiceImplTest {
     private ApplicationEventPublisher eventPublisher;
     private ProfileService profileService;
     private Environment environment;
+    private Erc67Generator erc67Generator;
 
     @Before
     public void setUp() {
@@ -79,13 +81,14 @@ public class RequestServiceImplTest {
         githubClaimResolver = mock(GithubClaimResolver.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
         claimRepository = mock(ClaimRepository.class);
+        erc67Generator = mock(Erc67Generator.class);
         environment = mock(Environment.class);
         requestService = new RequestServiceImpl(
                 requestRepository,
                 mappers,
                 githubLinkParser,
                 profileService,
-                claimRepository, githubGateway, githubClaimResolver, eventPublisher, environment);
+                claimRepository, githubGateway, githubClaimResolver, eventPublisher, erc67Generator, environment);
     }
 
     @Test
@@ -109,12 +112,12 @@ public class RequestServiceImplTest {
         final CreateERC67FundRequest erc67 = CreateERC67FundRequest
                 .builder()
                 .amount(new BigInteger("100"))
-                .fundrequestAddress("0x00000000000000000000000000000000deadbeef")
                 .tokenAddress("0x0000000000000000000000000000000000000000")
                 .platform("github")
                 .platformId("1")
-                .decimals(18)
                 .build();
+
+        when(erc67Generator.toByteData(erc67)).thenReturn("0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
 
         assertThat(requestService.generateERC67(erc67))
                 .isEqualTo(
