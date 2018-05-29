@@ -7,7 +7,10 @@ import io.fundrequest.platform.faq.FAQService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Map;
 
 @Controller
 public class FundController extends AbstractController {
@@ -22,8 +25,9 @@ public class FundController extends AbstractController {
     }
 
     @RequestMapping("/fund/{type}")
-    public ModelAndView details(@PathVariable String type) {
+    public ModelAndView details(@PathVariable String type, @RequestParam Map<String, String> queryParameters) {
         return modelAndView()
+                .withObject("url", queryParameters.get("url"))
                 .withObject("faqs", faqService.getFAQsForPage(FAQ_FUND_GITHUB))
                 .withView("pages/fund/" + type)
                 .build();

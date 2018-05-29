@@ -27,11 +27,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -82,17 +78,31 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests")
-    public ModelAndView requests() {
-        final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
-        final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
+    public ModelAndView requests(Principal principal, @RequestParam Map<String, String> queryParameters, Model model) {
+        String url = queryParameters.get("url");
+        if (url != null) {
+            return details(principal, requestService.findRequest(url).getId(), model);
+        } else {
+            final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
+            final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
+            return modelAndView()
+                    .withObject("requestsPerFaseCount", requestsPerFaseCount)
+                    .withObject("requests", getAsJson(requests))
+                    .withObject("statistics", statisticsService.getStatistics())
+                    .withObject("projects", getAsJson(requestService.findAllProjects()))
+                    .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
+                    .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUESTS_PAGE))
+                    .withView("pages/requests/index")
+                    .build();
+        }
+    }
+
+    @RequestMapping("/requests/{type}")
+    public ModelAndView details(@PathVariable String type, @RequestParam Map<String, String> queryParameters) {
         return modelAndView()
-                .withObject("requestsPerFaseCount", requestsPerFaseCount)
-                .withObject("requests", getAsJson(requests))
-                .withObject("statistics", statisticsService.getStatistics())
-                .withObject("projects", getAsJson(requestService.findAllProjects()))
-                .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
-                .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUESTS_PAGE))
-                .withView("pages/requests/index")
+                .withObject("url", queryParameters.get("url"))
+                .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUEST_DETAIL_PAGE))
+                .withView("pages/fund/" + type)
                 .build();
     }
 
@@ -135,11 +145,11 @@ public class RequestController extends AbstractController {
         }
         RequestDto request = requestService.findRequest(id);
         claimService.claim(principal,
-                           UserClaimRequest.builder()
-                                           .address(etherAddress)
-                                           .platform(request.getIssueInformation().getPlatform())
-                                           .platformId(request.getIssueInformation().getPlatformId())
-                                           .build());
+                UserClaimRequest.builder()
+                        .address(etherAddress)
+                        .platform(request.getIssueInformation().getPlatform())
+                        .platformId(request.getIssueInformation().getPlatformId())
+                        .build());
         return redirectView(redirectAttributes)
                 .withSuccessMessage("Your claim has been requested and waiting for approval.")
                 .url("/requests/" + id)
@@ -160,7 +170,7 @@ public class RequestController extends AbstractController {
     @ResponseBody
     public String toggleWatchRequest(Principal principal, @PathVariable Long id) {
         RequestDto request = requestService.findRequest(id);
-        if(request.isLoggedInUserIsWatcher()) {
+        if (request.isLoggedInUserIsWatcher()) {
             request.setLoggedInUserIsWatcher(false);
             requestService.removeWatcherFromRequest(principal, id);
         } else {
@@ -174,7 +184,7 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/user/requests")
     public ModelAndView userRequests(Principal principal) {
-        final List<RequestView> requests =  mappers.mapList(RequestDto.class, RequestView.class, requestService.findRequestsForUser(principal));
+        final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findRequestsForUser(principal));
         final List<PendingFundDto> pendingFunds = pendingFundService.findByUser(principal);
         final List<FaqItemDto> faqs = faqService.getFAQsForPage(FAQ_REQUESTS_PAGE);
         return modelAndView()

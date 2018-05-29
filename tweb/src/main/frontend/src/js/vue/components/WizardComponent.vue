@@ -158,7 +158,16 @@
                 case PaymentMethods.getInstance().dapp:
                     try {
                         if (await this.fundUsingDapp()) {
-                            window.location.href = "/user/requests";
+                            if (Utils.openedByBrowserplugin) {
+                                document.dispatchEvent(new CustomEvent("browserplugin.to.extension.fnd.FUND_SUCCESS", {
+                                    detail: {
+                                        done: true,
+                                        redirectLocation: "/user/requests"
+                                    }
+                                }));
+                            } else {
+                                window.location.href = "/user/requests";
+                            }
                         }
                     } catch (err) {
                         Alert.error(`Something went wrong during funding, please try again. <br/> If the problem remains, <a href="https://help.fundrequest.io">please contact the FundRequest team</a>.`);
