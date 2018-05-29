@@ -17,7 +17,9 @@ import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.token.dto.TokenValueDto;
+import io.fundrequest.core.token.mapper.TokenValueDtoMapper;
 import io.fundrequest.core.token.mapper.TokenValueMapper;
+import io.fundrequest.core.token.model.TokenValue;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +56,7 @@ class FundServiceImpl implements FundService {
     private final ProfileService profileService;
     private final FiatService fiatService;
     private final TokenValueMapper tokenValueMapper;
+    private final TokenValueDtoMapper tokenValueDtoMapper;
 
     @Autowired
     public FundServiceImpl(final FundRepository fundRepository,
@@ -64,7 +67,8 @@ class FundServiceImpl implements FundService {
                            final FundRequestContractsService fundRequestContractsService,
                            final ProfileService profileService,
                            final FiatService fiatService,
-                           final TokenValueMapper tokenValueMapper) {
+                           final TokenValueMapper tokenValueMapper,
+                           final TokenValueDtoMapper tokenValueDtoMapper) {
         this.fundRepository = fundRepository;
         this.pendingFundRepository = pendingFundRepository;
         this.requestRepository = requestRepository;
@@ -75,6 +79,7 @@ class FundServiceImpl implements FundService {
         this.profileService = profileService;
         this.fiatService = fiatService;
         this.tokenValueMapper = tokenValueMapper;
+        this.tokenValueDtoMapper = tokenValueDtoMapper;
     }
 
     @Transactional(readOnly = true)
@@ -242,16 +247,16 @@ class FundServiceImpl implements FundService {
                     .orElse(null);
     }
 
-    private FunderDto mapToFunderDto(UserProfile userProfile, Fund f) {
-        TokenValueDto tokenValueDto = tokenValueMapper.map(f.getToken(), f.getAmountInWei());
-        String funder = StringUtils.isNotBlank(f.getFunderUserId()) ? profileService.getUserProfile(f.getFunderUserId()).getName() : f.getFunder();
+    private FunderDto mapToFunderDto(UserProfile userProfile, Fund fund) {
+        final TokenValueDto tokenValueDto = tokenValueDtoMapper.map(fund.getTokenValue());
+        final String funder = StringUtils.isNotBlank(fund.getFunderUserId()) ? profileService.getUserProfile(fund.getFunderUserId()).getName() : fund.getFunder();
         return tokenValueDto == null
                ? null
                : FunderDto.builder()
                           .funder(funder)
                           .fndFunds(getFndFunds(tokenValueDto))
                           .otherFunds(getOtherFunds(tokenValueDto))
-                          .isLoggedInUser(userProfile != null && (userProfile.getId().equals(f.getFunderUserId()) || f.getFunder().equalsIgnoreCase(userProfile.getEtherAddress())))
+                          .isLoggedInUser(userProfile != null && (userProfile.getId().equals(fund.getFunderUserId()) || fund.getFunder().equalsIgnoreCase(userProfile.getEtherAddress())))
                           .build();
     }
 
@@ -297,9 +302,11 @@ class FundServiceImpl implements FundService {
     @Transactional
     public void addFunds(final FundsAddedCommand command) {
         final Fund.FundBuilder fundBuilder = Fund.builder()
-                                                 .amountInWei(command.getAmountInWei())
+                                                 .tokenValue(TokenValue.builder()
+                                                                       .amountInWei(command.getAmountInWei())
+                                                                       .tokenAddress(command.getToken())
+                                                                       .build())
                                                  .requestId(command.getRequestId())
-                                                 .token(command.getToken())
                                                  .timestamp(command.getTimestamp())
                                                  .funder(command.getFunderAddress())
                                                  .blockchainEventId(command.getBlockchainEventId());

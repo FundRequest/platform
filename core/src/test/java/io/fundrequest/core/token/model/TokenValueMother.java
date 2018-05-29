@@ -1,5 +1,7 @@
 package io.fundrequest.core.token.model;
 
+import io.fundrequest.core.token.dto.TokenInfoDtoMother;
+
 import java.math.BigDecimal;
 
 public class TokenValueMother {
@@ -9,13 +11,13 @@ public class TokenValueMother {
 
     public static TokenValue.TokenValueBuilder FND() {
         return TokenValue.builder()
-                         .tokenAddress("0x9f88c5cc76148d41a5db8d0a7e581481efc9667b")
+                         .tokenAddress(TokenInfoDtoMother.fnd().getAddress())
                          .amountInWei(new BigDecimal("50330000000000000000"));
     }
 
     public static TokenValue.TokenValueBuilder ZRX() {
         return TokenValue.builder()
-                         .tokenAddress("0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570")
+                         .tokenAddress(TokenInfoDtoMother.zrx().getAddress())
                          .amountInWei(new BigDecimal("5000000000000000000"));
     }
 }
