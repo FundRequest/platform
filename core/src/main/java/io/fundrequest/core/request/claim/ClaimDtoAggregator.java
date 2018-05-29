@@ -23,12 +23,12 @@ class ClaimDtoAggregator {
 
     ClaimsAggregate aggregateClaims(final List<ClaimDto> claims) {
         final TokenValueDto fndValue = claims.stream()
-                                             .filter(claim -> fndContractAdress.equals(claim.getTokenValue().getTokenAddress()))
+                                             .filter(this::isFNDToken)
                                              .map(ClaimDto::getTokenValue)
                                              .reduce(this::sumTokenValue)
                                              .orElse(null);
         final TokenValueDto otherValue = claims.stream()
-                                               .filter(claim -> !fndContractAdress.equals(claim.getTokenValue().getTokenAddress()))
+                                               .filter(claim -> !isFNDToken(claim))
                                                .map(ClaimDto::getTokenValue)
                                                .reduce(this::sumTokenValue)
                                                .orElse(null);
@@ -38,6 +38,10 @@ class ClaimDtoAggregator {
                               .otherValue(otherValue)
                               .usdValue(fiatService.getUsdPrice(fndValue, otherValue))
                               .build();
+    }
+
+    private boolean isFNDToken(final ClaimDto claim) {
+        return fndContractAdress.equalsIgnoreCase(claim.getTokenValue().getTokenAddress());
     }
 
     private TokenValueDto sumTokenValue(final TokenValueDto tokenValue, final TokenValueDto tokenValue2) {
