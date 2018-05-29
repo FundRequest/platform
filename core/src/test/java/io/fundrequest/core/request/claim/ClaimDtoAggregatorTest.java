@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.claim;
 
 import io.fundrequest.core.request.claim.dto.ClaimDto;
-import io.fundrequest.core.request.claim.dto.ClaimsAggregate;
+import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
 import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.view.ClaimDtoMother;
 import io.fundrequest.core.token.dto.TokenValueDto;
@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -46,16 +48,21 @@ class ClaimDtoAggregatorTest {
                                                     .tokenAddress(fndContractorAddress)
                                                     .totalAmount(fndValue1.getTotalAmount().add(fndValue2.getTotalAmount()))
                                                     .build();
-        final List<ClaimDto> claimsList = Arrays.asList(ClaimDtoMother.aClaimDto().tokenValue(fndValue1).solver(solver1).build(),
-                                                        ClaimDtoMother.aClaimDto().tokenValue(fndValue2).solver(solver2).build(),
-                                                        ClaimDtoMother.aClaimDto().tokenValue(zrxValue1).solver(solver1).build());
+        final String txHash1 = "txHash1";
+        final String txHash2 = "txHash2";
+        final ClaimDto claim1 = ClaimDtoMother.aClaimDto().tokenValue(fndValue1).transactionHash(txHash1).solver(solver1).build();
+        final ClaimDto claim2 = ClaimDtoMother.aClaimDto().tokenValue(fndValue2).transactionHash(txHash2).solver(solver2).build();
+        final ClaimDto claim3 = ClaimDtoMother.aClaimDto().tokenValue(zrxValue1).transactionHash(txHash1).solver(solver1).build();
+        final Map<String, List<ClaimDto>> expectedClaimsMap = new HashMap();
+        expectedClaimsMap.put(txHash1, Arrays.asList(claim1, claim3));
+        expectedClaimsMap.put(txHash2, Arrays.asList(claim2));
         final double expectedUSD = 3456.3D;
 
         when(fiatService.getUsdPrice(fndTotal, zrxValue1)).thenReturn(expectedUSD);
 
-        final ClaimsAggregate claims = claimDtoAggregator.aggregateClaims(claimsList);
+        final ClaimsByTransactionAggregate claims = claimDtoAggregator.aggregateClaims(Arrays.asList(claim1, claim2, claim3));
 
-        assertThat(claims.getClaims()).isSameAs(claimsList);
+        assertThat(claims.getClaims()).isEqualTo(expectedClaimsMap);
         assertThat(claims.getFndValue()).isEqualTo(fndTotal);
         assertThat(claims.getOtherValue()).isEqualTo(zrxValue1);
         assertThat(claims.getUsdValue()).isEqualTo(expectedUSD);

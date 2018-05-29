@@ -6,7 +6,7 @@ import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
 import io.fundrequest.core.request.claim.dto.ClaimDto;
-import io.fundrequest.core.request.claim.dto.ClaimsAggregate;
+import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.claim.infrastructure.RequestClaimRepository;
@@ -97,15 +97,15 @@ public class ClaimServiceImplTest {
         final List<Claim> claims = new ArrayList<>();
         final List<ClaimDto> claimDtos = new ArrayList<>();
         final Principal principal = mock(Principal.class);
-        final ClaimsAggregate claimsAggregate = mock(ClaimsAggregate.class);
+        final ClaimsByTransactionAggregate claimsByTransactionAggregate = mock(ClaimsByTransactionAggregate.class);
 
         when(principal.getName()).thenReturn("hfgj");
         when(claimRepository.findByRequestId(requestId)).thenReturn(claims);
         when(mappers.mapList(eq(Claim.class), eq(ClaimDto.class), same(claims))).thenReturn(claimDtos);
-        when(claimDtoAggregator.aggregateClaims(same(claimDtos))).thenReturn(claimsAggregate);
+        when(claimDtoAggregator.aggregateClaims(same(claimDtos))).thenReturn(claimsByTransactionAggregate);
 
-        final ClaimsAggregate result = claimService.getAggregatedClaimsForRequest(requestId);
+        final ClaimsByTransactionAggregate result = claimService.getAggregatedClaimsForRequest(requestId);
 
-        assertThat(result).isSameAs(claimsAggregate);
+        assertThat(result).isSameAs(claimsByTransactionAggregate);
     }
 }

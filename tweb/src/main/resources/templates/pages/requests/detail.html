@@ -206,18 +206,44 @@
                                     <div class="request-details__transaction">
                                         <a th:if="${claim.transactionHash}" th:href="${@environment.getProperty('io.fundrequest.etherscan.basepath') + '/tx/' + claim.transactionHash}">View transaction</a>
                                     </div>
-                                    <div class="request-details__fund" th:if="${claim.tokenValue.tokenSymbol eq 'FND'}">
+                                    <div class="request-details__fund" th:if="${claim.fndValue ne null}">
                                         <span class="request-details__fund-amount"
-                                              th:text="${#numbers.formatDecimal(claim.tokenValue.totalAmount, 1, 'COMMA', 2, 'POINT')}">100,00</span>
+                                              th:text="${#numbers.formatDecimal(claim.fndValue.totalAmount, 1, 'COMMA', 2, 'POINT')}">100,00</span>
                                         <span class="request-details__fund-currency"
-                                              th:text="${claim.tokenValue.tokenSymbol}">FND</span>
+                                              th:text="${claim.fndValue.tokenSymbol}">FND</span>
                                     </div>
-                                    <div class="request-details__fund" th:if="${claim.tokenValue.tokenSymbol ne 'FND'}">
+                                    <div class="request-details__fund" th:if="${claims.fndValue ne null and claim.fndValue eq null}">
                                         <span class="request-details__fund-amount"
-                                              th:text="${#numbers.formatDecimal(claim.tokenValue.totalAmount, 1, 'COMMA', 2, 'POINT')}">100,00</span>
+                                              th:text="${#numbers.formatDecimal(0, 1, 'COMMA', 2, 'POINT')}">100,00</span>
                                         <span class="request-details__fund-currency"
-                                              th:text="${claim.tokenValue.tokenSymbol}">FND</span>
+                                              th:text="${claims.fndValue.tokenSymbol}">FND</span>
                                     </div>
+                                    <div class="request-details__fund" th:if="${claim.otherValue ne null}">
+                                        <span class="request-details__fund-amount"
+                                              th:text="${#numbers.formatDecimal(claim.otherValue.totalAmount, 1, 'COMMA', 2, 'POINT')}">100,00</span>
+                                        <span class="request-details__fund-currency"
+                                              th:text="${claim.otherValue.tokenSymbol}">FND</span>
+                                    </div>
+                                    <div class="request-details__fund" th:if="${claims.otherValue ne null and claim.otherValue eq null}">
+                                        <span class="request-details__fund-amount"
+                                              th:text="${#numbers.formatDecimal(0, 1, 'COMMA', 2, 'POINT')}">100,00</span>
+                                        <span class="request-details__fund-currency"
+                                              th:text="${claims.otherValue.tokenSymbol}">FND</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="request-funding__subtotal">
+                                <div class="request-details__label">
+                                    Subtotal
+                                </div>
+                                <div class="request-details__fund" th:if="${claims.fndValue != null}">
+                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(claims.fndValue.totalAmount, 1, 'COMMA', 2, 'POINT')}">100,00</span>
+                                    <span class="request-details__fund-currency" th:text="${claims.fndValue.tokenSymbol}">FND</span>
+                                </div>
+                                <div class="request-details__fund" th:if="${claims.otherValue != null}">
+                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(claims.otherValue.totalAmount,1,'COMMA',2,'POINT')}">100,00</span>
+                                    <span class="request-details__fund-currency" th:text="${claims.otherValue.tokenSymbol}">XYZ</span>
                                 </div>
                             </div>
 
@@ -226,8 +252,7 @@
                                     <span>Total</span>
                                 </div>
                                 <div class="request-details__price" th:if="${claims.usdValue != null}">
-                                    <span class="request-details__fund-amount"
-                                          th:text="${#numbers.formatDecimal(claims.usdValue, 1, 'COMMA', 2, 'POINT')}">58</span>
+                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(claims.usdValue, 1, 'COMMA', 2, 'POINT')}">58</span>
                                     <span class="request-details__fund-currency">USD</span>
                                     <span class="disclaimer-asterix">*</span>
                                 </div>

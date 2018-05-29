@@ -8,7 +8,7 @@ import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
-import io.fundrequest.core.request.claim.dto.ClaimsAggregate;
+import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.FundService;
@@ -126,7 +126,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final RequestDto requestDto = mock(RequestDto.class);
         final RequestDetailsView requestDetailsView = mock(RequestDetailsView.class);
         final FundersDto fundersDto = mock(FundersDto.class);
-        final ClaimsAggregate claims = mock(ClaimsAggregate.class);
+        final ClaimsByTransactionAggregate claims = mock(ClaimsByTransactionAggregate.class);
         final List<CommentDto> commentDtos = new ArrayList<>();
         final ArrayList<FaqItemDto> faqs = new ArrayList<>();
 

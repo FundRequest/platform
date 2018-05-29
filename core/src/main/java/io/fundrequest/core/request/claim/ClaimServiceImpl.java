@@ -5,7 +5,7 @@ import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
 import io.fundrequest.core.request.claim.dto.ClaimDto;
-import io.fundrequest.core.request.claim.dto.ClaimsAggregate;
+import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
 import io.fundrequest.core.request.claim.event.ClaimRequestedEvent;
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
@@ -75,7 +75,7 @@ class ClaimServiceImpl implements ClaimService {
 
     @Override
     @Transactional(readOnly = true)
-    public ClaimsAggregate getAggregatedClaimsForRequest(final long requestId) {
+    public ClaimsByTransactionAggregate getAggregatedClaimsForRequest(final long requestId) {
         return claimDtoAggregator.aggregateClaims(mappers.mapList(Claim.class, ClaimDto.class, claimRepository.findByRequestId(requestId)));
     }
 
