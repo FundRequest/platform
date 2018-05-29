@@ -2,13 +2,13 @@ package io.fundrequest.core.request.erc67;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ERC67 {
     private String network = "ethereum";
     private String address;
-    private Map<String, String> parameters = new HashMap<>();
+    private Map<String, String> parameters = new LinkedHashMap<>();
 
     public String visualize() {
         require(address);

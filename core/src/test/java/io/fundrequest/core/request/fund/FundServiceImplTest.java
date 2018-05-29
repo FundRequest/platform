@@ -3,6 +3,7 @@ package io.fundrequest.core.request.fund;
 
 import io.fundrequest.core.contract.service.FundRequestContractsService;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.domain.BlockchainEvent;
 import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
@@ -82,17 +83,17 @@ public class FundServiceImplTest {
         UserProfile user = UserProfileMother.davy();
         funder = user::getId;
         when(profileService.getUserProfile(funder.getName())).thenReturn(user);
-        fundService = new FundServiceImpl(
-                fundRepository,
-                pendingFundRepository,
-                requestRepository,
-                mappers,
-                eventPublisher,
-                cacheManager,
-                tokenInfoService,
-                fundRequestContractsService,
-                profileService,
-                fiatService);
+        fundService = new FundServiceImpl(fundRepository,
+                                          pendingFundRepository,
+                                          requestRepository,
+                                          mappers,
+                                          eventPublisher,
+                                          cacheManager,
+                                          tokenInfoService,
+                                          fundRequestContractsService,
+                                          profileService,
+                                          fiatService
+        );
     }
 
     @Test
@@ -127,7 +128,8 @@ public class FundServiceImplTest {
         final FundsAddedCommand command = FundsAddedCommand.builder()
                                                            .requestId(request.getId())
                                                            .amountInWei(BigDecimal.TEN)
-                                                           .transactionId("trans_id")
+                                                           .blockchainEventId(465L)
+                                                           .transactionHash("trans_hash")
                                                            .funderAddress("address")
                                                            .timestamp(LocalDateTime.now())
                                                            .token("token")
@@ -135,12 +137,13 @@ public class FundServiceImplTest {
         final FundDto fundDto = new FundDto();
         final RequestDto requestDto = new RequestDto();
         final Cache cache = mock(Cache.class);
+        final BlockchainEvent blockchainEvent = mock(BlockchainEvent.class);
 
         when(requestRepository.findOne(request.getId())).thenReturn(Optional.of(request));
         when(mappers.map(eq(Fund.class), eq(FundDto.class), any(Fund.class))).thenReturn(fundDto);
         when(mappers.map(eq(Request.class), eq(RequestDto.class), any(Request.class))).thenReturn(requestDto);
         when(cacheManager.getCache("funds")).thenReturn(cache);
-        when(pendingFundRepository.findByTransactionHash(command.getTransactionId())).thenReturn(Optional.of(PendingFund.builder().userId(funder.getName()).build()));
+        when(pendingFundRepository.findByTransactionHash(command.getTransactionHash())).thenReturn(Optional.of(PendingFund.builder().userId(funder.getName()).build()));
 
         fundService.addFunds(command);
 
@@ -274,11 +277,12 @@ public class FundServiceImplTest {
         assertThat(event.getRequestId()).isEqualTo(requestId);
     }
 
-    private void verifyFundsSaved(FundsAddedCommand command, Principal funder) {
+    private void verifyFundsSaved(final FundsAddedCommand command, final Principal funder) {
         ArgumentCaptor<Fund> fundArgumentCaptor = ArgumentCaptor.forClass(Fund.class);
         verify(fundRepository).saveAndFlush(fundArgumentCaptor.capture());
         assertThat(fundArgumentCaptor.getValue().getRequestId()).isEqualTo(command.getRequestId());
         assertThat(fundArgumentCaptor.getValue().getAmountInWei()).isEqualTo(command.getAmountInWei());
         assertThat(fundArgumentCaptor.getValue().getFunderUserId()).isEqualTo(funder.getName());
+        assertThat(fundArgumentCaptor.getValue().getBlockchainEventId()).isEqualTo(command.getBlockchainEventId());
     }
 }

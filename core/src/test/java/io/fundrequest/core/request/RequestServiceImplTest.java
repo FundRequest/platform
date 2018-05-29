@@ -19,6 +19,7 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestType;
+import io.fundrequest.core.request.erc67.Erc67Generator;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
@@ -68,6 +69,7 @@ public class RequestServiceImplTest {
     private ApplicationEventPublisher eventPublisher;
     private ProfileService profileService;
     private Environment environment;
+    private Erc67Generator erc67Generator;
 
     @Before
     public void setUp() {
@@ -79,13 +81,14 @@ public class RequestServiceImplTest {
         githubClaimResolver = mock(GithubClaimResolver.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
         claimRepository = mock(ClaimRepository.class);
+        erc67Generator = mock(Erc67Generator.class);
         environment = mock(Environment.class);
         requestService = new RequestServiceImpl(
                 requestRepository,
                 mappers,
                 githubLinkParser,
                 profileService,
-                claimRepository, githubGateway, githubClaimResolver, eventPublisher, environment);
+                claimRepository, githubGateway, githubClaimResolver, eventPublisher, erc67Generator, environment);
     }
 
     @Test
@@ -109,18 +112,19 @@ public class RequestServiceImplTest {
         final CreateERC67FundRequest erc67 = CreateERC67FundRequest
                 .builder()
                 .amount(new BigInteger("100"))
-                .fundrequestAddress("0x00000000000000000000000000000000deadbeef")
                 .tokenAddress("0x0000000000000000000000000000000000000000")
                 .platform("github")
                 .platformId("1")
-                .decimals(18)
                 .build();
+
+        when(erc67Generator.toByteData(erc67)).thenReturn("0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
 
         assertThat(requestService.generateERC67(erc67))
                 .isEqualTo(
-                        "ethereum:0x0000000000000000000000000000000000000000?data"
-                        +
-                        "=0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000&gas=150000");
+                        "ethereum:0x0000000000000000000000000000000000000000"
+                        + "?value=0"
+                        + "&gas=150000"
+                        + "&data=0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
     }
 
     @Test
@@ -298,14 +302,15 @@ public class RequestServiceImplTest {
 
     @Test
     public void requestClaimed() {
-        RequestClaimedCommand command = new RequestClaimedCommand();
+        final RequestClaimedCommand command = new RequestClaimedCommand();
         command.setTimestamp(LocalDateTime.now());
         command.setSolver("davyvanroy");
         command.setPlatform(Platform.GITHUB);
         command.setPlatformId("1");
-        Request request = RequestMother.freeCodeCampNoUserStories().build();
-        RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
-        ClaimDto claimDto = ClaimDtoMother.aClaimDto();
+        command.setBlockchainEventId(6453L);
+        final Request request = RequestMother.freeCodeCampNoUserStories().build();
+        final RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
+        final ClaimDto claimDto = ClaimDtoMother.aClaimDto();
         when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.of(request));
         when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
         when(mappers.map(eq(Claim.class), eq(ClaimDto.class), any(Claim.class))).thenReturn(claimDto);
@@ -334,12 +339,13 @@ public class RequestServiceImplTest {
         assertThat(comments.get(0)).isEqualTo(expected);
     }
 
-    private void verifyClaimEventPublished(RequestClaimedCommand command, RequestDto requestDto, ClaimDto claimDto) {
-        ArgumentCaptor<RequestClaimedEvent> captor = ArgumentCaptor.forClass(RequestClaimedEvent.class);
+    private void verifyClaimEventPublished(final RequestClaimedCommand command, final RequestDto requestDto, final ClaimDto claimDto) {
+        final ArgumentCaptor<RequestClaimedEvent> captor = ArgumentCaptor.forClass(RequestClaimedEvent.class);
         verify(eventPublisher).publishEvent(captor.capture());
         assertThat(captor.getValue().getSolver()).isEqualTo(command.getSolver());
         assertThat(captor.getValue().getRequestDto()).isEqualTo(requestDto);
         assertThat(captor.getValue().getTimestamp()).isEqualTo(command.getTimestamp());
         assertThat(captor.getValue().getClaimDto()).isEqualTo(claimDto);
+        assertThat(captor.getValue().getBlockchainEventId()).isEqualTo(command.getBlockchainEventId());
     }
 }
