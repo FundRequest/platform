@@ -2,7 +2,7 @@ FROM frolvlad/alpine-oraclejdk8:slim
 
 VOLUME /tmp
 ADD target/tweb-0.0.1-SNAPSHOT.jar fundrequest.jar
-ADD libs/dd-java-agent.jar dd-java-agent.jar
+ADD ../libs/dd-java-agent.jar dd-java-agent.jar
 RUN sh -c 'touch /fundrequest.jar' && \
     mkdir config
 
