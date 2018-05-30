@@ -154,7 +154,7 @@ export default class Utils {
                 .exec(value.trim()) != null;
         },
         number: (value) => {
-            return /^[0-9]{1,3}(,[0-9]{3})*(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
+            return /^[0-9]+(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
         }
     };
     
@@ -200,9 +200,6 @@ export default class Utils {
                 case 'number':
                     isValid = isValid && Utils._validateNumber(value);
                     break;
-                case 'positiveNumber':
-                    isValid = isValid && Utils._validatePositiveNumber(value);
-                    break;
                 case 'github':
                     isValid = isValid && await Utils._validateGithub(value);
                     break;
@@ -218,10 +215,6 @@ export default class Utils {
 
     private static _validateNumber(value: string): boolean {
         return value.trim().length <= 0 || Utils.validators.number(value);
-    }
-
-    private static _validatePositiveNumber(value: string): boolean {
-        return Utils._validateNumber(value) && Number(value.trim().replace(/,/g, "")) > 0;
     }
 
     private static async _validateGithub(value: string): Promise<boolean> {
