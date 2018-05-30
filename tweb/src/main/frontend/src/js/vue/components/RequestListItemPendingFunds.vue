@@ -47,7 +47,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import ToCrypto from '../filters/formatters/ToCrypto';
+    import ToCrypto from "../filters/formatters/ToCrypto";
     import ToUsd from "../filters/formatters/ToUsd";
     import {RequestListItemPendingFundDto} from "../dtos/RequestListItemPendingFundDto";
     import FontSizeFit from "./FontSizeFit";
@@ -72,11 +72,15 @@
             null;
         }
 
+        public gotoDetails(target, id) {
+            //console.log(`pending list item id: ${id}`);
+        }
+
         public getGithubIssueUrl(platform: string, owner: string, repo: string, issueNumber: string) {
-            if ('GITHUB' == platform.toUpperCase()) {
+            if (platform && platform.toUpperCase() == "GITHUB") {
                 return `https://github.com/${owner}/${repo}/issues/${issueNumber}`;
             }
-            return "#";
+            return "";
         }
     }
 </script>
