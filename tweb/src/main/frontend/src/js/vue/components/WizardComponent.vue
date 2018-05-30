@@ -264,7 +264,7 @@
         }
 
         public get totalAmount() {
-            return this.fundAmountValue;
+            return this.fundAmount;
         }
 
         public get paymentMethods(): PaymentMethods {
