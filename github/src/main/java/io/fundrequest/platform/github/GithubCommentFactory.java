@@ -18,7 +18,7 @@ public class GithubCommentFactory {
 
     private static final String FUNDED_COMMENT_TEMPLATE =
             COMMENT_HEADER
-            + "This issue has been funded using [FundRequest](https://fundrequest.io). A developer can claim the reward by submitting a pull request referencing this issue. "
+            + "This issue has been funded using [FundRequest](%1$s/requests/%2$s). A developer can claim the reward by submitting a pull request referencing this issue. "
             + "([How to Close Issues via Pull Requests?](https://help.github.com/articles/closing-issues-using-keywords)) e.g. `fixes #%3$s`"
             + LINE_BREAK
             + LINE_BREAK
@@ -35,7 +35,7 @@ public class GithubCommentFactory {
 
     private static final String CLOSED_COMMENT_TEMPLATE =
             COMMENT_HEADER
-            + "Thank you @%3$s for your code contribution. The reward linked to this issue has been transferred to your account."
+            + "Thank you @%3$s for your code contribution. [The reward linked to this issue](%1$s/requests/%2$s) has been transferred to your account."
             + LINE_BREAK
             + COMMENT_FOOTER;
 
