@@ -10,14 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Map;
-
 @Controller
 public class FundController extends AbstractController {
+    private static final String FAQ_FUND_GITHUB = "fundGithub";
 
-    public static final String FAQ_FUND_GITHUB = "fundGithub";
-    private RequestService requestService;
     private final FAQService faqService;
+    private final RequestService requestService;
 
     public FundController(final RequestService requestService, final FAQService faqService) {
         this.requestService = requestService;
@@ -25,9 +23,9 @@ public class FundController extends AbstractController {
     }
 
     @RequestMapping("/fund/{type}")
-    public ModelAndView details(@PathVariable String type, @RequestParam Map<String, String> queryParameters) {
+    public ModelAndView details(@PathVariable String type, @RequestParam(name = "url", required = false) String url) {
         return modelAndView()
-                .withObject("url", queryParameters.get("url"))
+                .withObject("url", url)
                 .withObject("faqs", faqService.getFAQsForPage(FAQ_FUND_GITHUB))
                 .withView("pages/fund/" + type)
                 .build();

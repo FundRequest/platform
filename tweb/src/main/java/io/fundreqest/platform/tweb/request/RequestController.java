@@ -27,7 +27,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -38,12 +44,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static io.fundrequest.core.request.domain.Platform.GITHUB;
+
 @Controller
 @Slf4j
 public class RequestController extends AbstractController {
 
-    public static final String FAQ_REQUESTS_PAGE = "requests";
-    public static final String FAQ_REQUEST_DETAIL_PAGE = "requestDetail";
+    private static final String FAQ_REQUESTS_PAGE = "requests";
+    private static final String FAQ_REQUEST_DETAIL_PAGE = "requestDetail";
 
     private final RequestService requestService;
     private final PendingFundService pendingFundService;
@@ -78,23 +86,17 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests")
-    public ModelAndView requests(Principal principal, @RequestParam Map<String, String> queryParameters, Model model) {
-        String url = queryParameters.get("url");
-        if (url != null) {
-            return details(principal, requestService.findRequest(url).getId(), model);
-        } else {
-            final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
-            final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
-            return modelAndView()
-                    .withObject("requestsPerFaseCount", requestsPerFaseCount)
-                    .withObject("requests", getAsJson(requests))
-                    .withObject("statistics", statisticsService.getStatistics())
-                    .withObject("projects", getAsJson(requestService.findAllProjects()))
-                    .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
-                    .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUESTS_PAGE))
-                    .withView("pages/requests/index")
-                    .build();
-        }
+    public ModelAndView requests() {
+        final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
+        final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
+        return modelAndView().withObject("requestsPerFaseCount", requestsPerFaseCount)
+                             .withObject("requests", getAsJson(requests))
+                             .withObject("statistics", statisticsService.getStatistics())
+                             .withObject("projects", getAsJson(requestService.findAllProjects()))
+                             .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
+                             .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUESTS_PAGE))
+                             .withView("pages/requests/index")
+                             .build();
     }
 
     @RequestMapping("/requests/{type}")
@@ -108,7 +110,18 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/requests/{id}")
     public ModelAndView details(Principal principal, @PathVariable Long id, Model model) {
-        RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id));
+        final RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id));
+        return getDetailsModelAndView(principal, id, model, request);
+    }
+
+    @GetMapping("/requests/github/{owner}/{repo}/{number}")
+    public ModelAndView details(Principal principal, @PathVariable String owner, @PathVariable String repo, @PathVariable String number, Model model) {
+        final String platformId = owner + "|FR|" + repo + "|FR|" + number;
+        final RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(GITHUB, platformId));
+        return getDetailsModelAndView(principal, request.getId(), model, request);
+    }
+
+    private ModelAndView getDetailsModelAndView(final Principal principal, final Long id, final Model model, final RequestDetailsView request) {
         return modelAndView(model)
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))

@@ -15,7 +15,12 @@ import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.command.CreateRequestCommand;
-import io.fundrequest.core.request.domain.*;
+import io.fundrequest.core.request.domain.IssueInformation;
+import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.domain.Request;
+import io.fundrequest.core.request.domain.RequestBuilder;
+import io.fundrequest.core.request.domain.RequestStatus;
+import io.fundrequest.core.request.domain.RequestTechnology;
 import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
@@ -34,12 +39,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.ws.rs.NotSupportedException;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -137,38 +144,16 @@ class RequestServiceImpl implements RequestService {
     public List<CommentDto> getComments(Long requestId) {
         Request request = requestRepository.findOne(requestId).orElseThrow(() -> new EntityNotFoundException("Request not found"));
         return mappers.mapList(GithubIssueCommentsResult.class, CommentDto.class, githubGateway.getCommentsForIssue(request.getIssueInformation().getOwner(),
-                request.getIssueInformation().getRepo(),
-                request.getIssueInformation().getNumber()));
+                                                                                                                    request.getIssueInformation().getRepo(),
+                                                                                                                    request.getIssueInformation().getNumber()));
     }
 
     @Override
     @Transactional(readOnly = true)
     public RequestDto findRequest(Platform platform, String platformId) {
         Request request = requestRepository.findByPlatformAndPlatformId(platform, platformId)
-                .orElseThrow(ResourceNotFoundException::new);
+                                           .orElseThrow(ResourceNotFoundException::new);
         return mappers.map(Request.class, RequestDto.class, request);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public RequestDto findRequest(String url) {
-        if (url.startsWith("https://github.com")) {
-            String regex = "^https:\\/\\/github\\.com\\/(.+)\\/(.+)\\/issues\\/(\\d+)$";
-            String[] groups = getAllGroups(url, regex);
-
-            if (groups.length < 4) {
-                throw new NotSupportedException("This github-url is not correct or not supported at this time.");
-            }
-
-            String owner = groups[1];
-            String repo = groups[2];
-            String number = groups[3];
-            String platformId = owner + "|FR|" + repo + "|FR|" + number;
-
-            return this.findRequest(Platform.GITHUB, platformId);
-        } else {
-            throw new NotSupportedException("Only github-url's are supported at this time.");
-        }
     }
 
     @Override
@@ -187,16 +172,16 @@ class RequestServiceImpl implements RequestService {
         Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId()).orElseThrow(ResourceNotFoundException::new);
         request = updateStatus(request, RequestStatus.CLAIMED);
         Claim claim = claimRepository.save(ClaimBuilder.aClaim()
-                .withRequestId(request.getId())
-                .withSolver(command.getSolver())
-                .withTimestamp(command.getTimestamp())
-                .withAmountInWei(command.getAmountInWei())
-                .build());
+                                                       .withRequestId(request.getId())
+                                                       .withSolver(command.getSolver())
+                                                       .withTimestamp(command.getTimestamp())
+                                                       .withAmountInWei(command.getAmountInWei())
+                                                       .build());
         eventPublisher.publishEvent(new RequestClaimedEvent(command.getTransactionId(),
-                mappers.map(Request.class, RequestDto.class, request),
-                mappers.map(Claim.class, ClaimDto.class, claim),
-                command.getSolver(),
-                command.getTimestamp()));
+                                                            mappers.map(Request.class, RequestDto.class, request),
+                                                            mappers.map(Claim.class, ClaimDto.class, claim),
+                                                            command.getSolver(),
+                                                            command.getTimestamp()));
         return request;
     }
 
@@ -236,17 +221,6 @@ class RequestServiceImpl implements RequestService {
                 .visualize();
     }
 
-    private String[] getAllGroups(String str, String regex) {
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(str);
-        m.find();
-        String[] matches = new String[m.groupCount() + 1];
-        for (int i = 0; i < matches.length; i++) {
-            matches[i] = m.group(i);
-        }
-        return matches;
-    }
-
     private Request findOne(Long requestId) {
         return requestRepository.findOne(requestId).orElseThrow(ResourceNotFoundException::new);
     }
@@ -266,20 +240,20 @@ class RequestServiceImpl implements RequestService {
     private Request createNewRequest(CreateRequestCommand command) {
         IssueInformation issueInformation = githubLinkParser.parseIssue(command.getPlatformId());
         Request request = RequestBuilder.aRequest()
-                .withIssueInformation(issueInformation)
-                .withTechnologies(getTechnologies(issueInformation))
-                .build();
+                                        .withIssueInformation(issueInformation)
+                                        .withTechnologies(getTechnologies(issueInformation))
+                                        .build();
         return requestRepository.save(request);
     }
 
     private Set<RequestTechnology> getTechnologies(IssueInformation issueInformation) {
         Map<String, Long> languages = githubGateway.getLanguages(issueInformation.getOwner(), issueInformation.getRepo());
         return languages.entrySet()
-                .stream()
-                .map(l -> RequestTechnology.builder().technology(l.getKey()).weight(l.getValue()).build())
-                .sorted(Comparator.comparingLong(RequestTechnology::getWeight).reversed())
-                .limit(4)
-                .collect(Collectors.toSet());
+                        .stream()
+                        .map(l -> RequestTechnology.builder().technology(l.getKey()).weight(l.getValue()).build())
+                        .sorted(Comparator.comparingLong(RequestTechnology::getWeight).reversed())
+                        .limit(4)
+                        .collect(Collectors.toSet());
     }
 
     private Request updateStatus(final Request request, final RequestStatus newStatus) {

@@ -35,8 +35,6 @@ public interface RequestService {
 
     RequestDto findRequest(Platform platform, String platformId);
 
-    RequestDto findRequest(String url);
-
     Long createRequest(CreateRequestCommand command);
 
     Request requestClaimed(RequestClaimedCommand command);
