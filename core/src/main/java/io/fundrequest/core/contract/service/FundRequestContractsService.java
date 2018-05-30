@@ -16,6 +16,7 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -75,17 +76,17 @@ public class FundRequestContractsService {
                 .collect(Collectors.toList());
     }
 
-    private List<TokenInfoDto> getAllPossibleTokens() {
+    private Set<TokenInfoDto> getAllPossibleTokens() {
         try {
             final int amount = tokenWhitelistPreconditionContract.amountOftokens().send().intValue();
             return IntStream.range(0, amount)
                             .mapToObj(x -> tokenWhitelistPreconditionContract.token(BigInteger.valueOf(x))).filter(Optional::isPresent)
                             .map(Optional::get)
                             .map(x -> tokenInfoService.getTokenInfo(x))
-                            .collect(Collectors.toList());
+                            .collect(Collectors.toSet());
         } catch (final Exception exception) {
             log.debug("Unable to fetch all possible tokens from contract", exception);
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
     }
 }

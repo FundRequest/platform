@@ -1,5 +1,6 @@
 package io.fundreqest.platform.tweb.profile;
 
+import io.fundrequest.platform.faq.FAQService;
 import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.profile.github.GithubBountyService;
 import io.fundrequest.platform.profile.profile.ProfileService;
@@ -24,24 +25,28 @@ import java.security.Principal;
 
 @Controller
 public class ProfileController {
+    private static final String FAQ_PROFILE_KEY = "profile";
 
     private ApplicationEventPublisher eventPublisher;
     private ProfileService profileService;
     private ReferralService referralService;
     private GithubBountyService githubBountyService;
     private StackOverflowBountyService stackOverflowBountyService;
+    private final FAQService faqService;
 
 
     public ProfileController(final ApplicationEventPublisher eventPublisher,
                              final ProfileService profileService,
                              final ReferralService referralService,
                              final GithubBountyService githubBountyService,
-                             final StackOverflowBountyService stackOverflowBountyService) {
+                             final StackOverflowBountyService stackOverflowBountyService,
+                             final FAQService faqService) {
         this.eventPublisher = eventPublisher;
         this.profileService = profileService;
         this.referralService = referralService;
         this.githubBountyService = githubBountyService;
         this.stackOverflowBountyService = stackOverflowBountyService;
+        this.faqService = faqService;
     }
 
     @GetMapping("/profile")
@@ -59,6 +64,7 @@ public class ProfileController {
         mav.addObject("refLinkTwitter", URLEncoder.encode(getRefLink(principal, "twitter"), "UTF-8"));
         mav.addObject("refLinkLinkedin", URLEncoder.encode(getRefLink(principal, "linkedin"), "UTF-8"));
         mav.addObject("refLinkFacebook", URLEncoder.encode(getRefLink(principal, "facebook"), "UTF-8"));
+        mav.addObject("faqs", faqService.getFAQsForPage(FAQ_PROFILE_KEY));
         return mav;
     }
 

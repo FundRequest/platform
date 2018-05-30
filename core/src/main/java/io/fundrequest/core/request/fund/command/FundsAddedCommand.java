@@ -19,12 +19,13 @@ public class FundsAddedCommand {
     @DecimalMin(value = "0")
     private BigDecimal amountInWei;
 
-    private String transactionId;
+    private String transactionHash;
+
+    private Long blockchainEventId;
 
     private String token;
 
     private String funderAddress;
 
     private LocalDateTime timestamp;
-
 }

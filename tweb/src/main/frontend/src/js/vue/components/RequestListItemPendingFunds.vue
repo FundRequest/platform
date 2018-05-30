@@ -17,7 +17,7 @@
                     <span class="request-details__badge badge badge-pill badge--pending">pending</span>
                 </div>
                 <div class="request-details__icons">
-                    <a v-bind:href="getGithubIssueUrl(req.platform, req.owner, req.repo, req.number)"><i class="fab fa-github"></i></a>
+                    <a v-bind:href="getGithubIssueUrl(req.issueInformation.platform, req.issueInformation.owner, req.issueInformation.repo, req.issueInformation.number)"><i class="fab fa-github"></i></a>
                 </div>
             </div>
             <div class="request-details__funding-details">
@@ -47,7 +47,8 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import ToCrypto from '../filters/formatters/ToCrypto';
+    import ToCrypto from "../filters/formatters/ToCrypto";
+    import ToUsd from "../filters/formatters/ToUsd";
     import {RequestListItemPendingFundDto} from "../dtos/RequestListItemPendingFundDto";
     import FontSizeFit from "./FontSizeFit";
 
@@ -56,7 +57,8 @@
             FontSizeFit
         },
         filters: {
-            toCrypto: ToCrypto.filter
+            toCrypto: ToCrypto.filter,
+            toUsd: ToUsd.filter
         }
     })
     export default class RequestListItemPendingFund extends Vue {
@@ -70,11 +72,15 @@
             null;
         }
 
+        public gotoDetails(target, id) {
+            //console.log(`pending list item id: ${id}`);
+        }
+
         public getGithubIssueUrl(platform: string, owner: string, repo: string, issueNumber: string) {
-            if (platform.toUpperCase() == 'GITHUB') {
+            if (platform && platform.toUpperCase() == "GITHUB") {
                 return `https://github.com/${owner}/${repo}/issues/${issueNumber}`;
             }
-            return "#";
+            return "";
         }
     }
 </script>

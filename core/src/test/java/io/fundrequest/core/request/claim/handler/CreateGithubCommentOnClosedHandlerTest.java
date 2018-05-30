@@ -62,7 +62,13 @@ public class CreateGithubCommentOnClosedHandlerTest {
 
     @Test
     public void postsGithubComment_lessThan2CommentsPresent() {
-        final RequestClaimedEvent event = new RequestClaimedEvent("1324354", RequestDtoMother.freeCodeCampNoUserStories(), mock(ClaimDto.class), SOLVER, LocalDateTime.now());
+        final RequestClaimedEvent event = RequestClaimedEvent.builder()
+                                                             .blockchainEventId(1324354L)
+                                                             .requestDto(RequestDtoMother.freeCodeCampNoUserStories())
+                                                             .claimDto(mock(ClaimDto.class))
+                                                             .solver(SOLVER)
+                                                             .timestamp(LocalDateTime.now())
+                                                             .build();
         final RequestDto request = event.getRequestDto();
         final IssueInformationDto issueInformation = request.getIssueInformation();
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
@@ -86,7 +92,13 @@ public class CreateGithubCommentOnClosedHandlerTest {
 
     @Test
     public void postsGithubComment_2CommentsPresent() {
-        final RequestClaimedEvent event = new RequestClaimedEvent("1324354", RequestDtoMother.freeCodeCampNoUserStories(), mock(ClaimDto.class), SOLVER, LocalDateTime.now());
+        final RequestClaimedEvent event = RequestClaimedEvent.builder()
+                                                             .blockchainEventId(1324354L)
+                                                             .requestDto(RequestDtoMother.freeCodeCampNoUserStories())
+                                                             .claimDto(mock(ClaimDto.class))
+                                                             .solver(SOLVER)
+                                                             .timestamp(LocalDateTime.now())
+                                                             .build();
         final RequestDto request = event.getRequestDto();
         final IssueInformationDto issueInformation = request.getIssueInformation();
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
@@ -112,7 +124,13 @@ public class CreateGithubCommentOnClosedHandlerTest {
 
     @Test
     public void postsGithubComment_moreThan2CommentsPresent() {
-        final RequestClaimedEvent event = new RequestClaimedEvent("1324354", RequestDtoMother.freeCodeCampNoUserStories(), mock(ClaimDto.class), SOLVER, LocalDateTime.now());
+        final RequestClaimedEvent event = RequestClaimedEvent.builder()
+                                                             .blockchainEventId(1324354L)
+                                                             .requestDto(RequestDtoMother.freeCodeCampNoUserStories())
+                                                             .claimDto(mock(ClaimDto.class))
+                                                             .solver(SOLVER)
+                                                             .timestamp(LocalDateTime.now())
+                                                             .build();
         final RequestDto request = event.getRequestDto();
         final IssueInformationDto issueInformation = request.getIssueInformation();
         final ArgumentCaptor<CreateGithubComment> createGithubCommentArgumentCaptor = ArgumentCaptor.forClass(CreateGithubComment.class);
@@ -139,7 +157,13 @@ public class CreateGithubCommentOnClosedHandlerTest {
 
     @Test
     public void postsGithubComment_noSolverFound() {
-        final RequestClaimedEvent event = new RequestClaimedEvent("1324354", RequestDtoMother.freeCodeCampNoUserStories(), mock(ClaimDto.class), SOLVER, LocalDateTime.now());
+        final RequestClaimedEvent event = RequestClaimedEvent.builder()
+                                                             .blockchainEventId(1324354L)
+                                                             .requestDto(RequestDtoMother.freeCodeCampNoUserStories())
+                                                             .claimDto(mock(ClaimDto.class))
+                                                             .solver(SOLVER)
+                                                             .timestamp(LocalDateTime.now())
+                                                             .build();
         final RequestDto request = event.getRequestDto();
         final IssueInformationDto issueInformation = request.getIssueInformation();
 

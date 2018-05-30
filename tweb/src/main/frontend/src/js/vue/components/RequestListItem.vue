@@ -97,10 +97,10 @@
         }
 
         public getGithubIssueUrl(platform: string, owner: string, repo: string, issueNumber: string) {
-            if (platform.toUpperCase() == "GITHUB") {
+            if (platform && platform.toUpperCase() == "GITHUB") {
                 return `https://github.com/${owner}/${repo}/issues/${issueNumber}`;
             }
-            return "#no-link";
+            return "";
         }
     }
 </script>

@@ -17,8 +17,8 @@ public final class FundDtoMother {
 
     public static FundDto aFundDto() {
         return mapper.map(FundMother.fndFundFunderKnown()
-                .timestamp(LocalDateTime.of(2017, Month.DECEMBER, 27, 0, 0))
-                .build());
+                                    .timestamp(LocalDateTime.of(2017, Month.DECEMBER, 27, 0, 0))
+                                    .blockchainEventId(3465L)
+                                    .build());
     }
-
 }

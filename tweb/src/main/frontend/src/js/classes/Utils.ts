@@ -219,6 +219,9 @@ export default class Utils {
                 case 'eth-address':
                     isValid = isValid && Utils._validateEthAddress(value);
                     break;
+                case 'positiveNumber':
+                    isValid = isValid && Utils._validatePositiveNumber(value);
+                    break;
                 case 'github':
                     isValid = isValid && await Utils._validateGithub(value);
                     break;
@@ -238,6 +241,10 @@ export default class Utils {
 
     private static _validateEthAddress(value: string): boolean {
         return value.trim().length <= 0 || Utils.validators.ethAddress(value);
+    }
+
+    private static _validatePositiveNumber(value: string): boolean {
+        return Utils._validateNumber(value) && Number(value.trim()) > 0;
     }
 
     private static async _validateGithub(value: string): Promise<boolean> {
