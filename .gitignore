@@ -220,3 +220,4 @@ core/docker_data
 **/node_modules/**
 /tweb/src/main/frontend/src/js/contracts/
 
+!/libs/dd-java-agent.jar
