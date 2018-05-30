@@ -11,10 +11,12 @@
     import Utils from "../../classes/Utils";
     import {PendingFundCommand} from "../models/PendingFundCommand";
     import Alert from "../../classes/Alert";
+    import FaqItem from "./FaqItem";
 
     @Component({
         components: {
-            QrcodeVue
+            QrcodeVue,
+            FaqItem
         },
         directives: {
             money: VMoney
@@ -173,7 +175,7 @@
         }
 
         private get fundAmountValue(): number {
-            return Number(this.fundAmount.replace(/,/g, ''));
+            return Number(this.fundAmount.replace(/,/g, ""));
         }
 
         private _handleTransactionError(err): void {
@@ -230,7 +232,6 @@
                 platform: this.githubIssue.platform,
                 platformId: this.githubIssue.platformId,
                 amount: this.totalAmount,
-                fundrequestAddress: Contracts.getInstance().frContractAddress,
                 tokenAddress: Contracts.getInstance().tokenContractAddress
             })).erc67Link;
 

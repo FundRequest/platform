@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class RequestFundedEvent {
-    private final String transactionId;
     private final FundDto fundDto;
     private final Long requestId;
     private final LocalDateTime timestamp;

@@ -42,17 +42,17 @@ public class PendingFundService {
     }
 
     @Transactional
-    public void save(Principal principal, final PendingFundCommand command) {
+    public void save(final Principal principal, final PendingFundCommand command) {
         final IssueInformation issueInformation = githubLinkParser.parseIssue(command.getPlatformId());
-        PendingFund pf = PendingFund.builder()
-                                    .amount(toWei(command))
-                                    .description(command.getDescription())
-                                    .fromAddress(command.getFromAddress())
-                                    .tokenAddress(command.getTokenAddress())
-                                    .transactionhash(command.getTransactionId())
-                                    .issueInformation(issueInformation)
-                                    .userId(principal == null ? null : principal.getName())
-                                    .build();
+        final PendingFund pf = PendingFund.builder()
+                                          .amount(toWei(command))
+                                          .description(command.getDescription())
+                                          .fromAddress(command.getFromAddress())
+                                          .tokenAddress(command.getTokenAddress())
+                                          .transactionhash(command.getTransactionId())
+                                          .issueInformation(issueInformation)
+                                          .userId(principal == null ? null : principal.getName())
+                                          .build();
         pendingFundRepository.save(pf);
     }
 
@@ -72,12 +72,9 @@ public class PendingFundService {
     }
 
     @Transactional(readOnly = true)
-    public List<PendingFundDto> findByUser(Principal principal) {
-        return mappers.mapList(
-                PendingFund.class,
-                PendingFundDto.class,
-                pendingFundRepository.findByUserId(principal.getName())
-                              );
-
+    public List<PendingFundDto> findByUser(final Principal principal) {
+        return mappers.mapList(PendingFund.class,
+                               PendingFundDto.class,
+                               pendingFundRepository.findByUserId(principal.getName()));
     }
 }

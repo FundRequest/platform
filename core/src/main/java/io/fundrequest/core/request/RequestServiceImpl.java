@@ -22,6 +22,7 @@ import io.fundrequest.core.request.domain.RequestBuilder;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.domain.RequestTechnology;
 import io.fundrequest.core.request.erc67.ERC67;
+import io.fundrequest.core.request.erc67.Erc67Generator;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
@@ -60,6 +61,7 @@ class RequestServiceImpl implements RequestService {
     private GithubGateway githubGateway;
     private GithubClaimResolver githubClaimResolver;
     private ApplicationEventPublisher eventPublisher;
+    private Erc67Generator erc67Generator;
     private Environment environment;
 
     public RequestServiceImpl(final RequestRepository requestRepository,
@@ -70,7 +72,7 @@ class RequestServiceImpl implements RequestService {
                               final GithubGateway githubGateway,
                               final GithubClaimResolver githubClaimResolver,
                               final ApplicationEventPublisher eventPublisher,
-                              final Environment environment) {
+                              Erc67Generator erc67Generator, final Environment environment) {
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.githubLinkParser = githubLinkParser;
@@ -79,6 +81,7 @@ class RequestServiceImpl implements RequestService {
         this.githubGateway = githubGateway;
         this.githubClaimResolver = githubClaimResolver;
         this.eventPublisher = eventPublisher;
+        this.erc67Generator = erc67Generator;
         this.environment = environment;
     }
 
@@ -117,7 +120,7 @@ class RequestServiceImpl implements RequestService {
             request = updateStatus(request, RequestStatus.CLAIMABLE);
             eventPublisher.publishEvent(new RequestClaimableEvent(mappers.map(Request.class, RequestDto.class, request), LocalDateTime.now()));
         } else if (request.getStatus() == RequestStatus.CLAIMABLE && !result.isClaimable()) {
-            request = updateStatus(request, RequestStatus.FUNDED);
+            updateStatus(request, RequestStatus.FUNDED);
         }
         return result;
     }
@@ -168,20 +171,24 @@ class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     @CacheEvict(value = {"projects", "technologies"}, key = "'all'")
-    public Request requestClaimed(RequestClaimedCommand command) {
-        Request request = requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId()).orElseThrow(ResourceNotFoundException::new);
-        request = updateStatus(request, RequestStatus.CLAIMED);
-        Claim claim = claimRepository.save(ClaimBuilder.aClaim()
-                                                       .withRequestId(request.getId())
-                                                       .withSolver(command.getSolver())
-                                                       .withTimestamp(command.getTimestamp())
-                                                       .withAmountInWei(command.getAmountInWei())
+    public Request requestClaimed(final RequestClaimedCommand command) {
+        final Request request = updateStatus(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())
+                                                              .orElseThrow(ResourceNotFoundException::new),
+                                             RequestStatus.CLAIMED);
+        final Claim claim = claimRepository.save(ClaimBuilder.aClaim()
+                                                             .withRequestId(request.getId())
+                                                             .withSolver(command.getSolver())
+                                                             .withTimestamp(command.getTimestamp())
+                                                             .withAmountInWei(command.getAmountInWei())
+                                                             .withTokenHash(command.getTokenHash())
+                                                             .withBlockchainEventId(command.getBlockchainEventId())
+                                                             .build());
+        eventPublisher.publishEvent(RequestClaimedEvent.builder()
+                                                       .blockchainEventId(command.getBlockchainEventId())
+                                                       .requestDto(mappers.map(Request.class, RequestDto.class, request))
+                                                       .claimDto(mappers.map(Claim.class, ClaimDto.class, claim))
+                                                       .solver(command.getSolver()).timestamp(command.getTimestamp())
                                                        .build());
-        eventPublisher.publishEvent(new RequestClaimedEvent(command.getTransactionId(),
-                                                            mappers.map(Request.class, RequestDto.class, request),
-                                                            mappers.map(Claim.class, ClaimDto.class, claim),
-                                                            command.getSolver(),
-                                                            command.getTimestamp()));
         return request;
     }
 
@@ -212,11 +219,13 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     public String generateERC67(final CreateERC67FundRequest createERC67FundRequest) {
+
         return new ERC67.Builder()
                 .withAddress(createERC67FundRequest.getTokenAddress())
                 .withNetwork("ethereum")
-                .withParameter("data", createERC67FundRequest.toByteData())
+                .withParameter("value", "0")
                 .withParameter("gas", environment.getProperty("io.fundrequest.payments.erc67.gas", "200000"))
+                .withParameter("data", erc67Generator.toByteData(createERC67FundRequest))
                 .build()
                 .visualize();
     }
