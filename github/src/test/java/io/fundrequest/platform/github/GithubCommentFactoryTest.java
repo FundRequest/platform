@@ -11,7 +11,7 @@ public class GithubCommentFactoryTest {
             "[![](https://fundrequest.io/requests/156/badge)](https://fundrequest.io/requests/156)"
             + " [![](https://fundrequest.io/assets/img/powered-by-fundrequest-badge.svg)](https://fundrequest.io)"
             + "\r\n"
-            + "This issue has been funded using [FundRequest](https://fundrequest.io). A developer can claim the reward by submitting a pull request referencing this issue. "
+            + "This issue has been funded using [FundRequest](https://fundrequest.io/requests/156). A developer can claim the reward by submitting a pull request referencing this issue. "
             + "([How to Close Issues via Pull Requests?](https://help.github.com/articles/closing-issues-using-keywords)) e.g. `fixes #8765`"
             + "\r\n"
             + "\r\n* For more help on how to claim on issue, please visit our [help section](https://help.fundrequest.io)."
@@ -33,7 +33,7 @@ public class GithubCommentFactoryTest {
             "[![](https://fundrequest.io/requests/5473/badge)](https://fundrequest.io/requests/5473)"
             + " [![](https://fundrequest.io/assets/img/powered-by-fundrequest-badge.svg)](https://fundrequest.io)"
             + "\r\n"
-            + "Thank you @ljn-ytd for your code contribution. The reward linked to this issue has been transferred to your account."
+            + "Thank you @ljn-ytd for your code contribution. [The reward linked to this issue](https://fundrequest.io/requests/5473) has been transferred to your account."
             + "\r\n"
 //            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
             + "\r\n* Looking for more? Feel free to [browse](https://fundrequest.io/requests) through all funded requests.";
