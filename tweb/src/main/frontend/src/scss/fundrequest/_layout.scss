@@ -1,3 +1,11 @@
+:root, html {
+    font-size: 12px;
+
+    @include media-breakpoint-up(md) {
+        font-size: 16px;
+    }
+}
+
 body {
     min-height: 100vh;
     display: flex;
@@ -63,8 +71,8 @@ body {
         background-size: 250px 77px;
         background-position: left top;
         background-repeat: no-repeat;
-        height: 40px;
-        width: 260px;
+        height: 2.5rem;
+        width: 16.25rem;
     }
 
     &--fixed {
@@ -128,10 +136,10 @@ body {
 }
 
 .navbar-brand--fnd {
-    padding-bottom: 12px;
+    padding-bottom: 0.75rem;
 
     > img {
-        max-height: 30px;
+        max-height: 1.875rem;
     }
 }
 

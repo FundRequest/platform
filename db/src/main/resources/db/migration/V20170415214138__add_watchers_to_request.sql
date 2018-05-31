@@ -1,6 +1,6 @@
 CREATE TABLE request_watcher (
   request_id BIGINT,
-  email      VARCHAR(500),
+  email      VARCHAR(150),
   PRIMARY KEY (request_id, email),
   CONSTRAINT fk_watcher_request FOREIGN KEY (request_id) REFERENCES request (id)
 );
