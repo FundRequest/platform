@@ -127,6 +127,11 @@
                     valid = false;
                 }
             }
+            if (this.fundAmountValue < 0) {
+                this.errorMessages.fundAmount = `You have to fund more then 0 ${this.selectedToken.symbol}`;
+                Utils.setElementInvalid(element);
+                valid = false;
+            }
             return valid;
         }
 
