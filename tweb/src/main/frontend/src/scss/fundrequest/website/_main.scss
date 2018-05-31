@@ -1,36 +1,22 @@
 h1 {
-    font-size: 28px;
-    line-height: 32px;
-
-    @include media-breakpoint-up(md) {
-        font-size: 34px;
-        line-height: 40px;
-    }
+    font-size: 2.125rem;
+    line-height: 2.5rem;
 }
 
 h2 {
-    font-size: 24px;
-    line-height: 28px;
-
-    @include media-breakpoint-up(md) {
-        font-size: 30px;
-        line-height: 36px;
-    }
+    font-size: 1.875rem;
+    line-height: 2.25rem;
 }
 
 h3 {
-    font-size: 20px;
-    line-height: 26px;
+    font-size: 1.25rem;
+    line-height: 1.165rem;
 }
 
 p {
-    font-size: 18px;
-    line-height: 26px;
+    font-size: 1.25rem;
+    line-height: 1.165rem;
     font-weight: 400;
-
-    @include media-breakpoint-up(md) {
-        font-size: 20px;
-    }
 }
 
 h2 .svg-inline--fa {
@@ -39,8 +25,8 @@ h2 .svg-inline--fa {
 
 .footer {
     &__title {
-        margin: 0 0 10px 0;
-        font-size: 25px;
+        margin: 0 0 0.625rem 0;
+        font-size: 1.5625rem;
         font-weight: $font-weight-bold;
         text-transform: uppercase;
         color: $white;
@@ -52,8 +38,8 @@ h2 .svg-inline--fa {
     }
 
     &__link {
-        margin-bottom: 8px;
-        font-size: 21px;
+        margin-bottom: .5rem;
+        font-size: 1.3125rem;
         color: $white;
 
         &:hover {
@@ -142,7 +128,7 @@ h2 .svg-inline--fa {
 
     > svg {
         display: inline-block;
-        width: 180px;
+        width: 11.25rem;
 
         @include media-breakpoint-up(md) {
             width: 70%;

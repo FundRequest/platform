@@ -7,8 +7,8 @@
         h3 {
             margin: 0;
             color: #23a7e0;
-            font-size: 30px;
-            padding-bottom: 30px;
+            font-size: 1.875rem;
+            padding-bottom: 1.875rem;
             font-weight: $font-weight-bold;
         }
     }
@@ -18,15 +18,15 @@
     }
 
     &--partnership-logos {
-        height: 140px + 75px;
-        padding: 0 0 75px 0;
+        height: 8.75rem + 4.6875rem;
+        padding: 0 0 4.6875rem 0;
         background-color: $white;
         display: flex;
         align-items: center;
         justify-content: center;
 
         @include media-breakpoint-up(md) {
-            height: 140px;
+            height: 8.75rem;
             padding-bottom: 0;
         }
     }
@@ -52,8 +52,8 @@
         .nav-link {
             border-radius: 0;
             border-bottom: 2px solid transparent;
-            padding-bottom: 10px;
-            margin: 0 20px;
+            padding-bottom: 0.625rem;
+            margin: 0 1.25rem;
 
             &:hover {
                 border-bottom-color: $gray-500;
@@ -94,14 +94,14 @@
     justify-content: center;
     align-items: center;
     bottom: 0;
-    height: 50px;
+    height: 4.20rem;
     width: 100%;
     left: 0;
     margin: 0 auto;
     z-index: 99;
 
     @include media-breakpoint-up(md) {
-        height: 115px;
+        height: 7.1875rem;
     }
 
     &--top {
@@ -129,16 +129,16 @@
 
     &--header {
         text-align: center;
-        height: 80px;
+        height: 6.67rem;
         align-items: start;
 
         @include media-breakpoint-up(md) {
             padding-top: 10rem;
             padding-bottom: 10rem;
             min-height: 45rem;
-            height: 110px;
-            height: calc(100vh - 50px);
-            flex-basis: calc(100vh - 50px);
+            height: 6.875rem;
+            height: calc(100vh - 3.125rem);
+            flex-basis: calc(100vh - 3.125rem);
         }
 
         @media screen and (min-height: 900px) {
