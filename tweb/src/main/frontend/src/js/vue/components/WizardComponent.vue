@@ -98,8 +98,18 @@
                     let validations: string[] = fieldElement.dataset.formValidation.split(";");
                     valid = await Utils.validateHTMLElement(fieldElement, validations) && valid;
                 }
-                if (valid && step == 3 && this.paymentMethod == PaymentMethods.getInstance().dapp) {
-                    valid = await this._validateFundAmountBalance(formElements.find((el: HTMLInputElement) => el.name == "fundAmount") as HTMLInputElement);
+
+                if (valid && step == 3) {
+                    let element = formElements.find((el: HTMLInputElement) => el.name == "fundAmount") as HTMLInputElement;
+                    if (this.fundAmountValue > 0) {
+                        if (this.paymentMethod == PaymentMethods.getInstance().dapp) {
+                            valid = await this._validateFundAmountBalance(element);
+                        }
+                    } else {
+                        this.errorMessages.fundAmount = `You have to fund more then 0 ${this.selectedToken.symbol}`;
+                        Utils.setElementInvalid(element);
+                        valid = false;
+                    }
                 } else {
                     this.errorMessages.fundAmount = `Please enter a valid number, e.g.: 120.00`;
                 }
@@ -126,11 +136,6 @@
                     Utils.setElementInvalid(element);
                     valid = false;
                 }
-            }
-            if (this.fundAmountValue < 0) {
-                this.errorMessages.fundAmount = `You have to fund more then 0 ${this.selectedToken.symbol}`;
-                Utils.setElementInvalid(element);
-                valid = false;
             }
             return valid;
         }
