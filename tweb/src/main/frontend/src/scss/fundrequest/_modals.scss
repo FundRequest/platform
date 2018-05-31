@@ -130,7 +130,7 @@
     overflow: hidden;
 
     + .form-horizontal--border {
-        margin-top: 10px;
+        margin-top: 0.625rem;
     }
 
     label {
@@ -146,13 +146,13 @@
 
         .form-control-static,
         .control-label {
-            padding: 15px 20px;
-            line-height: 15px;
+            padding: 0.9375rem 1.25rem;
+            line-height: 0.9375rem;
         }
 
         .form-control-static--qr {
             .img-responsive {
-                width: 150px;
+                width: 9.375rem;
                 display: inline-block;
             }
         }
@@ -162,14 +162,14 @@
         }
 
         .control-label--image {
-            line-height: 30px;
+            line-height: 1.875rem;
             margin: 0;
         }
 
         .form-group__in-between {
-            font-size: 10px;
+            font-size: 0.625rem;
             display: inline-block;
-            margin: 0 5px;
+            margin: 0 0.3125rem;
         }
 
         .form-control-static {
@@ -189,9 +189,9 @@
                 border: 0 none;
                 box-shadow: none;
                 background-color: transparent;
-                padding-right: 8px;
-                height: 45px;
-                line-height: 45px;
+                padding-right: .5rem;
+                height: 2.8125rem;
+                line-height: 2.8125rem;
             }
         }
 
@@ -208,15 +208,15 @@
 
 .form-heading {
     position: relative;
-    line-height: 40px;
-    padding: 10px 15px;
+    line-height: 2.5rem;
+    padding: 0.062rem 0.9375rem;
     color: $primary;
     border-bottom: 1px solid $gray-100;
 }
 
 .form-heading__number,
 .form-heading__text {
-    line-height: 40px;
+    line-height: 2.5rem;
     display: inline-block;
 }
 
@@ -228,19 +228,19 @@
 .form-heading__info-text {
     color: $gray-800;
     display: table-cell;
-    padding-right: 10px;
+    padding-right: 0.625rem;
     vertical-align: middle;
-    font-size: 10px;
+    font-size: 0.625rem;
     font-weight: bold;
-    width: 100px;
-    line-height: 10px;
+    width: 6.25rem;
+    line-height: 0.625rem;
     text-align: right;
 }
 
 .form-heading__logo {
     display: table-cell;
-    height: 40px;
-    width: 40px;
+    height: 2.5rem;
+    width: 2.5rem;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;

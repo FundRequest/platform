@@ -100,12 +100,12 @@
         &-label {
             position: absolute;
             right: 0;
-            width: 75px;
-            height: 75px;
+            width: 4.6875rem;
+            height: 4.6875rem;
             top: 0;
             color: $white;
             text-transform: uppercase;
-            font-size: 8px;
+            font-size: .5rem;
             display: flex;
             justify-content: center;
             align-items: flex-end;
@@ -136,7 +136,7 @@
 
     &--social {
         h5.card-header {
-            line-height: 42px;
+            line-height: 2.625rem;
         }
     }
 
@@ -167,8 +167,8 @@
 .card-top-image {
     margin-left: 10%;
     margin-right: 10%;
-    margin-top: -20px;
-    height: 150px;
+    margin-top: -1.25rem;
+    height: 9.375rem;
     background-color: $blue-200;
     background-image: url("../img/error.png");
     background-size: contain;
