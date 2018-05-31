@@ -14,7 +14,7 @@
 
         <div class="collapse navbar-collapse navbar--fnd-primary" id="primary-menu">
             <ul class="navbar-nav text-center mr-md-auto">
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="isFullyAuthenticated()">
                     <a class="nav-link" th:href="@{/user/requests}">Your Requests</a>
                 </li>
                 <!--li class="nav-item">
