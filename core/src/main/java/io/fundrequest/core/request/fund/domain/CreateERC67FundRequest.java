@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -18,12 +18,12 @@ public class CreateERC67FundRequest {
     @NotEmpty
     private String platformId;
     @Min(0)
-    private BigInteger amount;
+    private BigDecimal amount;
     @NotNull
     private String tokenAddress;
 
     @Builder
-    public CreateERC67FundRequest(String platform, String platformId, BigInteger amount, String tokenAddress) {
+    public CreateERC67FundRequest(String platform, String platformId, BigDecimal amount, String tokenAddress) {
         this.platform = platform;
         this.platformId = platformId;
         this.amount = amount;
