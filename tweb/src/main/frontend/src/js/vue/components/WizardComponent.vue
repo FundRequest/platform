@@ -241,7 +241,7 @@
             this.qrData = (await Utils.postJSON(`/rest/requests/erc67/fund`, {
                 platform: this.githubIssue.platform,
                 platformId: this.githubIssue.platformId,
-                amount: this.totalAmount,
+                amount: this.totalAmountValue,
                 tokenAddress: Contracts.getInstance().tokenContractAddress
             })).erc67Link;
 
@@ -275,6 +275,10 @@
 
         public get totalAmount() {
             return this.fundAmount;
+        }
+
+        public get totalAmountValue() {
+            return this.fundAmountValue;
         }
 
         public get paymentMethods(): PaymentMethods {
