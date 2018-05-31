@@ -10,6 +10,7 @@ import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.datatypes.DynamicBytes;
 import org.web3j.abi.datatypes.Function;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static io.fundrequest.core.web3j.EthUtil.toWei;
@@ -55,7 +56,7 @@ public class Erc67Generator {
         return builder.toString();
     }
 
-    private BigInteger getRawValue(BigInteger amount, int decimals) {
-        return toWei(amount, decimals);
+    private BigInteger getRawValue(BigDecimal amount, int decimals) {
+        return toWei(amount, decimals).toBigInteger();
     }
 }
