@@ -6,7 +6,7 @@ import io.fundrequest.core.token.dto.TokenInfoDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -27,7 +27,7 @@ class Erc67GeneratorTest {
     public void toFunction() {
         CreateERC67FundRequest erc67FundRequest = CreateERC67FundRequest
                 .builder()
-                .amount(new BigInteger("100"))
+                .amount(new BigDecimal("100.837483"))
                 .tokenAddress("0x02F96eF85cAd6639500CA1cc8356F0b5CA5bF1D2")
                 .platform("github")
                 .platformId("1")
@@ -36,7 +36,7 @@ class Erc67GeneratorTest {
 
         String result = erc67Generator.toFunction(erc67FundRequest);
 
-        assertThat(result).isEqualTo("approveAndCall(address 0xC16a102813B7bD98b0BEF2dF28FFCaf1Fbee97c0, uint256 100000000000000000000, bytes 0x6769746875627c4141437c31)");
+        assertThat(result).isEqualTo("approveAndCall(address 0xC16a102813B7bD98b0BEF2dF28FFCaf1Fbee97c0, uint256 100837483000000000000, bytes 0x6769746875627c4141437c31)");
     }
 
 }
