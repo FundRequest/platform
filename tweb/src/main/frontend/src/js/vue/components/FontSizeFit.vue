@@ -31,6 +31,6 @@
 
 <style>
     .font-size-fit {
-        white-space: normal;
+        white-space: nowrap;
     }
 </style>
