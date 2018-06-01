@@ -202,7 +202,7 @@
             <div class="col-12">
                 <div class="card">
                     <div th:each="faq : ${faqs}" th:remove="tag">
-                        <faq-item th:attr="'v-bind:title'='&quot;' + ${faq.title} + '&quot;'">
+                        <faq-item th:attr="'v-bind:title'='&quot;' + ${faq.title} + '&quot;'" v-cloak="true">
                             <span th:utext="${faq.body}" th:remove="tag">FAQ body</span>
                         </faq-item>
                     </div>

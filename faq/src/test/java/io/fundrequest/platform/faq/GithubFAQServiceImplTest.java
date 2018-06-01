@@ -84,6 +84,37 @@ class GithubFAQServiceImplTest {
     }
 
     @Test
+    public void refreshFAQs_pageNullFaqs() throws IOException {
+        final String faqsXml = "fadgszdbg";
+
+        final Map<String, List<Faq>> pages = new HashMap<>();
+        final String pageName1 = "fghggfsshdg";
+        final String pageName2 = "gdx";
+        final String pageName3 = "khdaflk";
+        final List<Faq> faq2 = new ArrayList<>();
+        final List<Faq> faq3 = new ArrayList<>();
+        pages.put(pageName1, null);
+        pages.put(pageName2, faq2);
+        pages.put(pageName3, faq3);
+        final List<FaqItemDto> faqItems2 = Arrays.asList(mock(FaqItemDto.class), mock(FaqItemDto.class));
+        final List<FaqItemDto> faqItems3 = Arrays.asList(mock(FaqItemDto.class), null, mock(FaqItemDto.class));
+        final Cache cache = mock(Cache.class);
+
+        when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
+        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPages(pages));
+        when(faqItemDtoMapper.mapToList(same(faq2))).thenReturn(faqItems2);
+        when(faqItemDtoMapper.mapToList(same(faq3))).thenReturn(faqItems3);
+        doThrow(new NullPointerException()).when(faqItemDtoMapper).mapToList(null);
+        when(cacheManager.getCache("faqs")).thenReturn(cache);
+
+        service.refreshFAQs();
+
+        verify(cache).put(pageName1, new ArrayList<FaqItemDto>());
+        verify(cache).put(pageName2, faqItems2);
+        verify(cache).put(pageName3, faqItems3.stream().filter(Objects::nonNull).collect(toList()));
+    }
+
+    @Test
     public void getFAQsForPage() throws IOException {
         final String faqsXml = "fadgszdbg";
         final String pageName = "fghggfsshdg";
@@ -97,6 +128,20 @@ class GithubFAQServiceImplTest {
         final List<FaqItemDto> result = service.getFAQsForPage(pageName);
 
         assertThat(result).isEqualTo(faqItems.stream().filter(Objects::nonNull).collect(toList()));
+    }
+
+    @Test
+    public void getFAQsForPage_FAQsNull() throws IOException {
+        final String faqsXml = "fadgszdbg";
+        final String pageName = "fghggfsshdg";
+
+        when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
+        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage(pageName, null));
+        doThrow(new NullPointerException()).when(faqItemDtoMapper).mapToList(null);
+
+        final List<FaqItemDto> result = service.getFAQsForPage(pageName);
+
+        assertThat(result).isEmpty();
     }
 
     @Test

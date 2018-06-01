@@ -7,7 +7,8 @@ export class Web3x {
         if (typeof (<any>window).web3 !== 'undefined') {
             this._web3 = new (<any>window).Web3((<any>window).web3.currentProvider);
         } else {
-            (<any>window).web3 = new (<any>window).Web3(new (<any>window).Web3.providers.HttpProvider('https://kovan.fundrequest.io'));
+            let endpointUrl = document.head.querySelector("[name=\"ethereum:endpointUrl\"]");
+            (<any>window).web3 = new (<any>window).Web3(new (<any>window).Web3.providers.HttpProvider(endpointUrl));
             this._web3 = (<any>window).web3;
             // TODO: make app readonly, no transactions are possible
         }

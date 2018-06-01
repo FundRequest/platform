@@ -41,7 +41,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 50px;
+    min-height: 3.125rem;
     margin: 0;
     width: 100%;
     border-bottom: $alert-border-width solid rgba($success, .85);
@@ -96,10 +96,10 @@
     position: absolute;
     left: -1px;
     bottom: -1px;
-    height: 4px;
+    height: .25rem;
     background-color: #000000;
     opacity: 0.4;
-    border-radius: 4px;
+    border-radius: .25rem;
     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
     filter: alpha(opacity=40);
 }

@@ -1,6 +1,6 @@
 <template>
-    <div class="card-body faq faq--vue-collapse" v-if="id">
-        <h4 class="faq__title d-flex align-content-center justify-content-between" v-if="title"
+    <div class="card-body faq faq--vue-collapse" v-if="id != null">
+        <h4 class="faq__title d-flex align-items-start align-content-center justify-content-between" v-if="title"
             @click="showCollapse = !showCollapse"
             :class="showCollapse ? 'collapsed' : null"
             :aria-controls="id"
@@ -31,18 +31,10 @@
         @Prop() description?: string;
 
         public showCollapse = false;
-        public id: string = "";
+        public id: string = null;
 
         mounted() {
             this.id = Utils.generateUUID();
-        }
-
-        //public get intercomArticleHtml() {
-        //    return Utils.getHTML(Locations.getHelpPageUrl(this.intercom));
-        //}
-
-        public open() {
-
         }
     }
 </script>

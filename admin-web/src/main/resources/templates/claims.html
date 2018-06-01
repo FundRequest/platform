@@ -4,7 +4,7 @@
 <head>
     <title>Claims</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
-          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous" />
 </head>
 <body>
 <section layout:fragment="content">
@@ -32,10 +32,12 @@
                 <td th:text="${c.getFlagged()}"></td>
                 <td>
                     <div class="btn-group" role="group">
-                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-success btn-xs approve"><i
-                                class="fas fa-check"></i></button>
-                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-danger btn-xs decline"><i
-                                class="fas fa-times"></i></button>
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-success btn-xs approve">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-danger btn-xs decline">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                 </td>
             </tr>
@@ -67,10 +69,12 @@
                 <td th:text="${c.getFlagged()}"></td>
                 <td>
                     <div class="btn-group" role="group">
-                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-success btn-xs approve"><i
-                            class="fas fa-check"></i></button>
-                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-danger btn-xs decline"><i
-                            class="fas fa-times"></i></button>
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-success btn-xs approve">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-danger btn-xs decline">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                 </td>
             </tr>

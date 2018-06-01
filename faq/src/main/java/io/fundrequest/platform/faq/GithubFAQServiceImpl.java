@@ -2,6 +2,7 @@ package io.fundrequest.platform.faq;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.fundrequest.platform.faq.model.FaqItemDto;
+import io.fundrequest.platform.faq.parser.Faq;
 import io.fundrequest.platform.faq.parser.Faqs;
 import io.fundrequest.platform.github.GithubGateway;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class GithubFAQServiceImpl implements FAQService {
     public void refreshFAQs() {
         fetchFAQs().getPages()
                    .forEach(page -> cacheManager.getCache("faqs")
-                                                .put(page.getName(), filterNulls(faqItemDtoMapper.mapToList(page.getFaqs()))));
+                                                .put(page.getName(), processFAQs(page.getFaqs())));
         LOGGER.info("FAQ's are fetched from GitHub and stored in cache");
     }
 
@@ -64,7 +65,7 @@ public class GithubFAQServiceImpl implements FAQService {
         return fetchFAQs().getPages()
                           .stream()
                           .filter(page -> page.getName().equalsIgnoreCase(pageName))
-                          .findFirst().map(page -> filterNulls(faqItemDtoMapper.mapToList(page.getFaqs())))
+                          .findFirst().map(page -> processFAQs(page.getFaqs()))
                           .orElse(new ArrayList<>());
     }
 
@@ -74,6 +75,13 @@ public class GithubFAQServiceImpl implements FAQService {
         } catch (IOException e) {
             throw new RuntimeException("Something went wrong while trying to parse FAQ.xml", e);
         }
+    }
+
+    private List<FaqItemDto> processFAQs(List<Faq> faqs) {
+        if (faqs != null) {
+            return filterNulls(faqItemDtoMapper.mapToList(faqs));
+        }
+        return new ArrayList<>();
     }
 
     private List<FaqItemDto> filterNulls(final List<FaqItemDto> faqItems) {

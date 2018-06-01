@@ -1,5 +1,5 @@
 a.etherscan {
-    font-size: 12px
+    font-size: 0.75rem;
 }
 
 a.info {
@@ -7,24 +7,24 @@ a.info {
 }
 
 a.etherwallet-instructions {
-    font-size: 12px
+    font-size: 0.75rem;
 }
 
 .row--social-link > div {
-    margin-bottom: 60px;
+    margin-bottom: 3.75rem;
 }
 
 .cols-with-mb-30 > [class^="col-"] {
-    margin-bottom: 30px;
+    margin-bottom: 1.875rem;
 }
 
-@media screen and (min-width: 768px) {
+@include media-breakpoint-up(md) {
     a.top-nav-link {
         color: $white;
         display: block;
         text-align: center;
-        line-height: 40px;
-        padding: 10px 5px;
+        line-height: 2.5rem;
+        padding: 0.625rem 0.3125rem;
     }
 }
 

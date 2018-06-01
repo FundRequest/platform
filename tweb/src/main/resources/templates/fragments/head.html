@@ -12,12 +12,12 @@
         <meta name="contracts:FundRequestToken" content="" th:content="${@environment.getProperty('io.fundrequest.contract.token.address')}"/>
         <meta name="contracts:FundRequestContract" content="" th:content="${@environment.getProperty('io.fundrequest.contract.fund-request.address')}"/>
         <meta name="ethereum:network" content="" th:content="${@environment.getProperty('io.fundrequest.ethereum.network')}"/>
+        <meta name="ethereum:endpointUrl" content="" th:content="${@environment.getProperty('io.fundrequest.ethereum.endpoint.url')}"/>
 
         <!--/* TODO: Include extra css for specific pages
         {% for css in page.extra-css %}<link type="text/css" rel="stylesheet" href="{{ css }}?{{site.time | date: '%s%N'}}">
         {% endfor %}
         */-->
-
 
         <link type="text/css" rel="stylesheet" th:href="@{/assets/vendors/bootstrap/css/bootstrap.min.css}"/>
         <link type="text/css" rel="stylesheet" th:href="@{/assets/vendors/mdbootstrap/css/mdb.min.css}"/>

@@ -11,9 +11,9 @@ import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.fundrequest.core.web3j.EthUtil.fromWei;
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
+import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
 
 @Service
 class StatisticsServiceImpl implements StatisticsService {
@@ -51,12 +53,11 @@ class StatisticsServiceImpl implements StatisticsService {
 
         String mostFundedProject = getMostFunded(fundRepository.getAmountPerTokenPerProjectWhereRequestHasStatusFunded());
         String mostFundedTechnology = getMostFunded(fundRepository.getAmountPerTokenPerTechnologyWhereRequestHasStatusFunded());
-        return StatisticsDto
-                .builder()
-                .totalAvailableFunding(totalAvailableFunding)
-                .mostFundedProject(mostFundedProject)
-                .mostFundedTechnology(mostFundedTechnology)
-                .build();
+        return StatisticsDto.builder()
+                            .totalAvailableFunding(totalAvailableFunding)
+                            .mostFundedProject(mostFundedProject)
+                            .mostFundedTechnology(mostFundedTechnology)
+                            .build();
     }
 
     private String getMostFunded(List<Object[]> objects) {
@@ -72,12 +73,14 @@ class StatisticsServiceImpl implements StatisticsService {
                 .map(Map.Entry::getKey).orElse("");
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW, readOnly = true)
     public void onFunded(RequestFundedEvent fundedEvent) {
         refreshCache();
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW, readOnly = true)
     public void onClaimed(RequestClaimedEvent claimedEvent) {
         refreshCache();
     }
