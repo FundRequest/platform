@@ -6,7 +6,6 @@ import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.profile.github.GithubBountyService;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
-import io.fundrequest.platform.profile.ref.RefSignupEvent;
 import io.fundrequest.platform.profile.ref.ReferralService;
 import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
 import io.fundrequest.platform.profile.stackoverflow.dto.StackOverflowVerificationDto;
@@ -20,11 +19,9 @@ import java.util.ArrayList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ProfileControllerTest extends AbstractControllerTest<ProfileController> {
@@ -73,15 +70,4 @@ public class ProfileControllerTest extends AbstractControllerTest<ProfileControl
                .andExpect(model().attribute("faqs", new Same(faqs)));
     }
 
-    @Test
-    void showProfileEmitsEventWhenRefPresent() throws Exception {
-        String ref = "ref";
-
-        mockMvc.perform(get("/profile?ref=ref").principal(principal))
-               .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrl("/profile"));
-
-        RefSignupEvent expected = RefSignupEvent.builder().principal(principal).ref(ref).build();
-        verify(eventPublisher).publishEvent(expected);
-    }
 }
