@@ -1,7 +1,7 @@
 ## FundRequest Platform <img align="right" src="https://fundrequest.io/assets/img/logo.png" height="30px" />
 > Decentralized business support platform that fuels Open Source software development
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/FundRequest/platform/releases/tag/0.1.0)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/FundRequest/platform/releases/tag/1.0.0)
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/fcc8df1a9a881cc827ba/maintainability)](https://codeclimate.com/github/FundRequest/platform/maintainability)
 
