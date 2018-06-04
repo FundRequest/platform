@@ -1,6 +1,9 @@
 ### make sure no application properties are pushed ###
 application-*.properties
 !/tweb/src/main/resources/application-local.properties
+!/admin-web/src/main/resources/application-local.properties
+!/tweb/src/main/resources/application-credentials.properties
+!/admin-web/src/main/resources/application-credentials.properties
 core/.env
 web/src/main/web/technical-docs
 
@@ -222,4 +225,3 @@ core/docker_data
 /tweb/src/main/frontend/src/js/contracts/
 
 !/tweb/libs/dd-java-agent.jar
-
