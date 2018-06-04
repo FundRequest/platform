@@ -2,8 +2,7 @@
 application-*.properties
 !/tweb/src/main/resources/application-local.properties
 !/admin-web/src/main/resources/application-local.properties
-!/tweb/src/main/resources/application-credentials.properties
-!/admin-web/src/main/resources/application-credentials.properties
+
 core/.env
 web/src/main/web/technical-docs
 
