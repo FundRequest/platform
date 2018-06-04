@@ -4,6 +4,7 @@ import lombok.NonNull;
 import org.apache.commons.lang3.BooleanUtils;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +20,13 @@ import java.util.stream.Stream;
 class DummyKeycloakRepository implements KeycloakRepository {
 
 
+    private final String githubUsername;
     private UserRepresentation userRepresentation;
 
-    public DummyKeycloakRepository() {
+    public DummyKeycloakRepository(@Value("${local.github.username}") final String githubUsername,
+                                   @Value("${local.ethereum.kovan.address:0x0}") final String etherAddress) {
+        this.githubUsername = githubUsername;
+
         userRepresentation = new UserRepresentation();
         userRepresentation.setCreatedTimestamp(new Date().getTime());
         userRepresentation.setEmail("john.doe@mail.com");
@@ -31,14 +36,19 @@ class DummyKeycloakRepository implements KeycloakRepository {
         userRepresentation.setUsername("johndoe");
         userRepresentation.setEmailVerified(true);
         userRepresentation.setAttributes(new HashMap<>());
-        updateEtherAddress("", "0x0");
+
+        updateEtherAddress("", etherAddress);
         updateHeadline("", "CEO");
         updateTelegramName("", "telegram");
         updateVerifiedDeveloper("", true);
     }
 
     public Stream<UserIdentity> getUserIdentities(String userId) {
-        return Stream.empty();
+        return Stream.of(UserIdentity.builder()
+                                     .provider(Provider.GITHUB)
+                                     .username(githubUsername)
+                                     .userId("johndoeID")
+                                     .build());
     }
 
 
