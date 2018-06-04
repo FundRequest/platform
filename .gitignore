@@ -221,3 +221,5 @@ core/docker_data
 /tweb/src/main/frontend/src/js/contracts/
 
 !/tweb/libs/dd-java-agent.jar
+
+!/tweb/src/main/resources/application-local.properties
