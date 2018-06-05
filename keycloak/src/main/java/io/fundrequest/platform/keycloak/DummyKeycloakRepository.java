@@ -23,7 +23,7 @@ class DummyKeycloakRepository implements KeycloakRepository {
     private final String githubUsername;
     private UserRepresentation userRepresentation;
 
-    public DummyKeycloakRepository(@Value("${local.github.username}") final String githubUsername,
+    public DummyKeycloakRepository(@Value("${feign.client.github.username}") final String githubUsername,
                                    @Value("${local.ethereum.kovan.address:0x0}") final String etherAddress) {
         this.githubUsername = githubUsername;
 
