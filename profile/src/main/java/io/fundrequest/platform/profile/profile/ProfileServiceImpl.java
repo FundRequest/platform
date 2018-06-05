@@ -62,7 +62,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Cacheable(value = "user_profile", key = "#userId")
     public UserProfile getUserProfile(String userId) {
         Map<Provider, UserProfileProvider> providers = keycloakRepository.getUserIdentities(userId)
-                                                                         .collect(Collectors.toMap(UserIdentity::getProvider,
+                                                                             .collect(Collectors.toMap(UserIdentity::getProvider,
                                                                                                    x -> UserProfileProvider.builder()
                                                                                                                            .userId(x.getUserId())
                                                                                                                            .username(x.getUsername())

@@ -5,11 +5,9 @@ import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.profile.github.GithubBountyService;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
-import io.fundrequest.platform.profile.ref.RefSignupEvent;
 import io.fundrequest.platform.profile.ref.ReferralService;
 import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
 import io.fundrequest.platform.profile.stackoverflow.dto.StackOverflowVerificationDto;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,12 +48,7 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public ModelAndView showProfile(Principal principal, @RequestParam(value = "ref", required = false) String ref) throws Exception {
-        if (StringUtils.isNotBlank(ref)) {
-            eventPublisher.publishEvent(RefSignupEvent.builder().principal(principal).ref(ref).build());
-            return redirectToProfile();
-        }
-
+    public ModelAndView showProfile(Principal principal) throws Exception {
         final ModelAndView mav = new ModelAndView("pages/profile/index");
 
         mav.addObject("isVerifiedGithub", isVerifiedGithub(principal));
