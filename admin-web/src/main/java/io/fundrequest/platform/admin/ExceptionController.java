@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class ExceptionController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExceptionController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionController.class);
 
     // Total control - setup a model and return the view name yourself. Or
     // consider subclassing ExceptionHandlerExceptionResolver (see below).
     @ExceptionHandler(Exception.class)
     public ModelAndView handleError(HttpServletRequest req, Exception ex) {
-        logger.error("Request: " + req.getRequestURL() + " raised " + ex);
+        LOGGER.error("Request: " + req.getRequestURL() + " raised " + ex);
 
         ModelAndView mav = new ModelAndView();
         mav.addObject("exception", ex);
