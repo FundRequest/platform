@@ -52,7 +52,7 @@ Copy `tweb/src/main/resources/application-credentials.properties.template` to `t
 feign.client.github.username=<your github username>
 
 #create a developer access token on github: https://github.com/settings/tokens
-feign.client.github.password=<your github password>
+feign.client.github.password=<your github token>
 
 local.ethereum.kovan.address=<your ethereum address>
 
