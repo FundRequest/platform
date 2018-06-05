@@ -45,8 +45,8 @@ http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.h
 
 Make sure you set the `JAVA_HOME` environment variable: http://www.baeldung.com/java-home-on-windows-7-8-10-mac-os-x-linux
 
-### Clone repository
-Clone the repo to a directory
+### Fork and Clone the repository
+Fork the repository, to afterwards clone it to a local directory
 
 ### Run dependencies
 FundRequest has several dependencies to run locally:
@@ -70,6 +70,9 @@ feign.client.github.password=<your github token>
 local.ethereum.kovan.address=<your ethereum address>
 
 ```
+
+* To acquire Kovan ETH, just post your ETH address in this Gitter channel : https://gitter.im/kovan-testnet/faucet
+* To acquire Kovan FND, for now just ask us in our telegram channel : https://t.me/fundrequestofficial
 
 ### Start application
 You have 2 options to start the application. If you didn't work with maven/spring boot in the past, you can use the quick setup.
