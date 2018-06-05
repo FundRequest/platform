@@ -29,12 +29,7 @@ public class GithubSolverResolver {
     }
 
     private String getAuthor(final Element discussionItem, final String owner, final String repo) {
-        final String author = extractAuthorFromDiscussionItem(discussionItem);
-        return authorFound(author) ? author : fetchAuthorFromPullrequest(discussionItem, owner, repo);
-    }
-
-    private String extractAuthorFromDiscussionItem(final Element discussionItem) {
-        return discussionItem.select(".discussion-item a.author").text();
+        return fetchAuthorFromPullrequest(discussionItem, owner, repo);
     }
 
     private String fetchAuthorFromPullrequest(final Element discussionItem, final String owner, final String repo) {

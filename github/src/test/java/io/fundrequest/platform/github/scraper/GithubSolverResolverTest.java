@@ -44,6 +44,10 @@ public class GithubSolverResolverTest {
                                                                                       .build())
                                                 .build();
 
+        when(githubGateway.getPullrequest(owner, repo, pullrequestNumber)).thenReturn(GithubResult.builder()
+                                                                                                  .user(GithubUser.builder().login(solver).build())
+                                                                                                  .build());
+
         final String returnedSolver = parser.resolve(doc, owner, repo);
 
         assertThat(returnedSolver).isEqualTo(solver);
