@@ -1,2 +1,2 @@
 cd %~dp0
-mvn clean install -DskipTests=true
+mvnw.cmd clean install -DskipTests=true
