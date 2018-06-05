@@ -1,5 +1,5 @@
 # FundRequest Platform <img align="right" src="https://fundrequest.io/assets/img/logo.png" height="30px" />
-> Decentralized business support platform that fuels Open Source software development
+> Decentralized marketplace for Open Source software developement 
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/FundRequest/platform/releases/tag/1.0.0)
 
