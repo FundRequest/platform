@@ -19,6 +19,8 @@ To report a bug or request a feature or change please open a [new issue](https:/
 
 
 ## Setup guide
+> 0. [Install git](#install-git)
+> 1. [Install Node](#install-node)
 > 1. [Install java](#install-java)
 > 2. [Clone repository](#clone-repository)
 > 3. [Run dependencies](#run-dependencies)
@@ -26,6 +28,15 @@ To report a bug or request a feature or change please open a [new issue](https:/
 > 5. [Start application](#start-application)
 > 6. [Use application](#use-application)
 
+###Install Git
+If you don't have Git installed, you will need to this in order to build:
+https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+
+Make sure the git binary is on $PATH.
+
+###Install Node
+If you do not have Node installed, please install the latest LTS release:
+https://nodejs.org/en/
 
 ###Install java
 You need **Java 8** to run the platform. Please download and install from here:
@@ -34,11 +45,9 @@ http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.h
 
 Make sure you set the `JAVA_HOME` environment variable: http://www.baeldung.com/java-home-on-windows-7-8-10-mac-os-x-linux
 
-###Install Maven
-Maven is used as build tool, you can follow the default installation process on 
-https://maven.apache.org/install.html
 ###Clone repository
 Clone the repo to a directory
+
 ###Run dependencies
 FundRequest has several dependencies to run locally:
 - Database (MariaDB)
@@ -46,7 +55,8 @@ FundRequest has several dependencies to run locally:
 - Azrael (Solution from FundRequest to abstract blockchain related transactions)
 
 You can run these dependencies using Docker: https://www.docker.com/community-edition
-To start the dependencies, go inside the cloned repository and execute `runDependencies.sh`.
+
+**To start the dependencies, go inside the cloned repository and execute `runDependencies.sh`.**
 
 ### Configure application properties
 Copy `tweb/src/main/resources/application-credentials.properties.template` to `tweb/src/main/resources/application-credentials.properties` and edit properties:
@@ -67,7 +77,7 @@ If you have experience, please go to the import guide below.
 
 ####Quick
 To run the application, execute:
-1. `build.sh` on Linux/Mac and  `build.bat` on Windows. This script will build the entire project, if you make any changes, rerun this script.
+1. `build.sh` on Linux/Mac and  `build.bat` on Windows. This script will build the entire project, if you make any changes, rerun this script. Building the first time will take a bit longer.
 2. `runPlatform.sh` on Linux/Mac and  `runPlatform.bat`. This will run the platform, when rebuilding stop this script first.
 3. `runAdmin.sh` on Linux/Mac and  `runAdmin.bat`. This will run the admin panel, when rebuilding stop this script first.
 
