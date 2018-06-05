@@ -3,8 +3,9 @@ package io.fundrequest.platform.admin.claim.continuous;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.infrastructure.TrustedRepoRepository;
 import io.fundrequest.platform.admin.claim.service.ClaimModerationService;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,8 @@ import java.util.stream.Collectors;
 
 @Component
 @ConditionalOnProperty(value = "io.fundrequest.auto-claimer.enabled", havingValue = "true")
-@Slf4j
 public class AutoClaimer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AutoClaimer.class);
 
     private TrustedRepoRepository trustedRepoRepository;
     private ClaimModerationService claimModerationService;
@@ -41,7 +42,7 @@ public class AutoClaimer {
                                   try {
                                       claimModerationService.approveClaim(rc.getId());
                                   } catch (final Exception ex) {
-                                      log.debug("Unable to approve claim {}", ex.getMessage());
+                                      LOGGER.debug("Unable to approve claim {}", ex.getMessage());
                                   }
                               });
     }

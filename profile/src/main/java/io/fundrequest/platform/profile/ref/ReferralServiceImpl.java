@@ -13,6 +13,7 @@ import io.fundrequest.platform.profile.ref.dto.ReferralOverviewDto;
 import io.fundrequest.platform.profile.ref.dto.ShortUrlResult;
 import io.fundrequest.platform.profile.ref.infrastructure.ReferralRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -48,7 +49,7 @@ class ReferralServiceImpl implements ReferralService {
     public ReferralServiceImpl(ReferralRepository repository,
                                KeycloakRepository keycloakRepository,
                                BountyService bountyService,
-                               @Value("${io.fundrequest.profile.google-url-shortener-key}") String googleUrlShortenerKey) {
+                               @Value("${io.fundrequest.profile.google-url-shortener-key:}") String googleUrlShortenerKey) {
         this.repository = repository;
         this.keycloakRepository = keycloakRepository;
         this.bountyService = bountyService;
@@ -80,19 +81,25 @@ class ReferralServiceImpl implements ReferralService {
     @Cacheable("ref_links")
     public String generateRefLink(String userId, String source) {
         String longUrl = "https://fundrequest.io?ref=" + userId + "&utm_source=referral&utm_medium=" + source + "&utm_campaign=early_signup";
-        HttpClient httpclient = HttpClientBuilder.create().build();
-        HttpPost httpPost = new HttpPost("https://www.googleapis.com/urlshortener/v1/url?key=" + googleUrlShortenerKey);
-        httpPost.addHeader("Content-Type", "application/json");
-        try {
-            String json = "{\"longUrl\": \"" + longUrl + "\"}";
-            StringEntity entity = new StringEntity(json);
-            httpPost.setEntity(entity);
-            HttpResponse response = httpclient.execute(httpPost);
-            return objectMapper.readValue(EntityUtils.toString(response.getEntity()), ShortUrlResult.class).getId();
-        } catch (IOException e) {
-            log.error("Error creating short url", e);
+        if (StringUtils.isNotBlank(googleUrlShortenerKey)) {
+            HttpClient httpclient = HttpClientBuilder.create().build();
+            HttpPost httpPost = new HttpPost("https://www.googleapis.com/urlshortener/v1/url?key=" + googleUrlShortenerKey);
+            httpPost.addHeader("Content-Type", "application/json");
+            try {
+                String json = "{\"longUrl\": \"" + longUrl + "\"}";
+                StringEntity entity = new StringEntity(json);
+                httpPost.setEntity(entity);
+                HttpResponse response = httpclient.execute(httpPost);
+                return objectMapper.readValue(EntityUtils.toString(response.getEntity()), ShortUrlResult.class).getId();
+            } catch (IOException e) {
+                log.error("Error creating short url", e);
+                return longUrl;
+            }
+        } else {
             return longUrl;
         }
+
+
     }
 
     @Transactional(readOnly = true)
