@@ -27,26 +27,28 @@ public class GithubSolverResolverTest {
         final String owner = "tfjgk";
         final String repo = "hfcjgv";
         final String solver = "dfgh";
-        final String pullrequestNumber = "765";
+        final int pullrequestNumber = 765;
         final Document doc = DocumentMockBuilder.documentBuilder()
                                                 .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
                                                                                       .isPullRequest(false)
                                                                                       .build())
                                                 .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
-                                                                                      .isPullRequest(true, "53")
+                                                                                      .isPullRequest(true)
                                                                                       .isMerged(false)
                                                                                       .withAuthor("hgfcjgv")
+                                                                                      .withIssueNum(53, false)
                                                                                       .build())
                                                 .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
-                                                                                      .isPullRequest(true, pullrequestNumber)
+                                                                                      .isPullRequest(true)
                                                                                       .isMerged(true)
-                                                                                      .withAuthor(solver)
+                                                                                      .withAuthor("gdhfh")
+                                                                                      .withIssueNum(pullrequestNumber, false)
                                                                                       .build())
                                                 .build();
 
-        when(githubGateway.getPullrequest(owner, repo, pullrequestNumber)).thenReturn(GithubResult.builder()
-                                                                                                  .user(GithubUser.builder().login(solver).build())
-                                                                                                  .build());
+        when(githubGateway.getPullrequest(owner, repo, String.valueOf(pullrequestNumber))).thenReturn(GithubResult.builder()
+                                                                                                                  .user(GithubUser.builder().login(solver).build())
+                                                                                                                  .build());
 
         final String returnedSolver = parser.resolve(doc, owner, repo);
 
@@ -58,25 +60,27 @@ public class GithubSolverResolverTest {
         final String owner = "tfjgk";
         final String repo = "hfcjgv";
         final String solver = "dfgh";
-        final String pullrequestNumber = "765";
+        final int pullrequestNumber = 765;
         final Document doc = DocumentMockBuilder.documentBuilder()
                                                 .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
                                                                                       .isPullRequest(false)
                                                                                       .build())
                                                 .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
-                                                                                      .isPullRequest(true, "53")
+                                                                                      .isPullRequest(true)
                                                                                       .isMerged(false)
                                                                                       .withAuthor("hgfcjgv")
+                                                                                      .withIssueNum(53, false)
                                                                                       .build())
                                                 .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
-                                                                                      .isPullRequest(true, pullrequestNumber)
+                                                                                      .isPullRequest(true)
                                                                                       .isMerged(true)
                                                                                       .withAuthor("")
+                                                                                      .withIssueNum(pullrequestNumber, true)
                                                                                       .build())
                                                 .build();
-        when(githubGateway.getPullrequest(owner, repo, pullrequestNumber)).thenReturn(GithubResult.builder()
-                                                                                                  .user(GithubUser.builder().login(solver).build())
-                                                                                                  .build());
+        when(githubGateway.getPullrequest(owner, repo, String.valueOf(pullrequestNumber))).thenReturn(GithubResult.builder()
+                                                                                                                  .user(GithubUser.builder().login(solver).build())
+                                                                                                                  .build());
 
         final String returnedSolver = parser.resolve(doc, owner, repo);
 
@@ -118,7 +122,8 @@ public class GithubSolverResolverTest {
         final String repo = "hfcjgv";
         final Document doc = DocumentMockBuilder.documentBuilder()
                                                 .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
-                                                                                      .isPullRequest(true, "53")
+                                                                                      .isPullRequest(true)
+                                                                                      .withIssueNum(53, false)
                                                                                       .isMerged(false)
                                                                                       .withAuthor("hgfcjgv")
                                                                                       .build())
@@ -133,25 +138,27 @@ public class GithubSolverResolverTest {
     public void parse_noSolver() {
         final String owner = "tfjgk";
         final String repo = "hfcjgv";
-        final String pullrequestNumber = "43";
+        final int pullrequestNumber = 43;
         final Document doc = DocumentMockBuilder.documentBuilder()
                                                 .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
                                                                                       .isPullRequest(false)
                                                                                       .build())
                                                 .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
-                                                                                      .isPullRequest(true, "31")
+                                                                                      .isPullRequest(true)
                                                                                       .isMerged(false)
+                                                                                      .withIssueNum(31, false)
                                                                                       .withAuthor("ljhkgfdy")
                                                                                       .build())
                                                 .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
-                                                                                      .isPullRequest(true, pullrequestNumber)
+                                                                                      .isPullRequest(true)
                                                                                       .isMerged(true)
                                                                                       .withAuthor("")
+                                                                                      .withIssueNum(pullrequestNumber, true)
                                                                                       .build())
                                                 .build();
-        when(githubGateway.getPullrequest(owner, repo, pullrequestNumber)).thenReturn(GithubResult.builder()
-                                                                                                  .user(GithubUser.builder().login("").build())
-                                                                                                  .build());
+        when(githubGateway.getPullrequest(owner, repo, String.valueOf(pullrequestNumber))).thenReturn(GithubResult.builder()
+                                                                                                                  .user(GithubUser.builder().login("").build())
+                                                                                                                  .build());
 
         final String returnedSolver = parser.resolve(doc, owner, repo);
 
