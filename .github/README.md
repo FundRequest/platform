@@ -1,7 +1,7 @@
 # FundRequest Platform <img align="right" src="https://fundrequest.io/assets/img/logo.png" height="30px" />
 > Decentralized business support platform that fuels Open Source software development
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/FundRequest/platform/releases/tag/0.1.0)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/FundRequest/platform/releases/tag/1.0.0)
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/fcc8df1a9a881cc827ba/maintainability)](https://codeclimate.com/github/FundRequest/platform/maintainability)
 
@@ -28,27 +28,27 @@ To report a bug or request a feature or change please open a [new issue](https:/
 > 5. [Start application](#start-application)
 > 6. [Use application](#use-application)
 
-###Install Git
+### Install Git
 If you don't have Git installed, you will need to this in order to build:
 https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
 Make sure the git binary is on $PATH.
 
-###Install Node
+### Install Node
 If you do not have Node installed, please install the latest LTS release:
 https://nodejs.org/en/
 
-###Install java
+### Install java
 You need **Java 8** to run the platform. Please download and install from here:
 http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html 
 
 
 Make sure you set the `JAVA_HOME` environment variable: http://www.baeldung.com/java-home-on-windows-7-8-10-mac-os-x-linux
 
-###Clone repository
+### Clone repository
 Clone the repo to a directory
 
-###Run dependencies
+### Run dependencies
 FundRequest has several dependencies to run locally:
 - Database (MariaDB)
 - Message broker (RabbitMQ)
@@ -71,11 +71,11 @@ local.ethereum.kovan.address=<your ethereum address>
 
 ```
 
-###Start application
+### Start application
 You have 2 options to start the application. If you didn't work with maven/spring boot in the past, you can use the quick setup.
 If you have experience, please go to the import guide below.
 
-####Quick
+#### Quick
 To run the application, execute:
 1. `build.sh` on Linux/Mac and  `build.bat` on Windows. This script will build the entire project, if you make any changes, rerun this script. Building the first time will take a bit longer.
 2. `runPlatform.sh` on Linux/Mac and  `runPlatform.bat`. This will run the platform, when rebuilding stop this script first.
@@ -83,7 +83,7 @@ To run the application, execute:
 
 
 
-####Import
+#### Import
 The application is a standard maven / spring boot setup. For local development you have to start the application 
 with the spring profile `local`. 
 You can import the entire project using your favourite IDE.
@@ -99,7 +99,7 @@ io.fundrequest.platform.admin.AdminApplication.java
 ```
 
 
-##Use application
+## Use application
 
 The **platform** is available on `http://localhost:8080`
 
