@@ -4,14 +4,15 @@
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta name="description" content=""/><!--/* TODO: Description should be a variable */-->
+        <meta name="description" content="A decentralized marketplace for open source collaboration. FundRequest is a system for custom support that will boost the Open Source community as a whole – from developer to end user."/><!--/* TODO: Description should be a variable */-->
         <meta name="application-name" content="FundRequest"/>
-        <meta name="keywords" content=""/><!--/* TODO: Keywords should be a variable */-->
+        <meta name="keywords" content="fundrequest, ico, github funding, issue funding, funding, ethereum, eth"/><!--/* TODO: Keywords should be a variable */-->
         <meta name="robots" content="index, follow"/>
         <!--/* TODO: Robots should also be a variable, probably we don't want to index all pages */-->
         <meta name="contracts:FundRequestToken" content="" th:content="${@environment.getProperty('io.fundrequest.contract.token.address')}"/>
         <meta name="contracts:FundRequestContract" content="" th:content="${@environment.getProperty('io.fundrequest.contract.fund-request.address')}"/>
         <meta name="ethereum:network" content="" th:content="${@environment.getProperty('io.fundrequest.ethereum.network')}"/>
+        <meta name="ethereum:endpointUrl" content="" th:content="${@environment.getProperty('io.fundrequest.ethereum.endpoint.url')}"/>
 
         <!--/* TODO: Include extra css for specific pages
         {% for css in page.extra-css %}<link type="text/css" rel="stylesheet" href="{{ css }}?{{site.time | date: '%s%N'}}">

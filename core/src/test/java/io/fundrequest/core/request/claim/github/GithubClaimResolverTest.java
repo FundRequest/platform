@@ -182,9 +182,9 @@ public class GithubClaimResolverTest {
         final ClaimSignature claimSignature = createClaimSignature(signClaimCommand);
 
         when(keycloakRepository.getUserIdentities("davyvanroy")).thenReturn(Stream.of(UserIdentity.builder()
-                                                                                                  .provider(Provider.GITHUB)
-                                                                                                  .username("davyvanroy")
-                                                                                                  .build()));
+                                                                                                      .provider(Provider.GITHUB)
+                                                                                                      .username("davyvanroy")
+                                                                                                      .build()));
         when(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(GithubIssue.builder()
                                                                                                                                                           .solver("davyvanroy")
                                                                                                                                                           .status("Closed")

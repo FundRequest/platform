@@ -112,8 +112,8 @@ public class GithubClaimResolver {
             throw new RuntimeException("only github is supported for now");
         }
         return keycloakRepository.getUserIdentities(user.getName())
-                                 .filter(i -> i.getProvider().name().equalsIgnoreCase(platform.toString()))
-                                 .findFirst()
-                                 .map(UserIdentity::getUsername);
+                                     .filter(i -> i.getProvider().name().equalsIgnoreCase(platform.toString()))
+                                     .findFirst()
+                                     .map(UserIdentity::getUsername);
     }
 }
