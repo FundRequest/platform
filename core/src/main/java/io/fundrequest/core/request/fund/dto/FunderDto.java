@@ -11,5 +11,6 @@ public class FunderDto {
     private TotalFundDto fndFunds;
     private TotalFundDto otherFunds;
     private boolean isLoggedInUser;
+    private boolean isEtherAddressVerified;
 
 }

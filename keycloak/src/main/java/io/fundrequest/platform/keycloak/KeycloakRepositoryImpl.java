@@ -17,6 +17,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.ws.rs.NotFoundException;
 import java.io.IOException;
@@ -30,6 +31,11 @@ import java.util.stream.Stream;
 @Profile("!local")
 class KeycloakRepositoryImpl implements KeycloakRepository {
 
+    private static final String ETHER_ADDRESS_KEY = "ether_address";
+    private static final String ETHER_ADDRESS_VERIFIED_KEY = "ether_address_verified";
+    private static final String TELEGRAM_NAME_KEY = "telegram_name";
+    private static final String HEADLINE_KEY = "headline";
+    private static final String VERIFIED_DEVELOPER_KEY = "verified_developer";
     private final ObjectMapper objectMapper;
     private RealmResource resource;
     private String keycloakUrl;
@@ -54,19 +60,24 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
 
 
     public void updateEtherAddress(String userId, String etherAddress) {
-        updateAttribute(resource.users().get(userId), "ether_address", etherAddress);
+        updateAttribute(resource.users().get(userId), ETHER_ADDRESS_KEY, etherAddress);
+    }
+
+    @Override
+    public void updateEtherAddressVerified(final String userId, final Boolean isVerified) {
+        updateAttribute(resource.users().get(userId), ETHER_ADDRESS_VERIFIED_KEY, String.valueOf(BooleanUtils.isTrue(isVerified)));
     }
 
     public void updateTelegramName(String userId, String telegramName) {
-        updateAttribute(resource.users().get(userId), "telegram_name", telegramName);
+        updateAttribute(resource.users().get(userId), TELEGRAM_NAME_KEY, telegramName);
     }
 
     public void updateHeadline(String userId, String headline) {
-        updateAttribute(resource.users().get(userId), "headline", headline);
+        updateAttribute(resource.users().get(userId), HEADLINE_KEY, headline);
     }
 
     public void updateVerifiedDeveloper(String userId, Boolean isVerified) {
-        updateAttribute(resource.users().get(userId), "verified_developer", "" + BooleanUtils.isTrue(isVerified));
+        updateAttribute(resource.users().get(userId), VERIFIED_DEVELOPER_KEY, "" + BooleanUtils.isTrue(isVerified));
     }
 
     private void updateAttribute(UserResource userResource, String property, String value) {
@@ -79,15 +90,20 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
     }
 
     public String getEtherAddress(String userId) {
-        return getAttribute(getUser(userId), "ether_address");
+        return getAttribute(getUser(userId), ETHER_ADDRESS_KEY);
     }
 
     public String getEtherAddress(UserRepresentation userRepresentation) {
-        return getAttribute(userRepresentation, "ether_address");
+        return getAttribute(userRepresentation, ETHER_ADDRESS_KEY);
+    }
+
+    @Override
+    public boolean isEtherAddressVerified(final UserRepresentation userRepresentation) {
+        return "true".equalsIgnoreCase(getAttribute(userRepresentation, ETHER_ADDRESS_VERIFIED_KEY));
     }
 
     public boolean isVerifiedDeveloper(UserRepresentation userRepresentation) {
-        return "true".equalsIgnoreCase(getAttribute(userRepresentation, "verified_developer"));
+        return "true".equalsIgnoreCase(getAttribute(userRepresentation, VERIFIED_DEVELOPER_KEY));
     }
 
     public boolean isVerifiedDeveloper(final String userId) {
@@ -98,7 +114,7 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         Map<String, List<String>> attributes = userRepresentation.getAttributes();
         if (attributes != null && attributes.size() > 0) {
             List<String> properties = attributes.get(property);
-            if (properties != null && properties.size() > 0) {
+            if (!CollectionUtils.isEmpty(properties)) {
                 return properties.get(0);
             }
         }
@@ -106,7 +122,7 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
     }
 
     public String getTelegramName(UserRepresentation userRepresentation) {
-        return getAttribute(userRepresentation, "telegram_name");
+        return getAttribute(userRepresentation, TELEGRAM_NAME_KEY);
     }
 
     public String getPicture(UserRepresentation userRepresentation) {
@@ -114,7 +130,7 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
     }
 
     public String getHeadline(UserRepresentation userRepresentation) {
-        return getAttribute(userRepresentation, "headline");
+        return getAttribute(userRepresentation, HEADLINE_KEY);
     }
 
     public String getAccessToken(@NonNull KeycloakAuthenticationToken token, @NonNull Provider provider) {

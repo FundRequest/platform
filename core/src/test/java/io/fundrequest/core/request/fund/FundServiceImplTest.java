@@ -183,6 +183,74 @@ public class FundServiceImplTest {
     }
 
     @Test
+    public void getFundedBy_funderIsLoggedInUserAndLoggedInUserEtherAddressIsVerified() {
+        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        UserProfile davy = UserProfileMother.davy();
+        davy.setEtherAddressVerified(true);
+        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
+
+        FundersDto result = fundService.getFundedBy(funder, 1L);
+
+        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
+        assertThat(result.getFunders().get(0).isLoggedInUser()).isTrue();
+        assertThat(result.getFunders().get(0).isEtherAddressVerified()).isTrue();
+    }
+
+    @Test
+    public void getFundedBy_funderIsLoggedInUserAndLoggedInUserEtherAddressIsNotVerified() {
+        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        UserProfile davy = UserProfileMother.davy();
+        davy.setEtherAddressVerified(false);
+        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
+
+        FundersDto result = fundService.getFundedBy(funder, 1L);
+
+        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
+        assertThat(result.getFunders().get(0).isLoggedInUser()).isTrue();
+        assertThat(result.getFunders().get(0).isEtherAddressVerified()).isFalse();
+    }
+
+    @Test
+    public void getFundedBy_funderIsNotLoggedInUserAndLoggedInUserEtherAddressIsVerified() {
+        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        UserProfile davy = UserProfileMother.davy();
+        davy.setEtherAddressVerified(true);
+        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
+
+        FundersDto result = fundService.getFundedBy(() -> "6676", 1L);
+
+        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
+        assertThat(result.getFunders().get(0).isLoggedInUser()).isFalse();
+        assertThat(result.getFunders().get(0).isEtherAddressVerified()).isFalse();
+    }
+
+    @Test
+    public void getFundedBy_funderIsNotLoggedInUserAndLoggedInUserEtherAddressIsNotVerified() {
+        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        mockTokenInfo();
+
+        UserProfile davy = UserProfileMother.davy();
+        davy.setEtherAddressVerified(false);
+        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
+
+        FundersDto result = fundService.getFundedBy(() -> "6676", 1L);
+
+        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
+        assertThat(result.getFunders().get(0).isLoggedInUser()).isFalse();
+        assertThat(result.getFunders().get(0).isEtherAddressVerified()).isFalse();
+    }
+
+    @Test
     public void fundedByHasNameFunderAddress() {
         List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderNotKnown().build());
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);

@@ -76,6 +76,7 @@ public class ProfileServiceImpl implements ProfileService {
                           .picture(getPicture(user))
                           .verifiedDeveloper(keycloakRepository.isVerifiedDeveloper(user))
                           .etherAddress(keycloakRepository.getEtherAddress(user))
+                          .etherAddressVerified(keycloakRepository.isEtherAddressVerified(user))
                           .telegramName(keycloakRepository.getTelegramName(user))
                           .headline(keycloakRepository.getHeadline(user))
                           .github(providers.get(Provider.GITHUB))
@@ -89,10 +90,10 @@ public class ProfileServiceImpl implements ProfileService {
 
     private String getEmailSignedVerification(String email) {
         try {
-            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(intercomHmacKey.getBytes("UTF-8"), "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-            return Hex.encodeHexString(sha256_HMAC.doFinal(email.getBytes("UTF-8")));
+            final Mac sha256HMAC = Mac.getInstance("HmacSHA256");
+            final SecretKeySpec secretKey = new SecretKeySpec(intercomHmacKey.getBytes("UTF-8"), "HmacSHA256");
+            sha256HMAC.init(secretKey);
+            return Hex.encodeHexString(sha256HMAC.doFinal(email.getBytes("UTF-8")));
 
         } catch (Exception e) {
             log.error("Error creating hmac verified email", e);

@@ -246,17 +246,22 @@ class FundServiceImpl implements FundService {
                     .orElse(null);
     }
 
-    private FunderDto mapToFunderDto(UserProfile userProfile, Fund f) {
-        TotalFundDto totalFundDto = createTotalFund(f.getToken(), f.getAmountInWei());
-        String funder = StringUtils.isNotBlank(f.getFunderUserId()) ? profileService.getUserProfile(f.getFunderUserId()).getName() : f.getFunder();
-        return totalFundDto == null
-               ? null
-               : FunderDto.builder()
-                          .funder(funder)
-                          .fndFunds(getFndFunds(totalFundDto))
-                          .otherFunds(getOtherFunds(totalFundDto))
-                          .isLoggedInUser(userProfile != null && (userProfile.getId().equals(f.getFunderUserId()) || f.getFunder().equalsIgnoreCase(userProfile.getEtherAddress())))
-                          .build();
+    private FunderDto mapToFunderDto(final UserProfile loggedInUserProfile, final Fund fund) {
+        final TotalFundDto totalFundDto = createTotalFund(fund.getToken(), fund.getAmountInWei());
+        final String funder = StringUtils.isNotBlank(fund.getFunderUserId()) ? profileService.getUserProfile(fund.getFunderUserId()).getName() : fund.getFunder();
+        final boolean isFundedByLoggedInUser = isFundedByLoggedInUser(loggedInUserProfile, fund);
+        return totalFundDto == null ? null : FunderDto.builder()
+                                                      .funder(funder)
+                                                      .fndFunds(getFndFunds(totalFundDto))
+                                                      .otherFunds(getOtherFunds(totalFundDto))
+                                                      .isLoggedInUser(isFundedByLoggedInUser)
+                                                      .isEtherAddressVerified(isFundedByLoggedInUser && loggedInUserProfile.isEtherAddressVerified())
+                                                      .build();
+    }
+
+    private boolean isFundedByLoggedInUser(final UserProfile loggedInUserProfile, final Fund fund) {
+        return loggedInUserProfile != null
+               && (loggedInUserProfile.getId().equals(fund.getFunderUserId()) || fund.getFunder().equalsIgnoreCase(loggedInUserProfile.getEtherAddress()));
     }
 
     private TotalFundDto getFndFunds(final TotalFundDto totalFundDto) {
