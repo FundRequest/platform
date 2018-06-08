@@ -49,12 +49,22 @@ Make sure you set the `JAVA_HOME` environment variable: http://www.baeldung.com/
 Fork the repository, to afterwards clone it to a local directory
 
 ### Run dependencies
+To run the dependencies, you need to have Docker installed:
+You can run these dependencies using Docker: https://www.docker.com/community-edition
+
 FundRequest has several dependencies to run locally:
 - Database (MariaDB)
 - Message broker (RabbitMQ)
 - Azrael (Solution from FundRequest to abstract blockchain related transactions)
 
-You can run these dependencies using Docker: https://www.docker.com/community-edition
+For Azrael to work, an ether account must be setup, create the following file `core/.env` with contents:
+```
+AZRAEL_SIGN_ACCOUNT=3d8606cf3d94df5cd68d08ac02d4aedfee4fdfcd55ca58c8330359f2c5b4fe4d
+AZRAEL_EXECUTE_ACCOUNT=3d8606cf3d94df5cd68d08ac02d4aedfee4fdfcd55ca58c8330359f2c5b4fe4d
+```
+
+_Please note this is a dummy account without any funds, with this account you will not be able to claim._
+
 
 **To start the dependencies, go inside the cloned repository and execute `runDependencies.sh`.**
 
