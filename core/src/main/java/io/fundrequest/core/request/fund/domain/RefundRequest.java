@@ -3,7 +3,7 @@ package io.fundrequest.core.request.fund.domain;
 import io.fundrequest.db.infrastructure.AbstractEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "refund_request")
-@Getter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Refunds</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous" />
+</head>
+<body>
+<section layout:fragment="content">
+    <h2>Pending refunds</h2>
+    <p>Every 5 minutes, our vacuumer checks if the transactions that we submitted have failed or not.</p>
+    <br />
+    <div class="table-responsive">
+        <table class="table table-condensed table-striped table-hover" id="pending-refunds">
+            <thead>
+            <tr>
+                <th>Issue</th>
+                <th>Funder address</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${pendingRefunds}">
+                <td><a th:href="${@environment.getProperty('io.fundrequest.platform.base-path') + '/requests/' + c.getRequestId()}" target="_blank">#<span th:text="${c.getRequestId()}" th:remove="tag">xxx</span></a></td>
+                <td th:text="${c.getFunderAddress()}"></td>
+                <td th:text="${c.getStatus()}"></td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-success btn-xs approve">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-danger btn-xs decline">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr />
+    <h2>Failed refunds</h2>
+    <p>These refunds have failed</p>
+    <div class="table-responsive">
+        <table class="table table-condensed table-striped table-hover" id="failed-refunds">
+            <thead>
+            <tr>
+                <th>Issue</th>
+                <th>Funder address</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${failedRefunds}">
+                <td><a th:href="${@environment.getProperty('io.fundrequest.platform.base-path') + '/requests/' + c.getRequestId()}" target="_blank">#<span th:text="${c.getRequestId()}" th:remove="tag">xxx</span></a></td>
+                <td th:text="${c.getFunderAddress()}"></td>
+                <td th:text="${c.getStatus()}"></td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-success btn-xs approve">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button type="button" th:attr="data-id=${c.getId()}" class="btn btn-danger btn-xs decline">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+<div layout:fragment="scripts">
+    <script src="assets/js/fundrequest/refunds.js"></script>
+</div>
+</body>
+</html>

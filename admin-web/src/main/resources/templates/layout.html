@@ -29,8 +29,9 @@
                 <h1>
                     <img class="top" src="/assets/img/Fundrequest-title-white.png" alt="Fundrequest logo"/>
                 </h1>
-                <p>
-                    Platform Administration
+                <p class="breadcrumb">
+                    <span th:remove="tag" th:if="${layout.resultingTitle eq 'Home'}">Platform Administration</span>
+                    <span th:remove="tag" th:if="${layout.resultingTitle ne 'Home'}"><a href="/">Platform Administration</a> / <span th:text="${layout.resultingTitle}" th:remove="tag">Title</span></span>
                 </p>
             </div>
             <div class="col-sm-12 col-md-5 tablet-hide">

@@ -11,6 +11,11 @@
     padding-bottom: 75px
 }
 
+.header.section--blue .breadcrumb {
+    padding: 0;
+    background-color: transparent;
+}
+
 .header.section--blue a {
     color: #fff;
     text-decoration: none;
@@ -20,6 +25,14 @@
 .header.section--blue a:hover {
     border-bottom-style: solid
 }
+
+/*.header.section--blue .breadcrumb a {*/
+    /*border-bottom: none;*/
+/*}*/
+
+/*.header.section--blue .breadcrumb a:hover {*/
+    /*border-bottom-style: solid*/
+/*}*/
 
 .section {
     position: relative;
