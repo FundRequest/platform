@@ -1,9 +1,7 @@
 package io.fundrequest.platform.faq;
 
-import io.fundrequest.platform.faq.model.FaqItemDto;
-
-import java.util.List;
+import io.fundrequest.platform.faq.model.FaqItemsDto;
 
 public interface FAQService {
-    List<FaqItemDto> getFAQsForPage(String pageName);
+    FaqItemsDto getFAQsForPage(String pageName);
 }

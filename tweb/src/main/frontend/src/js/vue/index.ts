@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import * as $ from 'jquery';
 
-import FaqItem from './components/FaqItem.vue';
+import Faq from './components/Faq.vue';
 import FontSizeFit from './components/FontSizeFit.vue';
 import RequestDetail from './components/RequestDetail.vue';
 import RequestList from './components/RequestList.vue';
@@ -17,14 +17,14 @@ let v = new Vue({
     el: '#vue-app',
     data: {},
     components: {
-        'faq-item': FaqItem,
+        'faq': Faq,
         'request-detail': RequestDetail,
         'request-list': RequestList,
         'request-list-pending-funds': RequestListPendingFunds,
         'statistic-tile': StatisticTile,
         'starred-link': StarredLink,
         'wizard-component': WizardComponent,
-        'font-size-fit': FontSizeFit,
+        'font-size-fit': FontSizeFit
     },
     mounted() {
         new DynamicContent();

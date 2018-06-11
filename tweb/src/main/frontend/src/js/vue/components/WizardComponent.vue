@@ -11,12 +11,12 @@
     import Utils from "../../classes/Utils";
     import {PendingFundCommand} from "../models/PendingFundCommand";
     import Alert from "../../classes/Alert";
-    import FaqItem from "./FaqItem";
+    import Faq from "./Faq";
 
     @Component({
         components: {
             QrcodeVue,
-            FaqItem
+            Faq
         },
         directives: {
             money: VMoney

@@ -2,6 +2,7 @@ package io.fundrequest.platform.faq;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.fundrequest.platform.faq.model.FaqItemDto;
+import io.fundrequest.platform.faq.model.FaqItemsDto;
 import io.fundrequest.platform.faq.parser.Faq;
 import io.fundrequest.platform.faq.parser.Faqs;
 import io.fundrequest.platform.faq.parser.Page;
@@ -118,6 +119,7 @@ class GithubFAQServiceImplTest {
     public void getFAQsForPage() throws IOException {
         final String faqsXml = "fadgszdbg";
         final String pageName = "fghggfsshdg";
+        final String subtitle = "afdsgdasoif";
         final List<Faq> faqs = new ArrayList<>();
         final List<FaqItemDto> faqItems = Arrays.asList(mock(FaqItemDto.class), null, mock(FaqItemDto.class));
 
@@ -125,9 +127,10 @@ class GithubFAQServiceImplTest {
         when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage(pageName, faqs));
         when(faqItemDtoMapper.mapToList(same(faqs))).thenReturn(faqItems);
 
-        final List<FaqItemDto> result = service.getFAQsForPage(pageName);
+        final FaqItemsDto result = service.getFAQsForPage(pageName);
 
-        assertThat(result).isEqualTo(faqItems.stream().filter(Objects::nonNull).collect(toList()));
+        assertThat(result.getFaqItems()).isEqualTo(faqItems.stream().filter(Objects::nonNull).collect(toList()));
+        assertThat(result.getFaqItems()).isEqualTo(subtitle);
     }
 
     @Test
@@ -139,9 +142,9 @@ class GithubFAQServiceImplTest {
         when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage(pageName, null));
         doThrow(new NullPointerException()).when(faqItemDtoMapper).mapToList(null);
 
-        final List<FaqItemDto> result = service.getFAQsForPage(pageName);
+        final FaqItemsDto result = service.getFAQsForPage(pageName);
 
-        assertThat(result).isEmpty();
+        assertThat(result.getFaqItems()).isEmpty();
     }
 
     @Test
@@ -172,15 +175,16 @@ class GithubFAQServiceImplTest {
         when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage("fghggfsshdg", faqs));
         when(faqItemDtoMapper.mapToList(same(faqs))).thenReturn(faqItems);
 
-        final List<FaqItemDto> result = service.getFAQsForPage("pageName");
+        final FaqItemsDto result = service.getFAQsForPage("pageName");
 
-        assertThat(result).isEmpty();
+        assertThat(result.getFaqItems()).isEmpty();
     }
 
     private Faqs buildFaqsObjectWithPage(final String pageName, final List<Faq> faqs) {
         return Faqs.builder()
                    .pages(Arrays.asList(Page.builder()
                                             .name("afdsgd")
+                                            .subtitle("afdsgdasoif")
                                             .faqs(Arrays.asList(Faq.builder()
                                                                    .title("afdsgd - FAQ 1")
                                                                    .filePath("afdsgd/FAQ1.md")
