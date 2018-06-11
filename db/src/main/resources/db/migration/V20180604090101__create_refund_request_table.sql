@@ -10,6 +10,5 @@ CREATE TABLE refund_request
   last_modified_date      TIMESTAMP,
   created_by              VARCHAR(1000),
   last_modified_by        VARCHAR(1000),
-  CONSTRAINT request_refund_request_fk FOREIGN KEY (request_id) REFERENCES request (id),
-  CONSTRAINT request_funder_UK UNIQUE (request_id, funder_address, status)
+  CONSTRAINT request_refund_request_fk FOREIGN KEY (request_id) REFERENCES request (id)
 );

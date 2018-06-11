@@ -7,6 +7,8 @@ import io.fundrequest.core.request.fund.command.RequestRefundCommand;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.faq.FAQService;
 import io.fundrequest.platform.faq.model.FaqItemDto;
+import io.fundrequest.platform.profile.profile.ProfileService;
+import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import org.junit.Test;
 import org.mockito.internal.matchers.Same;
 
@@ -16,6 +18,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,6 +33,7 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
     private RequestService requestService;
     private FAQService faqService;
     private RefundService refundService;
+    private ProfileService profileService;
 
     @Override
     protected FundController setupController() {
@@ -38,7 +42,8 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         requestService = mock(RequestService.class);
         faqService = mock(FAQService.class);
         refundService = mock(RefundService.class);
-        return new FundController(requestService, faqService, refundService);
+        profileService = mock(ProfileService.class);
+        return new FundController(requestService, faqService, refundService, profileService);
     }
 
     @Test
@@ -72,11 +77,44 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         final long requestId = 38L;
         final String funderAddress = "0x24356789";
 
+        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddress(funderAddress).etherAddressVerified(true).build());
+
         mockMvc.perform(post("/requests/{request-id}/refunds", requestId).principal(principal).param("funder_address", funderAddress))
                .andExpect(status().is3xxRedirection())
                .andExpect(redirectAlert("success", "Your refund has been requested and is waiting for approval."))
                .andExpect(redirectedUrl("/requests/38#funded-by"));
 
         verify(refundService).requestRefund(RequestRefundCommand.builder().requestId(requestId).funderAddress(funderAddress).build());
+    }
+
+    @Test
+    public void requestRefund_notFunder() throws Exception {
+        final long requestId = 38L;
+        final String funderAddress = "0x24356789";
+
+        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddress("0x75636463").etherAddressVerified(true).build());
+
+        mockMvc.perform(post("/requests/{request-id}/refunds", requestId).principal(principal).param("funder_address", funderAddress))
+               .andExpect(status().is3xxRedirection())
+               .andExpect(redirectAlert("danger", "Your request for a refund is not allowed because the address used to fund does not match the address on your profile."))
+               .andExpect(redirectedUrl("/requests/38#funded-by"));
+
+        verifyZeroInteractions(refundService);
+    }
+
+    @Test
+    public void requestRefund_notAddressNotVerified() throws Exception {
+        final long requestId = 38L;
+        final String funderAddress = "0x24356789";
+
+        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddress(funderAddress).etherAddressVerified(false).build());
+
+        mockMvc.perform(post("/requests/{request-id}/refunds", requestId).principal(principal).param("funder_address", funderAddress))
+               .andExpect(status().is3xxRedirection())
+               .andExpect(redirectAlert("danger",
+                                        "You need to validate your ETH address before you can request refunds. You can do this on your <a href='/profile'>profile</a> page."))
+               .andExpect(redirectedUrl("/requests/38#funded-by"));
+
+        verifyZeroInteractions(refundService);
     }
 }
