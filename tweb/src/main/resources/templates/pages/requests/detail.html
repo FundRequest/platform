@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
       layout:decorator="layouts/default">
 <head>
     <title>FundRequest - Request Details</title>
@@ -141,7 +141,17 @@
                                         <span class="request-details__label-text" th:text="${transfer.funder}">Karel Striegel</span>
                                         <span class="request-details__label-badge badge badge-pill badge-primary"
                                               th:if="${transfer.loggedInUser}">You</span>
-                                        <span class="request-details__label-link" th:if="${transfer.etherAddressVerified}"><a href="#">Request refund</a></span>
+                                        <span class="request-details__label-badge badge badge-pill badge-primary" th:if="${pendingRefundAddresses.contains(#strings.toLowerCase(transfer.funderAddress))}">
+                                            Refund pending
+                                        </span>
+
+                                        <form th:action="@{'/requests/' + ${request.id} + '/refunds'}" method="post" class="request-details__label-refund-form"
+                                              th:if="${profile ne null and profile.etherAddressVerified
+                                                                       and #strings.toLowerCase(transfer.funderAddress) eq #strings.toLowerCase(profile.etherAddress)
+                                                                       and not pendingRefundAddresses.contains(#strings.toLowerCase(transfer.funderAddress))}">
+                                            <input type="hidden" name="funder_address" th:value="${transfer.funderAddress}"/>
+                                            <input type="submit" value="Request refund" class="btn btn-sm btn-block btn-secondary"/>
+                                        </form>
                                     </div>
                                     <div class="request-details__fund" th:if="${transfer.fndFunds != null}">
                                         <span class="request-details__fund-amount"

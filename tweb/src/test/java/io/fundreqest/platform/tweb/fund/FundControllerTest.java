@@ -1,40 +1,44 @@
 package io.fundreqest.platform.tweb.fund;
 
+import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.fund.RefundService;
+import io.fundrequest.core.request.fund.command.RequestRefundCommand;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.faq.FAQService;
 import io.fundrequest.platform.faq.model.FaqItemDto;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.matchers.Same;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-public class FundControllerTest {
+public class FundControllerTest extends AbstractControllerTest<FundController> {
 
-    private MockMvc mockMvc;
     private Principal principal;
     private RequestService requestService;
-    private FundController controller;
     private FAQService faqService;
+    private RefundService refundService;
 
-    @Before
-    public void setUp() throws Exception {
+    @Override
+    protected FundController setupController() {
         principal = mock(Principal.class);
         when(principal.getName()).thenReturn("davyvanroy@fundrequest.io");
         requestService = mock(RequestService.class);
         faqService = mock(FAQService.class);
-        controller = new FundController(requestService, faqService);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        refundService = mock(RefundService.class);
+        return new FundController(requestService, faqService, refundService);
     }
 
     @Test
@@ -44,11 +48,11 @@ public class FundControllerTest {
         when(requestService.findRequest(1L)).thenReturn(RequestDtoMother.freeCodeCampNoUserStories());
         when(faqService.getFAQsForPage("fundGithub")).thenReturn(faqs);
 
-        this.mockMvc.perform(get("/requests/{request-id}/fund", 1L).principal(principal))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.model().attribute("url", "https://github.com/kazuki43zoo/api-stub/issues/42"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", new Same(faqs)))
-                    .andExpect(MockMvcResultMatchers.view().name("pages/fund/github"));
+        mockMvc.perform(get("/requests/{request-id}/fund", 1L).principal(principal))
+                    .andExpect(status().isOk())
+                    .andExpect(model().attribute("url", "https://github.com/kazuki43zoo/api-stub/issues/42"))
+                    .andExpect(model().attribute("faqs", new Same(faqs)))
+                    .andExpect(view().name("pages/fund/github"));
     }
 
     @Test
@@ -57,9 +61,22 @@ public class FundControllerTest {
 
         when(faqService.getFAQsForPage("fundGithub")).thenReturn(faqs);
 
-        this.mockMvc.perform(get("/fund/{type}", "github").principal(principal))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", new Same(faqs)))
-                    .andExpect(MockMvcResultMatchers.view().name("pages/fund/github"));
+        mockMvc.perform(get("/fund/{type}", "github").principal(principal))
+                    .andExpect(status().isOk())
+                    .andExpect(model().attribute("faqs", new Same(faqs)))
+                    .andExpect(view().name("pages/fund/github"));
+    }
+
+    @Test
+    public void requestRefund() throws Exception {
+        final long requestId = 38L;
+        final String funderAddress = "0x24356789";
+
+        mockMvc.perform(post("/requests/{request-id}/refunds", requestId).principal(principal).param("funder_address", funderAddress))
+               .andExpect(status().is3xxRedirection())
+               .andExpect(redirectAlert("success", "Your refund has been requested and is waiting for approval."))
+               .andExpect(redirectedUrl("/requests/38#funded-by"));
+
+        verify(refundService).requestRefund(RequestRefundCommand.builder().requestId(requestId).funderAddress(funderAddress).build());
     }
 }

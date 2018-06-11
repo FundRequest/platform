@@ -183,7 +183,7 @@ public class FundServiceImplTest {
     }
 
     @Test
-    public void getFundedBy_funderIsLoggedInUserAndLoggedInUserEtherAddressIsVerified() {
+    public void getFundedBy_funderIsLoggedInUser() {
         List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
         mockTokenInfo();
@@ -196,28 +196,10 @@ public class FundServiceImplTest {
 
         assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
         assertThat(result.getFunders().get(0).isLoggedInUser()).isTrue();
-        assertThat(result.getFunders().get(0).isEtherAddressVerified()).isTrue();
     }
 
     @Test
-    public void getFundedBy_funderIsLoggedInUserAndLoggedInUserEtherAddressIsNotVerified() {
-        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
-        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
-
-        UserProfile davy = UserProfileMother.davy();
-        davy.setEtherAddressVerified(false);
-        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
-
-        FundersDto result = fundService.getFundedBy(funder, 1L);
-
-        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
-        assertThat(result.getFunders().get(0).isLoggedInUser()).isTrue();
-        assertThat(result.getFunders().get(0).isEtherAddressVerified()).isFalse();
-    }
-
-    @Test
-    public void getFundedBy_funderIsNotLoggedInUserAndLoggedInUserEtherAddressIsVerified() {
+    public void getFundedBy_funderIsNotLoggedInUser() {
         List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
         mockTokenInfo();
@@ -230,24 +212,6 @@ public class FundServiceImplTest {
 
         assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
         assertThat(result.getFunders().get(0).isLoggedInUser()).isFalse();
-        assertThat(result.getFunders().get(0).isEtherAddressVerified()).isFalse();
-    }
-
-    @Test
-    public void getFundedBy_funderIsNotLoggedInUserAndLoggedInUserEtherAddressIsNotVerified() {
-        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
-        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
-
-        UserProfile davy = UserProfileMother.davy();
-        davy.setEtherAddressVerified(false);
-        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
-
-        FundersDto result = fundService.getFundedBy(() -> "6676", 1L);
-
-        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
-        assertThat(result.getFunders().get(0).isLoggedInUser()).isFalse();
-        assertThat(result.getFunders().get(0).isEtherAddressVerified()).isFalse();
     }
 
     @Test
@@ -258,7 +222,7 @@ public class FundServiceImplTest {
 
         FundersDto result = fundService.getFundedBy(funder, 1L);
 
-        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(funds.get(0).getFunder());
+        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(funds.get(0).getFunderAddress());
     }
 
     @Test
@@ -298,8 +262,8 @@ public class FundServiceImplTest {
     @Test
     public void fundByEnrichedWithZeroes() {
         List<Fund> funds = Arrays.asList(
-                FundMother.fndFundFunderNotKnown().funder("0x0").amountInWei(new BigDecimal("1000000000000000000")).build(),
-                FundMother.zrxFundFunderNotKnown().funder("0x1").amountInWei(new BigDecimal("2000000000000000000")).build()
+                FundMother.fndFundFunderNotKnown().funderAddress("0x0").amountInWei(new BigDecimal("1000000000000000000")).build(),
+                FundMother.zrxFundFunderNotKnown().funderAddress("0x1").amountInWei(new BigDecimal("2000000000000000000")).build()
                                         );
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
         mockTokenInfo();

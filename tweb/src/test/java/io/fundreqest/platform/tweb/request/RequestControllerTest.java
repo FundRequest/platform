@@ -13,9 +13,11 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
+import io.fundrequest.core.request.fund.RefundService;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.fund.dto.FundersDto;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
+import io.fundrequest.core.request.fund.dto.RefundRequestDto;
 import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
 import io.fundrequest.core.request.statistics.dto.StatisticsDto;
@@ -24,9 +26,8 @@ import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.faq.FAQService;
 import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
-import org.junit.Before;
+import org.assertj.core.util.Lists;
 import org.junit.Test;
-import org.mockito.internal.matchers.Same;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -38,6 +39,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.PENDING;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -56,25 +59,23 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
     private StatisticsService statisticsService;
     private ProfileService profileService;
     private FundService fundService;
+    private RefundService refundService;
     private ClaimService claimService;
     private FiatService fiatService;
     private FAQService faqService;
     private ObjectMapper objectMapper;
     private Mappers mappers;
 
-    @Before
-    public void setUp() throws Exception {
-        principal = mock(Principal.class);
-        when(principal.getName()).thenReturn("davyvanroy@fundrequest.io");
-    }
-
     @Override
     protected RequestController setupController() {
+        principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("davyvanroy@fundrequest.io");
         requestService = mock(RequestService.class);
         pendingFundService = mock(PendingFundService.class);
         statisticsService = mock(StatisticsService.class);
         profileService = mock(ProfileService.class, RETURNS_DEEP_STUBS);
         fundService = mock(FundService.class);
+        refundService = mock(RefundService.class);
         claimService = mock(ClaimService.class);
         fiatService = mock(FiatService.class);
         faqService = mock(FAQService.class);
@@ -85,6 +86,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                                      statisticsService,
                                      profileService,
                                      fundService,
+                                     refundService,
                                      claimService,
                                      fiatService,
                                      faqService,
@@ -127,13 +129,17 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final RequestDto requestDto = mock(RequestDto.class);
         final RequestDetailsView requestDetailsView = mock(RequestDetailsView.class);
         final FundersDto fundersDto = mock(FundersDto.class);
+        final List<RefundRequestDto> pendingRefundRequests = Lists.newArrayList(RefundRequestDto.builder().funderAddress("0xGDjhg4354").build(),
+                                                                                RefundRequestDto.builder().funderAddress("0xFEFSkjhkhj5436").build());
+        final List<String> expectedPendingRefundAddresses = Lists.newArrayList("0xgdjhg4354", "0xfefskjhkhj5436");
         final List<CommentDto> commentDtos = new ArrayList<>();
-        final ArrayList<FaqItemDto> faqs = new ArrayList<>();
+        final List<FaqItemDto> faqs = new ArrayList<>();
 
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
         when(mappers.map(RequestDto.class, RequestDetailsView.class, requestDto)).thenReturn(requestDetailsView);
         when(objectMapper.writeValueAsString(same(requestDetailsView))).thenReturn("requestDetailsView");
         when(fundService.getFundedBy(principal, requestId)).thenReturn(fundersDto);
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING)).thenReturn(pendingRefundRequests);
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
         when(faqService.getFAQsForPage("requestDetail")).thenReturn(faqs);
 
@@ -142,8 +148,9 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
                     .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
                     .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
-                    .andExpect(MockMvcResultMatchers.model().attribute("githubComments", new Same(commentDtos)))
-                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", new Same(faqs)))
+                    .andExpect(MockMvcResultMatchers.model().attribute("pendingRefundAddresses", expectedPendingRefundAddresses))
+                    .andExpect(MockMvcResultMatchers.model().attribute("githubComments", sameInstance(commentDtos)))
+                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", sameInstance(faqs)))
                     .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
     }
 
@@ -172,8 +179,8 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
                     .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
                     .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
-                    .andExpect(MockMvcResultMatchers.model().attribute("githubComments", new Same(commentDtos)))
-                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", new Same(faqs)))
+                    .andExpect(MockMvcResultMatchers.model().attribute("githubComments", sameInstance(commentDtos)))
+                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", sameInstance(faqs)))
                     .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
     }
 
@@ -254,8 +261,8 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(profileService.getUserProfile(principal.getName()).getEtherAddress()).thenReturn("0x0000000");
 
         this.mockMvc.perform(post("/requests/{id}/claim", 1L).principal(principal))
-                .andExpect(redirectAlert("success", "Your claim has been requested and waiting for approval."))
-                .andExpect(redirectedUrl("/requests/" + 1L));
+                    .andExpect(redirectAlert("success", "Your claim has been requested and is waiting for approval."))
+                    .andExpect(redirectedUrl("/requests/" + 1L));
     }
 
     @Test
@@ -298,7 +305,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
                     .andExpect(MockMvcResultMatchers.model().attribute("pendingFunds", "pendingFunds"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", new Same(faqs)))
+                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", sameInstance(faqs)))
                     .andExpect(MockMvcResultMatchers.view().name("pages/user/requests"));
     }
 }

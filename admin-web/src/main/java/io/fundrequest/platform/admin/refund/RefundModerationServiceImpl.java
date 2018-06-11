@@ -57,6 +57,6 @@ public class RefundModerationServiceImpl implements ModerationService<RefundRequ
     }
 
     private List<RefundRequestDto> getRequestRefunds(RefundRequestStatus pending) {
-        return mappers.mapList(RefundRequest.class, RefundRequestDto.class, refundRequestRepository.findByStatusIn(Collections.singletonList(pending), new Sort("creationDate")));
+        return mappers.mapList(RefundRequest.class, RefundRequestDto.class, refundRequestRepository.findAllByStatusIn(Collections.singletonList(pending), new Sort("creationDate")));
     }
 }

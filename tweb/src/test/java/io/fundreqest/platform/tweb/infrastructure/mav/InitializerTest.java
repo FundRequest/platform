@@ -9,6 +9,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 public class InitializerTest {
@@ -17,17 +18,18 @@ public class InitializerTest {
 
     @BeforeEach
     void setUp() {
-        initializer = new Initializer();
+        initializer = new Initializer(true);
     }
 
     @Test
     void initializesCachedData() {
-        ContextRefreshedEvent event = mock(ContextRefreshedEvent.class);
-        ApplicationContext context = mock(ApplicationContext.class);
+        final ContextRefreshedEvent event = mock(ContextRefreshedEvent.class);
+        final ApplicationContext context = mock(ApplicationContext.class);
+        final RequestService requestService = mock(RequestService.class);
+        final StatisticsService statisticsService = mock(StatisticsService.class);
+
         when(event.getApplicationContext()).thenReturn(context);
-        RequestService requestService = mock(RequestService.class);
         when(context.getBean(RequestService.class)).thenReturn(requestService);
-        StatisticsService statisticsService = mock(StatisticsService.class);
         when(context.getBean(StatisticsService.class)).thenReturn(statisticsService);
 
         initializer.onApplicationEvent(event);
@@ -36,5 +38,24 @@ public class InitializerTest {
         verify(requestService).findAllTechnologies();
         verify(requestService).findAllProjects();
         verify(statisticsService).getStatistics();
+    }
+
+    @Test
+    void initializesCachedData_initializeFalse() {
+        final ContextRefreshedEvent event = mock(ContextRefreshedEvent.class);
+        final ApplicationContext context = mock(ApplicationContext.class);
+        final RequestService requestService = mock(RequestService.class);
+        final StatisticsService statisticsService = mock(StatisticsService.class);
+
+        when(event.getApplicationContext()).thenReturn(context);
+        when(context.getBean(RequestService.class)).thenReturn(requestService);
+        when(context.getBean(StatisticsService.class)).thenReturn(statisticsService);
+
+        new Initializer(false).onApplicationEvent(event);
+
+        verifyZeroInteractions(requestService);
+        verifyZeroInteractions(requestService);
+        verifyZeroInteractions(requestService);
+        verifyZeroInteractions(statisticsService);
     }
 }

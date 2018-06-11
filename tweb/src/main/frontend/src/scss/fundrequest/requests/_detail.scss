@@ -240,21 +240,10 @@
             margin-left: .5rem;
         }
 
-        &-link {
-            padding: .15rem .5rem;
+        &-refund-form {
             text-align: right;
             margin-left: auto;
             min-width: 15%;
-
-            & a {
-                color: $blue-500;
-                border-bottom: 1px dashed $blue-500;
-
-                &:hover {
-                    color: $blue-600;
-                    border-bottom: 1px solid $blue-600;
-                }
-            }
         }
     }
 

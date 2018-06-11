@@ -10,7 +10,6 @@ public class FunderDto {
     private String funder;
     private TotalFundDto fndFunds;
     private TotalFundDto otherFunds;
+    private String funderAddress;
     private boolean isLoggedInUser;
-    private boolean isEtherAddressVerified;
-
 }

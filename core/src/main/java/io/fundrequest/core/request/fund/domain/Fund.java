@@ -23,7 +23,7 @@ public class Fund extends AbstractEntity {
     private Long id;
 
     @Column(name = "funder_address")
-    private String funder;
+    private String funderAddress;
 
     @Column(name = "funder_user_id")
     private String funderUserId;
@@ -47,9 +47,9 @@ public class Fund extends AbstractEntity {
     }
 
     @Builder
-    Fund(String funderUserId, String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp, Long blockchainEventId) {
+    Fund(String funderUserId, String funderAddress, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp, Long blockchainEventId) {
         this.funderUserId = funderUserId;
-        this.funder = funder == null ? null : funder.toLowerCase();
+        this.funderAddress = funderAddress == null ? null : funderAddress.toLowerCase();
         this.amountInWei = amountInWei;
         this.token = token;
         this.requestId = requestId;

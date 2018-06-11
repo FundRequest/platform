@@ -60,7 +60,7 @@ class RefundModerationServiceImplTest {
         final List<RefundRequest> refundRequests = new ArrayList<>();
         final List<RefundRequestDto> expected = new ArrayList<>();
 
-        when(refundRequestRepository.findByStatusIn(eq(Collections.singletonList(PENDING)), eq(new Sort("creationDate")))).thenReturn(refundRequests);
+        when(refundRequestRepository.findAllByStatusIn(eq(Collections.singletonList(PENDING)), eq(new Sort("creationDate")))).thenReturn(refundRequests);
         when(mappers.mapList(eq(RefundRequest.class), eq(RefundRequestDto.class), same(refundRequests))).thenReturn(expected);
 
         final List<RefundRequestDto> result = service.listPending();
@@ -73,7 +73,7 @@ class RefundModerationServiceImplTest {
         final List<RefundRequest> refundRequests = new ArrayList<>();
         final List<RefundRequestDto> expected = new ArrayList<>();
 
-        when(refundRequestRepository.findByStatusIn(eq(Collections.singletonList(TRANSACTION_FAILED)), eq(new Sort("creationDate")))).thenReturn(refundRequests);
+        when(refundRequestRepository.findAllByStatusIn(eq(Collections.singletonList(TRANSACTION_FAILED)), eq(new Sort("creationDate")))).thenReturn(refundRequests);
         when(mappers.mapList(eq(RefundRequest.class), eq(RefundRequestDto.class), same(refundRequests))).thenReturn(expected);
 
         final List<RefundRequestDto> result = service.listFailed();

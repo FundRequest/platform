@@ -37,10 +37,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import static io.fundrequest.core.web3j.EthUtil.fromWei;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toList;
 
 @Service
 class FundServiceImpl implements FundService {
@@ -133,7 +135,7 @@ class FundServiceImpl implements FundService {
                                                                                     x))
                          .filter(Optional::isPresent)
                          .map(Optional::get)
-                         .map(getTotalClaimFundDto(request)).collect(Collectors.toList());
+                         .map(getTotalClaimFundDto(request)).collect(toList());
     }
 
     private List<TotalFundDto> getFromFundRepository(final Request request) {
@@ -146,7 +148,7 @@ class FundServiceImpl implements FundService {
                                                                                    request.getIssueInformation().getPlatformId(),
                                                                                    x)).filter(Optional::isPresent)
                          .map(Optional::get)
-                         .map(getTotalFundDto(request)).collect(Collectors.toList());
+                         .map(getTotalFundDto(request)).collect(toList());
     }
 
 
@@ -154,16 +156,15 @@ class FundServiceImpl implements FundService {
 
     @Override
     @Transactional(readOnly = true)
-    public FundersDto getFundedBy(Principal principal, Long requestId) {
-        List<FunderDto> list = fundRepository.findByRequestId(requestId)
-                                             .stream()
-                                             .map(r -> this.mapToFunderDto(principal == null ? null : profileService.getUserProfile(principal.getName()), r))
-                                             .filter(Objects::nonNull)
-                                             .collect(Collectors.toList());
-        list = groupByFunder(list);
+    public FundersDto getFundedBy(final Principal principal, final Long requestId) {
+        final List<FunderDto> list = groupByFunder(fundRepository.findByRequestId(requestId)
+                                                                 .stream()
+                                                                 .map(r -> this.mapToFunderDto(principal == null ? null : profileService.getUserProfile(principal.getName()), r))
+                                                                 .filter(Objects::nonNull)
+                                                                 .collect(toList()));
         enrichFundsWithZeroValues(list);
-        TotalFundDto fndFunds = totalFunds(list, FunderDto::getFndFunds);
-        TotalFundDto otherFunds = totalFunds(list, FunderDto::getOtherFunds);
+        final TotalFundDto fndFunds = totalFunds(list, FunderDto::getFndFunds);
+        final TotalFundDto otherFunds = totalFunds(list, FunderDto::getOtherFunds);
         return FundersDto.builder()
                          .funders(list)
                          .fndFunds(fndFunds)
@@ -172,19 +173,26 @@ class FundServiceImpl implements FundService {
                          .build();
     }
 
-    private List<FunderDto> groupByFunder(List<FunderDto> list) {
-        return list.stream().collect(Collectors.groupingBy(FunderDto::getFunder, Collectors.reducing((a1, b1) -> {
-            if (a1 == null && b1 == null) {
-                return null;
-            } else if (a1 == null) {
-                return b1;
-            } else if (b1 == null) {
-                return a1;
-            }
-            a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
-            a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
-            return a1;
-        }))).values().stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+    private List<FunderDto> groupByFunder(final List<FunderDto> list) {
+        return list.stream()
+                   .collect(groupingBy(FunderDto::getFunder,
+                                       reducing((a1, b1) -> {
+                                           if (a1 == null && b1 == null) {
+                                               return null;
+                                           } else if (a1 == null) {
+                                               return b1;
+                                           } else if (b1 == null) {
+                                               return a1;
+                                           }
+                                           a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
+                                           a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
+                                           return a1;
+                                       })))
+                   .values()
+                   .stream()
+                   .filter(Optional::isPresent)
+                   .map(Optional::get)
+                   .collect(toList());
     }
 
     private TotalFundDto mergeFunds(TotalFundDto bFunds, TotalFundDto aFunds) {
@@ -199,7 +207,7 @@ class FundServiceImpl implements FundService {
         return aFunds;
     }
 
-    private void enrichFundsWithZeroValues(List<FunderDto> list) {
+    private void enrichFundsWithZeroValues(final List<FunderDto> list) {
         TotalFundDto fndNonEmpty = null;
         TotalFundDto otherNonEmpty = null;
         for (FunderDto f : list) {
@@ -248,20 +256,22 @@ class FundServiceImpl implements FundService {
 
     private FunderDto mapToFunderDto(final UserProfile loggedInUserProfile, final Fund fund) {
         final TotalFundDto totalFundDto = createTotalFund(fund.getToken(), fund.getAmountInWei());
-        final String funder = StringUtils.isNotBlank(fund.getFunderUserId()) ? profileService.getUserProfile(fund.getFunderUserId()).getName() : fund.getFunder();
+        final String funderNameOrAddress = StringUtils.isNotBlank(fund.getFunderUserId())
+                                           ? profileService.getUserProfile(fund.getFunderUserId()).getName()
+                                           : fund.getFunderAddress();
         final boolean isFundedByLoggedInUser = isFundedByLoggedInUser(loggedInUserProfile, fund);
         return totalFundDto == null ? null : FunderDto.builder()
-                                                      .funder(funder)
+                                                      .funder(funderNameOrAddress)
+                                                      .funderAddress(fund.getFunderAddress())
                                                       .fndFunds(getFndFunds(totalFundDto))
                                                       .otherFunds(getOtherFunds(totalFundDto))
                                                       .isLoggedInUser(isFundedByLoggedInUser)
-                                                      .isEtherAddressVerified(isFundedByLoggedInUser && loggedInUserProfile.isEtherAddressVerified())
                                                       .build();
     }
 
     private boolean isFundedByLoggedInUser(final UserProfile loggedInUserProfile, final Fund fund) {
         return loggedInUserProfile != null
-               && (loggedInUserProfile.getId().equals(fund.getFunderUserId()) || fund.getFunder().equalsIgnoreCase(loggedInUserProfile.getEtherAddress()));
+               && (loggedInUserProfile.getId().equals(fund.getFunderUserId()) || fund.getFunderAddress().equalsIgnoreCase(loggedInUserProfile.getEtherAddress()));
     }
 
     private TotalFundDto getFndFunds(final TotalFundDto totalFundDto) {
@@ -321,7 +331,7 @@ class FundServiceImpl implements FundService {
                                                  .requestId(command.getRequestId())
                                                  .token(command.getToken())
                                                  .timestamp(command.getTimestamp())
-                                                 .funder(command.getFunderAddress())
+                                                 .funderAddress(command.getFunderAddress())
                                                  .blockchainEventId(command.getBlockchainEventId());
         final Optional<PendingFund> pendingFund = pendingFundRepository.findByTransactionHash(command.getTransactionHash());
         if (pendingFund.isPresent()) {

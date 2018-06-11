@@ -13,6 +13,7 @@ import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
+import io.fundrequest.core.request.fund.RefundService;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
@@ -45,6 +46,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.fundrequest.core.request.domain.Platform.GITHUB;
+import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.PENDING;
+import static java.util.stream.Collectors.toList;
 
 @Controller
 @Slf4j
@@ -58,6 +61,7 @@ public class RequestController extends AbstractController {
     private final StatisticsService statisticsService;
     private final ProfileService profileService;
     private final FundService fundService;
+    private final RefundService refundService;
     private final ClaimService claimService;
     private final FiatService fiatService;
     private final FAQService faqService;
@@ -68,6 +72,7 @@ public class RequestController extends AbstractController {
                              final PendingFundService pendingFundService,
                              final StatisticsService statisticsService,
                              final ProfileService profileService, FundService fundService,
+                             final RefundService refundService,
                              final ClaimService claimService,
                              final FiatService fiatService,
                              final FAQService faqService,
@@ -78,6 +83,7 @@ public class RequestController extends AbstractController {
         this.statisticsService = statisticsService;
         this.profileService = profileService;
         this.fundService = fundService;
+        this.refundService = refundService;
         this.claimService = claimService;
         this.fiatService = fiatService;
         this.faqService = faqService;
@@ -126,6 +132,10 @@ public class RequestController extends AbstractController {
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
                 .withObject("fundedBy", fundService.getFundedBy(principal, id))
+                .withObject("pendingRefundAddresses", refundService.findAllRefundRequestsFor(id, PENDING)
+                                                                  .stream()
+                                                                  .map(refundRequest -> refundRequest.getFunderAddress().toLowerCase())
+                                                                  .collect(toList()))
                 .withObject("githubComments", requestService.getComments(id))
                 .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUEST_DETAIL_PAGE))
                 .withView("pages/requests/detail")
@@ -164,7 +174,7 @@ public class RequestController extends AbstractController {
                         .platformId(request.getIssueInformation().getPlatformId())
                         .build());
         return redirectView(redirectAttributes)
-                .withSuccessMessage("Your claim has been requested and waiting for approval.")
+                .withSuccessMessage("Your claim has been requested and is waiting for approval.")
                 .url("/requests/" + id)
                 .build();
     }

@@ -18,9 +18,6 @@ public class RefundRequestDto extends AbstractEntity {
     private Long id;
     private Long requestId;
     private String funderAddress;
-    private String r;
-    private String s;
-    private String v;
     private RefundRequestStatus status = RefundRequestStatus.PENDING;
     private String transactionHash;
     private LocalDateTime transactionSubmitTime;

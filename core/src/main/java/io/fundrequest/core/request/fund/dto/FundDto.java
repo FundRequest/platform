@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class FundDto {
     private Long id;
-    private String funder;
+    private String funderAddress;
     private BigDecimal amountInWei;
     private String token;
     private Long requestId;
