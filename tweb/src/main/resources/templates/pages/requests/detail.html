@@ -48,8 +48,10 @@
                             <div class="request-details__price"
                                  th:if="${request.funds != null and request.funds.usdFunds != null}">
                                 <span class="request-details__fund-currency">$</span>
-                                <span class="request-details__fund-amount"
+                                <span class="request-details__fund-amount" th:if="${request.funds.usdFunds} >= 10"
                                       th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,'COMMA',0,'POINT')}">-</span>
+                                <span class="request-details__fund-amount" th:if="${request.funds.usdFunds} &lt; 10"
+                                      th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,'COMMA',2,'POINT')}">-</span>
                                 <span class="disclaimer-asterix">*</span>
                             </div>
                             <div class="request-details__crypto">
