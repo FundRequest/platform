@@ -118,7 +118,7 @@ io.fundrequest.platform.admin.AdminApplication.java
 
 For changes in the frontend parts (scss, ts, vue, ...) there are some node scripts to rebuild/recompile changes on the fly during development.
 
-* Goto `/tweb/src/main/frontend`
+* Go to `/tweb/src/main/frontend`
 * Run `npm install` (installs all node dependencies)
 * Run `npm run watch` to rebuild all styles on change. (Changes will be directly visible on a browser refresh.)
 * Run `npm run webpack-watch` to rebuild all .ts and .vue on change. (Changes will be directly visible on a browser refresh.)
