@@ -98,8 +98,18 @@
                     let validations: string[] = fieldElement.dataset.formValidation.split(";");
                     valid = await Utils.validateHTMLElement(fieldElement, validations) && valid;
                 }
-                if (valid && step == 3 && this.paymentMethod == PaymentMethods.getInstance().dapp) {
-                    valid = await this._validateFundAmountBalance(formElements.find((el: HTMLInputElement) => el.name == "fundAmount") as HTMLInputElement);
+
+                if (valid && step == 3) {
+                    let element = formElements.find((el: HTMLInputElement) => el.name == "fundAmount") as HTMLInputElement;
+                    if (this.fundAmountValue > 0) {
+                        if (this.paymentMethod == PaymentMethods.getInstance().dapp) {
+                            valid = await this._validateFundAmountBalance(element);
+                        }
+                    } else {
+                        this.errorMessages.fundAmount = `You have to fund more then 0 ${this.selectedToken.symbol}`;
+                        Utils.setElementInvalid(element);
+                        valid = false;
+                    }
                 } else {
                     this.errorMessages.fundAmount = `Please enter a valid number, e.g.: 120.00`;
                 }
@@ -160,7 +170,16 @@
                 case PaymentMethods.getInstance().dapp:
                     try {
                         if (await this.fundUsingDapp()) {
-                            window.location.href = "/user/requests";
+                            if (Utils.openedByBrowserplugin) {
+                                document.dispatchEvent(new CustomEvent("browserplugin.to.extension.fnd.FUND_SUCCESS", {
+                                    detail: {
+                                        done: true,
+                                        redirectLocation: "/user/requests"
+                                    }
+                                }));
+                            } else {
+                                window.location.href = "/user/requests";
+                            }
                         }
                     } catch (err) {
                         Alert.error(`Something went wrong during funding, please try again. <br/> If the problem remains, <a href="https://help.fundrequest.io">please contact the FundRequest team</a>.`);
@@ -231,7 +250,7 @@
             this.qrData = (await Utils.postJSON(`/rest/requests/erc67/fund`, {
                 platform: this.githubIssue.platform,
                 platformId: this.githubIssue.platformId,
-                amount: this.totalAmount,
+                amount: this.totalAmountValue,
                 tokenAddress: Contracts.getInstance().tokenContractAddress
             })).erc67Link;
 
@@ -264,6 +283,10 @@
         }
 
         public get totalAmount() {
+            return this.fundAmount;
+        }
+
+        public get totalAmountValue() {
             return this.fundAmountValue;
         }
 

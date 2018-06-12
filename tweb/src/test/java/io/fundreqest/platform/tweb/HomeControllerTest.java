@@ -3,7 +3,9 @@ package io.fundreqest.platform.tweb;
 import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
 import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.platform.profile.profile.ProfileService;
+import io.fundrequest.platform.profile.ref.RefSignupEvent;
 import org.junit.Test;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.security.Principal;
 
@@ -17,11 +19,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class HomeControllerTest extends AbstractControllerTest<HomeController> {
 
     private ProfileService profileService;
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     protected HomeController setupController() {
         profileService = mock(ProfileService.class);
-        return new HomeController(profileService);
+        eventPublisher = mock(ApplicationEventPublisher.class);
+        return new HomeController(profileService, eventPublisher);
     }
 
     @Test
@@ -29,6 +33,16 @@ public class HomeControllerTest extends AbstractControllerTest<HomeController> {
         mockMvc.perform(get("/"))
                .andExpect(status().isOk())
                .andExpect(view().name("index"));
+    }
+
+    @Test
+    public void homeEmitsReferral() throws Exception {
+        Principal principal = () -> "davy";
+        mockMvc.perform(get("/?ref=123").principal(principal))
+               .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrl("/"));
+
+        verify(eventPublisher).publishEvent(RefSignupEvent.builder().principal(principal).ref("123").build());
     }
 
     @Test

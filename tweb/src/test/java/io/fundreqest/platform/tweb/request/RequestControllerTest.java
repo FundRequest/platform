@@ -10,6 +10,7 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
@@ -38,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
@@ -144,6 +146,36 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
                     .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
                     .andExpect(MockMvcResultMatchers.model().attribute("claims", claims))
+                    .andExpect(MockMvcResultMatchers.model().attribute("githubComments", new Same(commentDtos)))
+                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", new Same(faqs)))
+                    .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
+    }
+
+    @Test
+    public void githubDetails() throws Exception {
+        final String owner = "blablaOwner";
+        final String repo = "blablaRepo";
+        final int number = 351;
+        final long requestId = 7458L;
+        final RequestDto requestDto = mock(RequestDto.class);
+        final RequestDetailsView requestDetailsView = mock(RequestDetailsView.class);
+        final FundersDto fundersDto = mock(FundersDto.class);
+        final List<CommentDto> commentDtos = new ArrayList<>();
+        final ArrayList<FaqItemDto> faqs = new ArrayList<>();
+
+        when(requestService.findRequest(Platform.GITHUB, owner + "|FR|" + repo + "|FR|" + number)).thenReturn(requestDto);
+        when(requestDetailsView.getId()).thenReturn(requestId);
+        when(mappers.map(eq(RequestDto.class), eq(RequestDetailsView.class), same(requestDto))).thenReturn(requestDetailsView);
+        when(objectMapper.writeValueAsString(same(requestDetailsView))).thenReturn("requestDetailsView");
+        when(fundService.getFundedBy(principal, requestId)).thenReturn(fundersDto);
+        when(requestService.getComments(requestId)).thenReturn(commentDtos);
+        when(faqService.getFAQsForPage("requestDetail")).thenReturn(faqs);
+
+        this.mockMvc.perform(get("/requests/github/{owner}/{repo}/{number}", owner, repo, number).principal(principal))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
+                    .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
                     .andExpect(MockMvcResultMatchers.model().attribute("githubComments", new Same(commentDtos)))
                     .andExpect(MockMvcResultMatchers.model().attribute("faqs", new Same(faqs)))
                     .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));

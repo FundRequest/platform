@@ -18,7 +18,7 @@ public class GithubCommentFactory {
 
     private static final String FUNDED_COMMENT_TEMPLATE =
             COMMENT_HEADER
-            + "This issue has been funded using [FundRequest](https://fundrequest.io). A developer can claim the reward by submitting a pull request referencing this issue. "
+            + "This issue has been funded using [FundRequest](%1$s/requests/%2$s). A developer can claim [the reward](%1$s/requests/%2$s) by submitting a pull request referencing this issue. "
             + "([How to Close Issues via Pull Requests?](https://help.github.com/articles/closing-issues-using-keywords)) e.g. `fixes #%3$s`"
             + LINE_BREAK
             + LINE_BREAK
@@ -29,13 +29,13 @@ public class GithubCommentFactory {
             COMMENT_HEADER
 //            + "Thank you @%3$s for your code contribution. You can now claim the reward that is linked to this issue. This can be done via our "
 //            + "[Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest) or directly from the [funded request](%1$s/requests/%2$s)."
-            + "Thank you @%3$s for your code contribution. You can now claim the reward that is linked to this issue. This can be done directly from the [funded request](%1$s/requests/%2$s)."
+            + "Thank you @%3$s for your code contribution. You can now claim [the reward](%1$s/requests/%2$s) that is linked to this issue. This can be done directly from the [funded request](%1$s/requests/%2$s)."
             + LINE_BREAK
             + COMMENT_FOOTER;
 
     private static final String CLOSED_COMMENT_TEMPLATE =
             COMMENT_HEADER
-            + "Thank you @%3$s for your code contribution. The reward linked to this issue has been transferred to your account."
+            + "Thank you @%3$s for your code contribution. [The reward](%1$s/requests/%2$s) linked to this issue has been transferred to your account."
             + LINE_BREAK
             + COMMENT_FOOTER;
 

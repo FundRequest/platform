@@ -11,13 +11,13 @@
             </div>
         </div>
         <div class="d-flex">
-            <div th:if="${r.getStatus() == T(io.fundrequest.profile.ref.domain.ReferralStatus).PENDING}"
+            <div th:if="${r.getStatus().name() == 'PENDING'}"
                  th:remove="tag">
                 <span class="text-muted">Not verified</span>
             </div>
-            <div th:if="${r.getStatus() == T(io.fundrequest.profile.ref.domain.ReferralStatus).VERIFIED}"
+            <div th:if="${r.getStatus().name() == 'VERIFIED'}"
                  th:remove="tag">
-                <span class="text-success" th:text="'Verified ' + ${T(io.fundrequest.profile.bounty.domain.BountyType).LINK_TELEGRAM.getReward() + ' FND'}">5 FND</span>
+                <span class="text-success" th:text="'Verified ' + ${T(io.fundrequest.platform.profile.bounty.domain.BountyType).LINK_TELEGRAM.getReward() + ' FND'}">5 FND</span>
             </div>
         </div>
     </div>

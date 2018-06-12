@@ -36,7 +36,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.Environment;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -111,7 +111,7 @@ public class RequestServiceImplTest {
 
         final CreateERC67FundRequest erc67 = CreateERC67FundRequest
                 .builder()
-                .amount(new BigInteger("100"))
+                .amount(new BigDecimal("100.384739"))
                 .tokenAddress("0x0000000000000000000000000000000000000000")
                 .platform("github")
                 .platformId("1")

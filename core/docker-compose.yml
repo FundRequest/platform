@@ -13,6 +13,7 @@ services:
       - MYSQL_DATABASE=fr
       - MYSQL_USER=fr
       - MYSQL_PASSWORD=fr
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
   fr-rabbitmq:
     image: rabbitmq:3.6.8-management
     ports :
