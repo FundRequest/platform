@@ -7,6 +7,7 @@ import io.fundreqest.platform.tweb.request.dto.ERC67FundDto;
 import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.infrastructure.SecurityContextService;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.UserClaimRequest;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -53,6 +55,7 @@ public class RequestController extends AbstractController {
     private static final String FAQ_REQUESTS_PAGE = "requests";
     private static final String FAQ_REQUEST_DETAIL_PAGE = "requestDetail";
 
+	private final SecurityContextService securityContextService;
     private final RequestService requestService;
     private final PendingFundService pendingFundService;
     private final StatisticsService statisticsService;
@@ -64,7 +67,8 @@ public class RequestController extends AbstractController {
     private final ObjectMapper objectMapper;
     private final Mappers mappers;
 
-    public RequestController(final RequestService requestService,
+    public RequestController(final SecurityContextService securityContextService,
+							 final RequestService requestService,
                              final PendingFundService pendingFundService,
                              final StatisticsService statisticsService,
                              final ProfileService profileService, FundService fundService,
@@ -73,6 +77,7 @@ public class RequestController extends AbstractController {
                              final FAQService faqService,
                              final ObjectMapper objectMapper,
                              final Mappers mappers) {
+		this.securityContextService = securityContextService;
         this.requestService = requestService;
         this.pendingFundService = pendingFundService;
         this.statisticsService = statisticsService;
@@ -89,11 +94,13 @@ public class RequestController extends AbstractController {
     public ModelAndView requests() {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
         final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
+		boolean isAuthenticated = securityContextService.isUserFullyAuthenticated();
         return modelAndView().withObject("requestsPerFaseCount", requestsPerFaseCount)
                              .withObject("requests", getAsJson(requests))
                              .withObject("statistics", statisticsService.getStatistics())
                              .withObject("projects", getAsJson(requestService.findAllProjects()))
                              .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
+                             .withObject("isAuthenticated", getAsJson(isAuthenticated))
                              .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUESTS_PAGE))
                              .withView("pages/requests/index")
                              .build();
@@ -200,9 +207,11 @@ public class RequestController extends AbstractController {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findRequestsForUser(principal));
         final List<PendingFundDto> pendingFunds = pendingFundService.findByUser(principal);
         final List<FaqItemDto> faqs = faqService.getFAQsForPage(FAQ_REQUESTS_PAGE);
+		boolean isAuthenticated = securityContextService.isUserFullyAuthenticated();
         return modelAndView()
                 .withObject("requests", getAsJson(requests))
                 .withObject("pendingFunds", getAsJson(pendingFunds))
+                .withObject("isAuthenticated", getAsJson(isAuthenticated))
                 .withObject("faqs", faqs)
                 .withView("pages/user/requests")
                 .build();

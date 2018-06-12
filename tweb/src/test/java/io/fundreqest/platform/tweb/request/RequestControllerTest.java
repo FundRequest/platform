@@ -6,6 +6,7 @@ import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
 import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.infrastructure.SecurityContextService;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
@@ -51,6 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RequestControllerTest extends AbstractControllerTest<RequestController> {
 
     private Principal principal;
+	private SecurityContextService securityContextService;
     private RequestService requestService;
     private PendingFundService pendingFundService;
     private StatisticsService statisticsService;
@@ -70,6 +72,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
 
     @Override
     protected RequestController setupController() {
+        securityContextService = mock(SecurityContextService.class);
         requestService = mock(RequestService.class);
         pendingFundService = mock(PendingFundService.class);
         statisticsService = mock(StatisticsService.class);
@@ -80,7 +83,8 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         faqService = mock(FAQService.class);
         objectMapper = spy(new ObjectMapper());
         mappers = mock(Mappers.class);
-        return new RequestController(requestService,
+        return new RequestController(securityContextService,
+									 requestService,
                                      pendingFundService,
                                      statisticsService,
                                      profileService,

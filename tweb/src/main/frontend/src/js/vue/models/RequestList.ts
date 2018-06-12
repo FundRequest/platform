@@ -13,6 +13,11 @@ export default class RequestsList {
         return this._sortBy(requests, sortBy);
     }
 
+	public updateWithRequest(request: RequestDto) {
+		let i = this.requests.findIndex(r => r.id == request.id);
+		this.requests.splice(i, 1, request);
+	}
+
     private _filter(requests: RequestDto[], filter: RequestListFilter) {
         let isSearchAlwaysValid = (!filter.search || filter.search.length < 3);
         let isProjectAlwaysValid = !filter.project;

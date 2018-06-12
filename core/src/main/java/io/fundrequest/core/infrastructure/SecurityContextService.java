@@ -4,4 +4,5 @@ import org.springframework.security.core.Authentication;
 
 public interface SecurityContextService {
     Authentication getLoggedInUser();
+	boolean isUserFullyAuthenticated();
 }
