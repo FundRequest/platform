@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.fund.dto;
 
+import io.fundrequest.core.token.dto.TokenValueDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,8 +11,8 @@ import java.util.List;
 public class FundersDto {
 
     private List<FunderDto> funders;
-    private TotalFundDto fndFunds;
-    private TotalFundDto otherFunds;
+    private TokenValueDto fndFunds;
+    private TokenValueDto otherFunds;
     private Double usdFunds;
 
 }

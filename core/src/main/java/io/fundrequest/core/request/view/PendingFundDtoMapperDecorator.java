@@ -3,9 +3,9 @@ package io.fundrequest.core.request.view;
 import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
+import io.fundrequest.core.token.dto.TokenValueDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -33,17 +33,17 @@ public abstract class PendingFundDtoMapperDecorator implements PendingFundDtoMap
         return result;
     }
 
-    private TotalFundDto getTotalFundDto(PendingFund fund) {
+    private TokenValueDto getTotalFundDto(PendingFund fund) {
         final TokenInfoDto tokenInfo = tokenInfoService.getTokenInfo(fund.getTokenAddress());
         final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
-        return TotalFundDto.builder()
-                           .tokenAddress(tokenInfo.getAddress())
-                           .tokenSymbol(tokenInfo.getSymbol())
-                           .totalAmount(new BigDecimal(fund.getAmount()).divide(divider, 6, RoundingMode.HALF_DOWN))
-                           .build();
+        return TokenValueDto.builder()
+                            .tokenAddress(tokenInfo.getAddress())
+                            .tokenSymbol(tokenInfo.getSymbol())
+                            .totalAmount(new BigDecimal(fund.getAmount()).divide(divider, 6, RoundingMode.HALF_DOWN))
+                            .build();
     }
 
-    private void mapFunds(TotalFundDto totalFund, PendingFundDto result) {
+    private void mapFunds(TokenValueDto totalFund, PendingFundDto result) {
         AllFundsDto funds = result.getFunds();
         if ("FND".equalsIgnoreCase(totalFund.getTokenSymbol())) {
             funds.setFndFunds(totalFund);

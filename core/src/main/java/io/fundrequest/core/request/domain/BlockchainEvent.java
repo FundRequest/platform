@@ -15,7 +15,6 @@ import java.util.Objects;
 @Getter
 @Table(name = "blockchain_event")
 public class BlockchainEvent {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

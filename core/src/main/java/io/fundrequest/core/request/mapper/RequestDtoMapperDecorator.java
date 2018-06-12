@@ -4,10 +4,10 @@ import io.fundrequest.core.infrastructure.SecurityContextService;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.FundService;
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.view.AllFundsDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMapper;
+import io.fundrequest.core.token.dto.TokenValueDto;
 import io.fundrequest.core.user.UserService;
 import io.fundrequest.core.user.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public abstract class RequestDtoMapperDecorator implements RequestDtoMapper {
         return map(request, fundService.getTotalFundsForRequest(request.getId()));
     }
 
-    private RequestDto map(Request request, List<TotalFundDto> totalFunds) {
+    private RequestDto map(Request request, List<TokenValueDto> totalFunds) {
         RequestDto result = delegate.map(request);
         Authentication currentAuth = securityContextService.getLoggedInUser();
         if (result != null && currentAuth != null) {
@@ -56,7 +56,7 @@ public abstract class RequestDtoMapperDecorator implements RequestDtoMapper {
         return result;
     }
 
-    private void mapFunds(List<TotalFundDto> totalFunds, RequestDto result) {
+    private void mapFunds(List<TokenValueDto> totalFunds, RequestDto result) {
         AllFundsDto funds = result.getFunds();
         funds.setFndFunds(totalFunds.stream().filter(f -> "FND".equalsIgnoreCase(f.getTokenSymbol())).findFirst().orElse(null));
         funds.setOtherFunds(totalFunds.stream().filter(f -> !"FND".equalsIgnoreCase(f.getTokenSymbol())).findFirst().orElse(null));
