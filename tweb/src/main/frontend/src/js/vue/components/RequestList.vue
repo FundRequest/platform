@@ -135,7 +135,6 @@
             this.requestList = new RequestListModel(this.requests);
 
 			EventBus.$on("request-update", request => {
-				console.log("masterful update!!!!");
 				this.requestList.updateWithRequest(request);
 			});
 
