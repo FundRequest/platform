@@ -1,5 +1,5 @@
 <template>
-    <i class="request-details__star-link fa-star" v-bind:class="isStarred" v-on:click="toggleStarred()"></i>
+    <i class="request-details__star-link fa-star" v-bind:class="starringCSSClasses" v-on:click="toggleStarred()"></i>
 </template>
 
 <script lang="ts">
@@ -13,17 +13,23 @@
         @Prop() starred: boolean;
         @Prop() id: number;
 
-		get isStarred() {
+		private isStarred: boolean = false;
+
+		mounted() {
+			this.isStarred = this.starred;
+		}
+
+		get starringCSSClasses() {
 			return {
-				fa: this.starred,
-				far: !this.starred,
-				'-starred': this.starred
+				fa: this.isStarred,
+				far: !this.isStarred,
+				'-starred': this.isStarred
 			};
 		}
 
         public async toggleStarred() {
             const request: RequestDto = await Utils.post(`/requests/${this.id}/watch`);
-			this.starred = request.starred;
+			this.isStarred = request.starred;
 			EventBus.$emit('request-update', request);
         }
     }
