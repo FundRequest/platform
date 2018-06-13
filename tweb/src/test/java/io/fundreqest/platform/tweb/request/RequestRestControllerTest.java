@@ -45,7 +45,7 @@ class RequestRestControllerTest extends AbstractControllerTest<RequestRestContro
                                                                                                  .platform(GITHUB)
                                                                                                  .build());
 
-        mockMvc.perform(get("/rest/requests/github/{owner}/{repo}/{number}/claim", owner, repo, issueNumber).accept(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(get("/rest/requests/github/{owner}/{repo}/{number}/claimable", owner, repo, issueNumber).accept(MediaType.APPLICATION_JSON_UTF8))
                .andExpect(MockMvcResultMatchers.status().isOk())
                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(claimView)));
     }
@@ -65,7 +65,7 @@ class RequestRestControllerTest extends AbstractControllerTest<RequestRestContro
                                                                                                  .platform(GITHUB)
                                                                                                  .build());
 
-        mockMvc.perform(get("/rest/requests/github/{owner}/{repo}/{number}/claim", owner, repo, issueNumber).accept(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(get("/rest/requests/github/{owner}/{repo}/{number}/claimable", owner, repo, issueNumber).accept(MediaType.APPLICATION_JSON_UTF8))
                .andExpect(MockMvcResultMatchers.status().isOk())
                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(claimView)));
     }

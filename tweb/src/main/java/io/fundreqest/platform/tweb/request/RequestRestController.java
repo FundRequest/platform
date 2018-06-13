@@ -25,7 +25,7 @@ public class RequestRestController {
         this.requestService = requestService;
     }
 
-    @GetMapping(value = "/github/{owner}/{repo}/{number}/claim")
+    @GetMapping(value = "/github/{owner}/{repo}/{number}/claimable")
     public ClaimView claimDetails(@PathVariable("owner") final String repoOwner, @PathVariable("repo") final String repo, @PathVariable("number") final String issueNumber) {
         final RequestDto request = requestService.findRequest(Platform.GITHUB, String.format("%s|FR|%s|FR|%s", repoOwner, repo, issueNumber));
         final ClaimableResultDto claimableResult = requestService.getClaimableResult(request.getId());
