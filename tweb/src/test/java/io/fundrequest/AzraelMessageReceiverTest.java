@@ -11,9 +11,9 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
-import io.fundrequest.core.request.fund.infrastructure.BlockchainEventRepository;
 import io.fundrequest.core.request.fund.messaging.dto.ClaimedEthDto;
 import io.fundrequest.core.request.fund.messaging.dto.FundedEthDto;
+import io.fundrequest.core.request.infrastructure.BlockchainEventRepository;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,6 @@ public class AzraelMessageReceiverTest {
         final BlockchainEvent blockchainEvent = new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex());
         ReflectionTestUtils.setField(blockchainEvent, "id", 346L);
         final Long requestId = RequestDtoMother.freeCodeCampNoUserStories().getId();
-
         when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.empty());
         when(blockchainEventRepository.saveAndFlush(eq(new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex())))).thenReturn(blockchainEvent);
         when(requestService.createRequest(any())).thenReturn(requestId);
@@ -91,7 +90,6 @@ public class AzraelMessageReceiverTest {
         objectMapper.writeValue(w, dto);
         final BlockchainEvent blockchainEvent = new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex());
         ReflectionTestUtils.setField(blockchainEvent, "id", 346L);
-
         when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.empty());
         when(blockchainEventRepository.saveAndFlush(eq(new BlockchainEvent(dto.getTransactionHash(), dto.getLogIndex())))).thenReturn(blockchainEvent);
 

@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.fund.dto;
 
+import io.fundrequest.core.token.dto.TokenValueDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,8 +9,8 @@ import lombok.Data;
 public class FunderDto {
 
     private String funder;
-    private TotalFundDto fndFunds;
-    private TotalFundDto otherFunds;
+    private TokenValueDto fndFunds;
+    private TokenValueDto otherFunds;
     private String funderAddress;
     private boolean isLoggedInUser;
 }

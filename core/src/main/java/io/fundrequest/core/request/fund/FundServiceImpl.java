@@ -12,13 +12,14 @@ import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.dto.FunderDto;
 import io.fundrequest.core.request.fund.dto.FundersDto;
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
-import io.fundrequest.core.token.TokenInfoService;
-import io.fundrequest.core.token.dto.TokenInfoDto;
+import io.fundrequest.core.token.dto.TokenValueDto;
+import io.fundrequest.core.token.mapper.TokenValueDtoMapper;
+import io.fundrequest.core.token.mapper.TokenValueMapper;
+import io.fundrequest.core.token.model.TokenValue;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import org.apache.commons.lang3.StringUtils;
@@ -37,50 +38,49 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.LongStream;
-
-import static io.fundrequest.core.web3j.EthUtil.fromWei;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.reducing;
-import static java.util.stream.Collectors.toList;
 
 @Service
 class FundServiceImpl implements FundService {
 
     private static final String FND_TOKEN_SYMBOL = "FND";
 
-    private FundRepository fundRepository;
-    private PendingFundRepository pendingFundRepository;
-    private RequestRepository requestRepository;
-    private Mappers mappers;
-    private ApplicationEventPublisher eventPublisher;
-    private CacheManager cacheManager;
-    private TokenInfoService tokenInfoService;
-    private FundRequestContractsService fundRequestContractsService;
-    private ProfileService profileService;
-    private FiatService fiatService;
+    private final FundRepository fundRepository;
+    private final PendingFundRepository pendingFundRepository;
+    private final RequestRepository requestRepository;
+    private final Mappers mappers;
+    private final ApplicationEventPublisher eventPublisher;
+    private final CacheManager cacheManager;
+    private final FundRequestContractsService fundRequestContractsService;
+    private final ProfileService profileService;
+    private final FiatService fiatService;
+    private final TokenValueMapper tokenValueMapper;
+    private final TokenValueDtoMapper tokenValueDtoMapper;
 
     @Autowired
-    public FundServiceImpl(FundRepository fundRepository,
-                           PendingFundRepository pendingFundRepository,
-                           RequestRepository requestRepository,
-                           Mappers mappers,
-                           ApplicationEventPublisher eventPublisher,
-                           CacheManager cacheManager,
-                           TokenInfoService tokenInfoService,
-                           FundRequestContractsService fundRequestContractsService,
-                           ProfileService profileService,
-                           FiatService fiatService) {
+    public FundServiceImpl(final FundRepository fundRepository,
+                           final PendingFundRepository pendingFundRepository,
+                           final RequestRepository requestRepository,
+                           final Mappers mappers,
+                           final ApplicationEventPublisher eventPublisher,
+                           final CacheManager cacheManager,
+                           final FundRequestContractsService fundRequestContractsService,
+                           final ProfileService profileService,
+                           final FiatService fiatService,
+                           final TokenValueMapper tokenValueMapper,
+                           final TokenValueDtoMapper tokenValueDtoMapper) {
         this.fundRepository = fundRepository;
         this.pendingFundRepository = pendingFundRepository;
         this.requestRepository = requestRepository;
         this.mappers = mappers;
         this.eventPublisher = eventPublisher;
         this.cacheManager = cacheManager;
-        this.tokenInfoService = tokenInfoService;
         this.fundRequestContractsService = fundRequestContractsService;
         this.profileService = profileService;
         this.fiatService = fiatService;
+        this.tokenValueMapper = tokenValueMapper;
+        this.tokenValueDtoMapper = tokenValueDtoMapper;
     }
 
     @Transactional(readOnly = true)
@@ -105,7 +105,7 @@ class FundServiceImpl implements FundService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "funds", key = "#requestId")
-    public List<TotalFundDto> getTotalFundsForRequest(Long requestId) {
+    public List<TokenValueDto> getTotalFundsForRequest(Long requestId) {
 
         final Optional<Request> one = requestRepository.findOne(requestId);
         if (one.isPresent()) {
@@ -123,7 +123,7 @@ class FundServiceImpl implements FundService {
         }
     }
 
-    private List<TotalFundDto> getFromClaimRepository(final Request request) {
+    private List<TokenValueDto> getFromClaimRepository(final Request request) {
         final Long tokenCount = fundRequestContractsService.claimRepository()
                                                            .getTokenCount(request.getIssueInformation().getPlatform().name(),
                                                                           request.getIssueInformation().getPlatformId());
@@ -135,10 +135,10 @@ class FundServiceImpl implements FundService {
                                                                                     x))
                          .filter(Optional::isPresent)
                          .map(Optional::get)
-                         .map(getTotalClaimFundDto(request)).collect(toList());
+                         .map(getTotalClaimFundDto(request)).collect(Collectors.toList());
     }
 
-    private List<TotalFundDto> getFromFundRepository(final Request request) {
+    private List<TokenValueDto> getFromFundRepository(final Request request) {
         final Long fundedTokenCount = fundRequestContractsService.fundRepository()
                                                                  .getFundedTokenCount(request.getIssueInformation().getPlatform().name(),
                                                                                       request.getIssueInformation().getPlatformId());
@@ -148,7 +148,7 @@ class FundServiceImpl implements FundService {
                                                                                    request.getIssueInformation().getPlatformId(),
                                                                                    x)).filter(Optional::isPresent)
                          .map(Optional::get)
-                         .map(getTotalFundDto(request)).collect(toList());
+                         .map(getTotalFundDto(request)).collect(Collectors.toList());
     }
 
 
@@ -156,15 +156,15 @@ class FundServiceImpl implements FundService {
 
     @Override
     @Transactional(readOnly = true)
-    public FundersDto getFundedBy(final Principal principal, final Long requestId) {
+    public FundersDto getFundedBy(Principal principal, Long requestId) {
         final List<FunderDto> list = groupByFunder(fundRepository.findByRequestId(requestId)
                                                                  .stream()
                                                                  .map(r -> this.mapToFunderDto(principal == null ? null : profileService.getUserProfile(principal.getName()), r))
                                                                  .filter(Objects::nonNull)
-                                                                 .collect(toList()));
+                                                                 .collect(Collectors.toList()));
         enrichFundsWithZeroValues(list);
-        final TotalFundDto fndFunds = totalFunds(list, FunderDto::getFndFunds);
-        final TotalFundDto otherFunds = totalFunds(list, FunderDto::getOtherFunds);
+        final TokenValueDto fndFunds = totalFunds(list, FunderDto::getFndFunds);
+        final TokenValueDto otherFunds = totalFunds(list, FunderDto::getOtherFunds);
         return FundersDto.builder()
                          .funders(list)
                          .fndFunds(fndFunds)
@@ -173,29 +173,29 @@ class FundServiceImpl implements FundService {
                          .build();
     }
 
-    private List<FunderDto> groupByFunder(final List<FunderDto> list) {
+    private List<FunderDto> groupByFunder(List<FunderDto> list) {
         return list.stream()
-                   .collect(groupingBy(FunderDto::getFunder,
-                                       reducing((a1, b1) -> {
-                                           if (a1 == null && b1 == null) {
-                                               return null;
-                                           } else if (a1 == null) {
-                                               return b1;
-                                           } else if (b1 == null) {
-                                               return a1;
-                                           }
-                                           a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
-                                           a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
-                                           return a1;
-                                       })))
+                   .collect(Collectors.groupingBy(FunderDto::getFunder,
+                                                  Collectors.reducing((a1, b1) -> {
+                                                      if (a1 == null && b1 == null) {
+                                                          return null;
+                                                      } else if (a1 == null) {
+                                                          return b1;
+                                                      } else if (b1 == null) {
+                                                          return a1;
+                                                      }
+                                                      a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
+                                                      a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
+                                                      return a1;
+                                                  })))
                    .values()
                    .stream()
                    .filter(Optional::isPresent)
                    .map(Optional::get)
-                   .collect(toList());
+                   .collect(Collectors.toList());
     }
 
-    private TotalFundDto mergeFunds(TotalFundDto bFunds, TotalFundDto aFunds) {
+    private TokenValueDto mergeFunds(TokenValueDto bFunds, TokenValueDto aFunds) {
         if (bFunds != null) {
             if (aFunds == null) {
                 return bFunds;
@@ -208,8 +208,8 @@ class FundServiceImpl implements FundService {
     }
 
     private void enrichFundsWithZeroValues(final List<FunderDto> list) {
-        TotalFundDto fndNonEmpty = null;
-        TotalFundDto otherNonEmpty = null;
+        TokenValueDto fndNonEmpty = null;
+        TokenValueDto otherNonEmpty = null;
         for (FunderDto f : list) {
             if (f.getFndFunds() != null) {
                 fndNonEmpty = f.getFndFunds();
@@ -221,52 +221,52 @@ class FundServiceImpl implements FundService {
 
         for (FunderDto f : list) {
             if (fndNonEmpty != null && f.getFndFunds() == null) {
-                f.setFndFunds(TotalFundDto.builder().tokenSymbol(fndNonEmpty.getTokenSymbol()).tokenAddress(fndNonEmpty.getTokenAddress()).totalAmount(BigDecimal.ZERO).build());
+                f.setFndFunds(TokenValueDto.builder().tokenSymbol(fndNonEmpty.getTokenSymbol()).tokenAddress(fndNonEmpty.getTokenAddress()).totalAmount(BigDecimal.ZERO).build());
             }
             if (otherNonEmpty != null && f.getOtherFunds() == null) {
-                f.setOtherFunds(TotalFundDto.builder()
-                                            .tokenSymbol(otherNonEmpty.getTokenSymbol())
-                                            .tokenAddress(otherNonEmpty.getTokenAddress())
-                                            .totalAmount(BigDecimal.ZERO)
-                                            .build());
+                f.setOtherFunds(TokenValueDto.builder()
+                                             .tokenSymbol(otherNonEmpty.getTokenSymbol())
+                                             .tokenAddress(otherNonEmpty.getTokenAddress())
+                                             .totalAmount(BigDecimal.ZERO)
+                                             .build());
             }
         }
     }
 
-    private TotalFundDto totalFunds(final List<FunderDto> funds, final Function<FunderDto, TotalFundDto> getFundsFunction) {
+    private TokenValueDto totalFunds(final List<FunderDto> funds, final Function<FunderDto, TokenValueDto> getFundsFunction) {
         if (funds.isEmpty()) {
             return null;
         }
         BigDecimal totalValue = funds.stream()
                                      .map(getFundsFunction)
                                      .filter(Objects::nonNull)
-                                     .map(TotalFundDto::getTotalAmount)
+                                     .map(TokenValueDto::getTotalAmount)
                                      .reduce(BigDecimal.ZERO, BigDecimal::add);
         return funds.stream()
                     .map(getFundsFunction)
                     .filter(Objects::nonNull)
                     .findFirst()
-                    .map(f -> TotalFundDto.builder()
-                                          .tokenSymbol(f.getTokenSymbol())
-                                          .tokenAddress(f.getTokenAddress())
-                                          .totalAmount(totalValue)
-                                          .build())
+                    .map(f -> TokenValueDto.builder()
+                                           .tokenSymbol(f.getTokenSymbol())
+                                           .tokenAddress(f.getTokenAddress())
+                                           .totalAmount(totalValue)
+                                           .build())
                     .orElse(null);
     }
 
-    private FunderDto mapToFunderDto(final UserProfile loggedInUserProfile, final Fund fund) {
-        final TotalFundDto totalFundDto = createTotalFund(fund.getToken(), fund.getAmountInWei());
+    private FunderDto mapToFunderDto(UserProfile loggedInUserProfile, Fund fund) {
+        final TokenValueDto tokenValueDto = tokenValueDtoMapper.map(fund.getTokenValue());
         final String funderNameOrAddress = StringUtils.isNotBlank(fund.getFunderUserId())
                                            ? profileService.getUserProfile(fund.getFunderUserId()).getName()
                                            : fund.getFunderAddress();
         final boolean isFundedByLoggedInUser = isFundedByLoggedInUser(loggedInUserProfile, fund);
-        return totalFundDto == null ? null : FunderDto.builder()
-                                                      .funder(funderNameOrAddress)
-                                                      .funderAddress(fund.getFunderAddress())
-                                                      .fndFunds(getFndFunds(totalFundDto))
-                                                      .otherFunds(getOtherFunds(totalFundDto))
-                                                      .isLoggedInUser(isFundedByLoggedInUser)
-                                                      .build();
+        return tokenValueDto == null ? null : FunderDto.builder()
+                                                       .funder(funderNameOrAddress)
+                                                       .funderAddress(fund.getFunderAddress())
+                                                       .fndFunds(getFndFunds(tokenValueDto))
+                                                       .otherFunds(getOtherFunds(tokenValueDto))
+                                                       .isLoggedInUser(isFundedByLoggedInUser)
+                                                       .build();
     }
 
     private boolean isFundedByLoggedInUser(final UserProfile loggedInUserProfile, final Fund fund) {
@@ -274,16 +274,16 @@ class FundServiceImpl implements FundService {
                && (loggedInUserProfile.getId().equals(fund.getFunderUserId()) || fund.getFunderAddress().equalsIgnoreCase(loggedInUserProfile.getEtherAddress()));
     }
 
-    private TotalFundDto getFndFunds(final TotalFundDto totalFundDto) {
-        return hasFNDTokenSymbol(totalFundDto) ? totalFundDto : null;
+    private TokenValueDto getFndFunds(final TokenValueDto tokenValueDto) {
+        return hasFNDTokenSymbol(tokenValueDto) ? tokenValueDto : null;
     }
 
-    private TotalFundDto getOtherFunds(final TotalFundDto totalFundDto) {
-        return !hasFNDTokenSymbol(totalFundDto) ? totalFundDto : null;
+    private TokenValueDto getOtherFunds(final TokenValueDto tokenValueDto) {
+        return !hasFNDTokenSymbol(tokenValueDto) ? tokenValueDto : null;
     }
 
-    private boolean hasFNDTokenSymbol(TotalFundDto totalFundDto) {
-        return FND_TOKEN_SYMBOL.equalsIgnoreCase(totalFundDto.getTokenSymbol());
+    private boolean hasFNDTokenSymbol(TokenValueDto tokenValueDto) {
+        return FND_TOKEN_SYMBOL.equalsIgnoreCase(tokenValueDto.getTokenSymbol());
     }
 
     @Override
@@ -292,44 +292,35 @@ class FundServiceImpl implements FundService {
         // Intentionally blank
     }
 
-    private Function<String, TotalFundDto> getTotalClaimFundDto(final Request request) {
+    private Function<String, TokenValueDto> getTotalClaimFundDto(final Request request) {
         return tokenAddress -> {
             final BigDecimal rawBalance = new BigDecimal(fundRequestContractsService.claimRepository()
                                                                                     .getAmountByToken(request.getIssueInformation().getPlatform().name(),
                                                                                                       request.getIssueInformation().getPlatformId(),
                                                                                                       tokenAddress));
-            return createTotalFund(tokenAddress, rawBalance);
+            return tokenValueMapper.map(tokenAddress, rawBalance);
         };
     }
 
-    private Function<String, TotalFundDto> getTotalFundDto(final Request request) {
+    private Function<String, TokenValueDto> getTotalFundDto(final Request request) {
         return tokenAddress -> {
             final BigDecimal rawBalance = new BigDecimal(fundRequestContractsService.fundRepository()
                                                                                     .balance(request.getIssueInformation().getPlatform().name(),
                                                                                              request.getIssueInformation().getPlatformId(),
                                                                                              tokenAddress));
-            return createTotalFund(tokenAddress, rawBalance);
+            return tokenValueMapper.map(tokenAddress, rawBalance);
         };
-    }
-
-    private TotalFundDto createTotalFund(String tokenAddress, BigDecimal rawBalance) {
-        final TokenInfoDto tokenInfo = tokenInfoService.getTokenInfo(tokenAddress);
-        return tokenInfo == null
-               ? null
-               : TotalFundDto.builder()
-                             .tokenAddress(tokenInfo.getAddress())
-                             .tokenSymbol(tokenInfo.getSymbol())
-                             .totalAmount(fromWei(rawBalance, tokenInfo.getDecimals()))
-                             .build();
     }
 
     @Override
     @Transactional
     public void addFunds(final FundsAddedCommand command) {
         final Fund.FundBuilder fundBuilder = Fund.builder()
-                                                 .amountInWei(command.getAmountInWei())
+                                                 .tokenValue(TokenValue.builder()
+                                                                       .amountInWei(command.getAmountInWei())
+                                                                       .tokenAddress(command.getToken())
+                                                                       .build())
                                                  .requestId(command.getRequestId())
-                                                 .token(command.getToken())
                                                  .timestamp(command.getTimestamp())
                                                  .funderAddress(command.getFunderAddress())
                                                  .blockchainEventId(command.getBlockchainEventId());

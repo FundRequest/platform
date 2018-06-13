@@ -22,6 +22,7 @@ services:
     volumes:
       - ./docker_data/konijn/data:/var/lib/rabbitmq
     environment:
+      - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=default_pass
     networks:
       - frnet
@@ -39,6 +40,7 @@ services:
     volumes:
       - ./docker_data/konijn/data:/var/lib/rabbitmq
     environment:
+      - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=default_pass
       - spring.rabbitmq.host=fr-rabbitmq
       - spring.rabbitmq.port=5672

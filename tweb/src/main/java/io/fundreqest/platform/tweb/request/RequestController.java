@@ -132,6 +132,7 @@ public class RequestController extends AbstractController {
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
                 .withObject("fundedBy", fundService.getFundedBy(principal, id))
+                .withObject("claims", claimService.getAggregatedClaimsForRequest(id))
                 .withObject("pendingRefundAddresses", refundService.findAllRefundRequestsFor(id, PENDING)
                                                                   .stream()
                                                                   .map(refundRequest -> refundRequest.getFunderAddress().toLowerCase())
@@ -181,10 +182,9 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/requests/{id}/actions")
     public ModelAndView detailActions(Principal principal, @PathVariable Long id) {
-        RequestDto request = requestService.findRequest(id);
         return modelAndView()
                 .withObject("userClaimable", requestService.getUserClaimableResult(principal, id))
-                .withObject("request", request)
+                .withObject("request", requestService.findRequest(id))
                 .withView("pages/requests/detail-actions :: details")
                 .build();
     }

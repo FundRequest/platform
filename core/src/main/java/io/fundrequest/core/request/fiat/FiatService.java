@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.fiat;
 
 import io.fundrequest.core.request.fiat.cryptocompare.service.CryptoCompareService;
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
+import io.fundrequest.core.token.dto.TokenValueDto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class FiatService {
         this.cryptoCompareService = cryptoCompareService;
     }
 
-    public double getUsdPrice(TotalFundDto... funds) {
+    public double getUsdPrice(TokenValueDto... funds) {
         return Arrays.stream(funds)
                      .filter(f -> f != null && StringUtils.isNotBlank(f.getTokenSymbol()))
                      .map(this::getValue)
@@ -27,7 +27,7 @@ public class FiatService {
                      .sum();
     }
 
-    private Double getValue(TotalFundDto f) {
+    private Double getValue(TokenValueDto f) {
         Double tokenPrice = cryptoCompareService.getCurrentPriceInUsd(f.getTokenSymbol());
         if (tokenPrice != null) {
             return f.getTotalAmount().multiply(BigDecimal.valueOf(tokenPrice)).doubleValue();

@@ -19,9 +19,12 @@ import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.view.FundDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.core.token.TokenInfoService;
-import io.fundrequest.core.token.dto.TokenInfoDto;
-import io.fundrequest.core.token.dto.TokenInfoDtoMother;
+import io.fundrequest.core.token.dto.TokenValueDto;
+import io.fundrequest.core.token.dto.TokenValueDtoMother;
+import io.fundrequest.core.token.mapper.TokenValueDtoMapper;
+import io.fundrequest.core.token.mapper.TokenValueMapper;
+import io.fundrequest.core.token.model.TokenValue;
+import io.fundrequest.core.token.model.TokenValueMother;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import io.fundrequest.platform.profile.profile.dto.UserProfileMother;
@@ -42,6 +45,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.fundrequest.core.token.model.TokenValueMother.FND;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -59,12 +63,13 @@ public class FundServiceImplTest {
     private RequestRepository requestRepository;
     private Mappers mappers;
     private ApplicationEventPublisher eventPublisher;
-    private TokenInfoService tokenInfoService;
     private CacheManager cacheManager;
     private FundRequestContractsService fundRequestContractsService;
     private PendingFundRepository pendingFundRepository;
     private ProfileService profileService;
     private FiatService fiatService;
+    private TokenValueMapper tokenValueMapper;
+    private TokenValueDtoMapper tokenValueDtoMapper;
     private Principal funder;
 
     @Before
@@ -75,7 +80,6 @@ public class FundServiceImplTest {
         mappers = mock(Mappers.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
         cacheManager = mock(CacheManager.class, RETURNS_DEEP_STUBS);
-        tokenInfoService = mock(TokenInfoService.class);
         fundRequestContractsService = mock(FundRequestContractsService.class);
         profileService = mock(ProfileService.class);
         fiatService = mock(FiatService.class);
@@ -83,24 +87,27 @@ public class FundServiceImplTest {
         UserProfile user = UserProfileMother.davy();
         funder = user::getId;
         when(profileService.getUserProfile(funder.getName())).thenReturn(user);
-        fundService = new FundServiceImpl(fundRepository,
-                                          pendingFundRepository,
-                                          requestRepository,
-                                          mappers,
-                                          eventPublisher,
-                                          cacheManager,
-                                          tokenInfoService,
-                                          fundRequestContractsService,
-                                          profileService,
-                                          fiatService
-        );
+        tokenValueMapper = mock(TokenValueMapper.class);
+        tokenValueDtoMapper = mock(TokenValueDtoMapper.class);
+        fundService = new FundServiceImpl(
+                fundRepository,
+                pendingFundRepository,
+                requestRepository,
+                mappers,
+                eventPublisher,
+                cacheManager,
+                fundRequestContractsService,
+                profileService,
+                fiatService,
+                tokenValueMapper,
+                tokenValueDtoMapper);
     }
 
     @Test
     public void findAll() {
         List<Fund> funds = singletonList(FundMother.fndFundFunderKnown().build());
         when(fundRepository.findAll()).thenReturn(funds);
-        List<FundDto> expecedFunds = singletonList(FundDtoMother.aFundDto());
+        List<FundDto> expecedFunds = singletonList(FundDtoMother.aFundDto().build());
         when(mappers.mapList(Fund.class, FundDto.class, funds)).thenReturn(expecedFunds);
 
         List<FundDto> result = fundService.findAll();
@@ -113,7 +120,7 @@ public class FundServiceImplTest {
         List<Fund> funds = singletonList(FundMother.fndFundFunderKnown().build());
         Set<Long> ids = funds.stream().map(Fund::getId).collect(Collectors.toSet());
         when(fundRepository.findAll(ids)).thenReturn(funds);
-        List<FundDto> expecedFunds = singletonList(FundDtoMother.aFundDto());
+        List<FundDto> expecedFunds = singletonList(FundDtoMother.aFundDto().build());
         when(mappers.mapList(Fund.class, FundDto.class, funds)).thenReturn(expecedFunds);
 
         List<FundDto> result = fundService.findAll(ids);
@@ -134,7 +141,7 @@ public class FundServiceImplTest {
                                                            .timestamp(LocalDateTime.now())
                                                            .token("token")
                                                            .build();
-        final FundDto fundDto = new FundDto();
+        final FundDto fundDto = FundDtoMother.aFundDto().build();
         final RequestDto requestDto = new RequestDto();
         final Cache cache = mock(Cache.class);
         final BlockchainEvent blockchainEvent = mock(BlockchainEvent.class);
@@ -154,14 +161,17 @@ public class FundServiceImplTest {
 
     @Test
     public void fundedByHasNameFunder() {
-        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
-        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
+        final UserProfile davy = UserProfileMother.davy();
+        final Fund fndFund = FundMother.fndFundFunderKnown().tokenValue(FND().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
+        final List<Fund> funds = Arrays.asList(fndFund);
+        final TokenValueDto tokenValueDto = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
 
-        UserProfile davy = UserProfileMother.davy();
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        when(tokenValueDtoMapper.map(fndFund.getTokenValue())).thenReturn(tokenValueDto);
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
         when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
 
-        FundersDto result = fundService.getFundedBy(funder, 1L);
+        final FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
         assertThat(result.getFunders().get(0).isLoggedInUser()).isTrue();
@@ -169,46 +179,15 @@ public class FundServiceImplTest {
 
     @Test
     public void fundersNoPrincipal() {
-        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
+        final UserProfile davy = UserProfileMother.davy();
+        final Fund fndFund = FundMother.fndFundFunderKnown().build();
+        final List<Fund> funds = Collections.singletonList(fndFund);
+
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
-
-        UserProfile davy = UserProfileMother.davy();
         when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
+        when(tokenValueDtoMapper.map(fndFund.getTokenValue())).thenReturn(TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build());
 
-        FundersDto result = fundService.getFundedBy(null, 1L);
-
-        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
-        assertThat(result.getFunders().get(0).isLoggedInUser()).isFalse();
-    }
-
-    @Test
-    public void getFundedBy_funderIsLoggedInUser() {
-        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
-        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
-
-        UserProfile davy = UserProfileMother.davy();
-        davy.setEtherAddressVerified(true);
-        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
-
-        FundersDto result = fundService.getFundedBy(funder, 1L);
-
-        assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
-        assertThat(result.getFunders().get(0).isLoggedInUser()).isTrue();
-    }
-
-    @Test
-    public void getFundedBy_funderIsNotLoggedInUser() {
-        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderKnown().build());
-        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
-
-        UserProfile davy = UserProfileMother.davy();
-        davy.setEtherAddressVerified(true);
-        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
-
-        FundersDto result = fundService.getFundedBy(() -> "6676", 1L);
+        final FundersDto result = fundService.getFundedBy(null, 1L);
 
         assertThat(result.getFunders().get(0).getFunder()).isEqualTo(davy.getName());
         assertThat(result.getFunders().get(0).isLoggedInUser()).isFalse();
@@ -216,9 +195,12 @@ public class FundServiceImplTest {
 
     @Test
     public void fundedByHasNameFunderAddress() {
-        List<Fund> funds = Collections.singletonList(FundMother.fndFundFunderNotKnown().build());
+        final Fund fndFund = FundMother.fndFundFunderNotKnown().build();
+        List<Fund> funds = Collections.singletonList(fndFund);
+        final TokenValueDto tokenValueDto = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
+
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
+        when(tokenValueDtoMapper.map(fndFund.getTokenValue())).thenReturn(tokenValueDto);
 
         FundersDto result = fundService.getFundedBy(funder, 1L);
 
@@ -227,48 +209,59 @@ public class FundServiceImplTest {
 
     @Test
     public void fundedByHasTotalFnd() {
-        List<Fund> funds = Arrays.asList(
-                FundMother.fndFundFunderNotKnown().amountInWei(new BigDecimal("1000000000000000000")).build(),
-                FundMother.fndFundFunderNotKnown().amountInWei(new BigDecimal("2000000000000000000")).build()
-                                        );
+        final Fund fndFund1 = FundMother.fndFundFunderNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
+        final Fund fndFund2 = FundMother.fndFundFunderNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
+        final List<Fund> funds = Arrays.asList(fndFund1, fndFund2);
+        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
+        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("2")).build();
+
         when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
+        when(tokenValueDtoMapper.map(fndFund1.getTokenValue())).thenReturn(tokenValueDto1);
+        when(tokenValueDtoMapper.map(fndFund2.getTokenValue())).thenReturn(tokenValueDto2);
 
         FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getOtherFunds()).isNull();
-        assertThat(result.getFndFunds().getTokenSymbol()).isEqualTo("FND");
-        assertThat(result.getFndFunds().getTokenAddress()).isEqualTo(funds.get(0).getToken());
-        assertThat(result.getFndFunds().getTotalAmount()).isEqualByComparingTo("3");
+        assertThat(result.getFndFunds()).isEqualTo(TokenValueDtoMother.FND().totalAmount(new BigDecimal("3")).build());
     }
 
     @Test
     public void fundedByHasTotalOther() {
-        List<Fund> funds = Arrays.asList(
-                FundMother.zrxFundFunderNotKnown().amountInWei(new BigDecimal("1000000000000000000")).build(),
-                FundMother.zrxFundFunderNotKnown().amountInWei(new BigDecimal("2000000000000000000")).build()
-                                        );
-        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
+        final Fund zrxFund1 = FundMother.zrxFundFunderNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
+        final Fund zrxFund2 = FundMother.zrxFundFunderNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
+        final List<Fund> funds = Arrays.asList(zrxFund1, zrxFund2);
+        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("1")).build();
+        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("2")).build();
 
-        FundersDto result = fundService.getFundedBy(funder, 1L);
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        when(tokenValueDtoMapper.map(zrxFund1.getTokenValue())).thenReturn(tokenValueDto1);
+        when(tokenValueDtoMapper.map(zrxFund2.getTokenValue())).thenReturn(tokenValueDto2);
+
+        final FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getFndFunds()).isNull();
-        assertThat(result.getOtherFunds().getTokenSymbol()).isEqualTo("ZRX");
-        assertThat(result.getOtherFunds().getTokenAddress()).isEqualTo(funds.get(0).getToken());
-        assertThat(result.getOtherFunds().getTotalAmount()).isEqualByComparingTo("3");
+        assertThat(result.getOtherFunds()).isEqualTo(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("3")).build());
     }
 
     @Test
     public void fundByEnrichedWithZeroes() {
-        List<Fund> funds = Arrays.asList(
-                FundMother.fndFundFunderNotKnown().funderAddress("0x0").amountInWei(new BigDecimal("1000000000000000000")).build(),
-                FundMother.zrxFundFunderNotKnown().funderAddress("0x1").amountInWei(new BigDecimal("2000000000000000000")).build()
-                                        );
-        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
+        final Fund fndFund = FundMother.fndFundFunderNotKnown()
+                                       .funderAddress("0x0")
+                                       .tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("1000000000000000000")).build())
+                                       .build();
+        final Fund zrxFund = FundMother.zrxFundFunderNotKnown()
+                                       .funderAddress("0x1")
+                                       .tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("2000000000000000000")).build())
+                                       .build();
+        final List<Fund> funds = Arrays.asList(fndFund, zrxFund);
+        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
+        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("2")).build();
 
-        FundersDto result = fundService.getFundedBy(funder, 1L);
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        when(tokenValueDtoMapper.map(fndFund.getTokenValue())).thenReturn(tokenValueDto1);
+        when(tokenValueDtoMapper.map(zrxFund.getTokenValue())).thenReturn(tokenValueDto2);
+
+        final FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getFunders().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(result.getFunders().get(1).getFndFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
@@ -276,27 +269,27 @@ public class FundServiceImplTest {
 
     @Test
     public void mergesSameFunderData() {
-        List<Fund> funds = Arrays.asList(
-                FundMother.fndFundFunderNotKnown().amountInWei(new BigDecimal("1000000000000000000")).build(),
-                FundMother.zrxFundFunderNotKnown().amountInWei(new BigDecimal("2000000000000000000")).build(),
-                FundMother.zrxFundFunderNotKnown().amountInWei(new BigDecimal("3000000000000000000")).build(),
-                FundMother.fndFundFunderNotKnown().amountInWei(new BigDecimal("2000000000000000000")).build()
-                                        );
-        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
-        mockTokenInfo();
+        final Fund fund1 = FundMother.fndFundFunderNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
+        final Fund fund2 = FundMother.zrxFundFunderNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
+        final Fund fund3 = FundMother.zrxFundFunderNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("3000000000000000000")).build()).build();
+        final Fund fund4 = FundMother.fndFundFunderNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
+        final List<Fund> funds = Arrays.asList(fund1, fund2, fund3, fund4);
+        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
+        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("2")).build();
+        final TokenValueDto tokenValueDto3 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("3")).build();
+        final TokenValueDto tokenValueDto4 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("2")).build();
 
-        FundersDto result = fundService.getFundedBy(funder, 1L);
+        when(fundRepository.findByRequestId(1L)).thenReturn(funds);
+        when(tokenValueDtoMapper.map(fund1.getTokenValue())).thenReturn(tokenValueDto1);
+        when(tokenValueDtoMapper.map(fund2.getTokenValue())).thenReturn(tokenValueDto2);
+        when(tokenValueDtoMapper.map(fund3.getTokenValue())).thenReturn(tokenValueDto3);
+        when(tokenValueDtoMapper.map(fund4.getTokenValue())).thenReturn(tokenValueDto4);
+
+        final FundersDto result = fundService.getFundedBy(funder, 1L);
 
         assertThat(result.getFunders()).hasSize(1);
         assertThat(result.getFunders().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(new BigDecimal("5"));
         assertThat(result.getFunders().get(0).getFndFunds().getTotalAmount()).isEqualByComparingTo(new BigDecimal("3"));
-    }
-
-    private void mockTokenInfo() {
-        TokenInfoDto fndTokenInfo = TokenInfoDtoMother.fnd();
-        TokenInfoDto zrxTokenInfo = TokenInfoDtoMother.zrx();
-        when(tokenInfoService.getTokenInfo(fndTokenInfo.getAddress())).thenReturn(fndTokenInfo);
-        when(tokenInfoService.getTokenInfo(zrxTokenInfo.getAddress())).thenReturn(zrxTokenInfo);
     }
 
     private void verifyEventCreated(Long requestId, FundDto fundDto) {
@@ -313,7 +306,7 @@ public class FundServiceImplTest {
         ArgumentCaptor<Fund> fundArgumentCaptor = ArgumentCaptor.forClass(Fund.class);
         verify(fundRepository).saveAndFlush(fundArgumentCaptor.capture());
         assertThat(fundArgumentCaptor.getValue().getRequestId()).isEqualTo(command.getRequestId());
-        assertThat(fundArgumentCaptor.getValue().getAmountInWei()).isEqualTo(command.getAmountInWei());
+        assertThat(fundArgumentCaptor.getValue().getTokenValue()).isEqualTo(TokenValue.builder().amountInWei(command.getAmountInWei()).tokenAddress(command.getToken()).build());
         assertThat(fundArgumentCaptor.getValue().getFunderUserId()).isEqualTo(funder.getName());
         assertThat(fundArgumentCaptor.getValue().getBlockchainEventId()).isEqualTo(command.getBlockchainEventId());
     }
