@@ -5,16 +5,11 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.RefundService;
 import io.fundrequest.core.request.fund.command.RequestRefundCommand;
 import io.fundrequest.core.request.view.RequestDtoMother;
-import io.fundrequest.platform.faq.FAQService;
-import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import org.junit.Test;
-import org.mockito.internal.matchers.Same;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -31,7 +26,6 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
 
     private Principal principal;
     private RequestService requestService;
-    private FAQService faqService;
     private RefundService refundService;
     private ProfileService profileService;
 
@@ -40,35 +34,25 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         principal = mock(Principal.class);
         when(principal.getName()).thenReturn("davyvanroy@fundrequest.io");
         requestService = mock(RequestService.class);
-        faqService = mock(FAQService.class);
         refundService = mock(RefundService.class);
         profileService = mock(ProfileService.class);
-        return new FundController(requestService, faqService, refundService, profileService);
+        return new FundController(requestService, refundService, profileService);
     }
 
     @Test
     public void fundSpecific() throws Exception {
-        final List<FaqItemDto> faqs = new ArrayList<>();
-
         when(requestService.findRequest(1L)).thenReturn(RequestDtoMother.freeCodeCampNoUserStories());
-        when(faqService.getFAQsForPage("fundGithub")).thenReturn(faqs);
 
         mockMvc.perform(get("/requests/{request-id}/fund", 1L).principal(principal))
                     .andExpect(status().isOk())
                     .andExpect(model().attribute("url", "https://github.com/kazuki43zoo/api-stub/issues/42"))
-                    .andExpect(model().attribute("faqs", new Same(faqs)))
                     .andExpect(view().name("pages/fund/github"));
     }
 
     @Test
     public void fund() throws Exception {
-        final List<FaqItemDto> faqs = new ArrayList<>();
-
-        when(faqService.getFAQsForPage("fundGithub")).thenReturn(faqs);
-
         mockMvc.perform(get("/fund/{type}", "github").principal(principal))
                     .andExpect(status().isOk())
-                    .andExpect(model().attribute("faqs", new Same(faqs)))
                     .andExpect(view().name("pages/fund/github"));
     }
 

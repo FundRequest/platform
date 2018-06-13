@@ -9,7 +9,6 @@
             <i class="fa fa-chevron-left" :class="showCollapse ? 'collapsed' : null"></i>
         </h4>
         <b-collapse :id="id" class="faq__answer" v-model="showCollapse">
-            {{description}}
             <slot></slot>
         </b-collapse>
     </div>
@@ -28,7 +27,6 @@
     export default class FaqItem extends Vue {
         @Prop() intercom: string;
         @Prop() title: string;
-        @Prop() description?: string;
 
         public showCollapse = false;
         public id: string = null;

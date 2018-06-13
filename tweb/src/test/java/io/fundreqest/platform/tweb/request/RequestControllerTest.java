@@ -24,8 +24,6 @@ import io.fundrequest.core.request.statistics.dto.StatisticsDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.core.token.dto.TokenValueDto;
-import io.fundrequest.platform.faq.FAQService;
-import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
@@ -63,7 +61,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
     private RefundService refundService;
     private ClaimService claimService;
     private FiatService fiatService;
-    private FAQService faqService;
     private ObjectMapper objectMapper;
     private Mappers mappers;
 
@@ -79,7 +76,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         refundService = mock(RefundService.class);
         claimService = mock(ClaimService.class);
         fiatService = mock(FiatService.class);
-        faqService = mock(FAQService.class);
         objectMapper = spy(new ObjectMapper());
         mappers = mock(Mappers.class);
         return new RequestController(requestService,
@@ -90,7 +86,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                                      refundService,
                                      claimService,
                                      fiatService,
-                                     faqService,
                                      objectMapper,
                                      mappers);
     }
@@ -102,14 +97,12 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final StatisticsDto statisticsDto = StatisticsDto.builder().build();
         final Set<String> projects = new HashSet<>();
         final Set<String> technologies = new HashSet<>();
-        final ArrayList<FaqItemDto> faqItems = new ArrayList<>();
 
         when(requestService.findAll()).thenReturn(requestDtos);
         when(mappers.mapList(RequestDto.class, RequestView.class, requestDtos)).thenReturn(requestViews);
         when(statisticsService.getStatistics()).thenReturn(statisticsDto);
         when(requestService.findAllProjects()).thenReturn(projects);
         when(requestService.findAllTechnologies()).thenReturn(technologies);
-        when(faqService.getFAQsForPage("requests")).thenReturn(faqItems);
         when(objectMapper.writeValueAsString(same(requestViews))).thenReturn("requestViews");
         when(objectMapper.writeValueAsString(same(projects))).thenReturn("projects");
         when(objectMapper.writeValueAsString(same(technologies))).thenReturn("technologies");
@@ -120,7 +113,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.model().attribute("statistics", statisticsDto))
                     .andExpect(MockMvcResultMatchers.model().attribute("projects", "projects"))
                     .andExpect(MockMvcResultMatchers.model().attribute("technologies", "technologies"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", faqItems))
                     .andExpect(MockMvcResultMatchers.view().name("pages/requests/index"));
     }
 
@@ -135,7 +127,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final List<String> expectedPendingRefundAddresses = Lists.newArrayList("0xgdjhg4354", "0xfefskjhkhj5436");
         final ClaimsByTransactionAggregate claims = mock(ClaimsByTransactionAggregate.class);
         final List<CommentDto> commentDtos = new ArrayList<>();
-        final List<FaqItemDto> faqs = new ArrayList<>();
 
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
         when(mappers.map(RequestDto.class, RequestDetailsView.class, requestDto)).thenReturn(requestDetailsView);
@@ -144,7 +135,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(refundService.findAllRefundRequestsFor(requestId, PENDING)).thenReturn(pendingRefundRequests);
         when(claimService.getAggregatedClaimsForRequest(requestId)).thenReturn(claims);
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
-        when(faqService.getFAQsForPage("requestDetail")).thenReturn(faqs);
 
         this.mockMvc.perform(get("/requests/{id}", requestId).principal(principal))
                     .andExpect(MockMvcResultMatchers.status().isOk())
@@ -154,7 +144,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.model().attribute("pendingRefundAddresses", expectedPendingRefundAddresses))
                     .andExpect(MockMvcResultMatchers.model().attribute("claims", claims))
                     .andExpect(MockMvcResultMatchers.model().attribute("githubComments", sameInstance(commentDtos)))
-                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", sameInstance(faqs)))
                     .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
     }
 
@@ -168,7 +157,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final RequestDetailsView requestDetailsView = mock(RequestDetailsView.class);
         final FundersDto fundersDto = mock(FundersDto.class);
         final List<CommentDto> commentDtos = new ArrayList<>();
-        final ArrayList<FaqItemDto> faqs = new ArrayList<>();
 
         when(requestService.findRequest(Platform.GITHUB, owner + "|FR|" + repo + "|FR|" + number)).thenReturn(requestDto);
         when(requestDetailsView.getId()).thenReturn(requestId);
@@ -176,7 +164,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(objectMapper.writeValueAsString(same(requestDetailsView))).thenReturn("requestDetailsView");
         when(fundService.getFundedBy(principal, requestId)).thenReturn(fundersDto);
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
-        when(faqService.getFAQsForPage("requestDetail")).thenReturn(faqs);
 
         this.mockMvc.perform(get("/requests/github/{owner}/{repo}/{number}", owner, repo, number).principal(principal))
                     .andExpect(MockMvcResultMatchers.status().isOk())
@@ -184,7 +171,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
                     .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
                     .andExpect(MockMvcResultMatchers.model().attribute("githubComments", sameInstance(commentDtos)))
-                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", sameInstance(faqs)))
                     .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
     }
 
@@ -296,12 +282,10 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final List<RequestDto> requests = new ArrayList<>();
         final List<RequestView> requestViews = new ArrayList<>();
         final List<PendingFundDto> pendingFunds = new ArrayList<>();
-        final List<FaqItemDto> faqs = new ArrayList<>();
 
         when(requestService.findRequestsForUser(principal)).thenReturn(requests);
         when(mappers.mapList(RequestDto.class, RequestView.class, requests)).thenReturn(requestViews);
         when(pendingFundService.findByUser(principal)).thenReturn(pendingFunds);
-        when(faqService.getFAQsForPage("requests")).thenReturn(faqs);
         when(objectMapper.writeValueAsString(same(requestViews))).thenReturn("requestViews");
         when(objectMapper.writeValueAsString(same(pendingFunds))).thenReturn("pendingFunds");
 
@@ -309,7 +293,6 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
                     .andExpect(MockMvcResultMatchers.model().attribute("pendingFunds", "pendingFunds"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("faqs", sameInstance(faqs)))
                     .andExpect(MockMvcResultMatchers.view().name("pages/user/requests"));
     }
 }

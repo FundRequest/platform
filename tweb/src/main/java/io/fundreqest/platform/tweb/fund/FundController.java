@@ -6,7 +6,6 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.RefundService;
 import io.fundrequest.core.request.fund.command.RequestRefundCommand;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.platform.faq.FAQService;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import org.apache.commons.lang3.StringUtils;
@@ -22,19 +21,15 @@ import java.security.Principal;
 
 @Controller
 public class FundController extends AbstractController {
-    private static final String FAQ_FUND_GITHUB = "fundGithub";
 
-    private final FAQService faqService;
     private final RefundService refundService;
     private final ProfileService profileService;
     private final RequestService requestService;
 
     public FundController(final RequestService requestService,
-                          final FAQService faqService,
                           final RefundService refundService,
                           final ProfileService profileService) {
         this.requestService = requestService;
-        this.faqService = faqService;
         this.refundService = refundService;
         this.profileService = profileService;
     }
@@ -43,7 +38,6 @@ public class FundController extends AbstractController {
     public ModelAndView details(@PathVariable String type, @RequestParam(name = "url", required = false) String url) {
         return modelAndView()
                 .withObject("url", url)
-                .withObject("faqs", faqService.getFAQsForPage(FAQ_FUND_GITHUB))
                 .withView("pages/fund/" + type)
                 .build();
     }
@@ -53,7 +47,6 @@ public class FundController extends AbstractController {
         final RequestDto request = requestService.findRequest(requestId);
         return modelAndView()
                 .withObject("url", request.getIssueInformation().getUrl())
-                .withObject("faqs", faqService.getFAQsForPage(FAQ_FUND_GITHUB))
                 .withView("pages/fund/" + request.getIssueInformation().getPlatform().name().toLowerCase())
                 .build();
     }

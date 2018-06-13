@@ -8,6 +8,6 @@ class EmptyFAQServiceImplTest {
 
     @Test
     void getFAQsForPage() {
-        assertThat(new EmptyFAQServiceImpl().getFAQsForPage("")).isEmpty();
+        assertThat(new EmptyFAQServiceImpl().getFAQsForPage("").getFaqItems()).isEmpty();
     }
 }

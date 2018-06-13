@@ -2,9 +2,11 @@ package io.fundrequest.platform.faq;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.fundrequest.platform.faq.model.FaqItemDto;
+import io.fundrequest.platform.faq.model.FaqItemsDto;
 import io.fundrequest.platform.faq.parser.Faq;
 import io.fundrequest.platform.faq.parser.Faqs;
 import io.fundrequest.platform.github.GithubGateway;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +38,7 @@ public class GithubFAQServiceImpl implements FAQService {
                                 @Value("${io.fundrequest.faq.owner:FundRequest}") final String owner,
                                 @Value("${io.fundrequest.faq.repo:FAQ}") final String repo,
                                 @Value("${io.fundrequest.faq.branch:master}") final String branch,
-                                @Value("${io.fundrequest.faq.repo:FAQ.xml}") final String filePath,
+                                @Value("${io.fundrequest.faq.filePath:FAQ.xml}") final String filePath,
                                 final XmlMapper xmlMapper,
                                 final FaqItemDtoMapper faqItemDtoMapper,
                                 final CacheManager cacheManager) {
@@ -55,18 +57,18 @@ public class GithubFAQServiceImpl implements FAQService {
     public void refreshFAQs() {
         fetchFAQs().getPages()
                    .forEach(page -> cacheManager.getCache("faqs")
-                                                .put(page.getName(), processFAQs(page.getFaqs())));
+                                                .put(page.getName(), processFAQs(page.getFaqs(), page.getSubtitle())));
         LOGGER.info("FAQ's are fetched from GitHub and stored in cache");
     }
 
     @Cacheable(cacheNames = "faqs", key = "#pageName")
-    public List<FaqItemDto> getFAQsForPage(final String pageName) {
+    public FaqItemsDto getFAQsForPage(final String pageName) {
         // This method is a fallback in case refreshFAQs failed or didn't ran for some reason
         return fetchFAQs().getPages()
                           .stream()
                           .filter(page -> page.getName().equalsIgnoreCase(pageName))
-                          .findFirst().map(page -> processFAQs(page.getFaqs()))
-                          .orElse(new ArrayList<>());
+                          .findFirst().map(page -> processFAQs(page.getFaqs(), page.getSubtitle()))
+                          .orElse(new FaqItemsDto(StringUtils.EMPTY, new ArrayList<>()));
     }
 
     private Faqs fetchFAQs() {
@@ -77,11 +79,14 @@ public class GithubFAQServiceImpl implements FAQService {
         }
     }
 
-    private List<FaqItemDto> processFAQs(List<Faq> faqs) {
+    private FaqItemsDto processFAQs(List<Faq> faqs, String subtitle) {
+        FaqItemsDto faq = new FaqItemsDto(subtitle, new ArrayList<>());
+
         if (faqs != null) {
-            return filterNulls(faqItemDtoMapper.mapToList(faqs));
+            faq.setFaqItems(filterNulls(faqItemDtoMapper.mapToList(faqs)));
         }
-        return new ArrayList<>();
+
+        return faq;
     }
 
     private List<FaqItemDto> filterNulls(final List<FaqItemDto> faqItems) {
