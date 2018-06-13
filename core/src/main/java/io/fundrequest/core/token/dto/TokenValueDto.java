@@ -1,4 +1,4 @@
-package io.fundrequest.core.request.fund.dto;
+package io.fundrequest.core.token.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-public class TotalFundDto {
+public class TokenValueDto {
     private String tokenAddress;
     private String tokenSymbol;
     private BigDecimal totalAmount;
@@ -21,5 +21,4 @@ public class TotalFundDto {
             return "";
         }
     }
-
 }

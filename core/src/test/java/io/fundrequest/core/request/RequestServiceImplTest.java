@@ -352,7 +352,7 @@ public class RequestServiceImplTest {
         command.setBlockchainEventId(6453L);
         final Request request = RequestMother.freeCodeCampNoUserStories().build();
         final RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
-        final ClaimDto claimDto = ClaimDtoMother.aClaimDto();
+        final ClaimDto claimDto = ClaimDtoMother.aClaimDto().build();
         when(requestRepository.findByPlatformAndPlatformId(command.getPlatform(), command.getPlatformId())).thenReturn(Optional.of(request));
         when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
         when(mappers.map(eq(Claim.class), eq(ClaimDto.class), any(Claim.class))).thenReturn(claimDto);

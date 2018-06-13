@@ -16,6 +16,8 @@ import java.util.List;
 
 import static io.fundrequest.core.token.dto.TokenInfoDtoMother.fnd;
 import static io.fundrequest.core.token.dto.TokenInfoDtoMother.zrx;
+import static io.fundrequest.core.token.model.TokenValueMother.FND;
+import static io.fundrequest.core.token.model.TokenValueMother.ZRX;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -31,29 +33,42 @@ public class FundRepositoryTest extends AbstractRepositoryTest {
     public void save() throws Exception {
         Request request = requestRepository.saveAndFlush(RequestMother.freeCodeCampNoUserStories().build());
 
-        Fund fund = FundMother.fndFundFunderKnown().amountInWei(new BigDecimal("30")).requestId(request.getId()).build();
+        final Fund fund = FundMother.fndFundFunderKnown()
+                                    .tokenValue(FND().amountInWei((new BigDecimal("30"))).build())
+                                    .requestId(request.getId())
+                                    .build();
 
         fundRepository.saveAndFlush(fund);
     }
 
     @Test
     public void getAmountPerTokenPerProjectWhereRequestHasStatusFunded() {
-        Request request = requestRepository.saveAndFlush(RequestMother.freeCodeCampNoUserStories().withStatus(RequestStatus.FUNDED).build());
-        Request request2 = requestRepository.saveAndFlush(RequestMother.fundRequestArea51().withStatus(RequestStatus.FUNDED).build());
-        Request request3 = requestRepository.saveAndFlush(RequestMother.freeCodeCampNoUserStories().withStatus(RequestStatus.CLAIMED).build());
+        final Request request1 = requestRepository.saveAndFlush(RequestMother.freeCodeCampNoUserStories().withStatus(RequestStatus.FUNDED).build());
+        final Request request2 = requestRepository.saveAndFlush(RequestMother.fundRequestArea51().withStatus(RequestStatus.FUNDED).build());
+        final Request request3 = requestRepository.saveAndFlush(RequestMother.freeCodeCampNoUserStories().withStatus(RequestStatus.CLAIMED).build());
 
-        fundRepository.save(Arrays.asList(
-                FundMother.zrxFundFunderKnown().requestId(request.getId()).amountInWei(new BigDecimal("10")).build(),
+        fundRepository.save(Arrays.asList(FundMother.zrxFundFunderKnown()
+                                                    .requestId(request1.getId())
+                                                    .tokenValue(ZRX().amountInWei(new BigDecimal("10")).build())
+                                                    .build(),
+                                          FundMother.fndFundFunderKnown()
+                                                    .requestId(request1.getId())
+                                                    .tokenValue(FND().amountInWei(new BigDecimal("30")).build())
+                                                    .build(),
+                                          FundMother.fndFundFunderKnown()
+                                                    .requestId(request1.getId())
+                                                    .tokenValue(FND().amountInWei(new BigDecimal("10")).build())
+                                                    .build(),
+                                          FundMother.fndFundFunderKnown()
+                                                    .requestId(request2.getId())
+                                                    .tokenValue(FND().amountInWei(new BigDecimal("50")).build())
+                                                    .build(),
+                                          FundMother.fndFundFunderKnown()
+                                                    .requestId(request3.getId())
+                                                    .tokenValue(FND().amountInWei(new BigDecimal("50")).build())
+                                                    .build()));
 
-                FundMother.fndFundFunderKnown().requestId(request.getId()).amountInWei(new BigDecimal("30")).build(),
-                FundMother.fndFundFunderKnown().requestId(request.getId()).amountInWei(new BigDecimal("10")).build(),
-
-                FundMother.fndFundFunderKnown().requestId(request2.getId()).amountInWei(new BigDecimal("50")).build(),
-
-                FundMother.fndFundFunderKnown().requestId(request3.getId()).amountInWei(new BigDecimal("50")).build()
-                                         ));
-
-        List<Object[]> result = fundRepository.getAmountPerTokenPerProjectWhereRequestHasStatusFunded();
+        final List<Object[]> result = fundRepository.getAmountPerTokenPerProjectWhereRequestHasStatusFunded();
 
         assertThat(result).hasSize(3);
         assertTechProject(result.get(0), "kazuki43zoo", zrx().getAddress(), "10");
@@ -61,23 +76,36 @@ public class FundRepositoryTest extends AbstractRepositoryTest {
         assertTechProject(result.get(2), "FundRequest", fnd().getAddress(), "50");
     }
 
-
     @Test
     public void getAmountPerTokenPerTechnologyWhereRequestHasStatusFunded() {
         Request request = requestRepository.saveAndFlush(RequestMother.freeCodeCampNoUserStories().withStatus(RequestStatus.FUNDED).build());
         Request request2 = requestRepository.saveAndFlush(RequestMother.fundRequestArea51().withStatus(RequestStatus.FUNDED).build());
         Request request3 = requestRepository.saveAndFlush(RequestMother.freeCodeCampNoUserStories().withStatus(RequestStatus.CLAIMED).build());
 
-        fundRepository.save(Arrays.asList(
-                FundMother.zrxFundFunderKnown().requestId(request.getId()).amountInWei(new BigDecimal("10")).build(),
-                FundMother.fndFundFunderKnown().requestId(request.getId()).amountInWei(new BigDecimal("30")).build(),
-                FundMother.fndFundFunderKnown().requestId(request.getId()).amountInWei(new BigDecimal("10")).build(),
-
-                FundMother.fndFundFunderKnown().requestId(request2.getId()).amountInWei(new BigDecimal("50")).build(),
-                FundMother.zrxFundFunderKnown().requestId(request2.getId()).amountInWei(new BigDecimal("60")).build(),
-
-                FundMother.fndFundFunderKnown().requestId(request3.getId()).amountInWei(new BigDecimal("90")).build()
-                                         ));
+        fundRepository.save(Arrays.asList(FundMother.zrxFundFunderKnown()
+                                                    .requestId(request.getId())
+                                                    .tokenValue(ZRX().amountInWei(new BigDecimal("10")).build())
+                                                    .build(),
+                                          FundMother.fndFundFunderKnown()
+                                                    .requestId(request.getId())
+                                                    .tokenValue(FND().amountInWei(new BigDecimal("30")).build())
+                                                    .build(),
+                                          FundMother.fndFundFunderKnown()
+                                                    .requestId(request.getId())
+                                                    .tokenValue(FND().amountInWei(new BigDecimal("10")).build())
+                                                    .build(),
+                                          FundMother.fndFundFunderKnown()
+                                                    .requestId(request2.getId())
+                                                    .tokenValue(FND().amountInWei(new BigDecimal("50")).build())
+                                                    .build(),
+                                          FundMother.zrxFundFunderKnown()
+                                                    .requestId(request2.getId())
+                                                    .tokenValue(ZRX().amountInWei(new BigDecimal("60")).build())
+                                                    .build(),
+                                          FundMother.fndFundFunderKnown()
+                                                    .requestId(request3.getId())
+                                                    .tokenValue(FND().amountInWei(new BigDecimal("90")).build())
+                                                    .build()));
 
         List<Object[]> result = fundRepository.getAmountPerTokenPerTechnologyWhereRequestHasStatusFunded();
 
