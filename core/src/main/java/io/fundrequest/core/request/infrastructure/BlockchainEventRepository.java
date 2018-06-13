@@ -1,4 +1,4 @@
-package io.fundrequest.core.request.fund.infrastructure;
+package io.fundrequest.core.request.infrastructure;
 
 import io.fundrequest.core.infrastructure.repository.JpaRepository;
 import io.fundrequest.core.request.domain.BlockchainEvent;

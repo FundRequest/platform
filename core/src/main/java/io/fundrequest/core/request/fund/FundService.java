@@ -3,7 +3,7 @@ package io.fundrequest.core.request.fund;
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.dto.FundersDto;
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
+import io.fundrequest.core.token.dto.TokenValueDto;
 
 import java.security.Principal;
 import java.util.List;
@@ -15,7 +15,7 @@ public interface FundService {
 
     FundDto findOne(Long id);
 
-    List<TotalFundDto> getTotalFundsForRequest(Long requestId);
+    List<TokenValueDto> getTotalFundsForRequest(Long requestId);
 
     FundersDto getFundedBy(Principal principal, Long requestId);
 

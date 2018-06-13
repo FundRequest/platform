@@ -1,12 +1,13 @@
 package io.fundrequest.core.request.claim.domain;
 
-import java.math.BigDecimal;
+import io.fundrequest.core.token.model.TokenValue;
+
 import java.time.LocalDateTime;
 
 public final class ClaimBuilder {
     private Long id;
     private String solver;
-    private BigDecimal amountInWei;
+    private TokenValue tokenValue;
     private String tokenHash;
     private LocalDateTime timestamp;
     private Long requestId;
@@ -29,8 +30,8 @@ public final class ClaimBuilder {
         return this;
     }
 
-    public ClaimBuilder withAmountInWei(BigDecimal amountInWei) {
-        this.amountInWei = amountInWei;
+    public ClaimBuilder withTokenValue(TokenValue tokenValue) {
+        this.tokenValue = tokenValue;
         return this;
     }
 
@@ -55,7 +56,7 @@ public final class ClaimBuilder {
     }
 
     public Claim build() {
-        Claim claim = new Claim(solver, amountInWei, tokenHash, requestId, timestamp, blockchainEventId);
+        Claim claim = new Claim(solver, tokenValue, requestId, timestamp, blockchainEventId);
         claim.setId(id);
         return claim;
     }

@@ -1,13 +1,13 @@
 package io.fundrequest.core.request.statistics;
 
 import io.fundrequest.core.request.fiat.FiatService;
-import io.fundrequest.core.web3j.EthUtil;
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.TokenAmountDto;
 import io.fundrequest.core.request.statistics.dto.StatisticsDto;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
+import io.fundrequest.core.token.dto.TokenValueDto;
+import io.fundrequest.core.web3j.EthUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.cache.CacheManager;
@@ -48,18 +48,18 @@ public class StatisticsServiceImplTest {
         TokenAmountDto tokenAmount = new TokenAmountDto(fnd.getAddress(), EthUtil.toWei(BigDecimal.TEN, fnd.getDecimals()));
         TokenAmountDto tokenAmount2 = new TokenAmountDto(zrx.getAddress(), EthUtil.toWei(BigDecimal.ONE, zrx.getDecimals()));
         when(fundRepository.getAmountPerTokenWhereRequestHasStatusFunded()).thenReturn(Arrays.asList(tokenAmount, tokenAmount2));
-        when(fiatService.getUsdPrice(TotalFundDto.builder()
-                                                 .tokenSymbol(fnd.getSymbol())
-                                                 .tokenAddress(fnd.getAddress())
-                                                 .totalAmount(EthUtil.fromWei(tokenAmount.getTotalAmount(), fnd.getDecimals()))
-                                                 .build())).thenReturn(10.0);
+        when(fiatService.getUsdPrice(TokenValueDto.builder()
+                                                  .tokenSymbol(fnd.getSymbol())
+                                                  .tokenAddress(fnd.getAddress())
+                                                  .totalAmount(EthUtil.fromWei(tokenAmount.getTotalAmount(), fnd.getDecimals()))
+                                                  .build())).thenReturn(10.0);
 
 
-        when(fiatService.getUsdPrice(TotalFundDto.builder()
-                                                 .tokenSymbol(zrx.getSymbol())
-                                                 .tokenAddress(zrx.getAddress())
-                                                 .totalAmount(EthUtil.fromWei(tokenAmount2.getTotalAmount(), zrx.getDecimals()))
-                                                 .build())).thenReturn(20.0);
+        when(fiatService.getUsdPrice(TokenValueDto.builder()
+                                                  .tokenSymbol(zrx.getSymbol())
+                                                  .tokenAddress(zrx.getAddress())
+                                                  .totalAmount(EthUtil.fromWei(tokenAmount2.getTotalAmount(), zrx.getDecimals()))
+                                                  .build())).thenReturn(20.0);
 
 
         StatisticsDto result = statisticsService.getStatistics();
@@ -76,16 +76,16 @@ public class StatisticsServiceImplTest {
                 createObject("Dock", zrx.getAddress(), tokenAmount2.getTotalAmount())
                                                );
         when(fundRepository.getAmountPerTokenPerProjectWhereRequestHasStatusFunded()).thenReturn(requests);
-        when(fiatService.getUsdPrice(TotalFundDto.builder()
-                                                 .tokenSymbol(fnd.getSymbol())
-                                                 .tokenAddress(fnd.getAddress())
-                                                 .totalAmount(EthUtil.fromWei(tokenAmount.getTotalAmount(), fnd.getDecimals()))
-                                                 .build())).thenReturn(10.0);
-        when(fiatService.getUsdPrice(TotalFundDto.builder()
-                                                 .tokenSymbol(zrx.getSymbol())
-                                                 .tokenAddress(zrx.getAddress())
-                                                 .totalAmount(EthUtil.fromWei(tokenAmount2.getTotalAmount(), zrx.getDecimals()))
-                                                 .build())).thenReturn(20.0);
+        when(fiatService.getUsdPrice(TokenValueDto.builder()
+                                                  .tokenSymbol(fnd.getSymbol())
+                                                  .tokenAddress(fnd.getAddress())
+                                                  .totalAmount(EthUtil.fromWei(tokenAmount.getTotalAmount(), fnd.getDecimals()))
+                                                  .build())).thenReturn(10.0);
+        when(fiatService.getUsdPrice(TokenValueDto.builder()
+                                                  .tokenSymbol(zrx.getSymbol())
+                                                  .tokenAddress(zrx.getAddress())
+                                                  .totalAmount(EthUtil.fromWei(tokenAmount2.getTotalAmount(), zrx.getDecimals()))
+                                                  .build())).thenReturn(20.0);
 
         StatisticsDto result = statisticsService.getStatistics();
 
@@ -101,16 +101,16 @@ public class StatisticsServiceImplTest {
                 createObject("Python", zrx.getAddress(), tokenAmount2.getTotalAmount())
                                                );
         when(fundRepository.getAmountPerTokenPerTechnologyWhereRequestHasStatusFunded()).thenReturn(requests);
-        when(fiatService.getUsdPrice(TotalFundDto.builder()
-                                                 .tokenSymbol(fnd.getSymbol())
-                                                 .tokenAddress(fnd.getAddress())
-                                                 .totalAmount(EthUtil.fromWei(tokenAmount.getTotalAmount(), fnd.getDecimals()))
-                                                 .build())).thenReturn(10.0);
-        when(fiatService.getUsdPrice(TotalFundDto.builder()
-                                                 .tokenSymbol(zrx.getSymbol())
-                                                 .tokenAddress(zrx.getAddress())
-                                                 .totalAmount(EthUtil.fromWei(tokenAmount2.getTotalAmount(), zrx.getDecimals()))
-                                                 .build())).thenReturn(20.0);
+        when(fiatService.getUsdPrice(TokenValueDto.builder()
+                                                  .tokenSymbol(fnd.getSymbol())
+                                                  .tokenAddress(fnd.getAddress())
+                                                  .totalAmount(EthUtil.fromWei(tokenAmount.getTotalAmount(), fnd.getDecimals()))
+                                                  .build())).thenReturn(10.0);
+        when(fiatService.getUsdPrice(TokenValueDto.builder()
+                                                  .tokenSymbol(zrx.getSymbol())
+                                                  .tokenAddress(zrx.getAddress())
+                                                  .totalAmount(EthUtil.fromWei(tokenAmount2.getTotalAmount(), zrx.getDecimals()))
+                                                  .build())).thenReturn(20.0);
 
         StatisticsDto result = statisticsService.getStatistics();
 

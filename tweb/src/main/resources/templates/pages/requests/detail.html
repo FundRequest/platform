@@ -48,8 +48,10 @@
                             <div class="request-details__price"
                                  th:if="${request.funds != null and request.funds.usdFunds != null}">
                                 <span class="request-details__fund-currency">$</span>
-                                <span class="request-details__fund-amount"
+                                <span class="request-details__fund-amount" th:if="${request.funds.usdFunds} >= 10"
                                       th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,'COMMA',0,'POINT')}">-</span>
+                                <span class="request-details__fund-amount" th:if="${request.funds.usdFunds} &lt; 10"
+                                      th:text="${#numbers.formatDecimal(request.funds.usdFunds,1,'COMMA',2,'POINT')}">-</span>
                                 <span class="disclaimer-asterix">*</span>
                             </div>
                             <div class="request-details__crypto">
@@ -86,7 +88,7 @@
                         v-bind:filters="[
                     { value: 'info', title: 'Info', description: 'Detailed description of the request' },
                     { value: 'comments', title: 'Comments', description: 'Comments posted on the request' },
-                    { value: 'funded-by', title: 'Funded By', description: 'An overview of the funders and funds.' }
+                    { value: 'details', title: 'Details', description: 'An overview of the funders and funds.' }
                  ]">
             <template slot-scope="{faseFilter}">
                 <div class="card" v-if="faseFilter === 'info'">
@@ -129,9 +131,9 @@
                     </div>
                 </div>
 
-                <div class="card" v-if="faseFilter === 'funded-by'">
+                <div class="card" v-if="faseFilter === 'details'">
                     <div class="card-header">
-                        Funders
+                        Funded by
                     </div>
                     <div class="card-body">
                         <div class="request-funding">
@@ -180,6 +182,79 @@
                                 <div class="request-details__price" th:if="${fundedBy.usdFunds != null}">
                                     <span class="request-details__fund-amount"
                                           th:text="${#numbers.formatDecimal(fundedBy.usdFunds,1,'COMMA',2,'POINT')}">58</span>
+                                    <span class="request-details__fund-currency">USD</span>
+                                    <span class="disclaimer-asterix">*</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" th:if="${!claims.claims.isEmpty()}" v-if="faseFilter === 'details'">
+                    <div class="card-header">
+                        Claimed by
+                    </div>
+                    <div class="card-body">
+                        <div class="request-funding">
+                            <div class="request-funding__transfers">
+                                <div class="request-funding__transfer" th:each="claim : ${claims.claims}">
+                                    <div class="request-details__label">
+                                        <span class="request-details__label-text"><a th:href="${'https://github.com/' + claim.solver}" th:text="${claim.solver}">Karel Striegel</a></span>
+                                        <span class="request-details__label-badge badge badge-pill badge-primary" th:if="${(profile != null) and (profile.github != null) and (profile.github.username.equals(claim.solver))}">You</span>
+                                        <div class="request-details__date">
+                                            <span>&nbsp;-&nbsp;</span><timeago th:attr="'v-bind:since'='&quot;' + ${claim.timestamp} + '&quot;'" v-bind:auto-update="60"></timeago>
+                                        </div>
+                                    </div>
+                                    <div class="request-details__transaction">
+                                        <a th:if="${claim.transactionHash}" th:href="${@environment.getProperty('io.fundrequest.etherscan.basepath') + '/tx/' + claim.transactionHash}">View transaction</a>
+                                    </div>
+                                    <div class="request-details__fund" th:if="${claim.fndValue ne null}">
+                                        <span class="request-details__fund-amount"
+                                              th:text="${#numbers.formatDecimal(claim.fndValue.totalAmount, 1, 'COMMA', 2, 'POINT')}">100,00</span>
+                                        <span class="request-details__fund-currency"
+                                              th:text="${claim.fndValue.tokenSymbol}">FND</span>
+                                    </div>
+                                    <div class="request-details__fund" th:if="${claims.fndValue ne null and claim.fndValue eq null}">
+                                        <span class="request-details__fund-amount"
+                                              th:text="${#numbers.formatDecimal(0, 1, 'COMMA', 2, 'POINT')}">100,00</span>
+                                        <span class="request-details__fund-currency"
+                                              th:text="${claims.fndValue.tokenSymbol}">FND</span>
+                                    </div>
+                                    <div class="request-details__fund" th:if="${claim.otherValue ne null}">
+                                        <span class="request-details__fund-amount"
+                                              th:text="${#numbers.formatDecimal(claim.otherValue.totalAmount, 1, 'COMMA', 2, 'POINT')}">100,00</span>
+                                        <span class="request-details__fund-currency"
+                                              th:text="${claim.otherValue.tokenSymbol}">FND</span>
+                                    </div>
+                                    <div class="request-details__fund" th:if="${claims.otherValue ne null and claim.otherValue eq null}">
+                                        <span class="request-details__fund-amount"
+                                              th:text="${#numbers.formatDecimal(0, 1, 'COMMA', 2, 'POINT')}">100,00</span>
+                                        <span class="request-details__fund-currency"
+                                              th:text="${claims.otherValue.tokenSymbol}">FND</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="request-funding__subtotal">
+                                <div class="request-details__label">
+                                    Subtotal
+                                </div>
+                                <div class="request-details__fund" th:if="${claims.fndValue != null}">
+                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(claims.fndValue.totalAmount, 1, 'COMMA', 2, 'POINT')}">100,00</span>
+                                    <span class="request-details__fund-currency" th:text="${claims.fndValue.tokenSymbol}">FND</span>
+                                </div>
+                                <div class="request-details__fund" th:if="${claims.otherValue != null}">
+                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(claims.otherValue.totalAmount,1,'COMMA',2,'POINT')}">100,00</span>
+                                    <span class="request-details__fund-currency" th:text="${claims.otherValue.tokenSymbol}">XYZ</span>
+                                </div>
+                            </div>
+
+                            <div class="request-funding__total">
+                                <div class="request-details__label">
+                                    <span>Total</span>
+                                </div>
+                                <div class="request-details__price" th:if="${claims.usdValue != null}">
+                                    <span class="request-details__fund-amount" th:text="${#numbers.formatDecimal(claims.usdValue, 1, 'COMMA', 2, 'POINT')}">58</span>
                                     <span class="request-details__fund-currency">USD</span>
                                     <span class="disclaimer-asterix">*</span>
                                 </div>

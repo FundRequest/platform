@@ -8,6 +8,7 @@ import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
+import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fiat.FiatService;
@@ -16,11 +17,11 @@ import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.fund.dto.FundersDto;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
 import io.fundrequest.core.request.statistics.dto.StatisticsDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
+import io.fundrequest.core.token.dto.TokenValueDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,10 @@ import java.util.Set;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -116,12 +120,14 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final RequestDto requestDto = mock(RequestDto.class);
         final RequestDetailsView requestDetailsView = mock(RequestDetailsView.class);
         final FundersDto fundersDto = mock(FundersDto.class);
+        final ClaimsByTransactionAggregate claims = mock(ClaimsByTransactionAggregate.class);
         final List<CommentDto> commentDtos = new ArrayList<>();
 
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
         when(mappers.map(RequestDto.class, RequestDetailsView.class, requestDto)).thenReturn(requestDetailsView);
         when(objectMapper.writeValueAsString(same(requestDetailsView))).thenReturn("requestDetailsView");
         when(fundService.getFundedBy(principal, requestId)).thenReturn(fundersDto);
+        when(claimService.getAggregatedClaimsForRequest(requestId)).thenReturn(claims);
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
 
         this.mockMvc.perform(get("/requests/{id}", requestId).principal(principal))
@@ -129,7 +135,8 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                 .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
                 .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
                 .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
-                .andExpect(MockMvcResultMatchers.model().attribute("githubComments", new Same(commentDtos)))
+                .andExpect(MockMvcResultMatchers.model().attribute("claims", claims))
+                    .andExpect(MockMvcResultMatchers.model().attribute("githubComments", new Same(commentDtos)))
                 .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
     }
 
@@ -164,14 +171,14 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
     public void detailsBadge_otherFund_HighestFiat() throws Exception {
         final long requestId = 654L;
         final RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
-        final TotalFundDto fndFunds = TotalFundDto.builder()
-                .tokenSymbol("FND")
-                .totalAmount(new BigDecimal("1000"))
-                .build();
-        final TotalFundDto otherFunds = TotalFundDto.builder()
-                .tokenSymbol("SDFGG")
-                .totalAmount(new BigDecimal("1100"))
-                .build();
+        final TokenValueDto fndFunds = TokenValueDto.builder()
+                                                  .tokenSymbol("FND")
+                                                  .totalAmount(new BigDecimal("1000"))
+                                                  .build();
+        final TokenValueDto otherFunds = TokenValueDto.builder()
+                                                    .tokenSymbol("SDFGG")
+                                                    .totalAmount(new BigDecimal("1100"))
+                                                    .build();
         request.getFunds().setFndFunds(fndFunds);
         request.getFunds().setOtherFunds(otherFunds);
 
@@ -191,14 +198,14 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
     public void detailsBadge_FND_HighestFiat() throws Exception {
         final long requestId = 654L;
         final RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
-        final TotalFundDto fndFunds = TotalFundDto.builder()
-                .tokenSymbol("FND")
-                .totalAmount(new BigDecimal("1000"))
-                .build();
-        final TotalFundDto otherFunds = TotalFundDto.builder()
-                .tokenSymbol("SDFGG")
-                .totalAmount(new BigDecimal("1100"))
-                .build();
+        final TokenValueDto fndFunds = TokenValueDto.builder()
+                                                  .tokenSymbol("FND")
+                                                  .totalAmount(new BigDecimal("1000"))
+                                                  .build();
+        final TokenValueDto otherFunds = TokenValueDto.builder()
+                                                    .tokenSymbol("SDFGG")
+                                                    .totalAmount(new BigDecimal("1100"))
+                                                    .build();
         request.getFunds().setFndFunds(fndFunds);
         request.getFunds().setOtherFunds(otherFunds);
 
