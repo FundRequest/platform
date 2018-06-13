@@ -56,8 +56,8 @@ public class GithubFAQServiceImpl implements FAQService {
     @Scheduled(fixedRate = DAY_IN_MILLIS)
     public void refreshFAQs() {
         fetchFAQs().getPages()
-                .forEach(page -> cacheManager.getCache("faqs")
-                        .put(page.getName(), processFAQs(page.getFaqs(), page.getSubtitle())));
+                   .forEach(page -> cacheManager.getCache("faqs")
+                                                .put(page.getName(), processFAQs(page.getFaqs(), page.getSubtitle())));
         LOGGER.info("FAQ's are fetched from GitHub and stored in cache");
     }
 
@@ -65,10 +65,10 @@ public class GithubFAQServiceImpl implements FAQService {
     public FaqItemsDto getFAQsForPage(final String pageName) {
         // This method is a fallback in case refreshFAQs failed or didn't ran for some reason
         return fetchFAQs().getPages()
-                .stream()
-                .filter(page -> page.getName().equalsIgnoreCase(pageName))
-                .findFirst().map(page -> processFAQs(page.getFaqs(), page.getSubtitle()))
-                .orElse(new FaqItemsDto(StringUtils.EMPTY, new ArrayList<>()));
+                          .stream()
+                          .filter(page -> page.getName().equalsIgnoreCase(pageName))
+                          .findFirst().map(page -> processFAQs(page.getFaqs(), page.getSubtitle()))
+                          .orElse(new FaqItemsDto(StringUtils.EMPTY, new ArrayList<>()));
     }
 
     private Faqs fetchFAQs() {
