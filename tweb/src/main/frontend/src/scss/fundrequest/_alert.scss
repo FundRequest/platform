@@ -92,6 +92,11 @@
     }
 }
 
+.alert-body {
+  white-space: nowrap;
+  padding-right: 2.5rem;
+}
+
 .alert-progress {
     position: absolute;
     left: -1px;
