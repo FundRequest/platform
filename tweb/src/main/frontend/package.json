@@ -96,6 +96,7 @@
     "v-money": "github:nholden/v-money",
     "vue": "^2.5.2",
     "vue-class-component": "^6.0.0",
+    "vue-dynamic": "0.0.6",
     "vue-property-decorator": "^6.0.0",
     "vue-router": "^3.0.1",
     "vue-select": "^2.4.0",

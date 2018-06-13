@@ -2,6 +2,7 @@ package io.fundrequest.platform.faq;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.fundrequest.platform.faq.model.FaqItemDto;
+import io.fundrequest.platform.faq.model.FaqItemsDto;
 import io.fundrequest.platform.faq.parser.Faq;
 import io.fundrequest.platform.faq.parser.Faqs;
 import io.fundrequest.platform.faq.parser.Page;
@@ -14,14 +15,14 @@ import org.springframework.cache.CacheManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.refEq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -53,81 +54,68 @@ class GithubFAQServiceImplTest {
     @Test
     public void refreshFAQs() throws IOException {
         final String faqsXml = "fadgszdbg";
-
-        final Map<String, List<Faq>> pages = new HashMap<>();
-        final String pageName1 = "fghggfsshdg";
-        final String pageName2 = "gdx";
-        final String pageName3 = "khdaflk";
-        final List<Faq> faq1 = new ArrayList<>();
-        final List<Faq> faq2 = new ArrayList<>();
-        final List<Faq> faq3 = new ArrayList<>();
-        pages.put(pageName1, faq1);
-        pages.put(pageName2, faq2);
-        pages.put(pageName3, faq3);
         final List<FaqItemDto> faqItems1 = Arrays.asList(mock(FaqItemDto.class));
         final List<FaqItemDto> faqItems2 = Arrays.asList(mock(FaqItemDto.class), mock(FaqItemDto.class));
         final List<FaqItemDto> faqItems3 = Arrays.asList(mock(FaqItemDto.class), null, mock(FaqItemDto.class));
         final Cache cache = mock(Cache.class);
+        final Page page1 = Page.builder().name("gfs").subtitle("oenoewfxsc").faqs(new ArrayList<>()).build();
+        final Page page2 = Page.builder().name("ghc").subtitle("hfgdljhhkj").faqs(new ArrayList<>()).build();
+        final Page page3 = Page.builder().name("daf").subtitle("kdbcgaadcf").faqs(new ArrayList<>()).build();
 
         when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
-        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPages(pages));
-        when(faqItemDtoMapper.mapToList(same(faq1))).thenReturn(faqItems1);
-        when(faqItemDtoMapper.mapToList(same(faq2))).thenReturn(faqItems2);
-        when(faqItemDtoMapper.mapToList(same(faq3))).thenReturn(faqItems3);
+        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(Faqs.builder().pages(Arrays.asList(page1, page2, page3)).build());
+        when(faqItemDtoMapper.mapToList(same(page1.getFaqs()))).thenReturn(faqItems1);
+        when(faqItemDtoMapper.mapToList(same(page2.getFaqs()))).thenReturn(faqItems2);
+        when(faqItemDtoMapper.mapToList(same(page3.getFaqs()))).thenReturn(faqItems3);
         when(cacheManager.getCache("faqs")).thenReturn(cache);
 
         service.refreshFAQs();
 
-        verify(cache).put(pageName1, faqItems1);
-        verify(cache).put(pageName2, faqItems2);
-        verify(cache).put(pageName3, faqItems3.stream().filter(Objects::nonNull).collect(toList()));
+        verify(cache).put(eq(page1.getName()), refEq(new FaqItemsDto(page1.getSubtitle(), faqItems1)));
+        verify(cache).put(eq(page2.getName()), refEq(new FaqItemsDto(page2.getSubtitle(), faqItems2)));
+        verify(cache).put(eq(page3.getName()), refEq(new FaqItemsDto(page3.getSubtitle(), faqItems3.stream().filter(Objects::nonNull).collect(toList()))));
     }
 
     @Test
     public void refreshFAQs_pageNullFaqs() throws IOException {
         final String faqsXml = "fadgszdbg";
-
-        final Map<String, List<Faq>> pages = new HashMap<>();
-        final String pageName1 = "fghggfsshdg";
-        final String pageName2 = "gdx";
-        final String pageName3 = "khdaflk";
-        final List<Faq> faq2 = new ArrayList<>();
-        final List<Faq> faq3 = new ArrayList<>();
-        pages.put(pageName1, null);
-        pages.put(pageName2, faq2);
-        pages.put(pageName3, faq3);
+        final Page page1 = Page.builder().name("fgh").subtitle("jcgk").faqs(null).build();
+        final Page page2 = Page.builder().name("gdx").subtitle("mvnb").faqs(new ArrayList<>()).build();
+        final Page page3 = Page.builder().name("khd").subtitle("gdbh").faqs(new ArrayList<>()).build();
         final List<FaqItemDto> faqItems2 = Arrays.asList(mock(FaqItemDto.class), mock(FaqItemDto.class));
         final List<FaqItemDto> faqItems3 = Arrays.asList(mock(FaqItemDto.class), null, mock(FaqItemDto.class));
         final Cache cache = mock(Cache.class);
 
         when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
-        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPages(pages));
-        when(faqItemDtoMapper.mapToList(same(faq2))).thenReturn(faqItems2);
-        when(faqItemDtoMapper.mapToList(same(faq3))).thenReturn(faqItems3);
+        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(Faqs.builder().pages(Arrays.asList(page1, page2, page3)).build());
+        when(faqItemDtoMapper.mapToList(same(page2.getFaqs()))).thenReturn(faqItems2);
+        when(faqItemDtoMapper.mapToList(same(page3.getFaqs()))).thenReturn(faqItems3);
         doThrow(new NullPointerException()).when(faqItemDtoMapper).mapToList(null);
         when(cacheManager.getCache("faqs")).thenReturn(cache);
 
         service.refreshFAQs();
 
-        verify(cache).put(pageName1, new ArrayList<FaqItemDto>());
-        verify(cache).put(pageName2, faqItems2);
-        verify(cache).put(pageName3, faqItems3.stream().filter(Objects::nonNull).collect(toList()));
+        verify(cache).put(eq(page1.getName()), refEq(new FaqItemsDto(page1.getSubtitle(), new ArrayList<>())));
+        verify(cache).put(eq(page2.getName()), refEq(new FaqItemsDto(page2.getSubtitle(), faqItems2)));
+        verify(cache).put(eq(page3.getName()), refEq(new FaqItemsDto(page3.getSubtitle(), faqItems3.stream().filter(Objects::nonNull).collect(toList()))));
     }
 
     @Test
     public void getFAQsForPage() throws IOException {
         final String faqsXml = "fadgszdbg";
         final String pageName = "fghggfsshdg";
+        final String subtitle = "afdsgdasoif";
         final List<Faq> faqs = new ArrayList<>();
         final List<FaqItemDto> faqItems = Arrays.asList(mock(FaqItemDto.class), null, mock(FaqItemDto.class));
 
         when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
-        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage(pageName, faqs));
+        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage(pageName, subtitle, faqs));
         when(faqItemDtoMapper.mapToList(same(faqs))).thenReturn(faqItems);
 
-        final List<FaqItemDto> result = service.getFAQsForPage(pageName);
+        final FaqItemsDto result = service.getFAQsForPage(pageName);
 
-        assertThat(result).isEqualTo(faqItems.stream().filter(Objects::nonNull).collect(toList()));
+        assertThat(result.getFaqItems()).isEqualTo(faqItems.stream().filter(Objects::nonNull).collect(toList()));
+        assertThat(result.getSubtitle()).isEqualTo(subtitle);
     }
 
     @Test
@@ -136,12 +124,12 @@ class GithubFAQServiceImplTest {
         final String pageName = "fghggfsshdg";
 
         when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
-        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage(pageName, null));
+        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage(pageName, "", null));
         doThrow(new NullPointerException()).when(faqItemDtoMapper).mapToList(null);
 
-        final List<FaqItemDto> result = service.getFAQsForPage(pageName);
+        final FaqItemsDto result = service.getFAQsForPage(pageName);
 
-        assertThat(result).isEmpty();
+        assertThat(result.getFaqItems()).isEmpty();
     }
 
     @Test
@@ -169,18 +157,19 @@ class GithubFAQServiceImplTest {
         final List<FaqItemDto> faqItems = new ArrayList<>();
 
         when(githubGateway.getContentsAsRaw(OWNER, REPO, MASTER, FILE_PATH)).thenReturn(faqsXml);
-        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage("fghggfsshdg", faqs));
+        when(xmlMapper.readValue(faqsXml, Faqs.class)).thenReturn(buildFaqsObjectWithPage("fghggfsshdg", "sfgfb", faqs));
         when(faqItemDtoMapper.mapToList(same(faqs))).thenReturn(faqItems);
 
-        final List<FaqItemDto> result = service.getFAQsForPage("pageName");
+        final FaqItemsDto result = service.getFAQsForPage("pageName");
 
-        assertThat(result).isEmpty();
+        assertThat(result.getFaqItems()).isEmpty();
     }
 
-    private Faqs buildFaqsObjectWithPage(final String pageName, final List<Faq> faqs) {
+    private Faqs buildFaqsObjectWithPage(final String pageName, final String subtitle, final List<Faq> faqs) {
         return Faqs.builder()
                    .pages(Arrays.asList(Page.builder()
                                             .name("afdsgd")
+                                            .subtitle("afdsgdasoif")
                                             .faqs(Arrays.asList(Faq.builder()
                                                                    .title("afdsgd - FAQ 1")
                                                                    .filePath("afdsgd/FAQ1.md")
@@ -196,20 +185,10 @@ class GithubFAQServiceImplTest {
                                             .build(),
                                         Page.builder()
                                             .name(pageName)
+                                            .subtitle(subtitle)
                                             .faqs(faqs)
                                             .build()))
                    .build();
     }
 
-    private Faqs buildFaqsObjectWithPages(final Map<String, List<Faq>> pagesMap) {
-        final List<Page> pages = new ArrayList<>();
-        for (final String pageName : pagesMap.keySet()) {
-            pages.add(Page.builder()
-                          .name(pageName)
-                          .faqs(pagesMap.get(pageName))
-                          .build());
-        }
-
-        return Faqs.builder().pages(pages).build();
-    }
 }
