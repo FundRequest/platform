@@ -28,14 +28,12 @@ public class ClaimController {
     @PostMapping("/claims/approved")
     public ModelAndView approveRequestClaim(@RequestParam("id") Long id) {
         claimModerationService.approveClaim(id);
-        return
-                new ModelAndView(new RedirectView("/claims", true, true, true));
+        return new ModelAndView(new RedirectView("/claims", true, true, true));
     }
 
     @PostMapping("/claims/declined")
     public ModelAndView declineRequestClaim(@RequestParam Long id) {
         claimModerationService.declineClaim(id);
-        return
-                new ModelAndView(new RedirectView("/claims", true, true, true));
+        return new ModelAndView(new RedirectView("/claims", true, true, true));
     }
 }

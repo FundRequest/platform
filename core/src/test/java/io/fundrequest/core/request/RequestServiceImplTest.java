@@ -7,6 +7,7 @@ import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.dto.ClaimDto;
+import io.fundrequest.core.request.claim.dto.ClaimableResultDto;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
@@ -30,6 +31,7 @@ import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.profile.profile.ProfileService;
+import io.fundrequest.platform.profile.profile.dto.UserProfileMother;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -183,13 +185,14 @@ public class RequestServiceImplTest {
         final long requestId = 1L;
         final Request request = RequestMother.fundRequestArea51().build();
         request.setStatus(RequestStatus.FUNDED);
-        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
-        final UserClaimableDto expected = UserClaimableDto.builder().claimableByUser(true).claimable(true).build();
+        final IssueInformation issueInformation = request.getIssueInformation();
+        final ClaimableResultDto claimableResultDto = ClaimableResultDto.builder().claimable(true).claimableByPlatformUserName("davyvanroy").platform(Platform.GITHUB).build();
+        final UserClaimableDto expected = UserClaimableDto.builder().claimableByLoggedInUser(true).claimableByPlatformUserName("davyvanroy").claimable(true).build();
         final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
 
         when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
-        when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
-        when(githubClaimResolver.userClaimableResult(principal, requestDto)).thenReturn(expected);
+        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.FUNDED)).thenReturn(claimableResultDto);
+        when(profileService.getUserProfile(principal)).thenReturn(UserProfileMother.davy());
 
         UserClaimableDto result = requestService.getUserClaimableResult(principal, requestId);
 
@@ -204,17 +207,56 @@ public class RequestServiceImplTest {
         final long requestId = 1L;
         final Request request = RequestMother.fundRequestArea51().build();
         request.setStatus(RequestStatus.CLAIMABLE);
-        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        final IssueInformation issueInformation = request.getIssueInformation();
+        final ClaimableResultDto claimableResultDto = ClaimableResultDto.builder().claimable(false).platform(Platform.GITHUB).build();
         final UserClaimableDto expected = UserClaimableDto.builder().claimable(false).build();
         final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
 
         when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
-        when(mappers.map(Request.class, RequestDto.class, request)).thenReturn(requestDto);
-        when(githubClaimResolver.userClaimableResult(principal, requestDto)).thenReturn(expected);
+        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.CLAIMABLE)).thenReturn(claimableResultDto);
+        when(profileService.getUserProfile(principal)).thenReturn(UserProfileMother.davy());
 
         UserClaimableDto result = requestService.getUserClaimableResult(principal, requestId);
 
         assertThat(result).isEqualTo(expected);
+        verify(requestRepository).save(requestArgumentCaptor.capture());
+        assertThat(requestArgumentCaptor.getValue().getStatus()).isEqualTo(RequestStatus.FUNDED);
+    }
+
+    @Test
+    public void getClaimableResultUpdatesStatus() {
+        final long requestId = 1L;
+        final Request request = RequestMother.fundRequestArea51().build();
+        request.setStatus(RequestStatus.FUNDED);
+        final IssueInformation issueInformation = request.getIssueInformation();
+        final ClaimableResultDto claimableResultDto = ClaimableResultDto.builder().claimable(true).claimableByPlatformUserName("davyvanroy").platform(Platform.GITHUB).build();
+        final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
+
+        when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
+        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.FUNDED)).thenReturn(claimableResultDto);
+
+        ClaimableResultDto result = requestService.getClaimableResult(requestId);
+
+        assertThat(result).isEqualTo(claimableResultDto);
+        verify(requestRepository).save(requestArgumentCaptor.capture());
+        assertThat(requestArgumentCaptor.getValue().getStatus()).isEqualTo(RequestStatus.CLAIMABLE);
+    }
+
+    @Test
+    public void getClaimableResultUpdatesStatusToFunded() {
+        final long requestId = 1L;
+        final Request request = RequestMother.fundRequestArea51().build();
+        request.setStatus(RequestStatus.CLAIMABLE);
+        final IssueInformation issueInformation = request.getIssueInformation();
+        final ClaimableResultDto claimableResultDto = ClaimableResultDto.builder().claimable(false).platform(Platform.GITHUB).build();
+        final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
+
+        when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
+        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.CLAIMABLE)).thenReturn(claimableResultDto);
+
+        ClaimableResultDto result = requestService.getClaimableResult(requestId);
+
+        assertThat(result).isEqualTo(claimableResultDto);
         verify(requestRepository).save(requestArgumentCaptor.capture());
         assertThat(requestArgumentCaptor.getValue().getStatus()).isEqualTo(RequestStatus.FUNDED);
     }
