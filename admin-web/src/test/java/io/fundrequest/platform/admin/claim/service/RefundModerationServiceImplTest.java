@@ -1,10 +1,15 @@
 package io.fundrequest.platform.admin.claim.service;
 
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.domain.RefundRequest;
 import io.fundrequest.core.request.fund.dto.RefundRequestDto;
 import io.fundrequest.core.request.fund.infrastructure.RefundRequestRepository;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
+import io.fundrequest.core.request.infrastructure.azrael.RefundCommand;
+import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.admin.refund.RefundModerationServiceImpl;
 import io.fundrequest.platform.admin.service.ModerationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +38,7 @@ class RefundModerationServiceImplTest {
     private Mappers mappers;
     private RefundRequestRepository refundRequestRepository;
     private AzraelClient azraelClient;
+    private RequestService requestService;
 
     @BeforeEach
     void setUp() {
@@ -40,19 +46,35 @@ class RefundModerationServiceImplTest {
         refundRequestRepository = mock(RefundRequestRepository.class);
         azraelClient = mock(AzraelClient.class);
 
-        service = new RefundModerationServiceImpl(mappers, refundRequestRepository, azraelClient);
+        requestService = mock(RequestService.class);
+        service = new RefundModerationServiceImpl(mappers, refundRequestRepository, azraelClient, requestService);
     }
 
     @Test
     void approve() {
+        final long requestId = 654L;
         final long refundRequestId = 47658L;
+        final String funderAddress = "0x03243eadsfs";
+        final Platform platform = Platform.STACK_OVERFLOW;
+        final String platformId = "gdfxfhcgjvtfrdasd";
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.getIssueInformation().setPlatform(platform);
+        requestDto.getIssueInformation().setPlatformId(platformId);
 
         when(refundRequestRepository.findOne(refundRequestId)).thenReturn(Optional.of(RefundRequest.builder()
+                                                                                                   .funderAddress(funderAddress)
+                                                                                                   .requestId(requestId)
                                                                                                    .status(PENDING)
                                                                                                    .build()));
+        when(requestService.findRequest(requestId)).thenReturn(requestDto);
 
         service.approve(refundRequestId);
 
+        verify(azraelClient).submitRefund(RefundCommand.builder()
+                                                       .address(funderAddress)
+                                                       .platform(platform.name())
+                                                       .platformId(platformId)
+                                                       .build());
     }
 
     @Test

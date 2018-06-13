@@ -1,11 +1,15 @@
 package io.fundrequest.platform.admin.refund;
 
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.domain.RefundRequest;
 import io.fundrequest.core.request.fund.domain.RefundRequestStatus;
 import io.fundrequest.core.request.fund.dto.RefundRequestDto;
 import io.fundrequest.core.request.fund.infrastructure.RefundRequestRepository;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
+import io.fundrequest.core.request.infrastructure.azrael.RefundCommand;
+import io.fundrequest.core.request.view.IssueInformationDto;
+import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.admin.service.ModerationService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,26 +24,35 @@ public class RefundModerationServiceImpl implements ModerationService<RefundRequ
     private final Mappers mappers;
     private final RefundRequestRepository refundRequestRepository;
     private final AzraelClient azraelClient;
+    private final RequestService requestService;
 
     public RefundModerationServiceImpl(final Mappers mappers,
                                        final RefundRequestRepository refundRequestRepository,
-                                       final AzraelClient azraelClient) {
+                                       final AzraelClient azraelClient,
+                                       final RequestService requestService) {
         this.mappers = mappers;
         this.refundRequestRepository = refundRequestRepository;
         this.azraelClient = azraelClient;
-    }
-
-
-    @Override
-    @Transactional
-    public void approve(Long id) {
-        // TODO send to Azrael
+        this.requestService = requestService;
     }
 
     @Override
     @Transactional
-    public void decline(Long requestRefundId) {
-        final RefundRequest refundRequest = refundRequestRepository.findOne(requestRefundId).orElseThrow(() -> new RuntimeException("Refund request not found"));
+    public void approve(final Long refundRequestId) {
+        final RefundRequest refundRequest = refundRequestRepository.findOne(refundRequestId).orElseThrow(() -> new RuntimeException("Refund request not found"));
+        final RequestDto request = requestService.findRequest(refundRequest.getRequestId());
+        final IssueInformationDto issueInformation = request.getIssueInformation();
+        azraelClient.submitRefund(RefundCommand.builder()
+                                               .address(refundRequest.getFunderAddress())
+                                               .platform(issueInformation.getPlatform().name())
+                                               .platformId(issueInformation.getPlatformId())
+                                               .build());
+    }
+
+    @Override
+    @Transactional
+    public void decline(final Long refundRequestId) {
+        final RefundRequest refundRequest = refundRequestRepository.findOne(refundRequestId).orElseThrow(() -> new RuntimeException("Refund request not found"));
         refundRequest.setStatus(RefundRequestStatus.DECLINED);
         refundRequestRepository.save(refundRequest);
     }
@@ -56,7 +69,7 @@ public class RefundModerationServiceImpl implements ModerationService<RefundRequ
         return getRequestRefunds(RefundRequestStatus.TRANSACTION_FAILED);
     }
 
-    private List<RefundRequestDto> getRequestRefunds(RefundRequestStatus pending) {
+    private List<RefundRequestDto> getRequestRefunds(final RefundRequestStatus pending) {
         return mappers.mapList(RefundRequest.class, RefundRequestDto.class, refundRequestRepository.findAllByStatusIn(Collections.singletonList(pending), new Sort("creationDate")));
     }
 }
