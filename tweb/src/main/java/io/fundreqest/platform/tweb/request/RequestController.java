@@ -94,13 +94,12 @@ public class RequestController extends AbstractController {
     public ModelAndView requests() {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
         final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
-		boolean isAuthenticated = securityContextService.isUserFullyAuthenticated();
         return modelAndView().withObject("requestsPerFaseCount", requestsPerFaseCount)
                              .withObject("requests", getAsJson(requests))
                              .withObject("statistics", statisticsService.getStatistics())
                              .withObject("projects", getAsJson(requestService.findAllProjects()))
                              .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
-                             .withObject("isAuthenticated", getAsJson(isAuthenticated))
+                             .withObject("isAuthenticated", getAsJson(securityContextService.isUserFullyAuthenticated()))
                              .withObject("faqs", faqService.getFAQsForPage(FAQ_REQUESTS_PAGE))
                              .withView("pages/requests/index")
                              .build();
@@ -207,11 +206,10 @@ public class RequestController extends AbstractController {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findRequestsForUser(principal));
         final List<PendingFundDto> pendingFunds = pendingFundService.findByUser(principal);
         final List<FaqItemDto> faqs = faqService.getFAQsForPage(FAQ_REQUESTS_PAGE);
-		boolean isAuthenticated = securityContextService.isUserFullyAuthenticated();
         return modelAndView()
                 .withObject("requests", getAsJson(requests))
                 .withObject("pendingFunds", getAsJson(pendingFunds))
-                .withObject("isAuthenticated", getAsJson(isAuthenticated))
+                .withObject("isAuthenticated", getAsJson(securityContextService.isUserFullyAuthenticated()))
                 .withObject("faqs", faqs)
                 .withView("pages/user/requests")
                 .build();

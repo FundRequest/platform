@@ -32,6 +32,8 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import org.springframework.test.web.servlet.MvcResult;
+
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -104,12 +106,14 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final Set<String> projects = new HashSet<>();
         final Set<String> technologies = new HashSet<>();
         final ArrayList<FaqItemDto> faqItems = new ArrayList<>();
+		boolean isAuthenticated = false;
 
         when(requestService.findAll()).thenReturn(requestDtos);
         when(mappers.mapList(RequestDto.class, RequestView.class, requestDtos)).thenReturn(requestViews);
         when(statisticsService.getStatistics()).thenReturn(statisticsDto);
         when(requestService.findAllProjects()).thenReturn(projects);
         when(requestService.findAllTechnologies()).thenReturn(technologies);
+		when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
         when(faqService.getFAQsForPage("requests")).thenReturn(faqItems);
         when(objectMapper.writeValueAsString(same(requestViews))).thenReturn("requestViews");
         when(objectMapper.writeValueAsString(same(projects))).thenReturn("projects");
@@ -121,6 +125,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.model().attribute("statistics", statisticsDto))
                     .andExpect(MockMvcResultMatchers.model().attribute("projects", "projects"))
                     .andExpect(MockMvcResultMatchers.model().attribute("technologies", "technologies"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
                     .andExpect(MockMvcResultMatchers.model().attribute("faqs", faqItems))
                     .andExpect(MockMvcResultMatchers.view().name("pages/requests/index"));
     }
@@ -290,10 +295,12 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final List<RequestView> requestViews = new ArrayList<>();
         final List<PendingFundDto> pendingFunds = new ArrayList<>();
         final List<FaqItemDto> faqs = new ArrayList<>();
+		boolean isAuthenticated = false;
 
         when(requestService.findRequestsForUser(principal)).thenReturn(requests);
         when(mappers.mapList(RequestDto.class, RequestView.class, requests)).thenReturn(requestViews);
         when(pendingFundService.findByUser(principal)).thenReturn(pendingFunds);
+		when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
         when(faqService.getFAQsForPage("requests")).thenReturn(faqs);
         when(objectMapper.writeValueAsString(same(requestViews))).thenReturn("requestViews");
         when(objectMapper.writeValueAsString(same(pendingFunds))).thenReturn("pendingFunds");
@@ -302,6 +309,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
                     .andExpect(MockMvcResultMatchers.model().attribute("pendingFunds", "pendingFunds"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
                     .andExpect(MockMvcResultMatchers.model().attribute("faqs", new Same(faqs)))
                     .andExpect(MockMvcResultMatchers.view().name("pages/user/requests"));
     }
