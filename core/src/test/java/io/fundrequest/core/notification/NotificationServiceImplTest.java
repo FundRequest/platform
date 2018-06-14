@@ -105,7 +105,7 @@ public class NotificationServiceImplTest {
     @Test
     public void onRequestFundedCreatesNotification() {
         final Long requestId = 6789L;
-        final FundDto fundDto = FundDtoMother.aFundDto();
+        final FundDto fundDto = FundDtoMother.aFundDto().build();
 
         notificationService.onFunded(RequestFundedEvent.builder()
                                                        .fundDto(fundDto)
@@ -128,7 +128,7 @@ public class NotificationServiceImplTest {
     public void onRequestFundedPublishesNotification() {
         final Long requestId = 467L;
         final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
-        final FundDto fundDto = FundDtoMother.aFundDto();
+        final FundDto fundDto = FundDtoMother.aFundDto().build();
 
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
 
@@ -154,28 +154,22 @@ public class NotificationServiceImplTest {
 
     @Test
     public void getLast() {
-        RequestClaimedNotification requestCreatedNotification = RequestClaimedNotificationMother.aRequestClaimedNotification();
-        RequestDto requestDtoForFund = RequestDtoMother.freeCodeCampNoUserStories();
-        FundDto fundDto = FundDtoMother.aFundDto();
-        RequestFundedNotification requestFundedNotification = RequestFundedNotificationMother.aRequestFundedNotification();
-        fundDto.setId(requestFundedNotification.getFundId())
-        ;
-        List<Notification> notifications = Arrays.asList(
+        final RequestClaimedNotification requestCreatedNotification = RequestClaimedNotificationMother.aRequestClaimedNotification();
+        final RequestDto requestDtoForFund = RequestDtoMother.freeCodeCampNoUserStories();
+        final RequestFundedNotification requestFundedNotification = RequestFundedNotificationMother.aRequestFundedNotification();
+        final FundDto fundDto = FundDtoMother.aFundDto().id(requestFundedNotification.getFundId()).build();
+        final List<Notification> notifications = Arrays.asList(
                 requestCreatedNotification,
                 requestFundedNotification
         );
+        final RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
+
         when(notificationRepository.findFirst10ByOrderByDateDesc()).thenReturn(notifications);
-        RequestDto requestDto = RequestDtoMother.freeCodeCampNoUserStories();
-        when(requestService.findAll(Collections.singleton(requestCreatedNotification.getRequestId())))
-                .thenReturn(Collections.singletonList(requestDto));
+        when(requestService.findAll(Collections.singleton(requestCreatedNotification.getRequestId()))).thenReturn(Collections.singletonList(requestDto));
+        when(fundService.findAll(Collections.singleton(requestFundedNotification.getFundId()))).thenReturn(Collections.singletonList(fundDto));
+        when(requestService.findAll(Collections.singleton(fundDto.getRequestId()))).thenReturn(Collections.singletonList(requestDtoForFund));
 
-
-        when(fundService.findAll(Collections.singleton(requestFundedNotification.getFundId())))
-                .thenReturn(Collections.singletonList(fundDto));
-        when(requestService.findAll(Collections.singleton(fundDto.getRequestId())))
-                .thenReturn(Collections.singletonList(requestDtoForFund));
-
-        List<NotificationDto> lastNotifications = notificationService.getLastNotifications();
+        final List<NotificationDto> lastNotifications = notificationService.getLastNotifications();
 
         assertThat(lastNotifications).hasSize(2);
     }

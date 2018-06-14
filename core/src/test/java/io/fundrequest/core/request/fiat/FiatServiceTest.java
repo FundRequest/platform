@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.fiat;
 
 import io.fundrequest.core.request.fiat.cryptocompare.service.CryptoCompareService;
-import io.fundrequest.core.request.fund.dto.TotalFundDto;
+import io.fundrequest.core.token.dto.TokenValueDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class FiatServiceTest {
 
     @Test
     public void getUsdPriceOne() {
-        TotalFundDto totalFund = TotalFundDto.builder().tokenAddress("0x0").tokenSymbol("FND").totalAmount(BigDecimal.TEN).build();
+        TokenValueDto totalFund = TokenValueDto.builder().tokenAddress("0x0").tokenSymbol("FND").totalAmount(BigDecimal.TEN).build();
         when(cryptoCompareService.getCurrentPriceInUsd("FND")).thenReturn(0.56);
 
         double result = fiatService.getUsdPrice(totalFund);
@@ -34,8 +34,8 @@ public class FiatServiceTest {
 
     @Test
     public void getUsdPriceMultiple() {
-        TotalFundDto totalFund1 = TotalFundDto.builder().tokenAddress("0x0").tokenSymbol("FND").totalAmount(new BigDecimal("8457.858")).build();
-        TotalFundDto totalFund2 = TotalFundDto.builder().tokenAddress("0x0").tokenSymbol("ZRX").totalAmount(new BigDecimal("123.464")).build();
+        TokenValueDto totalFund1 = TokenValueDto.builder().tokenAddress("0x0").tokenSymbol("FND").totalAmount(new BigDecimal("8457.858")).build();
+        TokenValueDto totalFund2 = TokenValueDto.builder().tokenAddress("0x0").tokenSymbol("ZRX").totalAmount(new BigDecimal("123.464")).build();
         when(cryptoCompareService.getCurrentPriceInUsd("FND")).thenReturn(0.56);
         when(cryptoCompareService.getCurrentPriceInUsd("ZRX")).thenReturn(0.98);
 

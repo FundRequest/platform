@@ -99,14 +99,14 @@ To run the application, execute:
 
 
 
-#### Import
+#### Import - better for development
 The application is a standard maven / spring boot setup. For local development you have to start the application 
 with the spring profile `local`. 
 You can import the entire project using your favourite IDE.
 
 To start the **platform**, you can run the java class:
 ```
-io.fundreqest.platform.tweb.WebApplication.java
+io.fundrequest.platform.tweb.WebApplication.java
 ```
 
 To start the **admin panel**, you can run the java class:
@@ -114,6 +114,14 @@ To start the **admin panel**, you can run the java class:
 io.fundrequest.platform.admin.AdminApplication.java
 ```
 
+##### Developer notes
+
+For changes in the frontend parts (scss, ts, vue, ...) there are some node scripts to rebuild/recompile changes on the fly during development.
+
+* Go to `/tweb/src/main/frontend`
+* Run `npm install` (installs all node dependencies)
+* Run `npm run watch` to rebuild all styles on change. (Changes will be directly visible on a browser refresh.)
+* Run `npm run webpack-watch` to rebuild all .ts and .vue on change. (Changes will be directly visible on a browser refresh.)
 
 ## Use application
 

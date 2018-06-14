@@ -16,6 +16,8 @@ public class Page {
 
     @JacksonXmlProperty(isAttribute = true)
     private String name;
+    @JacksonXmlProperty(isAttribute = true)
+    private String subtitle;
     @JacksonXmlProperty(localName = "faq")
     private List<Faq> faqs;
 }

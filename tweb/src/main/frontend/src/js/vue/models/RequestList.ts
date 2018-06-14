@@ -19,17 +19,20 @@ export default class RequestsList {
 	}
 
     private _filter(requests: RequestDto[], filter: RequestListFilter) {
-        let isSearchAlwaysValid = (!filter.search || filter.search.length < 3);
+        let id = filter.idInSearch;
+        let isSearchAlwaysValid = !filter.search || (filter.search.length < 3 && !id);
         let isProjectAlwaysValid = !filter.project;
         let isTechAlwaysValid = !filter.tech || filter.tech.length == 0;
+        let regex = new RegExp(filter.search, 'i');
         return requests.filter((request: RequestDto) => {
-            let regex = new RegExp(filter.search, 'i');
             let valid;
             valid = filter.fase == 'all';
             valid = valid || (filter.fase == 'starred' && request.starred);
-            valid = valid || filter.fase == request.fase.toLowerCase();
+            valid = valid || (filter.fase == request.fase.toLowerCase());
             valid = valid && (isProjectAlwaysValid || filter.project.toLowerCase() == request.owner.toLowerCase());
-            valid = valid && (isSearchAlwaysValid || request.title.match(regex));
+            valid = valid && (isSearchAlwaysValid
+                             || (filter.search.length >= 3 && request.title.match(regex))
+                             || (id && (Number(id) == request.id || id == request.issueNumber)));
             valid = valid && (isTechAlwaysValid || filter.tech.every((f: string) => {
                 let regex = new RegExp(`^${f}$`, 'i');
                 return request.technologies.some((t: string) => regex.test(t));

@@ -1,16 +1,17 @@
 package io.fundrequest.core.request.fund.domain;
 
+import io.fundrequest.core.token.model.TokenValue;
 import io.fundrequest.db.infrastructure.AbstractEntity;
 import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Table(name = "fund")
@@ -28,11 +29,8 @@ public class Fund extends AbstractEntity {
     @Column(name = "funder_user_id")
     private String funderUserId;
 
-    @Column(name = "amount_in_wei")
-    private BigDecimal amountInWei;
-
-    @Column(name = "token")
-    private String token;
+    @Embedded
+    private TokenValue tokenValue;
 
     @Column(name = "request_id")
     private Long requestId;
@@ -47,11 +45,10 @@ public class Fund extends AbstractEntity {
     }
 
     @Builder
-    Fund(String funderUserId, String funder, BigDecimal amountInWei, String token, Long requestId, LocalDateTime timestamp, Long blockchainEventId) {
+    Fund(String funderUserId, String funder, TokenValue tokenValue, Long requestId, LocalDateTime timestamp, Long blockchainEventId) {
         this.funderUserId = funderUserId;
         this.funder = funder == null ? null : funder.toLowerCase();
-        this.amountInWei = amountInWei;
-        this.token = token;
+        this.tokenValue = tokenValue;
         this.requestId = requestId;
         this.timestamp = timestamp;
         this.blockchainEventId = blockchainEventId;
