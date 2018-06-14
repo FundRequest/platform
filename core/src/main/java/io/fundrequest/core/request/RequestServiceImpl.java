@@ -9,6 +9,7 @@ import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.domain.ClaimBuilder;
 import io.fundrequest.core.request.claim.dto.ClaimDto;
+import io.fundrequest.core.request.claim.dto.ClaimableResultDto;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.claim.event.RequestClaimableEvent;
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
@@ -32,6 +33,8 @@ import io.fundrequest.core.token.model.TokenValue;
 import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import io.fundrequest.platform.profile.profile.ProfileService;
+import io.fundrequest.platform.profile.profile.dto.UserProfile;
+import io.fundrequest.platform.profile.profile.dto.UserProfileProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -115,16 +118,48 @@ class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public UserClaimableDto getUserClaimableResult(Principal principal, Long id) {
-        Request request = findOne(id);
-        UserClaimableDto result = githubClaimResolver.userClaimableResult(principal, mappers.map(Request.class, RequestDto.class, request));
-        if (request.getStatus() == RequestStatus.FUNDED && result.isClaimable()) {
-            request = updateStatus(request, RequestStatus.CLAIMABLE);
-            eventPublisher.publishEvent(new RequestClaimableEvent(mappers.map(Request.class, RequestDto.class, request), LocalDateTime.now()));
-        } else if (request.getStatus() == RequestStatus.CLAIMABLE && !result.isClaimable()) {
+    public UserClaimableDto getUserClaimableResult(final Principal principal, final Long requestId) {
+        final ClaimableResultDto claimableResult = getClaimableResult(requestId);
+        return UserClaimableDto.builder()
+                               .claimable(claimableResult.isClaimable())
+                               .claimableByPlatformUserName(claimableResult.getClaimableByPlatformUserName())
+                               .claimableByLoggedInUser(isClaimableByLoggedInUser(principal, claimableResult.getClaimableByPlatformUserName(), claimableResult.getPlatform()))
+                               .build();
+    }
+
+    @Override
+    @Transactional
+    public ClaimableResultDto getClaimableResult(final Long requestId) {
+        final Request request = findOne(requestId);
+        final IssueInformation issueInformation = request.getIssueInformation();
+        final ClaimableResultDto claimableResult = githubClaimResolver.claimableResult(issueInformation.getOwner(),
+                                                                                       issueInformation.getRepo(),
+                                                                                       issueInformation.getNumber(),
+                                                                                       request.getStatus());
+        checkAndUpdateRequestStatus(request, claimableResult);
+        return claimableResult;
+    }
+
+    private Boolean isClaimableByLoggedInUser(final Principal principal, final String solver, final Platform platform) {
+        return principal == null || solver == null ? false : getUserPlatformUsername(principal, platform).map(u -> u.equalsIgnoreCase(solver)).orElse(false);
+    }
+
+    private Optional<String> getUserPlatformUsername(final Principal principal, final Platform platform) {
+        if (platform != Platform.GITHUB) {
+            throw new RuntimeException("Only github is supported for now");
+        }
+        return Optional.ofNullable(profileService.getUserProfile(principal))
+                       .map(UserProfile::getGithub)
+                       .map(UserProfileProvider::getUsername);
+    }
+
+    private void checkAndUpdateRequestStatus(final Request request, final ClaimableResultDto claimableResult) {
+        if (request.getStatus() == RequestStatus.FUNDED && claimableResult.isClaimable()) {
+            final Request updatedRequest = updateStatus(request, RequestStatus.CLAIMABLE);
+            eventPublisher.publishEvent(new RequestClaimableEvent(mappers.map(Request.class, RequestDto.class, updatedRequest), LocalDateTime.now()));
+        } else if (request.getStatus() == RequestStatus.CLAIMABLE && !claimableResult.isClaimable()) {
             updateStatus(request, RequestStatus.FUNDED);
         }
-        return result;
     }
 
     @Override

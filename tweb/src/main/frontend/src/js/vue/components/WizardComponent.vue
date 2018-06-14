@@ -169,11 +169,13 @@
             switch (this.paymentMethod) {
                 case PaymentMethods.getInstance().dapp:
                     try {
-                        if (await this.fundUsingDapp()) {
+                        let result = await this.fundUsingDapp();
+                        if (result.length > 0) {
                             if (Utils.openedByBrowserplugin) {
                                 document.dispatchEvent(new CustomEvent("browserplugin.to.extension.fnd.FUND_SUCCESS", {
                                     detail: {
                                         done: true,
+                                        body: result,
                                         redirectLocation: "/user/requests"
                                     }
                                 }));
@@ -202,7 +204,7 @@
             throw new Error(err);
         }
 
-        private async fundUsingDapp(): Promise<boolean> {
+        private async fundUsingDapp(): Promise<string> {
             Utils.showLoading();
             let frContractAddress = Contracts.getInstance().frContractAddress;
             let erc20 = await Contracts.getInstance().getErc20Contract(this.selectedToken.address);
@@ -213,7 +215,7 @@
 
             if (!this.approveInfoModalActive && this.currentAllowance < this.currentFundAmount) {
                 this.showApproveInfoModal();
-                return false;
+                return "";
             }
             else {
                 Utils.showLoading();
@@ -238,7 +240,7 @@
                 pendingFundCommand.platformId = this.githubIssue.platformId;
                 await Utils.postJSON(`/rest/pending-fund`, pendingFundCommand);
                 Utils.hideLoading();
-                return true;
+                return pendingFundCommand.transactionId;
             }
         }
 

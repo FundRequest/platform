@@ -4,6 +4,7 @@ import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
+import io.fundrequest.core.request.claim.dto.ClaimableResultDto;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.command.CreateRequestCommand;
 import io.fundrequest.core.request.domain.Platform;
@@ -26,6 +27,8 @@ public interface RequestService {
     Set<String> findAllProjects();
 
     UserClaimableDto getUserClaimableResult(Principal principal, Long id);
+
+    ClaimableResultDto getClaimableResult(Long id);
 
     List<RequestDto> findRequestsForUser(Principal principal);
 
