@@ -12,4 +12,6 @@ public interface RefundRequestRepository extends JpaRepository<RefundRequest, Lo
     List<RefundRequest> findAllByStatusIn(List<RefundRequestStatus> status, Sort sort);
 
     List<RefundRequest> findAllByRequestIdAndStatus(long requestId, RefundRequestStatus status);
+
+    List<RefundRequest> findAllByRequestIdAndFunderAddressAndStatus(long requestId, String funderAddress, RefundRequestStatus status);
 }

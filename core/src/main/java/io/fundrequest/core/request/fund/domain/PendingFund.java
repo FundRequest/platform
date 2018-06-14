@@ -13,7 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigInteger;
 
-@Data
+@Data(staticConstructor = "of")
 @Entity(name = "pending_funds")
 public class PendingFund extends AbstractEntity {
 
