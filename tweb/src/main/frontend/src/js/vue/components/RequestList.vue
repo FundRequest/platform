@@ -53,9 +53,11 @@
                 </div>
             </div>
         </div>
-        <div class="request-list__block card" v-if="!hasNoResults">
-            <request-list-item v-for="request in filteredRequests" v-bind:request="request"
-                               v-bind:key="request.id"></request-list-item>
+		<div class="request-list__block card" v-if="!hasNoResults">
+            <request-list-item v-for="request in filteredRequests"
+							   v-bind:isAuthenticated="isAuthenticated"
+							   v-bind:request="request"
+							   v-bind:key="request.id"></request-list-item>
         </div>
         <div v-bind:class="{'mt-5': isEmpty}" v-if="hasNoResults">
             <div class="request-list__block request-list__block--non-found card">
@@ -76,6 +78,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
+	import {EventBus} from "../EventBus";
     import vSelect from "vue-select";
     import FndSelect from "./form/FndSelect";
     import ListFilter from "./ListFilter";
@@ -99,6 +102,7 @@
         @Prop() faseFilterDefault: string;
         @Prop() technologies: string[];
         @Prop() projects: string[];
+		@Prop() isAuthenticated: boolean;
         @Prop({required: true}) requests: RequestDto[];
 
         public sorting: Array<{ title: string, value: { value: string, asc: boolean } }> = [{
@@ -129,6 +133,11 @@
         mounted() {
             this.sortBy = this.sorting[1].value;
             this.requestList = new RequestListModel(this.requests);
+
+			EventBus.$on("request-update", request => {
+				this.requestList.updateWithRequest(request);
+			});
+
             this._filterItems(this.listFilter, this.sortBy);
             if(this.technologies) {
                 this.technologiesSelect = this.technologies.sort();

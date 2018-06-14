@@ -18,6 +18,9 @@
                     <span class="request-details__tech" v-for="tech in req.technologies">{{tech}}</span>
                 </div>
                 <div class="request-details__icons">
+					<starred-link v-if="isAuthenticated" v-on:click.native.prevent
+						v-bind:starred="req.starred"
+						v-bind:id="req.id"></starred-link>
                     <a v-bind:href="getGithubIssueUrl(req.platform, req.owner, req.repo, req.issueNumber)"><i
                             class="fab fa-github"></i></a>
                     <a v-bind:href="`${getRequestDetailUrl(req.id)}#comments`"><i class="fa fa-comment"></i></a>
@@ -58,6 +61,7 @@
     import ToCrypto from "../filters/formatters/ToCrypto";
     import ToUsd from "../filters/formatters/ToUsd";
     import ToDatetime from '../filters/formatters/ToDatetime';
+	import StarredLink from './StarredLink';
 
     Vue.use(VueTimeago, {
         name: "Timeago", // Component name, `Timeago` by default
@@ -66,7 +70,8 @@
 
     @Component({
         components: {
-            FontSizeFit
+            FontSizeFit,
+			StarredLink
         },
         filters: {
             toCrypto: ToCrypto.filter,
@@ -76,6 +81,7 @@
     })
     export default class RequestListItem extends Vue {
         @Prop({required: true}) request!: any;
+        @Prop({required: true}) isAuthenticated: boolean;
 
         public requestItem: RequestDto = null;
 

@@ -1,12 +1,10 @@
 <template>
-    <span class="request-details__star-link" v-bind:class="{ '-starred': isStarred}" v-on:click="toggleStarred()">
-        <i class="fa fa-star"></i>
-        <i class="far fa-star"></i>
-    </span>
+    <i class="request-details__star-link fa-star" v-bind:class="starringCSSClasses" v-on:click="toggleStarred()"></i>
 </template>
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
+	import {EventBus} from "../EventBus";
     import RequestDto from "../dtos/RequestDto";
     import Utils from "../../classes/Utils";
 
@@ -15,15 +13,24 @@
         @Prop() starred: boolean;
         @Prop() id: number;
 
-        public isStarred: boolean = false;
+		private isStarred: boolean = false;
 
-        public mounted() {
-            this.isStarred = this.starred;
-        }
+		mounted() {
+			this.isStarred = this.starred;
+		}
+
+		get starringCSSClasses() {
+			return {
+				fa: this.isStarred,
+				far: !this.isStarred,
+				'-starred': this.isStarred
+			};
+		}
 
         public async toggleStarred() {
             const request: RequestDto = await Utils.post(`/requests/${this.id}/watch`);
-            this.isStarred = request.starred;
+			this.isStarred = request.starred;
+			EventBus.$emit('request-update', request);
         }
     }
 </script>
