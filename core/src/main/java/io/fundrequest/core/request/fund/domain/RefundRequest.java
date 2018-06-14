@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "refund_request")
@@ -47,4 +48,7 @@ public class RefundRequest extends AbstractEntity {
 
     @Column(name = "transaction_hash")
     private String transactionHash;
+
+    @Column(name = "transaction_submit_time")
+    private LocalDateTime transactionSubmitTime;
 }

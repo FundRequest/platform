@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +41,8 @@ public class RefundModerationServiceImpl implements ModerationService<RefundRequ
     @Transactional
     public void approve(final Long refundRequestId) {
         final RefundRequest refundRequest = refundRequestRepository.findOne(refundRequestId).orElseThrow(() -> new RuntimeException("Refund request not found"));
+        refundRequest.setTransactionSubmitTime(LocalDateTime.now());
+        refundRequestRepository.save(refundRequest);
         final RequestDto request = requestService.findRequest(refundRequest.getRequestId());
         final IssueInformationDto issueInformation = request.getIssueInformation();
         azraelClient.submitRefund(RefundCommand.builder()

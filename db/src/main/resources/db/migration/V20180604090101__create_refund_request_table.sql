@@ -5,6 +5,7 @@ CREATE TABLE refund_request
   funder_address          VARCHAR(50)   NOT NULL,
   status                  VARCHAR(50)   NOT NULL,
   transaction_hash        VARCHAR(66),
+  transaction_submit_time DATETIME,
   creation_date           TIMESTAMP,
   last_modified_date      TIMESTAMP,
   created_by              VARCHAR(1000),

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -60,16 +61,19 @@ class RefundModerationServiceImplTest {
         final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
         requestDto.getIssueInformation().setPlatform(platform);
         requestDto.getIssueInformation().setPlatformId(platformId);
+        final RefundRequest refundRequest = RefundRequest.builder()
+                                                         .funderAddress(funderAddress)
+                                                         .requestId(requestId)
+                                                         .status(PENDING)
+                                                         .build();
 
-        when(refundRequestRepository.findOne(refundRequestId)).thenReturn(Optional.of(RefundRequest.builder()
-                                                                                                   .funderAddress(funderAddress)
-                                                                                                   .requestId(requestId)
-                                                                                                   .status(PENDING)
-                                                                                                   .build()));
+        when(refundRequestRepository.findOne(refundRequestId)).thenReturn(Optional.of(refundRequest));
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
 
         service.approve(refundRequestId);
 
+        assertThat(refundRequest.getTransactionSubmitTime()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        verify(refundRequestRepository).save(refundRequest);
         verify(azraelClient).submitRefund(RefundCommand.builder()
                                                        .address(funderAddress)
                                                        .platform(platform.name())
