@@ -50,6 +50,7 @@
         <junit-platform.version>1.0.0</junit-platform.version>
         <junit-vintage-engine.version>4.12.0</junit-vintage-engine.version>
         <jsoup.version>1.10.2</jsoup.version>
+        <telegram.version>3.6</telegram.version>
     </properties>
 
 
@@ -103,6 +104,11 @@
                 <version>${keycloak.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.telegram</groupId>
+                <artifactId>telegrambots</artifactId>
+                <version>${telegram.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.web3j</groupId>

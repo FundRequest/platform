@@ -1,13 +1,20 @@
+//import 'waves';
+//import 'mdb';
 import * as $ from 'jquery';
 
 import * as ClipboardJS from 'clipboard';
 import Alert from './Alert';
 import {InstantEdit} from '../pages/profile/instant-edit';
 import {OpenLinkInPopup} from './open-link-in-popup';
+import Utils from './Utils';
 
 class Main {
     constructor() {
         this.passGetParams();
+
+        document.addEventListener('browserplugin.from.extension.fnd.opened', (event: CustomEvent) => {
+            Utils.openedByBrowserplugin = true;
+        });
 
         $(function () {
             let _clipboard = new ClipboardJS('[data-clipboard-target]');

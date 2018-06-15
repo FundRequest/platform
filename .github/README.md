@@ -59,7 +59,9 @@ You can run these dependencies using Docker: https://www.docker.com/community-ed
 **To start the dependencies, go inside the cloned repository and execute `runDependencies.sh`.**
 
 ### Configure application properties
-Copy `tweb/src/main/resources/application-credentials.properties.template` to `tweb/src/main/resources/application-credentials.properties` and edit properties:
+Copy `tweb/src/main/resources/application-credentials.properties.template` to `tweb/src/main/resources/application-credentials.properties` and edit properties
+
+Copy `admin-web/src/main/resources/application-credentials.properties.template` to `admin-web/src/main/resources/application-credentials.properties` and edit properties
 
 ```
 feign.client.github.username=<your github username>
@@ -70,6 +72,7 @@ feign.client.github.password=<your github token>
 local.ethereum.kovan.address=<your ethereum address>
 
 ```
+
 
 * To acquire Kovan ETH, just post your ETH address in this Gitter channel : https://gitter.im/kovan-testnet/faucet
 * To acquire Kovan FND, for now just ask us in our telegram channel : https://t.me/fundrequestofficial

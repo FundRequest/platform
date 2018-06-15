@@ -5,6 +5,15 @@ import uuid from 'uuid/v4';
 
 
 export default class Utils {
+    private static _openedByBrowserPlugin: boolean = false;
+
+    public static set openedByBrowserplugin(value: boolean) {
+        Utils._openedByBrowserPlugin = value;
+    }
+
+    public static get openedByBrowserplugin(): boolean {
+        return Utils._openedByBrowserPlugin;
+    }
 
     public static biggestNumber(): BigNumber {
         return new BigNumber('1.157920892e77').minus(1);
@@ -155,9 +164,13 @@ export default class Utils {
         },
         number: (value) => {
             return /^[0-9]+(\.[0-9]{1,2})?$/.exec(value.trim()) != null;
+        },
+        ethAddress: (value) => {
+            // basic validation
+            return /^0x[a-fA-F0-9]{40}$/i.exec(value.trim()) != null;
         }
     };
-    
+
     public static generateUUID(): string {
         return uuid();
     }
@@ -172,7 +185,10 @@ export default class Utils {
             number = value;
         }
 
-        return new Intl.NumberFormat('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals}).format(number);
+        return new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals
+        }).format(number);
     }
 
     public static formatToCrypto(value: string | number, decimals: number = 2) {
@@ -182,11 +198,11 @@ export default class Utils {
     public static formatDatetime(value: string) {
         let date = new Date(value);
         let options = {
-            weekday: "long", year: "numeric", month: "short",
-            day: "numeric", hour: "2-digit", minute: "2-digit"
+            weekday: 'long', year: 'numeric', month: 'short',
+            day: 'numeric', hour: '2-digit', minute: '2-digit'
         };
 
-        return date.toLocaleTimeString("en-us", options);
+        return date.toLocaleTimeString('en-us', options);
     }
 
     private static async _validateElementValue(validations: string[], value: string): Promise<boolean> {
@@ -199,6 +215,9 @@ export default class Utils {
                     break;
                 case 'number':
                     isValid = isValid && Utils._validateNumber(value);
+                    break;
+                case 'eth-address':
+                    isValid = isValid && Utils._validateEthAddress(value);
                     break;
                 case 'github':
                     isValid = isValid && await Utils._validateGithub(value);
@@ -215,6 +234,10 @@ export default class Utils {
 
     private static _validateNumber(value: string): boolean {
         return value.trim().length <= 0 || Utils.validators.number(value);
+    }
+
+    private static _validateEthAddress(value: string): boolean {
+        return value.trim().length <= 0 || Utils.validators.ethAddress(value);
     }
 
     private static async _validateGithub(value: string): Promise<boolean> {
