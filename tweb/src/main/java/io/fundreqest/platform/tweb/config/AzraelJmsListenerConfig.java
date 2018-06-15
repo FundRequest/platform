@@ -108,14 +108,29 @@ public class AzraelJmsListenerConfig {
         return BindingBuilder.bind(claimQueue).to(exchange).with(queueName);
     }
 
-    private Queue declareQueue(@Value("${io.fundrequest.azrael.queue.claim}") final String queueName) {
+    @Bean
+    Queue refundQueue(@Value("${io.fundrequest.azrael.queue.refund}") final String queueName) {
+        return declareQueue(queueName);
+    }
+
+    @Bean
+    Queue refundQueueDlQ(@Value("${io.fundrequest.azrael.queue.refund}") final String queueName) {
+        return declareDLQ(queueName);
+    }
+
+    @Bean
+    Binding refundBinding(final Queue refundQueue, final TopicExchange exchange, @Value("${io.fundrequest.azrael.queue.refund}") final String queueName) {
+        return BindingBuilder.bind(refundQueue).to(exchange).with(queueName);
+    }
+
+    private Queue declareQueue(final String queueName) {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("x-dead-letter-exchange", "");
         arguments.put("x-dead-letter-routing-key", queueName + ".dlq");
         return new Queue(queueName, true, false, false, arguments);
     }
 
-    private Queue declareDLQ(@Value("${io.fundrequest.azrael.queue.fund}") final String queueName) {
+    private Queue declareDLQ(final String queueName) {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("x-queue-mode", "lazy");
         Queue queue = new Queue(queueName + ".dlq", true, false, false, arguments);
