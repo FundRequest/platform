@@ -58,7 +58,11 @@ public class FundController extends AbstractController {
                                       final RedirectAttributes redirectAttributes) {
         final RedirectBuilder redirectBuilder = redirectView(redirectAttributes).url("/requests/" + requestId + "#funded-by");
         if (isValid(redirectBuilder, principal, funderAddress)) {
-            refundService.requestRefund(RequestRefundCommand.builder().requestId(requestId).funderAddress(funderAddress).build());
+            refundService.requestRefund(RequestRefundCommand.builder()
+                                                            .requestId(requestId)
+                                                            .funderAddress(funderAddress)
+                                                            .requestedBy(principal.getName())
+                                                            .build());
             return redirectBuilder.withSuccessMessage("Your refund has been requested and is waiting for approval.").build();
         } else {
             return redirectBuilder.build();

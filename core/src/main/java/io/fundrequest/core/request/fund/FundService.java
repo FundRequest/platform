@@ -2,7 +2,7 @@ package io.fundrequest.core.request.fund;
 
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.dto.FundDto;
-import io.fundrequest.core.request.fund.dto.FundersDto;
+import io.fundrequest.core.request.fund.dto.FundsByRequestAggregate;
 import io.fundrequest.core.token.dto.TokenValueDto;
 
 import java.security.Principal;
@@ -17,7 +17,9 @@ public interface FundService {
 
     List<TokenValueDto> getTotalFundsForRequest(Long requestId);
 
-    FundersDto getFundedBy(Principal principal, Long requestId);
+    FundsByRequestAggregate getFundsAggregatedByFunder(Principal principal, Long requestId);
+
+    FundsByRequestAggregate getRefundsAggregatedByRequester(Principal principal, Long requestId);
 
     void clearTotalFundsCache(Long requestId);
 

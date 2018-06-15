@@ -41,6 +41,9 @@ public class RefundRequest extends AbstractEntity {
     @Column(name = "funder_address")
     private String funderAddress;
 
+    @Column(name = "requested_by")
+    private String requestedBy;
+
     @Builder.Default
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)

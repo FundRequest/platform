@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.APPROVED;
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.PENDING;
@@ -48,12 +49,14 @@ class RefundServiceImplTest {
     void requestRefund() {
         final long requestId = 547L;
         final String funderAddress = "hjfgkh";
+        final String requestedBy = "4567gjfh";
 
-        refundService.requestRefund(RequestRefundCommand.builder().requestId(requestId).funderAddress(funderAddress).build());
+        refundService.requestRefund(RequestRefundCommand.builder().requestId(requestId).funderAddress(funderAddress).requestedBy(requestedBy).build());
 
         verify(refundRequestRepository).save(refEq(RefundRequest.builder()
                                                                 .requestId(requestId)
                                                                 .funderAddress(funderAddress)
+                                                                .requestedBy(requestedBy)
                                                                 .build()));
     }
 
@@ -89,17 +92,19 @@ class RefundServiceImplTest {
     }
 
     @Test
-    public void refundProcessed() {
+    public void refundProcessed_firstEvent() {
         final long requestId = 644L;
         final String amount = "4530000000000000000";
         final String tokenHash = "0x05466";
         final String funderAddress = "0x67879809";
         final long blockchainEventId = 34L;
         final String transactionHash = "0x46578";
+        final String requestedBy = "gfhchj";
         final RefundRequest refundRequest1 = mock(RefundRequest.class);
         final RefundRequest refundRequest2 = mock(RefundRequest.class);
         final List<RefundRequest> refundRequests = Arrays.asList(refundRequest1, refundRequest2);
 
+        when(refundRequest1.getRequestedBy()).thenReturn(requestedBy);
         when(refundRequestRepository.findAllByRequestIdAndStatus(requestId, APPROVED)).thenReturn(refundRequests);
 
         refundService.refundProcessed(RefundProcessedCommand.builder()
@@ -119,11 +124,79 @@ class RefundServiceImplTest {
                                                                   .build())
                                             .funderAddress(funderAddress)
                                             .blockchainEventId(blockchainEventId)
+                                            .requestedBy(requestedBy)
                                             .build());
         verify(refundRequest1).setTransactionHash(transactionHash);
         verify(refundRequest1).setStatus(PROCESSED);
         verify(refundRequest2).setTransactionHash(transactionHash);
         verify(refundRequest2).setStatus(PROCESSED);
         verify(refundRequestRepository).save(refundRequests);
+    }
+
+    @Test
+    public void refundProcessed_nthEvent() {
+        final long requestId = 644L;
+        final String amount = "4530000000000000000";
+        final String tokenHash = "0x05466";
+        final String funderAddress = "0x67879809";
+        final long blockchainEventId = 34L;
+        final String transactionHash = "0x46578";
+        final String requestedBy = "fhghjvkbj";
+        when(refundRequestRepository.findAllByRequestIdAndStatus(requestId, APPROVED)).thenReturn(new ArrayList<>());
+        when(refundRequestRepository.findByTransactionHash(transactionHash)).thenReturn(Optional.of(RefundRequest.builder()
+                                                                                                                 .requestedBy(requestedBy)
+                                                                                                                 .build()));
+
+        refundService.refundProcessed(RefundProcessedCommand.builder()
+                                                            .requestId(requestId)
+                                                            .amount(amount)
+                                                            .tokenHash(tokenHash)
+                                                            .funderAddress(funderAddress)
+                                                            .blockchainEventId(blockchainEventId)
+                                                            .transactionHash(transactionHash)
+                                                            .build());
+
+        verify(refundRepository).save(Refund.builder()
+                                            .requestId(requestId)
+                                            .tokenValue(TokenValue.builder()
+                                                                  .amountInWei(new BigDecimal(amount))
+                                                                  .tokenAddress(tokenHash)
+                                                                  .build())
+                                            .funderAddress(funderAddress)
+                                            .blockchainEventId(blockchainEventId)
+                                            .requestedBy(requestedBy)
+                                            .build());
+    }
+
+    @Test
+    public void refundProcessed_nthEventnoRerfundRequestForTransactionFound() {
+        final long requestId = 644L;
+        final String amount = "4530000000000000000";
+        final String tokenHash = "0x05466";
+        final String funderAddress = "0x67879809";
+        final long blockchainEventId = 34L;
+        final String transactionHash = "0x46578";
+        when(refundRequestRepository.findAllByRequestIdAndStatus(requestId, APPROVED)).thenReturn(new ArrayList<>());
+        when(refundRequestRepository.findByTransactionHash(transactionHash)).thenReturn(Optional.empty());
+
+        refundService.refundProcessed(RefundProcessedCommand.builder()
+                                                            .requestId(requestId)
+                                                            .amount(amount)
+                                                            .tokenHash(tokenHash)
+                                                            .funderAddress(funderAddress)
+                                                            .blockchainEventId(blockchainEventId)
+                                                            .transactionHash(transactionHash)
+                                                            .build());
+
+        verify(refundRepository).save(Refund.builder()
+                                            .requestId(requestId)
+                                            .tokenValue(TokenValue.builder()
+                                                                  .amountInWei(new BigDecimal(amount))
+                                                                  .tokenAddress(tokenHash)
+                                                                  .build())
+                                            .funderAddress(funderAddress)
+                                            .blockchainEventId(blockchainEventId)
+                                            .requestedBy(null)
+                                            .build());
     }
 }

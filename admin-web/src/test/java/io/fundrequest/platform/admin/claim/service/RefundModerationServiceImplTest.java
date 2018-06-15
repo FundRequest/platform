@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.APPROVED;
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.DECLINED;
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.PENDING;
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.TRANSACTION_FAILED;
@@ -73,6 +74,7 @@ class RefundModerationServiceImplTest {
         service.approve(refundRequestId);
 
         assertThat(refundRequest.getTransactionSubmitTime()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(refundRequest.getStatus()).isEqualTo(APPROVED);
         verify(refundRequestRepository).save(refundRequest);
         verify(azraelClient).submitRefund(RefundCommand.builder()
                                                        .address(funderAddress)

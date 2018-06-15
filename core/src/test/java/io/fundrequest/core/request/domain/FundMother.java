@@ -5,6 +5,7 @@ import io.fundrequest.core.token.dto.TokenInfoDtoMother;
 import io.fundrequest.core.token.model.TokenValue;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public final class FundMother {
 
@@ -16,6 +17,7 @@ public final class FundMother {
                                          .build())
                    .funderUserId("e7356d6a-4eff-4003-8736-557c36ce6e0c")
                    .funderAddress("0xd24400ae8BfEBb18cA49Be86258a3C749cf46853")
+                   .timestamp(LocalDateTime.now())
                    .requestId(1L);
     }
 
@@ -26,6 +28,7 @@ public final class FundMother {
                                          .tokenAddress(TokenInfoDtoMother.fnd().getAddress())
                                          .build())
                    .funderAddress("0xd24400ae8BfEBb18cA49Be86258a3C749cf46853")
+                   .timestamp(LocalDateTime.now())
                    .requestId(1L);
     }
 
@@ -37,6 +40,7 @@ public final class FundMother {
                                          .build())
                    .funderUserId("e7356d6a-4eff-4003-8736-557c36ce6e0c")
                    .funderAddress("0xd24400ae8BfEBb18cA49Be86258a3C749cf46853")
+                   .timestamp(LocalDateTime.now())
                    .requestId(1L);
     }
 
@@ -47,6 +51,7 @@ public final class FundMother {
                                          .tokenAddress(TokenInfoDtoMother.zrx().getAddress())
                                          .build())
                    .funderAddress("0xd24400ae8BfEBb18cA49Be86258a3C749cf46853")
+                   .timestamp(LocalDateTime.now())
                    .requestId(1L);
     }
 }

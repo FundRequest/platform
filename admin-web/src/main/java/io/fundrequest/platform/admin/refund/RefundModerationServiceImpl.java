@@ -9,7 +9,6 @@ import io.fundrequest.core.request.fund.infrastructure.RefundRequestRepository;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.RefundCommand;
 import io.fundrequest.core.request.view.IssueInformationDto;
-import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.admin.service.ModerationService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -41,10 +40,11 @@ public class RefundModerationServiceImpl implements ModerationService<RefundRequ
     @Transactional
     public void approve(final Long refundRequestId) {
         final RefundRequest refundRequest = refundRequestRepository.findOne(refundRequestId).orElseThrow(() -> new RuntimeException("Refund request not found"));
+        refundRequest.setStatus(RefundRequestStatus.APPROVED);
         refundRequest.setTransactionSubmitTime(LocalDateTime.now());
         refundRequestRepository.save(refundRequest);
-        final RequestDto request = requestService.findRequest(refundRequest.getRequestId());
-        final IssueInformationDto issueInformation = request.getIssueInformation();
+
+        final IssueInformationDto issueInformation = requestService.findRequest(refundRequest.getRequestId()).getIssueInformation();
         azraelClient.submitRefund(RefundCommand.builder()
                                                .address(refundRequest.getFunderAddress())
                                                .platform(issueInformation.getPlatform().name())

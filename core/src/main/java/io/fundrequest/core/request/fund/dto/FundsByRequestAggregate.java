@@ -8,9 +8,9 @@ import java.util.List;
 
 @Data
 @Builder
-public class FundersDto {
+public class FundsByRequestAggregate {
 
-    private List<FunderDto> funders;
+    private List<FundByFunderAggregate> fundByFunderAggregates;
     private TokenValueDto fndFunds;
     private TokenValueDto otherFunds;
     private Double usdFunds;

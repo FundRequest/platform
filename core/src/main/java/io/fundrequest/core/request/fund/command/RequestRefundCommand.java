@@ -10,4 +10,6 @@ public class RequestRefundCommand {
     private final Long requestId;
 
     private final String funderAddress;
+
+    private final String requestedBy;
 }

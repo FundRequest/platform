@@ -68,7 +68,7 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
                .andExpect(redirectAlert("success", "Your refund has been requested and is waiting for approval."))
                .andExpect(redirectedUrl("/requests/38#funded-by"));
 
-        verify(refundService).requestRefund(RequestRefundCommand.builder().requestId(requestId).funderAddress(funderAddress).build());
+        verify(refundService).requestRefund(RequestRefundCommand.builder().requestId(requestId).funderAddress(funderAddress).requestedBy(principal.getName()).build());
     }
 
     @Test

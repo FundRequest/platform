@@ -88,7 +88,7 @@
                         v-bind:filters="[
                     { value: 'info', title: 'Info', description: 'Detailed description of the request' },
                     { value: 'comments', title: 'Comments', description: 'Comments posted on the request' },
-                    { value: 'details', title: 'Details', description: 'An overview of the funders and funds.' }
+                    { value: 'details', title: 'Details', description: 'An overview of the fundByFunderAggregates and funds.' }
                  ]">
             <template slot-scope="{faseFilter}">
                 <div class="card" v-if="faseFilter === 'info'">
@@ -138,7 +138,7 @@
                     <div class="card-body">
                         <div class="request-funding">
                             <div class="request-funding__transfers">
-                                <div class="request-funding__transfer" th:each="transfer : ${fundedBy.funders}">
+                                <div class="request-funding__transfer" th:each="transfer : ${fundedBy.fundByFunderAggregates}">
                                     <div class="request-details__label">
                                         <span class="request-details__label-text" th:text="${transfer.funder}">Karel Striegel</span>
                                         <span class="request-details__label-badge badge badge-pill badge-primary"

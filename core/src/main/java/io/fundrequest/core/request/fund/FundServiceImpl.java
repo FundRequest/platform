@@ -9,12 +9,14 @@ import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.domain.Fund;
 import io.fundrequest.core.request.fund.domain.PendingFund;
+import io.fundrequest.core.request.fund.domain.Refund;
+import io.fundrequest.core.request.fund.dto.FundByFunderAggregate;
 import io.fundrequest.core.request.fund.dto.FundDto;
-import io.fundrequest.core.request.fund.dto.FunderDto;
-import io.fundrequest.core.request.fund.dto.FundersDto;
+import io.fundrequest.core.request.fund.dto.FundsByRequestAggregate;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
+import io.fundrequest.core.request.fund.infrastructure.RefundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.token.dto.TokenValueDto;
 import io.fundrequest.core.token.mapper.TokenValueDtoMapper;
@@ -34,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,6 +50,7 @@ class FundServiceImpl implements FundService {
     private static final String FND_TOKEN_SYMBOL = "FND";
 
     private final FundRepository fundRepository;
+    private final RefundRepository refundRepository;
     private final PendingFundRepository pendingFundRepository;
     private final RequestRepository requestRepository;
     private final Mappers mappers;
@@ -60,6 +64,7 @@ class FundServiceImpl implements FundService {
 
     @Autowired
     public FundServiceImpl(final FundRepository fundRepository,
+                           final RefundRepository refundRepository,
                            final PendingFundRepository pendingFundRepository,
                            final RequestRepository requestRepository,
                            final Mappers mappers,
@@ -71,6 +76,7 @@ class FundServiceImpl implements FundService {
                            final TokenValueMapper tokenValueMapper,
                            final TokenValueDtoMapper tokenValueDtoMapper) {
         this.fundRepository = fundRepository;
+        this.refundRepository = refundRepository;
         this.pendingFundRepository = pendingFundRepository;
         this.requestRepository = requestRepository;
         this.mappers = mappers;
@@ -151,43 +157,63 @@ class FundServiceImpl implements FundService {
                          .map(getTotalFundDto(request)).collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public FundsByRequestAggregate getFundsAggregatedByFunder(final Principal principal, final Long requestId) {
+        final List<FundByFunderAggregate> fundsByFunderAggregates = groupByFunder(fundRepository.findAllByRequestId(requestId)
+                                                                                                .stream()
+                                                                                                .map(fund -> this.mapToFundByFunderAggregate(principal, fund))
+                                                                                                .filter(Objects::nonNull)
+                                                                                                .sorted(Comparator.comparing(FundByFunderAggregate::getTimestamp))
+                                                                                                .collect(Collectors.toList()));
 
-
+        enrichFundsWithZeroValues(fundsByFunderAggregates);
+        final TokenValueDto fndFunds = totalFunds(fundsByFunderAggregates, FundByFunderAggregate::getFndFunds);
+        final TokenValueDto otherFunds = totalFunds(fundsByFunderAggregates, FundByFunderAggregate::getOtherFunds);
+        return FundsByRequestAggregate.builder()
+                                      .fundByFunderAggregates(fundsByFunderAggregates)
+                                      .fndFunds(fndFunds)
+                                      .otherFunds(otherFunds)
+                                      .usdFunds(fiatService.getUsdPrice(fndFunds, otherFunds))
+                                      .build();
+    }
 
     @Override
     @Transactional(readOnly = true)
-    public FundersDto getFundedBy(Principal principal, Long requestId) {
-        final List<FunderDto> list = groupByFunder(fundRepository.findByRequestId(requestId)
-                                                                 .stream()
-                                                                 .map(r -> this.mapToFunderDto(principal == null ? null : profileService.getUserProfile(principal.getName()), r))
-                                                                 .filter(Objects::nonNull)
-                                                                 .collect(Collectors.toList()));
-        enrichFundsWithZeroValues(list);
-        final TokenValueDto fndFunds = totalFunds(list, FunderDto::getFndFunds);
-        final TokenValueDto otherFunds = totalFunds(list, FunderDto::getOtherFunds);
-        return FundersDto.builder()
-                         .funders(list)
-                         .fndFunds(fndFunds)
-                         .otherFunds(otherFunds)
-                         .usdFunds(fiatService.getUsdPrice(fndFunds, otherFunds))
-                         .build();
+    public FundsByRequestAggregate getRefundsAggregatedByRequester(final Principal principal, final Long requestId) {
+        final List<FundByFunderAggregate> fundList = groupByFunder(refundRepository.findAllByRequestId(requestId)
+                                                                                   .stream()
+                                                                                   .map(refund -> this.mapToFundByFunderAggregate(principal, refund))
+                                                                                   .filter(Objects::nonNull)
+                                                                                   .sorted(Comparator.comparing(FundByFunderAggregate::getTimestamp))
+                                                                                   .collect(Collectors.toList()));
+
+        enrichFundsWithZeroValues(fundList);
+        final TokenValueDto fndFunds = totalFunds(fundList, FundByFunderAggregate::getFndFunds);
+        final TokenValueDto otherFunds = totalFunds(fundList, FundByFunderAggregate::getOtherFunds);
+        return FundsByRequestAggregate.builder()
+                                      .fundByFunderAggregates(fundList)
+                                      .fndFunds(fndFunds)
+                                      .otherFunds(otherFunds)
+                                      .usdFunds(fiatService.getUsdPrice(fndFunds, otherFunds))
+                                      .build();
     }
 
-    private List<FunderDto> groupByFunder(List<FunderDto> list) {
+    private List<FundByFunderAggregate> groupByFunder(final List<FundByFunderAggregate> list) {
         return list.stream()
-                   .collect(Collectors.groupingBy(FunderDto::getFunder,
-                                                  Collectors.reducing((a1, b1) -> {
-                                                      if (a1 == null && b1 == null) {
-                                                          return null;
-                                                      } else if (a1 == null) {
-                                                          return b1;
-                                                      } else if (b1 == null) {
-                                                          return a1;
-                                                      }
-                                                      a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
-                                                      a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
-                                                      return a1;
-                                                  })))
+                   .collect(Collectors.groupingBy(FundByFunderAggregate::getFunder, Collectors.reducing((a1, b1) -> {
+                       if (a1 == null && b1 == null) {
+                           return null;
+                       } else if (a1 == null) {
+                           return b1;
+                       } else if (b1 == null) {
+                           return a1;
+                       }
+                       a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
+                       a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
+                       a1.setTimestamp(a1.getTimestamp().isAfter(b1.getTimestamp()) ? a1.getTimestamp() : b1.getTimestamp());
+                       return a1;
+                   })))
                    .values()
                    .stream()
                    .filter(Optional::isPresent)
@@ -207,10 +233,10 @@ class FundServiceImpl implements FundService {
         return aFunds;
     }
 
-    private void enrichFundsWithZeroValues(final List<FunderDto> list) {
+    private void enrichFundsWithZeroValues(final List<FundByFunderAggregate> list) {
         TokenValueDto fndNonEmpty = null;
         TokenValueDto otherNonEmpty = null;
-        for (FunderDto f : list) {
+        for (FundByFunderAggregate f : list) {
             if (f.getFndFunds() != null) {
                 fndNonEmpty = f.getFndFunds();
             }
@@ -219,7 +245,7 @@ class FundServiceImpl implements FundService {
             }
         }
 
-        for (FunderDto f : list) {
+        for (FundByFunderAggregate f : list) {
             if (fndNonEmpty != null && f.getFndFunds() == null) {
                 f.setFndFunds(TokenValueDto.builder().tokenSymbol(fndNonEmpty.getTokenSymbol()).tokenAddress(fndNonEmpty.getTokenAddress()).totalAmount(BigDecimal.ZERO).build());
             }
@@ -233,7 +259,7 @@ class FundServiceImpl implements FundService {
         }
     }
 
-    private TokenValueDto totalFunds(final List<FunderDto> funds, final Function<FunderDto, TokenValueDto> getFundsFunction) {
+    private TokenValueDto totalFunds(final List<FundByFunderAggregate> funds, final Function<FundByFunderAggregate, TokenValueDto> getFundsFunction) {
         if (funds.isEmpty()) {
             return null;
         }
@@ -254,24 +280,51 @@ class FundServiceImpl implements FundService {
                     .orElse(null);
     }
 
-    private FunderDto mapToFunderDto(UserProfile loggedInUserProfile, Fund fund) {
+    private FundByFunderAggregate mapToFundByFunderAggregate(final Principal principal, final Fund fund) {
+        final UserProfile loggedInUserProfile = principal == null ? null : profileService.getUserProfile(principal.getName());
         final TokenValueDto tokenValueDto = tokenValueDtoMapper.map(fund.getTokenValue());
         final String funderNameOrAddress = StringUtils.isNotBlank(fund.getFunderUserId())
                                            ? profileService.getUserProfile(fund.getFunderUserId()).getName()
                                            : fund.getFunderAddress();
-        final boolean isFundedByLoggedInUser = isFundedByLoggedInUser(loggedInUserProfile, fund);
-        return tokenValueDto == null ? null : FunderDto.builder()
-                                                       .funder(funderNameOrAddress)
-                                                       .funderAddress(fund.getFunderAddress())
-                                                       .fndFunds(getFndFunds(tokenValueDto))
-                                                       .otherFunds(getOtherFunds(tokenValueDto))
-                                                       .isLoggedInUser(isFundedByLoggedInUser)
-                                                       .build();
+        final boolean isFundedByLoggedInUser = isFundedByLoggedInUser(loggedInUserProfile, fund.getFunderUserId(), fund.getFunderAddress());
+        return tokenValueDto == null ? null : FundByFunderAggregate.builder()
+                                                                   .funder(funderNameOrAddress)
+                                                                   .funderAddress(fund.getFunderAddress())
+                                                                   .fndFunds(getFndFunds(tokenValueDto))
+                                                                   .otherFunds(getOtherFunds(tokenValueDto))
+                                                                   .isLoggedInUser(isFundedByLoggedInUser)
+                                                                   .timestamp(fund.getTimestamp())
+                                                                   .build();
     }
 
-    private boolean isFundedByLoggedInUser(final UserProfile loggedInUserProfile, final Fund fund) {
-        return loggedInUserProfile != null
-               && (loggedInUserProfile.getId().equals(fund.getFunderUserId()) || fund.getFunderAddress().equalsIgnoreCase(loggedInUserProfile.getEtherAddress()));
+    private FundByFunderAggregate mapToFundByFunderAggregate(final Principal principal, final Refund refund) {
+        final UserProfile loggedInUserProfile = principal == null ? null : profileService.getUserProfile(principal.getName());
+        final TokenValueDto tokenValueDto = negate(tokenValueDtoMapper.map(refund.getTokenValue()));
+        final String refunderNameOrAddress = StringUtils.isNotBlank(refund.getRequestedBy())
+                                             ? profileService.getUserProfile(refund.getRequestedBy()).getName()
+                                             : refund.getFunderAddress();
+        final boolean isFundedByLoggedInUser = isFundedByLoggedInUser(loggedInUserProfile, refund.getRequestedBy(), refund.getFunderAddress());
+        return tokenValueDto == null ? null : FundByFunderAggregate.builder()
+                                                                   .funder(refunderNameOrAddress)
+                                                                   .funderAddress(refund.getFunderAddress())
+                                                                   .fndFunds(getFndFunds(tokenValueDto))
+                                                                   .otherFunds(getOtherFunds(tokenValueDto))
+                                                                   .isLoggedInUser(isFundedByLoggedInUser)
+                                                                   .timestamp(refund.getCreationDate())
+                                                                   .build();
+    }
+
+    private TokenValueDto negate(final TokenValueDto tokenValueDto) {
+        if (tokenValueDto != null && tokenValueDto.getTotalAmount() != null) {
+            final BigDecimal negatedTotalAmount = tokenValueDto.getTotalAmount().negate();
+            tokenValueDto.setTotalAmount(negatedTotalAmount);
+            return tokenValueDto;
+        }
+        return tokenValueDto;
+    }
+
+    private boolean isFundedByLoggedInUser(final UserProfile loggedInUserProfile, final String funderUserId, final String funderAddress) {
+        return loggedInUserProfile != null && (loggedInUserProfile.getId().equals(funderUserId) || funderAddress.equalsIgnoreCase(loggedInUserProfile.getEtherAddress()));
     }
 
     private TokenValueDto getFndFunds(final TokenValueDto tokenValueDto) {
