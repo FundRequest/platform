@@ -99,7 +99,7 @@
                                     <img th:src="@{${request.icon}(size=30)}" th:alt-title="${request.owner}" />
                                 </div>
                                 <div class="request-details__owner">
-                                    <font-size-fit v-bind:max-size="15" th:text="${request.owner}">
+									<font-size-fit v-bind:max-size="15" v-bind:key="'owner'" th:text="${request.owner}">
                                         FundRequest
                                     </font-size-fit>
                                 </div>
@@ -117,7 +117,7 @@
                                     <img th:src="@{${comment.userAvatar}(size=45)}" th:alt-title="${comment.userName}"/>
                                 </div>
                                 <div class="request-details__owner mb-3">
-                                    <font-size-fit v-bind:max-size="15" th:text="${comment.userName}">FundRequest</font-size-fit>
+									<font-size-fit v-bind:max-size="15" v-bind:key="'username'" th:text="${comment.userName}">FundRequest</font-size-fit>
                                 </div>
                                 <div class="request-details__last-modified-at">
                                     <small>Commented</small>
