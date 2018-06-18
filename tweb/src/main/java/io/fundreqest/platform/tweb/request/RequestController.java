@@ -110,23 +110,23 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests/{id}")
-    public ModelAndView details(Principal principal, @PathVariable Long id, Model model) {
+    public ModelAndView details(@PathVariable Long id, Model model) {
         final RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id));
-        return getDetailsModelAndView(principal, id, model, request);
+        return getDetailsModelAndView(id, model, request);
     }
 
     @GetMapping("/requests/github/{owner}/{repo}/{number}")
-    public ModelAndView details(Principal principal, @PathVariable String owner, @PathVariable String repo, @PathVariable String number, Model model) {
+    public ModelAndView details(@PathVariable String owner, @PathVariable String repo, @PathVariable String number, Model model) {
         final String platformId = owner + "|FR|" + repo + "|FR|" + number;
         final RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(GITHUB, platformId));
-        return getDetailsModelAndView(principal, request.getId(), model, request);
+        return getDetailsModelAndView(request.getId(), model, request);
     }
 
-    private ModelAndView getDetailsModelAndView(final Principal principal, final Long id, final Model model, final RequestDetailsView request) {
+    private ModelAndView getDetailsModelAndView(final Long id, final Model model, final RequestDetailsView request) {
         return modelAndView(model)
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
-                .withObject("fundedBy", fundService.getFundsAggregatedByFunder(principal, id))
+                .withObject("funds", fundService.getFundsAndRefundsGroupedByFunder(id))
                 .withObject("claims", claimService.getAggregatedClaimsForRequest(id))
                 .withObject("pendingRefundAddresses", refundService.findAllRefundRequestsFor(id, PENDING)
                                                                   .stream()

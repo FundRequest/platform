@@ -17,7 +17,7 @@ import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.RefundService;
 import io.fundrequest.core.request.fund.dto.CommentDto;
-import io.fundrequest.core.request.fund.dto.FundsByRequestAggregate;
+import io.fundrequest.core.request.fund.dto.FundsForRequestDto;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.fund.dto.RefundRequestDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
@@ -126,7 +126,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final long requestId = 7458L;
         final RequestDto requestDto = mock(RequestDto.class);
         final RequestDetailsView requestDetailsView = mock(RequestDetailsView.class);
-        final FundsByRequestAggregate fundsByRequestAggregate = mock(FundsByRequestAggregate.class);
+        final FundsForRequestDto fundsForRequestDto = mock(FundsForRequestDto.class);
         final List<RefundRequestDto> pendingRefundRequests = Lists.newArrayList(RefundRequestDto.builder().funderAddress("0xGDjhg4354").build(),
                                                                                 RefundRequestDto.builder().funderAddress("0xFEFSkjhkhj5436").build());
         final List<String> expectedPendingRefundAddresses = Lists.newArrayList("0xgdjhg4354", "0xfefskjhkhj5436");
@@ -136,7 +136,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
         when(mappers.map(RequestDto.class, RequestDetailsView.class, requestDto)).thenReturn(requestDetailsView);
         when(objectMapper.writeValueAsString(same(requestDetailsView))).thenReturn("requestDetailsView");
-        when(fundService.getFundsAggregatedByFunder(principal, requestId)).thenReturn(fundsByRequestAggregate);
+        when(fundService.getFundsAndRefundsGroupedByFunder(requestId)).thenReturn(fundsForRequestDto);
         when(refundService.findAllRefundRequestsFor(requestId, PENDING)).thenReturn(pendingRefundRequests);
         when(claimService.getAggregatedClaimsForRequest(requestId)).thenReturn(claims);
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
@@ -145,7 +145,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
                     .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundsByRequestAggregate))
+                    .andExpect(MockMvcResultMatchers.model().attribute("funds", fundsForRequestDto))
                     .andExpect(MockMvcResultMatchers.model().attribute("pendingRefundAddresses", expectedPendingRefundAddresses))
                     .andExpect(MockMvcResultMatchers.model().attribute("claims", claims))
                     .andExpect(MockMvcResultMatchers.model().attribute("githubComments", sameInstance(commentDtos)))
@@ -160,21 +160,21 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final long requestId = 7458L;
         final RequestDto requestDto = mock(RequestDto.class);
         final RequestDetailsView requestDetailsView = mock(RequestDetailsView.class);
-        final FundsByRequestAggregate fundsByRequestAggregate = mock(FundsByRequestAggregate.class);
+        final FundsForRequestDto fundsForRequestDto = mock(FundsForRequestDto.class);
         final List<CommentDto> commentDtos = new ArrayList<>();
 
         when(requestService.findRequest(Platform.GITHUB, owner + "|FR|" + repo + "|FR|" + number)).thenReturn(requestDto);
         when(requestDetailsView.getId()).thenReturn(requestId);
         when(mappers.map(eq(RequestDto.class), eq(RequestDetailsView.class), same(requestDto))).thenReturn(requestDetailsView);
         when(objectMapper.writeValueAsString(same(requestDetailsView))).thenReturn("requestDetailsView");
-        when(fundService.getFundsAggregatedByFunder(principal, requestId)).thenReturn(fundsByRequestAggregate);
+        when(fundService.getFundsAndRefundsGroupedByFunder(requestId)).thenReturn(fundsForRequestDto);
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
 
         this.mockMvc.perform(get("/requests/github/{owner}/{repo}/{number}", owner, repo, number).principal(principal))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
                     .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundsByRequestAggregate))
+                    .andExpect(MockMvcResultMatchers.model().attribute("funds", fundsForRequestDto))
                     .andExpect(MockMvcResultMatchers.model().attribute("githubComments", sameInstance(commentDtos)))
                     .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
     }

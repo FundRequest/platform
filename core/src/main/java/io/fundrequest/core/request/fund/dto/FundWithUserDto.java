@@ -4,15 +4,15 @@ import io.fundrequest.core.token.dto.TokenValueDto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class FundsByRequestAggregate {
-
-    private List<FundByFunderAggregate> fundByFunderAggregates;
+public class FundWithUserDto {
+    private String funder;
     private TokenValueDto fndFunds;
     private TokenValueDto otherFunds;
-    private Double usdFunds;
-
+    private String funderAddress;
+    private boolean isLoggedInUser;
+    private LocalDateTime timestamp;
 }

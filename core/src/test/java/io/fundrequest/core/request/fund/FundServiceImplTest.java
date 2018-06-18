@@ -3,9 +3,7 @@ package io.fundrequest.core.request.fund;
 
 import io.fundrequest.core.contract.service.FundRequestContractsService;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
-import io.fundrequest.core.request.domain.BlockchainEvent;
 import io.fundrequest.core.request.domain.FundMother;
-import io.fundrequest.core.request.domain.RefundMother;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.fiat.FiatService;
@@ -14,7 +12,8 @@ import io.fundrequest.core.request.fund.domain.Fund;
 import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.fund.domain.Refund;
 import io.fundrequest.core.request.fund.dto.FundDto;
-import io.fundrequest.core.request.fund.dto.FundsByRequestAggregate;
+import io.fundrequest.core.request.fund.dto.FundWithUserDto;
+import io.fundrequest.core.request.fund.dto.FundsForRequestDto;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
@@ -22,12 +21,9 @@ import io.fundrequest.core.request.fund.infrastructure.RefundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.view.FundDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.core.token.dto.TokenValueDto;
 import io.fundrequest.core.token.dto.TokenValueDtoMother;
-import io.fundrequest.core.token.mapper.TokenValueDtoMapper;
 import io.fundrequest.core.token.mapper.TokenValueMapper;
 import io.fundrequest.core.token.model.TokenValue;
-import io.fundrequest.core.token.model.TokenValueMother;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import io.fundrequest.platform.profile.profile.dto.UserProfileMother;
@@ -41,19 +37,19 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static io.fundrequest.core.token.model.TokenValueMother.FND;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -73,7 +69,6 @@ public class FundServiceImplTest {
     private ProfileService profileService;
     private FiatService fiatService;
     private TokenValueMapper tokenValueMapper;
-    private TokenValueDtoMapper tokenValueDtoMapper;
     private Principal funder;
 
     @Before
@@ -93,7 +88,6 @@ public class FundServiceImplTest {
         funder = user::getId;
         when(profileService.getUserProfile(funder.getName())).thenReturn(user);
         tokenValueMapper = mock(TokenValueMapper.class);
-        tokenValueDtoMapper = mock(TokenValueDtoMapper.class);
         fundService = new FundServiceImpl(fundRepository,
                                           refundRepository,
                                           pendingFundRepository,
@@ -102,10 +96,9 @@ public class FundServiceImplTest {
                                           eventPublisher,
                                           cacheManager,
                                           fundRequestContractsService,
-                                          profileService,
                                           fiatService,
-                                          tokenValueMapper,
-                                          tokenValueDtoMapper);
+                                          tokenValueMapper
+        );
     }
 
     @Test
@@ -149,7 +142,6 @@ public class FundServiceImplTest {
         final FundDto fundDto = FundDtoMother.aFundDto().build();
         final RequestDto requestDto = new RequestDto();
         final Cache cache = mock(Cache.class);
-        final BlockchainEvent blockchainEvent = mock(BlockchainEvent.class);
 
         when(requestRepository.findOne(request.getId())).thenReturn(Optional.of(request));
         when(mappers.map(eq(Fund.class), eq(FundDto.class), any(Fund.class))).thenReturn(fundDto);
@@ -165,272 +157,75 @@ public class FundServiceImplTest {
     }
 
     @Test
-    public void getFundsAggregatedByFunder_hasNameFunder() {
-        final UserProfile davy = UserProfileMother.davy();
-        final Fund fndFund = FundMother.fndFundFunderKnown().tokenValue(FND().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
-        final List<Fund> funds = Collections.singletonList(fndFund);
-        final TokenValueDto tokenValueDto = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
+    public void getFundsAndRefundsAggregatedByFunder() {
+        final long requestId = 45L;
+        final List<Fund> funds = new ArrayList<>();
+        final List<Refund> refunds = new ArrayList<>();
+        final String funder1 = "hjgv";
+        final String funder2 = "zdfsfdsz";
+        final LocalDateTime now = LocalDateTime.now();
+        final List<FundWithUserDto> fundsWithUserDto = Arrays.asList(FundWithUserDto.builder()
+                                                                                    .fndFunds(TokenValueDtoMother.FND().totalAmount(new BigDecimal("30000000000000000000")).build())
+                                                                                    .otherFunds(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("15000000000000000000")).build())
+                                                                                    .timestamp(now.minusDays(2))
+                                                                                    .funder(funder1)
+                                                                                    .build(),
+                                                                     FundWithUserDto.builder()
+                                                                                    .fndFunds(TokenValueDtoMother.FND().totalAmount(new BigDecimal("40000000000000000000")).build())
+                                                                                    .otherFunds(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("21000000000000000000")).build())
+                                                                                    .funder(funder2)
+                                                                                    .timestamp(now.minusDays(1))
+                                                                                    .build(),
+                                                                     FundWithUserDto.builder()
+                                                                                    .fndFunds(TokenValueDtoMother.FND().totalAmount(new BigDecimal("5000000000000000000")).build())
+                                                                                    .otherFunds(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("9000000000000000000")).build())
+                                                                                    .funder(funder2)
+                                                                                    .timestamp(now.minusDays(3))
+                                                                                    .build());
+        final List<FundWithUserDto> refundsWithUserDto = Arrays.asList(FundWithUserDto.builder()
+                                                                                      .fndFunds(TokenValueDtoMother.FND().totalAmount(new BigDecimal("-15000000000000000000")).build())
+                                                                                      .otherFunds(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("-2000000000000000000")).build())
+                                                                                      .funder(funder2)
+                                                                                      .timestamp(now.minusDays(3))
+                                                                                      .build(),
+                                                                       FundWithUserDto.builder()
+                                                                                      .fndFunds(TokenValueDtoMother.FND().totalAmount(new BigDecimal("-20000000000000000000")).build())
+                                                                                      .otherFunds(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("-12000000000000000000")).build())
+                                                                                      .funder(funder1)
+                                                                                      .timestamp(now.minusDays(1))
+                                                                                      .build(),
+                                                                       FundWithUserDto.builder()
+                                                                                      .fndFunds(TokenValueDtoMother.FND().totalAmount(new BigDecimal("-10000000000000000000")).build())
+                                                                                      .otherFunds(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("-8000000000000000000")).build())
+                                                                                      .funder(funder2)
+                                                                                      .timestamp(now.minusDays(2))
+                                                                                      .build());
 
-        when(fundRepository.findAllByRequestId(1L)).thenReturn(funds);
-        when(tokenValueDtoMapper.map(fndFund.getTokenValue())).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
+        when(fundRepository.findAllByRequestId(requestId)).thenReturn(funds);
+        when(refundRepository.findAllByRequestId(requestId)).thenReturn(refunds);
+        when(mappers.mapList(eq(Fund.class), eq(FundWithUserDto.class), same(funds))).thenReturn(fundsWithUserDto);
+        when(mappers.mapList(eq(Refund.class), eq(FundWithUserDto.class), same(refunds))).thenReturn(refundsWithUserDto);
 
-        final FundsByRequestAggregate result = fundService.getFundsAggregatedByFunder(funder, 1L);
+        final FundsForRequestDto result = fundService.getFundsAndRefundsGroupedByFunder(requestId);
 
-        assertThat(result.getFundByFunderAggregates().get(0).getFunder()).isEqualTo(davy.getName());
-        assertThat(result.getFundByFunderAggregates().get(0).isLoggedInUser()).isTrue();
-        assertThat(result.getFndFunds().getTotalAmount()).isEqualTo(new BigDecimal("1"));
-    }
-
-    @Test
-    public void getRefundsAggregatedByRequester_hasNameRequester() {
-        final UserProfile davy = UserProfileMother.davy();
-        final Refund fndRefund = RefundMother.fndRefundRequestedByKnown(davy.getId()).tokenValue(FND().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
-        final List<Refund> refunds = Collections.singletonList(fndRefund);
-        final TokenValueDto tokenValueDto = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
-
-        when(refundRepository.findAllByRequestId(1L)).thenReturn(refunds);
-        when(tokenValueDtoMapper.map(fndRefund.getTokenValue())).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(refunds.get(0).getRequestedBy())).thenReturn(davy);
-
-        final FundsByRequestAggregate result = fundService.getRefundsAggregatedByRequester(funder, 1L);
-
-        assertThat(result.getFundByFunderAggregates().get(0).getFunder()).isEqualTo(davy.getName());
-        assertThat(result.getFundByFunderAggregates().get(0).isLoggedInUser()).isTrue();
-        assertThat(result.getFndFunds().getTotalAmount()).isEqualTo(new BigDecimal("-1"));
-    }
-
-    @Test
-    public void getFundsAggregatedByFunder_noPrincipal() {
-        final UserProfile davy = UserProfileMother.davy();
-        final Fund fndFund = FundMother.fndFundFunderKnown().build();
-        final List<Fund> funds = Collections.singletonList(fndFund);
-
-        when(fundRepository.findAllByRequestId(1L)).thenReturn(funds);
-        when(profileService.getUserProfile(funds.get(0).getFunderUserId())).thenReturn(davy);
-        when(tokenValueDtoMapper.map(fndFund.getTokenValue())).thenReturn(TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build());
-
-        final FundsByRequestAggregate result = fundService.getFundsAggregatedByFunder(null, 1L);
-
-        assertThat(result.getFundByFunderAggregates().get(0).getFunder()).isEqualTo(davy.getName());
-        assertThat(result.getFundByFunderAggregates().get(0).isLoggedInUser()).isFalse();
-        assertThat(result.getFndFunds().getTotalAmount()).isEqualTo(new BigDecimal("1"));
-    }
-
-    @Test
-    public void getRefundsAggregatedByRequester_noPrincipal() {
-        final UserProfile davy = UserProfileMother.davy();
-        final Refund fndRefund = RefundMother.fndRefundRequestedByKnown(davy.getId()).build();
-        final List<Refund> refunds = Collections.singletonList(fndRefund);
-
-        when(refundRepository.findAllByRequestId(1L)).thenReturn(refunds);
-        when(profileService.getUserProfile(refunds.get(0).getRequestedBy())).thenReturn(davy);
-        when(tokenValueDtoMapper.map(fndRefund.getTokenValue())).thenReturn(TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build());
-
-        final FundsByRequestAggregate result = fundService.getRefundsAggregatedByRequester(null, 1L);
-
-        assertThat(result.getFundByFunderAggregates().get(0).getFunder()).isEqualTo(davy.getName());
-        assertThat(result.getFundByFunderAggregates().get(0).isLoggedInUser()).isFalse();
-        assertThat(result.getFndFunds().getTotalAmount()).isEqualTo(new BigDecimal("-1"));
-    }
-
-    @Test
-    public void getFundsAggregatedByFunder_noFundedByHasFunderAddress() {
-        final Fund fndFund = FundMother.fndFundFunderNotKnown().build();
-        List<Fund> funds = Collections.singletonList(fndFund);
-        final TokenValueDto tokenValueDto = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
-
-        when(fundRepository.findAllByRequestId(1L)).thenReturn(funds);
-        when(tokenValueDtoMapper.map(fndFund.getTokenValue())).thenReturn(tokenValueDto);
-
-        FundsByRequestAggregate result = fundService.getFundsAggregatedByFunder(funder, 1L);
-
-        assertThat(result.getFundByFunderAggregates().get(0).getFunder()).isEqualTo(funds.get(0).getFunderAddress());
-    }
-
-    @Test
-    public void getRefundsAggregatedByRequester_noRequestedByHasFunderAddress() {
-        final Refund fndRefund = RefundMother.fndRefundRequestedByNotKnown().build();
-        List<Refund> refunds = Collections.singletonList(fndRefund);
-        final TokenValueDto tokenValueDto = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
-
-        when(refundRepository.findAllByRequestId(1L)).thenReturn(refunds);
-        when(tokenValueDtoMapper.map(fndRefund.getTokenValue())).thenReturn(tokenValueDto);
-
-        FundsByRequestAggregate result = fundService.getRefundsAggregatedByRequester(funder, 1L);
-
-        assertThat(result.getFundByFunderAggregates().get(0).getFunder()).isEqualTo(refunds.get(0).getFunderAddress());
-        assertThat(result.getFundByFunderAggregates().get(0).getFndFunds().getTotalAmount()).isEqualTo(new BigDecimal("-1"));
-    }
-
-    @Test
-    public void getFundsAggregatedByFunder_hasTotalFnd() {
-        final Fund fndFund1 = FundMother.fndFundFunderNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
-        final Fund fndFund2 = FundMother.fndFundFunderNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
-        final List<Fund> funds = Arrays.asList(fndFund1, fndFund2);
-        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
-        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("2")).build();
-
-        when(fundRepository.findAllByRequestId(1L)).thenReturn(funds);
-        when(tokenValueDtoMapper.map(fndFund1.getTokenValue())).thenReturn(tokenValueDto1);
-        when(tokenValueDtoMapper.map(fndFund2.getTokenValue())).thenReturn(tokenValueDto2);
-
-        FundsByRequestAggregate result = fundService.getFundsAggregatedByFunder(funder, 1L);
-
-        assertThat(result.getOtherFunds()).isNull();
-        assertThat(result.getFndFunds()).isEqualTo(TokenValueDtoMother.FND().totalAmount(new BigDecimal("3")).build());
-    }
-
-    @Test
-    public void getRefundsAggregatedByRequester_hasTotalFnd() {
-        final Refund fndRefund1 = RefundMother.fndRefundRequestedByNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
-        final Refund fndRefund2 = RefundMother.fndRefundRequestedByNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
-        final List<Refund> refunds = Arrays.asList(fndRefund1, fndRefund2);
-        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
-        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("2")).build();
-
-        when(refundRepository.findAllByRequestId(1L)).thenReturn(refunds);
-        when(tokenValueDtoMapper.map(fndRefund1.getTokenValue())).thenReturn(tokenValueDto1);
-        when(tokenValueDtoMapper.map(fndRefund2.getTokenValue())).thenReturn(tokenValueDto2);
-
-        FundsByRequestAggregate result = fundService.getRefundsAggregatedByRequester(funder, 1L);
-
-        assertThat(result.getOtherFunds()).isNull();
-        assertThat(result.getFndFunds()).isEqualTo(TokenValueDtoMother.FND().totalAmount(new BigDecimal("-3")).build());
-    }
-
-    @Test
-    public void getFundsAggregatedByFunder_hasTotalOther() {
-        final Fund zrxFund1 = FundMother.zrxFundFunderNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
-        final Fund zrxFund2 = FundMother.zrxFundFunderNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
-        final List<Fund> funds = Arrays.asList(zrxFund1, zrxFund2);
-        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("1")).build();
-        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("2")).build();
-
-        when(fundRepository.findAllByRequestId(1L)).thenReturn(funds);
-        when(tokenValueDtoMapper.map(zrxFund1.getTokenValue())).thenReturn(tokenValueDto1);
-        when(tokenValueDtoMapper.map(zrxFund2.getTokenValue())).thenReturn(tokenValueDto2);
-
-        final FundsByRequestAggregate result = fundService.getFundsAggregatedByFunder(funder, 1L);
-
-        assertThat(result.getFndFunds()).isNull();
-        assertThat(result.getOtherFunds()).isEqualTo(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("3")).build());
-    }
-
-    @Test
-    public void getRefundsAggregatedByRequester_hasTotalOther() {
-        final Refund zrxRefund1 = RefundMother.zrxRefundRequestedByNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
-        final Refund zrxRefund2 = RefundMother.zrxRefundRequestedByNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
-        final List<Refund> refunds = Arrays.asList(zrxRefund1, zrxRefund2);
-        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("1")).build();
-        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("2")).build();
-
-        when(refundRepository.findAllByRequestId(1L)).thenReturn(refunds);
-        when(tokenValueDtoMapper.map(zrxRefund1.getTokenValue())).thenReturn(tokenValueDto1);
-        when(tokenValueDtoMapper.map(zrxRefund2.getTokenValue())).thenReturn(tokenValueDto2);
-
-        final FundsByRequestAggregate result = fundService.getRefundsAggregatedByRequester(funder, 1L);
-
-        assertThat(result.getFndFunds()).isNull();
-        assertThat(result.getOtherFunds()).isEqualTo(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("-3")).build());
-    }
-
-    @Test
-    public void getFundsAggregatedByFunder_enrichedWithZeroes() {
-        final Fund fndFund = FundMother.fndFundFunderNotKnown()
-                                       .funderAddress("0x0")
-                                       .tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("1000000000000000000")).build())
-                                       .build();
-        final Fund zrxFund = FundMother.zrxFundFunderNotKnown()
-                                       .funderAddress("0x1")
-                                       .tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("2000000000000000000")).build())
-                                       .build();
-        final List<Fund> funds = Arrays.asList(fndFund, zrxFund);
-        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
-        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("2")).build();
-
-        when(fundRepository.findAllByRequestId(1L)).thenReturn(funds);
-        when(tokenValueDtoMapper.map(fndFund.getTokenValue())).thenReturn(tokenValueDto1);
-        when(tokenValueDtoMapper.map(zrxFund.getTokenValue())).thenReturn(tokenValueDto2);
-
-        final FundsByRequestAggregate result = fundService.getFundsAggregatedByFunder(funder, 1L);
-
-        assertThat(result.getFundByFunderAggregates().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
-        assertThat(result.getFundByFunderAggregates().get(1).getFndFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
-    }
-
-    @Test
-    public void getRefundsAggregatedByRequester_enrichedWithZeroes() {
-        final Refund fndRefund = RefundMother.fndRefundRequestedByNotKnown()
-                                       .funderAddress("0x0")
-                                       .tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("1000000000000000000")).build())
-                                       .build();
-        final Refund zrxRefund = RefundMother.zrxRefundRequestedByNotKnown()
-                                       .funderAddress("0x1")
-                                       .tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("2000000000000000000")).build())
-                                       .build();
-        final List<Refund> refunds = Arrays.asList(fndRefund, zrxRefund);
-        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
-        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("2")).build();
-
-        when(refundRepository.findAllByRequestId(1L)).thenReturn(refunds);
-        when(tokenValueDtoMapper.map(fndRefund.getTokenValue())).thenReturn(tokenValueDto1);
-        when(tokenValueDtoMapper.map(zrxRefund.getTokenValue())).thenReturn(tokenValueDto2);
-
-        final FundsByRequestAggregate result = fundService.getRefundsAggregatedByRequester(funder, 1L);
-
-        assertThat(result.getFundByFunderAggregates().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
-        assertThat(result.getFundByFunderAggregates().get(1).getFndFunds().getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
-    }
-
-    @Test
-    public void getFundsAggregatedByFunder_mergesSameFunderData() {
-        final Fund fund1 = FundMother.fndFundFunderNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
-        final Fund fund2 = FundMother.zrxFundFunderNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
-        final Fund fund3 = FundMother.zrxFundFunderNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("3000000000000000000")).build()).build();
-        final Fund fund4 = FundMother.fndFundFunderNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
-        final List<Fund> funds = Arrays.asList(fund1, fund2, fund3, fund4);
-        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
-        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("2")).build();
-        final TokenValueDto tokenValueDto3 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("3")).build();
-        final TokenValueDto tokenValueDto4 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("2")).build();
-
-        when(fundRepository.findAllByRequestId(1L)).thenReturn(funds);
-        when(tokenValueDtoMapper.map(fund1.getTokenValue())).thenReturn(tokenValueDto1);
-        when(tokenValueDtoMapper.map(fund2.getTokenValue())).thenReturn(tokenValueDto2);
-        when(tokenValueDtoMapper.map(fund3.getTokenValue())).thenReturn(tokenValueDto3);
-        when(tokenValueDtoMapper.map(fund4.getTokenValue())).thenReturn(tokenValueDto4);
-
-        final FundsByRequestAggregate result = fundService.getFundsAggregatedByFunder(funder, 1L);
-
-        assertThat(result.getFundByFunderAggregates()).hasSize(1);
-        assertThat(result.getFundByFunderAggregates().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(new BigDecimal("5"));
-        assertThat(result.getFundByFunderAggregates().get(0).getFndFunds().getTotalAmount()).isEqualByComparingTo(new BigDecimal("3"));
-    }
-
-    @Test
-    public void getRefundsAggregatedByRequester_mergesSameFunderData() {
-        final Refund refund1 = RefundMother.fndRefundRequestedByNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("1000000000000000000")).build()).build();
-        final Refund refund2 = RefundMother.zrxRefundRequestedByNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
-        final Refund refund3 = RefundMother.zrxRefundRequestedByNotKnown().tokenValue(TokenValueMother.ZRX().amountInWei(new BigDecimal("3000000000000000000")).build()).build();
-        final Refund refund4 = RefundMother.fndRefundRequestedByNotKnown().tokenValue(TokenValueMother.FND().amountInWei(new BigDecimal("2000000000000000000")).build()).build();
-        final List<Refund> refunds = Arrays.asList(refund1, refund2, refund3, refund4);
-        final TokenValueDto tokenValueDto1 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("1")).build();
-        final TokenValueDto tokenValueDto2 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("2")).build();
-        final TokenValueDto tokenValueDto3 = TokenValueDtoMother.ZRX().totalAmount(new BigDecimal("3")).build();
-        final TokenValueDto tokenValueDto4 = TokenValueDtoMother.FND().totalAmount(new BigDecimal("2")).build();
-
-        when(refundRepository.findAllByRequestId(1L)).thenReturn(refunds);
-        when(tokenValueDtoMapper.map(refund1.getTokenValue())).thenReturn(tokenValueDto1);
-        when(tokenValueDtoMapper.map(refund2.getTokenValue())).thenReturn(tokenValueDto2);
-        when(tokenValueDtoMapper.map(refund3.getTokenValue())).thenReturn(tokenValueDto3);
-        when(tokenValueDtoMapper.map(refund4.getTokenValue())).thenReturn(tokenValueDto4);
-
-        final FundsByRequestAggregate result = fundService.getRefundsAggregatedByRequester(funder, 1L);
-
-        assertThat(result.getFundByFunderAggregates()).hasSize(1);
-        assertThat(result.getFundByFunderAggregates().get(0).getOtherFunds().getTotalAmount()).isEqualByComparingTo(new BigDecimal("-5"));
-        assertThat(result.getFundByFunderAggregates().get(0).getFndFunds().getTotalAmount()).isEqualByComparingTo(new BigDecimal("-3"));
+        assertThat(result.getFundByFunders().get(0).getFunder()).isEqualTo(funder1);
+        assertThat(result.getFundByFunders().get(0).getFndFunds().getTotalAmount()).isEqualTo(new BigDecimal("30000000000000000000"));
+        assertThat(result.getFundByFunders().get(0).getOtherFunds().getTotalAmount()).isEqualTo(new BigDecimal("15000000000000000000"));
+        assertThat(result.getFundByFunders().get(1).getFunder()).isEqualTo(funder2);
+        assertThat(result.getFundByFunders().get(1).getFndFunds().getTotalAmount()).isEqualTo(new BigDecimal("-25000000000000000000"));
+        assertThat(result.getFundByFunders().get(1).getOtherFunds().getTotalAmount()).isEqualTo(new BigDecimal("-10000000000000000000"));
+        assertThat(result.getFundByFunders().get(2).getFunder()).isEqualTo(funder2);
+        assertThat(result.getFundByFunders().get(2).getFndFunds().getTotalAmount()).isEqualTo(new BigDecimal("45000000000000000000"));
+        assertThat(result.getFundByFunders().get(2).getOtherFunds().getTotalAmount()).isEqualTo(new BigDecimal("30000000000000000000"));
+        assertThat(result.getFundByFunders().get(3).getFunder()).isEqualTo(funder1);
+        assertThat(result.getFundByFunders().get(3).getFndFunds().getTotalAmount()).isEqualTo(new BigDecimal("-20000000000000000000"));
+        assertThat(result.getFundByFunders().get(3).getOtherFunds().getTotalAmount()).isEqualTo(new BigDecimal("-12000000000000000000"));
+        assertThat(result.getFndFunds().getTokenSymbol()).isEqualTo(TokenValueDtoMother.FND().build().getTokenSymbol());
+        assertThat(result.getFndFunds().getTokenAddress()).isEqualTo(TokenValueDtoMother.FND().build().getTokenAddress());
+        assertThat(result.getFndFunds().getTotalAmount()).isEqualTo(new BigDecimal("30000000000000000000"));
+        assertThat(result.getOtherFunds().getTokenSymbol()).isEqualTo(TokenValueDtoMother.ZRX().build().getTokenSymbol());
+        assertThat(result.getOtherFunds().getTokenAddress()).isEqualTo(TokenValueDtoMother.ZRX().build().getTokenAddress());
+        assertThat(result.getOtherFunds().getTotalAmount()).isEqualTo(new BigDecimal("23000000000000000000"));
     }
 
     private void verifyEventCreated(Long requestId, FundDto fundDto) {
