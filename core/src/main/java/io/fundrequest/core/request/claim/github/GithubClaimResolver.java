@@ -2,7 +2,7 @@ package io.fundrequest.core.request.claim.github;
 
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
-import io.fundrequest.core.request.claim.dto.UserClaimableDto;
+import io.fundrequest.core.request.claim.dto.ClaimableResultDto;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
@@ -19,6 +19,9 @@ import org.springframework.stereotype.Component;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import static io.fundrequest.core.request.domain.RequestStatus.CLAIMABLE;
+import static io.fundrequest.core.request.domain.RequestStatus.FUNDED;
 
 @Component
 public class GithubClaimResolver {
@@ -57,24 +60,22 @@ public class GithubClaimResolver {
         final String repo = request.getIssueInformation().getRepo();
         final String number = request.getIssueInformation().getNumber();
         final GithubIssue githubIssue = githubScraper.fetchGithubIssue(owner, repo, number);
-        return isIssueClosed(githubIssue) && isClaimalbeByUser(user, request, githubIssue.getSolver());
+        return isIssueClosed(githubIssue) && isClaimalbeByLoggedInUser(user, request, githubIssue.getSolver());
     }
 
-    public UserClaimableDto userClaimableResult(final Principal user, final RequestDto request) {
-        final IssueInformationDto issueInformation = request.getIssueInformation();
-        final GithubIssue githubIssue = githubScraper.fetchGithubIssue(issueInformation.getOwner(),
-                                                                       issueInformation.getRepo(),
-                                                                       issueInformation.getNumber());
-        if (isIssueClosed(githubIssue) && githubIssue.getSolver() != null && (request.getStatus() == RequestStatus.FUNDED || request.getStatus() == RequestStatus.CLAIMABLE)) {
-                return UserClaimableDto.builder()
-                                       .claimable(true)
-                                       .claimableByUser(isClaimalbeByUser(user, request, githubIssue.getSolver()))
-                                       .build();
+    public ClaimableResultDto claimableResult(final String owner, final String repo, final String number, final RequestStatus requestStatus) {
+        final GithubIssue githubIssue = githubScraper.fetchGithubIssue(owner, repo, number);
+        if (isIssueClosed(githubIssue) && githubIssue.getSolver() != null && (requestStatus == FUNDED || requestStatus == CLAIMABLE)) {
+            return ClaimableResultDto.builder()
+                                     .claimable(true)
+                                     .platform(Platform.GITHUB)
+                                     .claimableByPlatformUserName(githubIssue.getSolver())
+                                     .build();
         }
-        return UserClaimableDto.builder().claimable(false).claimableByUser(false).build();
+        return ClaimableResultDto.builder().claimable(false).platform(Platform.GITHUB).build();
     }
 
-    private Boolean isClaimalbeByUser(final Principal user, final RequestDto request, final String solver) {
+    private Boolean isClaimalbeByLoggedInUser(final Principal user, final RequestDto request, final String solver) {
         return user == null || solver == null
                ? false
                : getUserPlatformUsername(user, request.getIssueInformation().getPlatform()).map(u -> u.equalsIgnoreCase(solver)).orElse(false);

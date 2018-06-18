@@ -29,6 +29,7 @@
 .header-image {
     width: 6.25rem;
     height: 6.25rem;
+    min-width: 6.25rem;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -38,15 +39,29 @@
         max-width: 100%;
     }
 
+    + .media-body {
+        max-width: 100%;
+    }
+
     @include media-breakpoint-up(md) {
         width: 7.5rem;
+        min-width: 7.5rem;
         height: 7.5rem;
         margin-right: 2rem;
+
+        + .media-body {
+            max-width: calc(100% - 9.5rem);
+        }
     }
 
     @include media-breakpoint-up(lg) {
         width: 12.5rem;
+        min-width: 12.5rem;
         height: 12.5rem;
         margin-right: 3rem;
+
+        + .media-body {
+            max-width: calc(100% - 15.5rem);
+        }
     }
 }

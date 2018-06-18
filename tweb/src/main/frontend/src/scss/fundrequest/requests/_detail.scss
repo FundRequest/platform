@@ -310,7 +310,9 @@
     &__star-link {
         cursor: pointer;
         font-size: .75em;
-        vertical-align: super;
+        vertical-align: top;
+		margin-top: auto;
+		margin-bottom: auto;
 
         .fa {
             display: none;

@@ -7,5 +7,6 @@ import lombok.Data;
 @Builder
 public class UserClaimableDto {
     private final boolean claimable;
-    private final boolean claimableByUser;
+    private final boolean claimableByLoggedInUser;
+    private final String claimableByPlatformUserName;
 }

@@ -7,6 +7,9 @@ public final class UserProfileMother {
                           .name("Davy Van Roy")
                           .email("davy.van.roy@fundrequest.io")
                           .etherAddressVerified(true)
+                          .github(UserProfileProvider.builder()
+                                                     .username("davyvanroy")
+                                                     .build())
                           .build();
     }
 }
