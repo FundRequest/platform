@@ -6,8 +6,8 @@ import io.fundreqest.platform.tweb.infrastructure.mav.AbstractController;
 import io.fundreqest.platform.tweb.request.dto.ERC67FundDto;
 import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.infrastructure.SecurityContextService;
+import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.UserClaimRequest;
@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;

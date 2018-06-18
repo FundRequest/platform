@@ -78,7 +78,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-	import {EventBus} from "../EventBus";
+    import {EventBus} from "../EventBus";
     import vSelect from "vue-select";
     import FndSelect from "./form/FndSelect";
     import ListFilter from "./ListFilter";
