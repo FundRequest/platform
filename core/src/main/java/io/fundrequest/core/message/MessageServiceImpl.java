@@ -1,11 +1,11 @@
-package io.fundrequest.platform.profile.message;
+package io.fundrequest.core.message;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundrequest.platform.profile.message.domain.Message;
-import io.fundrequest.platform.profile.message.domain.MessageType;
-import io.fundrequest.platform.profile.message.dto.MessageDto;
-import io.fundrequest.platform.profile.message.infrastructure.MessageRepository;
+import io.fundrequest.core.message.domain.Message;
+import io.fundrequest.core.message.domain.MessageType;
+import io.fundrequest.core.message.dto.MessageDto;
+import io.fundrequest.core.message.infrastructure.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,7 @@ class MessageServiceImpl implements MessageService {
 
     private final ObjectMapper objectMapper;
     private MessageRepository repository;
+
 
     public MessageServiceImpl(MessageRepository repository) {
         this.repository = repository;
@@ -52,17 +53,31 @@ class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageDto getMessageByNameAndType(String name, MessageType type) {
-        Message m = repository.findByNameAndType(name, type);
-        if (m != null) {
-            return createMessageDto(repository.findByNameAndType(name, type));
-        } else {
-            return null;
+        Message m = repository.findByNameAndType(name, type).orElseThrow(() -> new RuntimeException("Message not found"));
+        return createMessageDto(m);
+    }
+
+    @Transactional
+    @Override
+    public Message update(MessageDto messageDto) {
+        Message m = repository.findOne(messageDto.getId()).orElseThrow(() -> new RuntimeException("Message not found"));
+        Message newM = objectMapper.convertValue(messageDto, Message.class);
+
+        if(messageDto.getName().equalsIgnoreCase(m.getName())) {
+            new RuntimeException("Name of message can not be changed");
         }
+        if(messageDto.getType() != m.getType()) {
+            new RuntimeException("Type of message can not be changed");
+        }
+
+        repository.save(newM);
+        return newM;
     }
 
 
     private MessageDto createMessageDto(Message m) {
         return MessageDto.builder()
+                .id(m.getId())
                 .type(m.getType())
                 .name(m.getName())
                 .title(m.getTitle())

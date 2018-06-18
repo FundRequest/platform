@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"
+      xmlns:th="http://www.thymeleaf.org">
+
+<section layout:fragment="content">
+    <h2>Messages</h2>
+    <br />
+
+    <h3 th:text="${message.getType() + '.' + message.getName()}"></h3>
+    <form role="form" th:action="@{/messages/edit}" th:method="post" th:object="${message}">
+        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{type}" />
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" disabled="disabled" class="form-control" id="name" th:field="*{name}" />
+        </div>
+        <div class="form-group">
+            <label for="name">Title</label>
+            <input type="text" class="form-control" id="title" th:field="*{title}" />
+        </div>
+        <div class="form-group">
+            <label for="name">Description</label>
+            <textarea class="form-control" id="description" th:field="*{description}"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="name">Link</label>
+            <input type="text" class="form-control" id="link" th:field="*{link}" />
+        </div>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </form>
+</section>
+
+
+
+</html>

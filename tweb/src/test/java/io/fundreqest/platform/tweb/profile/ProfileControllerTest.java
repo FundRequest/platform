@@ -1,9 +1,8 @@
 package io.fundreqest.platform.tweb.profile;
 
 import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
-import io.fundreqest.platform.tweb.infrastructure.mav.messaging.Message;
 import io.fundrequest.platform.profile.github.GithubBountyService;
-import io.fundrequest.platform.profile.message.MessageService;
+import io.fundrequest.core.message.MessageService;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
 import io.fundrequest.platform.profile.ref.ReferralService;

@@ -1,4 +1,4 @@
-package io.fundrequest.platform.profile.message.domain;
+package io.fundrequest.core.message.domain;
 
 import io.fundrequest.db.infrastructure.AbstractEntity;
 import lombok.Builder;
