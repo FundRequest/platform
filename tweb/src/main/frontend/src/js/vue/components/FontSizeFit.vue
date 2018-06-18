@@ -1,5 +1,5 @@
 <template>
-    <span class="font-size-fit" v-bind:style="{ fontSize: fontSize + 'px'}" ref="fontSizeFit"><slot></slot></span>
+    <span class="font-size-fit" v-bind:style="fontSizeStyle"><slot></slot></span>
 </template>
 
 <script lang="ts">
@@ -7,24 +7,30 @@
 
     @Component
     export default class FontSizeFit extends Vue {
-        @Prop() maxSize: number;
+        @Prop({ default: 15 }) maxSize: number;
 
-        public fontSize: number = 15;
+        private fontSize: number = this.maxSize;
+
+		get fontSizeStyle() {
+			return {
+				fontSize: this.fontSize + 'px'
+			}
+		}
 
         mounted() {
-            if (this.maxSize != null) {
-                this.fontSize = this.maxSize;
-            }
-            this._resizeText(this.$refs["fontSizeFit"] as HTMLElement);
+            this.fontSize = this.maxSize;
+            this._resizeText();
         }
 
-        private _resizeText(el: HTMLElement) {
-            if (el) {
-                el.style.fontSize = (parseInt(el.style.fontSize.slice(0, -2)) - 1) + "px";
-                if (el.offsetWidth > el.parentElement.offsetWidth) {
-                    this._resizeText(el);
-                }
-            }
+		updated() {
+			this._resizeText();
+		}
+
+        private _resizeText() {
+			let el = this.$el as HTMLElement;
+            if (el.offsetWidth > el.parentElement.offsetWidth) {
+				this.fontSize = this.fontSize - 1;
+			}
         }
     }
 </script>
