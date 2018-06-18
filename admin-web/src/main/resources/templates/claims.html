@@ -15,6 +15,7 @@
         <table class="table table-condensed table-striped table-hover" id="pending-claims">
             <thead>
             <tr>
+                <th>Title</th>
                 <th>Platform</th>
                 <th>Solver</th>
                 <th>Address</th>
@@ -25,6 +26,7 @@
             </thead>
             <tbody>
             <tr th:each="c : ${pendingClaims}">
+                <td><a th:href="${c.getFundRequestUrl()}" target="_blank" th:text="${c.getTitle()}">GITHUB</a></td>
                 <td><a th:href="${c.getUrl()}" target="_blank">GITHUB</a></td>
                 <td th:text="${c.getSolver()}"></td>
                 <td th:text="${c.getAddress()}"></td>
