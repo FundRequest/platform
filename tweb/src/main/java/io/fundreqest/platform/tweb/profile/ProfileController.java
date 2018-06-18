@@ -2,6 +2,8 @@ package io.fundreqest.platform.tweb.profile;
 
 import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.profile.github.GithubBountyService;
+import io.fundrequest.platform.profile.message.MessageService;
+import io.fundrequest.platform.profile.message.dto.MessageDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
 import io.fundrequest.platform.profile.ref.ReferralService;
@@ -24,6 +26,7 @@ import java.security.Principal;
 public class ProfileController {
     private ApplicationEventPublisher eventPublisher;
     private ProfileService profileService;
+    private MessageService messageService;
     private ReferralService referralService;
     private GithubBountyService githubBountyService;
     private StackOverflowBountyService stackOverflowBountyService;
@@ -31,11 +34,13 @@ public class ProfileController {
 
     public ProfileController(final ApplicationEventPublisher eventPublisher,
                              final ProfileService profileService,
+                             final MessageService messageService,
                              final ReferralService referralService,
                              final GithubBountyService githubBountyService,
                              final StackOverflowBountyService stackOverflowBountyService) {
         this.eventPublisher = eventPublisher;
         this.profileService = profileService;
+        this.messageService = messageService;
         this.referralService = referralService;
         this.githubBountyService = githubBountyService;
         this.stackOverflowBountyService = stackOverflowBountyService;
@@ -48,10 +53,24 @@ public class ProfileController {
         mav.addObject("isVerifiedGithub", isVerifiedGithub(principal));
         mav.addObject("isVerifiedStackOverflow", isVerifiedStackOverflow(principal));
         mav.addObject("refLink", getRefLink(principal, "web"));
-        mav.addObject("refLinkTwitter", URLEncoder.encode(getRefLink(principal, "twitter"), "UTF-8"));
-        mav.addObject("refLinkLinkedin", URLEncoder.encode(getRefLink(principal, "linkedin"), "UTF-8"));
-        mav.addObject("refLinkFacebook", URLEncoder.encode(getRefLink(principal, "facebook"), "UTF-8"));
+        mav.addObject("refShareTwitter", processRefLinkMessage(messageService.getMessageByKey("REFERRAL_SHARE.twitter"), getRefLink(principal, "twitter")));
+        mav.addObject("refShareLinkedin", processRefLinkMessage(messageService.getMessageByKey("REFERRAL_SHARE.linkedin"), getRefLink(principal, "linkedin")));
+        mav.addObject("refShareFacebook", processRefLinkMessage(messageService.getMessageByKey("REFERRAL_SHARE.facebook"), getRefLink(principal, "facebook")));
+
         return mav;
+    }
+
+    private MessageDto processRefLinkMessage(MessageDto message, String refLink) throws Exception {
+        String link = message.getLink();
+        String description = message.getDescription().replace("###REFLINK###", refLink);
+        link = link
+                .replace("###REFLINK###", URLEncoder.encode(refLink, "UTF-8"))
+                .replace("###TITLE###", URLEncoder.encode(message.getTitle(), "UTF-8"))
+                .replace("###DESCRIPTION###", URLEncoder.encode(description, "UTF-8"));
+        message.setDescription(description);
+        message.setLink(link);
+
+        return message;
     }
 
     private boolean isVerifiedStackOverflow(final Principal principal) {

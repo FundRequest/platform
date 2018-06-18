@@ -1,7 +1,9 @@
 package io.fundreqest.platform.tweb.profile;
 
 import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
+import io.fundreqest.platform.tweb.infrastructure.mav.messaging.Message;
 import io.fundrequest.platform.profile.github.GithubBountyService;
+import io.fundrequest.platform.profile.message.MessageService;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
 import io.fundrequest.platform.profile.ref.ReferralService;
@@ -23,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ProfileControllerTest extends AbstractControllerTest<ProfileController> {
 
     private ReferralService referralService;
+    private MessageService messageService;
     private Principal principal;
     private GithubBountyService githubBountyService;
     private StackOverflowBountyService stackOverflowBountyService;
@@ -32,12 +35,14 @@ public class ProfileControllerTest extends AbstractControllerTest<ProfileControl
     protected ProfileController setupController() {
         principal = () -> "davyvanroy";
         referralService = mock(ReferralService.class);
+        messageService = mock(MessageService.class);
         when(referralService.generateRefLink(eq(principal.getName()), anyString())).thenReturn("ref");
         githubBountyService = mock(GithubBountyService.class);
         stackOverflowBountyService = mock(StackOverflowBountyService.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
         return new ProfileController(eventPublisher,
                 mock(ProfileService.class),
+                messageService,
                 referralService,
                 githubBountyService,
                 stackOverflowBountyService
@@ -54,9 +59,9 @@ public class ProfileControllerTest extends AbstractControllerTest<ProfileControl
                 .andExpect(model().attribute("isVerifiedGithub", true))
                 .andExpect(model().attribute("isVerifiedStackOverflow", true))
                 .andExpect(model().attribute("refLink", "ref"))
-                .andExpect(model().attribute("refLinkTwitter", "ref"))
-                .andExpect(model().attribute("refLinkLinkedin", "ref"))
-                .andExpect(model().attribute("refLinkFacebook", "ref"));
+                .andExpect(model().attribute("refShareTwitter", "ref"))
+                .andExpect(model().attribute("refShareLinkedin", "ref"))
+                .andExpect(model().attribute("refShareFacebook", "ref"));
     }
 
 }
