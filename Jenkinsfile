@@ -1,17 +1,29 @@
-node {
-    def platform
-    def adminPanel
-    stage('Build') {
-        sh 'mvn -B clean install'
+pipeline {
+    agent any
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 15, unit: 'MINUTES')
     }
-    stage('Docker Build') {
-        platform = docker.build("fundrequestio/platform", "./tweb")
-        adminPanel = docker.build("fundrequestio/adminweb", "./admin-web")
-    }
-    stage('Docker Push') {
-      docker.withRegistry('https://registry.hub.docker.com', 'dockerHub') {
-          platform.push("${BRANCH_NAME}")
-          adminPanel.push("${BRANCH_NAME}")
-      }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -B clean install'
+            }
+        }
+        stage('Docker Build') {
+          steps {
+            sh 'docker build -t fundrequestio/platform:${BRANCH_NAME} tweb'
+            sh 'docker build -t fundrequestio/adminweb:${BRANCH_NAME} admin-web'
+          }
+        }
+        stage('Docker Push') {
+          steps {
+            withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+              sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+              sh "docker push fundrequestio/platform:${BRANCH_NAME}"
+              sh "docker push fundrequestio/adminweb:${BRANCH_NAME}"
+            }
+          }
+        }
     }
 }
