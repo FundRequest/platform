@@ -10,6 +10,7 @@ pipeline {
           agent any
           steps {
             sh 'docker build -t fundrequestio/platform:${BRANCH_NAME} tweb'
+            sh 'docker build -t fundrequestio/platform:${BRANCH_NAME} admin-web'
           }
         }
     }
