@@ -66,6 +66,7 @@ class RefundToFundWithUserDtoMapperTest {
         assertThat(result.getOtherFunds().getTotalAmount()).isEqualTo(tokenValueDto.getTotalAmount().negate());
         assertThat(result.isLoggedInUser()).isTrue();
         assertThat(result.getTimestamp()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(result.isRefund()).isTrue();
     }
 
     @Test
@@ -100,6 +101,7 @@ class RefundToFundWithUserDtoMapperTest {
         assertThat(result.getOtherFunds()).isNull();
         assertThat(result.isLoggedInUser()).isTrue();
         assertThat(result.getTimestamp()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(result.isRefund()).isTrue();
     }
 
     @Test
@@ -134,6 +136,7 @@ class RefundToFundWithUserDtoMapperTest {
         assertThat(result.getOtherFunds().getTotalAmount()).isEqualTo(tokenValueDto.getTotalAmount().negate());
         assertThat(result.isLoggedInUser()).isFalse();
         assertThat(result.getTimestamp()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(result.isRefund()).isTrue();
     }
 
     @Test
@@ -168,6 +171,7 @@ class RefundToFundWithUserDtoMapperTest {
         assertThat(result.getOtherFunds().getTotalAmount()).isEqualTo(tokenValueDto.getTotalAmount().negate());
         assertThat(result.isLoggedInUser()).isFalse();
         assertThat(result.getTimestamp()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(result.isRefund()).isTrue();
     }
 
     @Test
@@ -197,5 +201,6 @@ class RefundToFundWithUserDtoMapperTest {
         assertThat(result.getOtherFunds().getTotalAmount()).isEqualTo(tokenValueDto.getTotalAmount().negate());
         assertThat(result.isLoggedInUser()).isFalse();
         assertThat(result.getTimestamp()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(result.isRefund()).isTrue();
     }
 }

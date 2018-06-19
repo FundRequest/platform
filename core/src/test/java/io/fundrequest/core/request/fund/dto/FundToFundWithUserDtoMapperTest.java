@@ -63,6 +63,7 @@ class FundToFundWithUserDtoMapperTest {
         assertThat(result.getOtherFunds()).isSameAs(tokenValueDto);
         assertThat(result.isLoggedInUser()).isTrue();
         assertThat(result.getTimestamp()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(result.isRefund()).isFalse();
     }
 
     @Test
@@ -95,6 +96,7 @@ class FundToFundWithUserDtoMapperTest {
         assertThat(result.getOtherFunds()).isNull();
         assertThat(result.isLoggedInUser()).isTrue();
         assertThat(result.getTimestamp()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(result.isRefund()).isFalse();
     }
 
     @Test
@@ -127,6 +129,7 @@ class FundToFundWithUserDtoMapperTest {
         assertThat(result.getOtherFunds()).isSameAs(tokenValueDto);
         assertThat(result.isLoggedInUser()).isFalse();
         assertThat(result.getTimestamp()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(result.isRefund()).isFalse();
     }
 
     @Test
@@ -159,6 +162,7 @@ class FundToFundWithUserDtoMapperTest {
         assertThat(result.getOtherFunds()).isSameAs(tokenValueDto);
         assertThat(result.isLoggedInUser()).isFalse();
         assertThat(result.getTimestamp()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(result.isRefund()).isFalse();
     }
 
     @Test
@@ -186,5 +190,6 @@ class FundToFundWithUserDtoMapperTest {
         assertThat(result.getOtherFunds()).isSameAs(tokenValueDto);
         assertThat(result.isLoggedInUser()).isFalse();
         assertThat(result.getTimestamp()).isEqualToIgnoringMinutes(LocalDateTime.now());
+        assertThat(result.isRefund()).isFalse();
     }
 }

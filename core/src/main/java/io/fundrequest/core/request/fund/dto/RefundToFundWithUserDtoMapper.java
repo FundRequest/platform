@@ -40,6 +40,7 @@ public class RefundToFundWithUserDtoMapper implements BaseMapper<Refund, FundWit
                                                              .otherFunds(getOtherFunds(tokenValueDto))
                                                              .isLoggedInUser(isFundedByLoggedInUser)
                                                              .timestamp(refund.getCreationDate())
+                                                             .isRefund(true)
                                                              .build();
     }
 

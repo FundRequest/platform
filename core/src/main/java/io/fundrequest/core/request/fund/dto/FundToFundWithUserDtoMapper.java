@@ -40,6 +40,7 @@ public class FundToFundWithUserDtoMapper implements BaseMapper<Fund, FundWithUse
                                                              .otherFunds(getOtherFunds(tokenValueDto))
                                                              .isLoggedInUser(isFundedByLoggedInUser)
                                                              .timestamp(fund.getTimestamp())
+                                                             .isRefund(false)
                                                              .build();
     }
 

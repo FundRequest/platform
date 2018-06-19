@@ -14,5 +14,6 @@ public class FundWithUserDto {
     private TokenValueDto otherFunds;
     private String funderAddress;
     private boolean isLoggedInUser;
+    private boolean isRefund;
     private LocalDateTime timestamp;
 }
