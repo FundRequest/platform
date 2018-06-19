@@ -2,9 +2,6 @@ package io.fundrequest.platform.tweb.request;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
-import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
-import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.infrastructure.SecurityContextService;
 import io.fundrequest.core.request.RequestService;
@@ -25,6 +22,7 @@ import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.core.token.dto.TokenValueDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.tweb.infrastructure.AbstractControllerTest;
+import io.fundrequest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundrequest.platform.tweb.request.dto.RequestView;
 import org.junit.Before;
 import org.junit.Test;

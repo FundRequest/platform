@@ -1,6 +1,5 @@
 package io.fundrequest.platform.tweb.profile.bounty;
 
-import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
 import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.platform.profile.bounty.domain.BountyType;
 import io.fundrequest.platform.profile.bounty.dto.PaidBountyDto;
@@ -9,6 +8,7 @@ import io.fundrequest.platform.profile.github.GithubBountyService;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
 import io.fundrequest.platform.profile.survey.domain.SurveyService;
+import io.fundrequest.platform.tweb.infrastructure.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 

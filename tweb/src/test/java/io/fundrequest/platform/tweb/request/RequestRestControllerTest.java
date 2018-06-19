@@ -1,13 +1,12 @@
 package io.fundrequest.platform.tweb.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
-import io.fundreqest.platform.tweb.request.dto.ClaimView;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.dto.ClaimableResultDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.tweb.infrastructure.AbstractControllerTest;
+import io.fundrequest.platform.tweb.request.dto.ClaimView;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;

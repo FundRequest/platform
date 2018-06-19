@@ -1,11 +1,11 @@
 package io.fundrequest.platform.tweb.request;
 
-import io.fundreqest.platform.tweb.request.dto.ClaimView;
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.dto.ClaimableResultDto;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.platform.tweb.request.dto.ClaimView;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,5 @@
 package io.fundrequest.platform.tweb;
 
-import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
 import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.ref.RefSignupEvent;

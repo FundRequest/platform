@@ -1,7 +1,6 @@
 package io.fundrequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundreqest.platform.tweb.request.messsaging.AzraelMessageReceiver;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.command.CreateRequestCommand;
@@ -15,6 +14,7 @@ import io.fundrequest.core.request.fund.messaging.dto.ClaimedEthDto;
 import io.fundrequest.core.request.fund.messaging.dto.FundedEthDto;
 import io.fundrequest.core.request.infrastructure.BlockchainEventRepository;
 import io.fundrequest.core.request.view.RequestDtoMother;
+import io.fundrequest.platform.tweb.request.messsaging.AzraelMessageReceiver;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

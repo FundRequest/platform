@@ -1,6 +1,5 @@
 package io.fundrequest.platform.tweb.config;
 
-import io.fundreqest.platform.tweb.request.messsaging.AzraelMessageReceiver;
 import io.fundrequest.platform.tweb.request.messsaging.AzraelMessageReceiver;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
