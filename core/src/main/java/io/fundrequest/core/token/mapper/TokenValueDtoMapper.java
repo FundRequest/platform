@@ -1,6 +1,6 @@
 package io.fundrequest.core.token.mapper;
 
-import io.fundrequest.core.infrastructure.mapping.BaseMapper;
+import io.fundrequest.common.infrastructure.mapping.BaseMapper;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
 import io.fundrequest.core.token.dto.TokenValueDto;

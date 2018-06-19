@@ -1,6 +1,6 @@
-package io.fundreqest.platform.tweb.infrastructure.mav.builder;
+package io.fundrequest.common.infrastructure.mav.builder;
 
-import io.fundreqest.platform.tweb.infrastructure.mav.dto.AlertDto;
+import io.fundrequest.common.infrastructure.mav.dto.AlertDto;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 

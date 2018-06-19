@@ -1,4 +1,4 @@
-package io.fundreqest.platform.tweb.infrastructure.mav.util;
+package io.fundrequest.common.infrastructure.mav.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

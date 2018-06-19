@@ -1,6 +1,6 @@
 package io.fundreqest.platform.tweb.request.dto;
 
-import io.fundreqest.platform.tweb.infrastructure.mav.EnumToCapitalizedStringMapper;
+import io.fundrequest.common.infrastructure.mav.EnumToCapitalizedStringMapper;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;

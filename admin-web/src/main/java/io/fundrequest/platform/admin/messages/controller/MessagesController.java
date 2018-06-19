@@ -5,7 +5,10 @@ import io.fundrequest.core.message.domain.MessageType;
 import io.fundrequest.core.message.dto.MessageDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -37,18 +40,19 @@ public class MessagesController {
         return new ModelAndView("messages/edit");
     }
 
-    @PostMapping("/messages/edit")
-    public String update(WebRequest request, final Model model) {
+    @PostMapping("/messages/edit/{type}/{name}")
+    public ModelAndView update(final Model model, WebRequest request, @PathVariable String type, @PathVariable String name) {
         MessageDto messageDto = MessageDto.builder()
                 .id(Long.parseLong(request.getParameter("id")))
-                .name(request.getParameter("name"))
+                .name(name)
+                .type(MessageType.valueOf(type.toUpperCase()))
                 .title(request.getParameter("title"))
                 .description(request.getParameter("description"))
                 .link(request.getParameter("link"))
-                .type(MessageType.valueOf(request.getParameter("type"))).build();
+                .build();
         messageService.update(messageDto);
         model.addAttribute("message", messageDto);
-        model.addAttribute("success", true);
-        return "messages/edit/";
+
+        return new ModelAndView("messages/edit");
     }
 }

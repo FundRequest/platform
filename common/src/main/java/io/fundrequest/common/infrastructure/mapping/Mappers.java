@@ -1,4 +1,4 @@
-package io.fundrequest.core.infrastructure.mapping;
+package io.fundrequest.common.infrastructure.mapping;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;

@@ -1,4 +1,4 @@
-package io.fundrequest.core.infrastructure.mapping;
+package io.fundrequest.common.infrastructure.mapping;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

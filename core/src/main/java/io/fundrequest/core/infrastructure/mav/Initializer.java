@@ -1,4 +1,4 @@
-package io.fundreqest.platform.tweb.infrastructure.mav;
+package io.fundrequest.core.infrastructure.mav;
 
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.statistics.StatisticsService;

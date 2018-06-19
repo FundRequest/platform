@@ -1,7 +1,7 @@
-package io.fundreqest.platform.tweb.infrastructure.mav;
+package io.fundrequest.common.infrastructure.mav;
 
-import io.fundreqest.platform.tweb.infrastructure.mav.builder.ModelAndViewBuilder;
-import io.fundreqest.platform.tweb.infrastructure.mav.builder.RedirectBuilder;
+import io.fundrequest.common.infrastructure.mav.builder.ModelAndViewBuilder;
+import io.fundrequest.common.infrastructure.mav.builder.RedirectBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;

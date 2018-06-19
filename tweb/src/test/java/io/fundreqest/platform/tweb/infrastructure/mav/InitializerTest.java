@@ -1,5 +1,6 @@
 package io.fundreqest.platform.tweb.infrastructure.mav;
 
+import io.fundrequest.core.infrastructure.mav.Initializer;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.statistics.StatisticsService;
 import org.junit.jupiter.api.BeforeEach;

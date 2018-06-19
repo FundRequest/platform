@@ -1,4 +1,4 @@
-package io.fundreqest.platform.tweb.infrastructure.mav.dto;
+package io.fundrequest.common.infrastructure.mav.dto;
 
 import lombok.Data;
 

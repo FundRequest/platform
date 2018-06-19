@@ -1,7 +1,7 @@
-package io.fundreqest.platform.tweb.infrastructure.mav.builder;
+package io.fundrequest.common.infrastructure.mav.builder;
 
-import io.fundreqest.platform.tweb.infrastructure.mav.messaging.MessageType;
-import io.fundreqest.platform.tweb.infrastructure.mav.messaging.Messages;
+import io.fundrequest.common.infrastructure.mav.messaging.MessageType;
+import io.fundrequest.common.infrastructure.mav.messaging.Messages;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
 import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.infrastructure.SecurityContextService;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
@@ -30,8 +30,6 @@ import org.mockito.internal.matchers.Same;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.math.BigDecimal;
 import java.security.Principal;

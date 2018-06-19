@@ -1,7 +1,7 @@
 package io.fundrequest.platform.faq;
 
 import io.fundrequest.common.infrastructure.JsoupSpringWrapper;
-import io.fundrequest.core.infrastructure.mapping.BaseMapper;
+import io.fundrequest.common.infrastructure.mapping.BaseMapper;
 import io.fundrequest.platform.faq.model.FaqItemDto;
 import io.fundrequest.platform.faq.parser.Faq;
 import io.fundrequest.platform.github.GithubGateway;

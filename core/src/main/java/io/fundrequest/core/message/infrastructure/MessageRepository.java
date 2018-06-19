@@ -1,9 +1,9 @@
 package io.fundrequest.core.message.infrastructure;
 
+import io.fundrequest.core.infrastructure.repository.JpaRepository;
 import io.fundrequest.core.message.domain.Message;
 import io.fundrequest.core.message.domain.MessageType;
 import org.springframework.data.domain.Sort;
-import io.fundrequest.core.infrastructure.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;

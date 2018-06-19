@@ -1,6 +1,6 @@
 package io.fundreqest.platform.tweb.infrastructure;
 
-import io.fundreqest.platform.tweb.infrastructure.mav.dto.AlertDto;
+import io.fundrequest.common.infrastructure.mav.dto.AlertDto;
 import lombok.Data;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;

@@ -1,4 +1,4 @@
-package io.fundreqest.platform.tweb.infrastructure.mav.messaging;
+package io.fundrequest.common.infrastructure.mav.messaging;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;

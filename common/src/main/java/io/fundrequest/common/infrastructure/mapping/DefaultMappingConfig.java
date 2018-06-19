@@ -1,4 +1,4 @@
-package io.fundrequest.core.infrastructure.mapping;
+package io.fundrequest.common.infrastructure.mapping;
 
 import org.mapstruct.MapperConfig;
 import org.mapstruct.ReportingPolicy;

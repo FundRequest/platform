@@ -1,6 +1,6 @@
 package io.fundreqest.platform.tweb;
 
-import io.fundreqest.platform.tweb.infrastructure.mav.AbstractController;
+import io.fundrequest.common.infrastructure.mav.AbstractController;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.ref.RefSignupEvent;
 import org.apache.commons.lang3.StringUtils;

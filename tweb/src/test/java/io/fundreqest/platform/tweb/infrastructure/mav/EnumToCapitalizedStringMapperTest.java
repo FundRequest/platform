@@ -1,5 +1,6 @@
 package io.fundreqest.platform.tweb.infrastructure.mav;
 
+import io.fundrequest.common.infrastructure.mav.EnumToCapitalizedStringMapper;
 import io.fundrequest.core.request.domain.RequestFase;
 import io.fundrequest.core.request.domain.RequestStatus;
 import org.junit.Before;

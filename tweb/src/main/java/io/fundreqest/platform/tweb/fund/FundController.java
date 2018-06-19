@@ -1,6 +1,6 @@
 package io.fundreqest.platform.tweb.fund;
 
-import io.fundreqest.platform.tweb.infrastructure.mav.AbstractController;
+import io.fundrequest.common.infrastructure.mav.AbstractController;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.view.RequestDto;
 import org.springframework.stereotype.Controller;

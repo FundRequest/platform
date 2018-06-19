@@ -1,4 +1,4 @@
-package io.fundreqest.platform.tweb.infrastructure.mav;
+package io.fundrequest.platform.profile.ref.infrastructure.mav;
 
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;

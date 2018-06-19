@@ -1,4 +1,4 @@
-package io.fundreqest.platform.tweb.infrastructure.mav.messaging;
+package io.fundrequest.common.infrastructure.mav.messaging;
 
 public class Message {
     private MessageType messageType;

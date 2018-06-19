@@ -2,7 +2,6 @@ package io.fundrequest.core.request.infrastructure.azrael;
 
 
 import io.fundrequest.core.transactions.TransactionStatus;
-import io.fundrequest.platform.github.GithubFeignConfiguration;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
