@@ -9,7 +9,7 @@ pipeline {
         stage('Docker Build') {
           agent any
           steps {
-            sh 'docker build -t fundrequestio/platform:${BRANCH_NAME} .'
+            sh 'docker build -t fundrequestio/platform:${BRANCH_NAME} tweb'
           }
         }
     }
