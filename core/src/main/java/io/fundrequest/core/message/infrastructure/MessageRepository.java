@@ -13,5 +13,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     List<Message> findByType(MessageType type, Sort sort);
 
-    Optional<Message> findByNameAndType(String name, MessageType type);
+    Optional<Message> findByTypeAndName(MessageType type, String name);
+
+    void deleteByTypeAndName(MessageType type, String name);
+
 }

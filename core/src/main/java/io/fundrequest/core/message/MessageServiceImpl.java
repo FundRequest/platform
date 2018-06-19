@@ -45,35 +45,49 @@ class MessageServiceImpl implements MessageService {
         if (indexSeperator > 0) {
             String type = key.substring(0, indexSeperator);
             String name = key.substring(indexSeperator + 1);
-            return getMessageByNameAndType(name, MessageType.valueOf(type.toUpperCase()));
+            return getMessageByTypeAndName(MessageType.valueOf(type.toUpperCase()), name);
         } else {
             return null;
         }
     }
 
     @Override
-    public MessageDto getMessageByNameAndType(String name, MessageType type) {
-        Message m = repository.findByNameAndType(name, type).orElseThrow(() -> new RuntimeException("Message not found"));
+    public MessageDto getMessageByTypeAndName(MessageType type, String name) {
+        Message m = repository.findByTypeAndName(type, name).orElseThrow(() -> new RuntimeException("Message not found"));
         return createMessageDto(m);
     }
 
     @Transactional
     @Override
     public Message update(MessageDto messageDto) {
-        Message m = repository.findOne(messageDto.getId()).orElseThrow(() -> new RuntimeException("Message not found"));
+        Message m = repository.findByTypeAndName(messageDto.getType(), messageDto.getName()).orElseThrow(() -> new RuntimeException("Message not found"));
+        messageDto.setId(m.getId());
         Message newM = objectMapper.convertValue(messageDto, Message.class);
 
-        if(messageDto.getName().equalsIgnoreCase(m.getName())) {
-            new RuntimeException("Name of message can not be changed");
-        }
-        if(messageDto.getType() != m.getType()) {
-            new RuntimeException("Type of message can not be changed");
-        }
-
-        repository.save(newM);
-        return newM;
+        return repository.save(newM);
     }
 
+    @Transactional
+    @Override
+    public Message add(MessageDto messageDto) {
+        int minlength = 3;
+        if (repository.findByTypeAndName(messageDto.getType(), messageDto.getName()).isPresent()) {
+            new RuntimeException(String.format("Message with type %s and name %s already exists", messageDto.getType().toString(), messageDto.getName()));
+        }
+        if (messageDto.getName().length() < 3) {
+            new RuntimeException(String.format("Message name should be at least %s characters long", minlength));
+        }
+
+        Message newM = objectMapper.convertValue(messageDto, Message.class);
+
+        return repository.save(newM);
+    }
+
+    @Transactional
+    @Override
+    public void delete(MessageType type, String name) {
+        repository.deleteByTypeAndName(type, name);
+    }
 
     private MessageDto createMessageDto(Message m) {
         return MessageDto.builder()

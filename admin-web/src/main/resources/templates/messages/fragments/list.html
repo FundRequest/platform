@@ -5,6 +5,7 @@
         <thead>
         <tr>
             <th></th>
+            <th></th>
             <th>Key</th>
             <th>Title</th>
             <th>Description</th>
@@ -13,7 +14,12 @@
         </thead>
         <tbody>
         <tr th:each="m : ${messages}">
-            <td><a th:href="${'/messages/edit/' + m.getType() + '/' + m.getName()}"><i class="fas fa-edit"></i></a></td>
+            <td>
+                <a class="btn btn-primary" th:href="@{|/messages/${m.getType()}/${m.getName()}/edit|}"><i class="fas fa-edit"></i></a>
+            </td>
+            <td>
+                <form th:action="@{|/messages/${m.getType()}/${m.getName()}/delete|}" th:method="POST"><button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button></form>
+            </td>
             <td th:text="${m.getType() + '.' + m.getName()}"></td>
             <td th:text="${m.getTitle()}"></td>
             <td th:text="${m.getDescription()}"></td>

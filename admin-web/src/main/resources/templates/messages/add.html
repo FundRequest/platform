@@ -5,12 +5,16 @@
 <section layout:fragment="content">
     <h2>Messages</h2>
 
-    <h3 th:text="${message.getType() + '.' + message.getName()}"></h3>
-    <form role="form" th:action="@{|/messages/${message.getType()}/${message.getName()}/edit|}" th:method="post"
+    <h3 th:if="${message.getType() != null}" th:text="${message.getType()}"></h3>
+    <form role="form" th:action="@{|/messages/${message.getType() != null ? message.getType() + '/' : ''}add|}" th:method="post"
           th:object="${message}">
+        <div class="form-group" th:if="${message.getType() == null}">
+            <label for="name">Type</label>
+            <input type="text" class="form-control" id="type" th:field="*{type}" />
+        </div>
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" readonly="readonly" class="form-control" id="name" th:field="*{name}" />
+            <input type="text" class="form-control" id="name" th:field="*{name}" />
         </div>
         <div class="form-group">
             <label for="name">Title</label>
@@ -24,7 +28,7 @@
             <label for="name">Link</label>
             <input type="text" class="form-control" id="link" th:field="*{link}" />
         </div>
-        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="submit" class="btn btn-primary">Add</button>
     </form>
 </section>
 

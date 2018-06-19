@@ -11,7 +11,11 @@ public interface MessageService {
 
     MessageDto getMessageByKey(String key);
 
-    MessageDto getMessageByNameAndType(String name, MessageType type);
+    MessageDto getMessageByTypeAndName(MessageType type, String name);
 
     Message update(MessageDto message);
+
+    Message add(MessageDto message);
+
+    void delete(MessageType type, String name);
 }

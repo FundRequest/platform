@@ -8,6 +8,7 @@
 
     <h3>Referral</h3>
     <tbody th:replace="messages/fragments/list :: tablerows(${referralMessages})"></tbody>
+    <a class="btn btn-primary" th:href="@{|/messages/${referralMessages[0].getType()}/add|}">Add <i class="fa fa-plus"></i></a>
 </section>
 
 </html>
