@@ -20,8 +20,7 @@ pipeline {
           steps {
             withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
               sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-              sh "docker push fundrequestio/platform:${BRANCH_NAME}"
-              sh "docker push fundrequestio/adminweb:${BRANCH_NAME}"
+              sh "docker push fundrequestio/platform:${BRANCH_NAME} && docker push fundrequestio/adminweb:${BRANCH_NAME} && echo 'pushed'"
             }
           }
         }
