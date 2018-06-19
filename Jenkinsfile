@@ -5,6 +5,8 @@ pipeline {
         timeout(time: 15, unit: 'MINUTES')
     }
     stages {
+        def platform
+        def adminPanel
         stage('Build') {
             steps {
                 sh 'mvn -B clean install'
@@ -12,17 +14,15 @@ pipeline {
         }
         stage('Docker Build') {
           steps {
-            sh 'docker build -t fundrequestio/platform:${BRANCH_NAME} tweb'
-            sh 'docker build -t fundrequestio/adminweb:${BRANCH_NAME} admin-web'
+            platform = docker.build("fundrequestio/platform")
+            adminPanel = docker.build("fundrequestio/adminweb")
           }
         }
         stage('Docker Push') {
           steps {
-            withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-              sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-              sh "docker push fundrequestio/platform:${BRANCH_NAME}"
-              sh "docker push fundrequestio/adminweb:${BRANCH_NAME}"
-            }
+          docker.withRegistry('https://registry.hub.docker.com', 'dockerHub') {
+              platform.push("${BRANCH_NAME}")
+              adminPanel.push("${BRANCH_NAME}")
           }
         }
     }
