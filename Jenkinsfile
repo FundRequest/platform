@@ -20,9 +20,10 @@ pipeline {
         }
         stage('Docker Push') {
           steps {
-          docker.withRegistry('https://registry.hub.docker.com', 'dockerHub') {
-              platform.push("${BRANCH_NAME}")
-              adminPanel.push("${BRANCH_NAME}")
+              docker.withRegistry('https://registry.hub.docker.com', 'dockerHub') {
+                  platform.push("${BRANCH_NAME}")
+                  adminPanel.push("${BRANCH_NAME}")
+              }
           }
         }
     }
