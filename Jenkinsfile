@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        GITHUB_CREDS = credentials('GITHUB_CRED')
+    }
     options {
         disableConcurrentBuilds()
         timeout(time: 15, unit: 'MINUTES')
@@ -7,7 +10,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B clean install'
+                sh 'mvn -B -Dfeign.client.github.username=$GITHUB_CREDS_USR -Dfeign.client.github.password=$GITHUB_CREDS_PSW clean install'
             }
             post {
                 always {
