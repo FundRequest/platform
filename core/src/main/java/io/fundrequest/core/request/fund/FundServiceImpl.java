@@ -11,8 +11,8 @@ import io.fundrequest.core.request.fund.domain.Fund;
 import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.fund.domain.Refund;
 import io.fundrequest.core.request.fund.dto.FundDto;
-import io.fundrequest.core.request.fund.dto.FundWithUserDto;
 import io.fundrequest.core.request.fund.dto.FundFundsByFunderAggregator;
+import io.fundrequest.core.request.fund.dto.FundWithUserDto;
 import io.fundrequest.core.request.fund.dto.FundsAndRefundsAggregator;
 import io.fundrequest.core.request.fund.dto.FundsByFunderDto;
 import io.fundrequest.core.request.fund.dto.FundsForRequestDto;
@@ -34,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -184,9 +183,10 @@ class FundServiceImpl implements FundService {
         fundsByFunder.addAll(refundFundsByFunderAggregator.aggregate(refundsForRequest));
         final List<UserFundsDto> userFunds = fundsAndRefundsAggregator.aggregate(fundsByFunder);
 
-        return fundsAndRefunds.stream()
-                              .filter(Objects::nonNull)
-                              .collect(Collectors.toList());
+//        return fundsAndRefunds.stream()
+//                              .filter(Objects::nonNull)
+//                              .collect(Collectors.toList());
+        return null;
     }
 
     private TokenValueDto mergeFunds(TokenValueDto bFunds, TokenValueDto aFunds) {
