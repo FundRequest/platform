@@ -28,6 +28,7 @@ public class RequestClaimDtoDecoratorTest {
         decorator = new RequestClaimDtoDecorator() {};
         ReflectionTestUtils.setField(decorator, "delegate", delegate);
         ReflectionTestUtils.setField(decorator, "requestService", requestService);
+        ReflectionTestUtils.setField(decorator, "fundRequestBasePath", "https://fundrequest.io");
     }
 
     @Test
@@ -49,7 +50,9 @@ public class RequestClaimDtoDecoratorTest {
 
         final RequestClaimDto result = decorator.map(requestClaim);
 
+        assertThat(result.getTitle()).isEqualTo(requestDto.getIssueInformation().getTitle());
         assertThat(result.getUrl()).isEqualTo("https://github.com/" + issueInformation.getOwner() + "/" + issueInformation.getRepo() + "/issues/" + issueInformation.getNumber());
+        assertThat(result.getFundRequestUrl()).isEqualTo("https://fundrequest.io/requests/" + requestDto.getId());
     }
 
     @Test
