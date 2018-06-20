@@ -13,7 +13,10 @@ import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.fund.domain.Refund;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.dto.FundWithUserDto;
+import io.fundrequest.core.request.fund.dto.FundFundsByFunderAggregator;
+import io.fundrequest.core.request.fund.dto.FundsAndRefundsAggregator;
 import io.fundrequest.core.request.fund.dto.FundsForRequestDto;
+import io.fundrequest.core.request.fund.dto.RefundFundsByFunderAggregator;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
@@ -70,6 +73,9 @@ public class FundServiceImplTest {
     private FiatService fiatService;
     private TokenValueMapper tokenValueMapper;
     private Principal funder;
+    private FundFundsByFunderAggregator fundFundsByFunderAggregator;
+    private RefundFundsByFunderAggregator refundFundsByFunderAggregator;
+    private FundsAndRefundsAggregator fundsAndRefundsAggregator;
 
     @Before
     public void setUp() {
@@ -88,6 +94,9 @@ public class FundServiceImplTest {
         funder = user::getId;
         when(profileService.getUserProfile(funder.getName())).thenReturn(user);
         tokenValueMapper = mock(TokenValueMapper.class);
+        fundFundsByFunderAggregator = mock(FundFundsByFunderAggregator.class);
+        refundFundsByFunderAggregator = mock(RefundFundsByFunderAggregator.class);
+        fundsAndRefundsAggregator = mock(FundsAndRefundsAggregator.class);
         fundService = new FundServiceImpl(fundRepository,
                                           refundRepository,
                                           pendingFundRepository,
@@ -97,8 +106,10 @@ public class FundServiceImplTest {
                                           cacheManager,
                                           fundRequestContractsService,
                                           fiatService,
-                                          tokenValueMapper
-        );
+                                          tokenValueMapper,
+                                          fundFundsByFunderAggregator,
+                                          refundFundsByFunderAggregator,
+                                          fundsAndRefundsAggregator);
     }
 
     @Test

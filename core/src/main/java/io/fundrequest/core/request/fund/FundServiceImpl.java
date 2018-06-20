@@ -12,7 +12,11 @@ import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.fund.domain.Refund;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.dto.FundWithUserDto;
+import io.fundrequest.core.request.fund.dto.FundFundsByFunderAggregator;
+import io.fundrequest.core.request.fund.dto.FundsAndRefundsAggregator;
+import io.fundrequest.core.request.fund.dto.FundsByFunderDto;
 import io.fundrequest.core.request.fund.dto.FundsForRequestDto;
+import io.fundrequest.core.request.fund.dto.RefundFundsByFunderAggregator;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
 import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import io.fundrequest.core.request.fund.infrastructure.PendingFundRepository;
@@ -53,6 +57,9 @@ class FundServiceImpl implements FundService {
     private final FundRequestContractsService fundRequestContractsService;
     private final FiatService fiatService;
     private final TokenValueMapper tokenValueMapper;
+    private final FundFundsByFunderAggregator fundFundsByFunderAggregator;
+    private final RefundFundsByFunderAggregator refundFundsByFunderAggregator;
+    private final FundsAndRefundsAggregator fundsAndRefundsAggregator;
 
     @Autowired
     public FundServiceImpl(final FundRepository fundRepository,
@@ -64,7 +71,10 @@ class FundServiceImpl implements FundService {
                            final CacheManager cacheManager,
                            final FundRequestContractsService fundRequestContractsService,
                            final FiatService fiatService,
-                           final TokenValueMapper tokenValueMapper) {
+                           final TokenValueMapper tokenValueMapper,
+                           final FundFundsByFunderAggregator fundFundsByFunderAggregator,
+                           final RefundFundsByFunderAggregator refundFundsByFunderAggregator,
+                           final FundsAndRefundsAggregator fundsAndRefundsAggregator) {
         this.fundRepository = fundRepository;
         this.refundRepository = refundRepository;
         this.pendingFundRepository = pendingFundRepository;
@@ -75,6 +85,9 @@ class FundServiceImpl implements FundService {
         this.fundRequestContractsService = fundRequestContractsService;
         this.fiatService = fiatService;
         this.tokenValueMapper = tokenValueMapper;
+        this.fundFundsByFunderAggregator = fundFundsByFunderAggregator;
+        this.refundFundsByFunderAggregator = refundFundsByFunderAggregator;
+        this.fundsAndRefundsAggregator = fundsAndRefundsAggregator;
     }
 
     @Transactional(readOnly = true)
@@ -165,11 +178,12 @@ class FundServiceImpl implements FundService {
     }
 
     private List<FundWithUserDto> getFundsAndRefunds(Long requestId) {
-        final List<FundWithUserDto> funds = groupByFunder(mappers.mapList(Fund.class, FundWithUserDto.class, fundRepository.findAllByRequestId(requestId)));
-        final List<FundWithUserDto> refunds = groupByFunder(mappers.mapList(Refund.class, FundWithUserDto.class, refundRepository.findAllByRequestId(requestId)));
-        final List<FundWithUserDto> fundsAndRefunds = new ArrayList<>();
-        fundsAndRefunds.addAll(funds);
-        fundsAndRefunds.addAll(refunds);
+        final List<Fund> fundsForRequest = fundRepository.findAllByRequestId(requestId);
+        final List<Refund> refundsForRequest = refundRepository.findAllByRequestId(requestId);
+        final List<FundsByFunderDto> fundsByFunder = fundFundsByFunderAggregator.aggregate(fundsForRequest);
+        fundsByFunder.addAll(refundFundsByFunderAggregator.aggregate(refundsForRequest));
+        final List<UserFundsDto> userFunds = fundsAndRefundsAggregator.aggregate(fundsByFunder);
+
         return fundsAndRefunds.stream()
                               .filter(Objects::nonNull)
                               .collect(Collectors.toList());
