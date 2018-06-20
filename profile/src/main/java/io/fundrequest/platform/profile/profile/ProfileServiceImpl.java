@@ -61,13 +61,13 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Cacheable(value = "user_profile", key = "#userId")
     public UserProfile getUserProfile(String userId) {
-        Map<Provider, UserProfileProvider> providers = keycloakRepository.getUserIdentities(userId)
-                                                                             .collect(Collectors.toMap(UserIdentity::getProvider,
-                                                                                                   x -> UserProfileProvider.builder()
-                                                                                                                           .userId(x.getUserId())
-                                                                                                                           .username(x.getUsername())
-                                                                                                                           .build()));
-        UserRepresentation user = keycloakRepository.getUser(userId);
+        final Map<Provider, UserProfileProvider> providers = keycloakRepository.getUserIdentities(userId)
+                                                                               .collect(Collectors.toMap(UserIdentity::getProvider,
+                                                                                                         x -> UserProfileProvider.builder()
+                                                                                                                                 .userId(x.getUserId())
+                                                                                                                                 .username(x.getUsername())
+                                                                                                                                 .build()));
+        final UserRepresentation user = keycloakRepository.getUser(userId);
         return UserProfile.builder()
                           .id(user.getId())
                           .name(user.getFirstName() + " " + user.getLastName())

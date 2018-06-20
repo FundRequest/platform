@@ -56,7 +56,7 @@ public class FundController extends AbstractController {
                                       @PathVariable("requestId") final Long requestId,
                                       @RequestParam("funder_address") final String funderAddress,
                                       final RedirectAttributes redirectAttributes) {
-        final RedirectBuilder redirectBuilder = redirectView(redirectAttributes).url("/requests/" + requestId + "#funded-by");
+        final RedirectBuilder redirectBuilder = redirectView(redirectAttributes).url("/requests/" + requestId + "#details");
         if (isValid(redirectBuilder, principal, funderAddress)) {
             refundService.requestRefund(RequestRefundCommand.builder()
                                                             .requestId(requestId)

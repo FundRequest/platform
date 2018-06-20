@@ -219,12 +219,14 @@ class FundServiceImpl implements FundService {
         return funds == null && template != null;
     }
 
-    private TokenValueDto buildZeroTokenValueDto(final TokenValueDto fndFundNonEmpty) {
-        return TokenValueDto.builder()
-                            .tokenSymbol(fndFundNonEmpty.getTokenSymbol())
-                            .tokenAddress(fndFundNonEmpty.getTokenAddress())
-                            .totalAmount(ZERO)
-                            .build();
+    private TokenValueDto buildZeroTokenValueDto(final TokenValueDto tokenValueTemplate) {
+        return Optional.ofNullable(tokenValueTemplate)
+                       .map(template -> TokenValueDto.builder()
+                                                     .tokenSymbol(template.getTokenSymbol())
+                                                     .tokenAddress(template.getTokenAddress())
+                                                     .totalAmount(ZERO)
+                                                     .build())
+                       .orElse(null);
     }
 
     private TokenValueDto totalFunds(final List<UserFundsDto> funds, final Function<UserFundsDto, TokenValueDto> getFundsFunction, final Function<UserFundsDto, TokenValueDto> getRefundsFunction) {

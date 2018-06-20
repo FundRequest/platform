@@ -66,7 +66,7 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         mockMvc.perform(post("/requests/{request-id}/refunds", requestId).principal(principal).param("funder_address", funderAddress))
                .andExpect(status().is3xxRedirection())
                .andExpect(redirectAlert("success", "Your refund has been requested and is waiting for approval."))
-               .andExpect(redirectedUrl("/requests/38#funded-by"));
+               .andExpect(redirectedUrl("/requests/38#details"));
 
         verify(refundService).requestRefund(RequestRefundCommand.builder().requestId(requestId).funderAddress(funderAddress).requestedBy(principal.getName()).build());
     }
@@ -81,7 +81,7 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         mockMvc.perform(post("/requests/{request-id}/refunds", requestId).principal(principal).param("funder_address", funderAddress))
                .andExpect(status().is3xxRedirection())
                .andExpect(redirectAlert("danger", "Your request for a refund is not allowed because the address used to fund does not match the address on your profile."))
-               .andExpect(redirectedUrl("/requests/38#funded-by"));
+               .andExpect(redirectedUrl("/requests/38#details"));
 
         verifyZeroInteractions(refundService);
     }
@@ -97,7 +97,7 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
                .andExpect(status().is3xxRedirection())
                .andExpect(redirectAlert("danger",
                                         "You need to validate your ETH address before you can request refunds. You can do this on your <a href='/profile'>profile</a> page."))
-               .andExpect(redirectedUrl("/requests/38#funded-by"));
+               .andExpect(redirectedUrl("/requests/38#details"));
 
         verifyZeroInteractions(refundService);
     }
