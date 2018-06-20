@@ -136,7 +136,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
         when(mappers.map(RequestDto.class, RequestDetailsView.class, requestDto)).thenReturn(requestDetailsView);
         when(objectMapper.writeValueAsString(same(requestDetailsView))).thenReturn("requestDetailsView");
-        when(fundService.getFundsAndRefundsGroupedByFunder(requestId)).thenReturn(fundsForRequestDto);
+        when(fundService.getFundsForRequestGroupedByFunder(requestId)).thenReturn(fundsForRequestDto);
         when(refundService.findAllRefundRequestsFor(requestId, PENDING)).thenReturn(pendingRefundRequests);
         when(claimService.getAggregatedClaimsForRequest(requestId)).thenReturn(claims);
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
@@ -167,7 +167,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(requestDetailsView.getId()).thenReturn(requestId);
         when(mappers.map(eq(RequestDto.class), eq(RequestDetailsView.class), same(requestDto))).thenReturn(requestDetailsView);
         when(objectMapper.writeValueAsString(same(requestDetailsView))).thenReturn("requestDetailsView");
-        when(fundService.getFundsAndRefundsGroupedByFunder(requestId)).thenReturn(fundsForRequestDto);
+        when(fundService.getFundsForRequestGroupedByFunder(requestId)).thenReturn(fundsForRequestDto);
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
 
         this.mockMvc.perform(get("/requests/github/{owner}/{repo}/{number}", owner, repo, number).principal(principal))

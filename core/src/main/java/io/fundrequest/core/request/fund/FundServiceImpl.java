@@ -12,9 +12,7 @@ import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.fund.domain.Refund;
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.dto.FundFundsByFunderAggregator;
-import io.fundrequest.core.request.fund.dto.FundWithUserDto;
 import io.fundrequest.core.request.fund.dto.FundsAndRefundsAggregator;
-import io.fundrequest.core.request.fund.dto.FundsByFunderDto;
 import io.fundrequest.core.request.fund.dto.FundsForRequestDto;
 import io.fundrequest.core.request.fund.dto.RefundFundsByFunderAggregator;
 import io.fundrequest.core.request.fund.event.RequestFundedEvent;
@@ -35,13 +33,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
+
+import static java.math.BigDecimal.ZERO;
 
 @Service
 class FundServiceImpl implements FundService {
@@ -159,115 +159,98 @@ class FundServiceImpl implements FundService {
 
     @Override
     @Transactional(readOnly = true)
-    public FundsForRequestDto getFundsAndRefundsGroupedByFunder(final Long requestId) {
-        final List<FundWithUserDto> fundsAggregatedByFunder = getFundsAndRefunds(requestId);
-        enrichFundsWithZeroValues(fundsAggregatedByFunder);
-        final TokenValueDto fndFunds = totalFunds(fundsAggregatedByFunder, FundWithUserDto::getFndFunds);
-        final TokenValueDto otherFunds = totalFunds(fundsAggregatedByFunder, FundWithUserDto::getOtherFunds);
+    public FundsForRequestDto getFundsForRequestGroupedByFunder(final Long requestId) {
+        final List<UserFundsDto> userFunds = getFundsAndRefundsFor(requestId);
+        enrichFundsWithZeroValues(userFunds);
+        final TokenValueDto fndFunds = totalFunds(userFunds, UserFundsDto::getFndFunds, UserFundsDto::getFndRefunds);
+        final TokenValueDto otherFunds = totalFunds(userFunds, UserFundsDto::getOtherFunds, UserFundsDto::getOtherRefunds);
         return FundsForRequestDto.builder()
-                                 .fundByFunders(fundsAggregatedByFunder.stream()
-                                                                       .sorted(Comparator.comparing(FundWithUserDto::getTimestamp)
-                                                                                         .thenComparing(FundWithUserDto::getFndFunds, Comparator.comparing(TokenValueDto::getTotalAmount).reversed())
-                                                                                         .thenComparing(FundWithUserDto::getOtherFunds, Comparator.comparing(TokenValueDto::getTotalAmount).reversed()))
-                                                                       .collect(Collectors.toList()))
+                                 .userFunds(userFunds)
                                  .fndFunds(fndFunds)
                                  .otherFunds(otherFunds)
                                  .usdFunds(fiatService.getUsdPrice(fndFunds, otherFunds))
                                  .build();
     }
 
-    private List<FundWithUserDto> getFundsAndRefunds(Long requestId) {
+    private List<UserFundsDto> getFundsAndRefundsFor(final Long requestId) {
         final List<Fund> fundsForRequest = fundRepository.findAllByRequestId(requestId);
         final List<Refund> refundsForRequest = refundRepository.findAllByRequestId(requestId);
-        final List<FundsByFunderDto> fundsByFunder = fundFundsByFunderAggregator.aggregate(fundsForRequest);
-        fundsByFunder.addAll(refundFundsByFunderAggregator.aggregate(refundsForRequest));
-        final List<UserFundsDto> userFunds = fundsAndRefundsAggregator.aggregate(fundsByFunder);
-
-//        return fundsAndRefunds.stream()
-//                              .filter(Objects::nonNull)
-//                              .collect(Collectors.toList());
-        return null;
+        return fundsAndRefundsAggregator.aggregate(Stream.concat(fundFundsByFunderAggregator.aggregate(fundsForRequest).stream(),
+                                                                 refundFundsByFunderAggregator.aggregate(refundsForRequest).stream())
+                                                         .collect(Collectors.toList()));
     }
 
-    private TokenValueDto mergeFunds(TokenValueDto bFunds, TokenValueDto aFunds) {
-        if (bFunds != null) {
-            if (aFunds == null) {
-                return bFunds;
-            } else {
-                aFunds.setTotalAmount(aFunds.getTotalAmount().add(bFunds.getTotalAmount()));
-            }
+    private void enrichFundsWithZeroValues(final List<UserFundsDto> userFunds) {
+        TokenValueDto fndFundTemplate = null;
+        TokenValueDto otherFundTemplate = null;
+        TokenValueDto fndRefundTemplate = null;
+        TokenValueDto otherRefundTemplate = null;
+        for (final UserFundsDto userFund : userFunds) {
+            fndFundTemplate = Optional.ofNullable(userFund.getFndFunds()).orElse(fndFundTemplate);
+            otherFundTemplate = Optional.ofNullable(userFund.getOtherFunds()).orElse(otherFundTemplate);
+            fndRefundTemplate = Optional.ofNullable(userFund.getFndRefunds()).orElse(fndRefundTemplate);
+            otherRefundTemplate = Optional.ofNullable(userFund.getOtherRefunds()).orElse(otherRefundTemplate);
         }
 
-        return aFunds;
-    }
+        final TokenValueDto zeroFndFundTokenValue = buildZeroTokenValueDto(fndFundTemplate);
+        final TokenValueDto zeroOtherFundTokenValue = buildZeroTokenValueDto(otherFundTemplate);
+        final TokenValueDto zeroFndRefundTokenValue = buildZeroTokenValueDto(fndRefundTemplate);
+        final TokenValueDto zeroOtherRefundTokenValue = buildZeroTokenValueDto(otherRefundTemplate);
 
-    private List<FundWithUserDto> groupByFunder(final List<FundWithUserDto> list) {
-        return list.stream()
-                   .collect(Collectors.groupingBy(FundWithUserDto::getFunder, Collectors.reducing((a1, b1) -> {
-                       if (a1 == null && b1 == null) {
-                           return null;
-                       } else if (a1 == null) {
-                           return b1;
-                       } else if (b1 == null) {
-                           return a1;
-                       }
-                       a1.setFndFunds(mergeFunds(a1.getFndFunds(), b1.getFndFunds()));
-                       a1.setOtherFunds(mergeFunds(a1.getOtherFunds(), b1.getOtherFunds()));
-                       a1.setTimestamp(a1.getTimestamp().isAfter(b1.getTimestamp()) ? a1.getTimestamp() : b1.getTimestamp());
-                       return a1;
-                   })))
-                   .values()
-                   .stream()
-                   .filter(Optional::isPresent)
-                   .map(Optional::get)
-                   .collect(Collectors.toList());
-    }
-
-    private void enrichFundsWithZeroValues(final List<FundWithUserDto> list) {
-        TokenValueDto fndNonEmpty = null;
-        TokenValueDto otherNonEmpty = null;
-        for (FundWithUserDto f : list) {
-            if (f.getFndFunds() != null) {
-                fndNonEmpty = f.getFndFunds();
+        for (final UserFundsDto userFund : userFunds) {
+            if (noFundsAndTemplateNotNull(userFund.getFndFunds(), fndFundTemplate)) {
+                userFund.setFndFunds(zeroFndFundTokenValue);
             }
-            if (f.getOtherFunds() != null) {
-                otherNonEmpty = f.getOtherFunds();
+            if (noFundsAndTemplateNotNull(userFund.getOtherFunds(), otherFundTemplate)) {
+                userFund.setOtherFunds(zeroOtherFundTokenValue);
             }
-        }
-
-        for (FundWithUserDto f : list) {
-            if (fndNonEmpty != null && f.getFndFunds() == null) {
-                f.setFndFunds(TokenValueDto.builder().tokenSymbol(fndNonEmpty.getTokenSymbol()).tokenAddress(fndNonEmpty.getTokenAddress()).totalAmount(BigDecimal.ZERO).build());
-            }
-            if (otherNonEmpty != null && f.getOtherFunds() == null) {
-                f.setOtherFunds(TokenValueDto.builder()
-                                             .tokenSymbol(otherNonEmpty.getTokenSymbol())
-                                             .tokenAddress(otherNonEmpty.getTokenAddress())
-                                             .totalAmount(BigDecimal.ZERO)
-                                             .build());
+            if (userFund.hasRefunds()) {
+                if (noFundsAndTemplateNotNull(userFund.getFndRefunds(), fndRefundTemplate)) {
+                    userFund.setFndRefunds(zeroFndRefundTokenValue);
+                }
+                if (noFundsAndTemplateNotNull(userFund.getOtherRefunds(), otherRefundTemplate)) {
+                    userFund.setOtherRefunds(zeroOtherRefundTokenValue);
+                }
             }
         }
     }
 
-    private TokenValueDto totalFunds(final List<FundWithUserDto> funds, final Function<FundWithUserDto, TokenValueDto> getFundsFunction) {
+    private boolean noFundsAndTemplateNotNull(final TokenValueDto funds, final TokenValueDto template) {
+        return funds == null && template != null;
+    }
+
+    private TokenValueDto buildZeroTokenValueDto(final TokenValueDto fndFundNonEmpty) {
+        return TokenValueDto.builder()
+                            .tokenSymbol(fndFundNonEmpty.getTokenSymbol())
+                            .tokenAddress(fndFundNonEmpty.getTokenAddress())
+                            .totalAmount(ZERO)
+                            .build();
+    }
+
+    private TokenValueDto totalFunds(final List<UserFundsDto> funds, final Function<UserFundsDto, TokenValueDto> getFundsFunction, final Function<UserFundsDto, TokenValueDto> getRefundsFunction) {
         if (funds.isEmpty()) {
             return null;
         }
-        BigDecimal totalValue = funds.stream()
-                                     .map(getFundsFunction)
-                                     .filter(Objects::nonNull)
-                                     .map(TokenValueDto::getTotalAmount)
-                                     .reduce(BigDecimal.ZERO, BigDecimal::add);
+        final BigDecimal totalFundsValue = sumTokenValue(funds, getFundsFunction);
+        final BigDecimal totalRefundsValue = sumTokenValue(funds, getRefundsFunction);
         return funds.stream()
                     .map(getFundsFunction)
                     .filter(Objects::nonNull)
                     .findFirst()
-                    .map(f -> TokenValueDto.builder()
-                                           .tokenSymbol(f.getTokenSymbol())
-                                           .tokenAddress(f.getTokenAddress())
-                                           .totalAmount(totalValue)
-                                           .build())
+                    .map(fund -> TokenValueDto.builder()
+                                              .tokenSymbol(fund.getTokenSymbol())
+                                              .tokenAddress(fund.getTokenAddress())
+                                              .totalAmount(totalFundsValue.add(totalRefundsValue))
+                                              .build())
                     .orElse(null);
+    }
+
+    private BigDecimal sumTokenValue(final List<UserFundsDto> funds, final Function<UserFundsDto, TokenValueDto> getFundsFunction) {
+        return funds.stream()
+                    .map(getFundsFunction)
+                    .filter(Objects::nonNull)
+                    .map(TokenValueDto::getTotalAmount)
+                    .reduce(ZERO, BigDecimal::add);
     }
 
     @Override

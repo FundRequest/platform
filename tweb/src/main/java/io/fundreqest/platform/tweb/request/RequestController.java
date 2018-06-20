@@ -126,7 +126,7 @@ public class RequestController extends AbstractController {
         return modelAndView(model)
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
-                .withObject("funds", fundService.getFundsAndRefundsGroupedByFunder(id))
+                .withObject("funds", fundService.getFundsForRequestGroupedByFunder(id))
                 .withObject("claims", claimService.getAggregatedClaimsForRequest(id))
                 .withObject("pendingRefundAddresses", refundService.findAllRefundRequestsFor(id, PENDING)
                                                                   .stream()

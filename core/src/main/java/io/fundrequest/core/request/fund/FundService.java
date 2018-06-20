@@ -16,7 +16,7 @@ public interface FundService {
 
     List<TokenValueDto> getTotalFundsForRequest(Long requestId);
 
-    FundsForRequestDto getFundsAndRefundsGroupedByFunder(Long requestId);
+    FundsForRequestDto getFundsForRequestGroupedByFunder(Long requestId);
 
     void clearTotalFundsCache(Long requestId);
 

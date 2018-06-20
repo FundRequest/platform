@@ -14,4 +14,8 @@ public class UserFundsDto {
     private TokenValueDto otherFunds;
     private TokenValueDto fndRefunds;
     private TokenValueDto otherRefunds;
+
+    public boolean hasRefunds() {
+        return fndRefunds != null || otherRefunds != null;
+    }
 }

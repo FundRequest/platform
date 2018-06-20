@@ -138,7 +138,7 @@
                     <div class="card-body">
                         <div class="request-funding">
                             <div class="request-funding__transfers">
-                                <div class="request-funding__transfer" th:each="fund : ${funds.fundByFunders}">
+                                <div class="request-funding__transfer" th:each="fund : ${funds.userFunds}">
                                     <div class="request-details__label">
                                         <span class="request-details__label-text" th:text="${fund.funder}">Karel Striegel</span>
                                         <span class="request-details__label-badge badge badge-pill badge-primary" th:if="${fund.refund}">

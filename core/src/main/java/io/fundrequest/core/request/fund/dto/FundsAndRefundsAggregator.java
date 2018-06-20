@@ -4,17 +4,16 @@ import io.fundrequest.core.request.fund.UserFundsDto;
 import io.fundrequest.core.token.dto.TokenValueDto;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.math.BigDecimal.ZERO;
+
 @Component
 public class FundsAndRefundsAggregator {
-
-    public static final BigDecimal ZERO = new BigDecimal("0");
 
     public List<UserFundsDto> aggregate(final List<FundsByFunderDto> fundsByFunder) {
 
