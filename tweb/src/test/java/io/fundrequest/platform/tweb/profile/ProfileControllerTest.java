@@ -1,5 +1,7 @@
 package io.fundrequest.platform.tweb.profile;
 
+import io.fundrequest.core.message.domain.MessageType;
+import io.fundrequest.core.message.dto.MessageDto;
 import io.fundrequest.platform.profile.github.GithubBountyService;
 import io.fundrequest.core.message.MessageService;
 import io.fundrequest.platform.profile.profile.ProfileService;
@@ -52,6 +54,7 @@ public class ProfileControllerTest extends AbstractControllerTest<ProfileControl
     void showProfile() throws Exception {
         when(githubBountyService.getVerification(principal)).thenReturn(GithubVerificationDto.builder().approved(true).build());
         when(stackOverflowBountyService.getVerification(principal)).thenReturn(StackOverflowVerificationDto.builder().approved(true).build());
+        when(messageService.getMessageByKey("REFERRAL_SHARE.socialshare")).thenReturn(MessageDto.builder().type(MessageType.REFERRAL_SHARE).name("socialshare").build());
 
         mockMvc.perform(get("/profile").principal(principal))
                 .andExpect(status().isOk())
