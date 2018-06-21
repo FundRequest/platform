@@ -3,6 +3,7 @@ package io.fundreqest.platform.tweb.actuator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.endpoint.EnvironmentEndpoint;
+import org.springframework.core.env.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,15 +17,30 @@ class PublicEnvironmentEndpointTest {
     private PublicEnvironmentEndpoint endpoint;
 
     private EnvironmentEndpoint environmentEndpoint;
+    private Environment env;
 
     @BeforeEach
     void setUp() {
         environmentEndpoint = mock(EnvironmentEndpoint.class);
-        endpoint = new PublicEnvironmentEndpoint(environmentEndpoint, true, false);
+        env = mock(Environment.class);
+        endpoint = new PublicEnvironmentEndpoint(environmentEndpoint, true, false, env);
     }
 
     @Test
     void invoke() {
+        when(env.getProperty("notAGroup2.public")).thenReturn("false");
+        when(env.getProperty("notAGroup3")).thenReturn("aefsd");
+        when(env.getProperty("notAGroup3.public")).thenReturn("true");
+        when(env.getProperty("aszgf.dsads")).thenReturn("sdf");
+        when(env.getProperty("aszgf.dsads.public")).thenReturn("true");
+        when(env.getProperty("group1.public")).thenReturn("false");
+        when(env.getProperty("vxvdf.dscvds.ad")).thenReturn("wqwe");
+        when(env.getProperty("vxvdf.dscvds.ad.public")).thenReturn("true");
+        when(env.getProperty("wdoij.oijda.acs")).thenReturn("efsef");
+        when(env.getProperty("wdoij.oijda.acs.public")).thenReturn("true");
+        when(env.getProperty("cgv.fgchv.dwf")).thenReturn("kjhg");
+        when(env.getProperty("cgv.fgchv.dwf.public")).thenReturn("true");
+
         final Map<String, Object> envProperties = MapBuilder.<String, Object>builder()
                 .put("notAGroup", "hgfjk")
                 .put("notAGroup2", "hxfgcj")
@@ -36,13 +52,12 @@ class PublicEnvironmentEndpointTest {
                         .put("aszgf.dsads", "sdf")
                         .put("aszgf.dsads.public", "true")
                         .build())
-                .put("group1.public", "false")
                 .put("group2", MapBuilder.<String, Object>builder()
                         .put("vxvdf.dscvds.ad", "wqwe")
                         .put("wdoij.oijda.acs", "efsef")
+                        .put("aszgf.dsads", "blah")
                         .put("wdoij.oijda.acs.public", "true")
                         .build())
-                .put("group2.public", "true")
                 .put("group3", MapBuilder.<String, Object>builder()
                         .put("ghfcv.jhgk", "khgj")
                         .put("cgv.fgchv.dwf", "kjhg")
@@ -57,9 +72,28 @@ class PublicEnvironmentEndpointTest {
         assertThat(result).isEqualTo(MapBuilder.<String, Object>builder()
                                              .put("notAGroup3", "aefsd")
                                              .put("aszgf.dsads", "sdf")
-                                             .put("vxvdf.dscvds.ad", "wqwe")
                                              .put("wdoij.oijda.acs", "efsef")
                                              .put("cgv.fgchv.dwf", "kjhg")
+                                             .build());
+    }
+
+    @Test
+    void overwritten() {
+        when(env.getProperty("network")).thenReturn("kovan");
+        when(env.getProperty("network.public")).thenReturn("true");
+
+        final Map<String, Object> envProperties = MapBuilder.<String, Object>builder()
+                .put("network", "kovan")
+                .put("network", "main")
+                .put("network.public", "true")
+                .build();
+
+        when(environmentEndpoint.invoke()).thenReturn(envProperties);
+
+        final Map<String, Object> result = endpoint.invoke();
+
+        assertThat(result).isEqualTo(MapBuilder.<String, Object>builder()
+                                             .put("network", "kovan")
                                              .build());
     }
 
