@@ -1,6 +1,5 @@
 package io.fundrequest.core.message;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.core.message.domain.Message;
 import io.fundrequest.core.message.domain.MessageType;
@@ -22,10 +21,9 @@ class MessageServiceImpl implements MessageService {
     private MessageRepository repository;
 
 
-    public MessageServiceImpl(MessageRepository repository) {
+    public MessageServiceImpl(MessageRepository repository, ObjectMapper objectMapper) {
         this.repository = repository;
-        this.objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.objectMapper = objectMapper;
     }
 
     @Transactional(readOnly = true)
@@ -71,11 +69,11 @@ class MessageServiceImpl implements MessageService {
     @Override
     public Message add(MessageDto messageDto) {
         int minlength = 3;
-        if (repository.findByTypeAndName(messageDto.getType(), messageDto.getName()).isPresent()) {
-            new RuntimeException(String.format("Message with type %s and name %s already exists", messageDto.getType().toString(), messageDto.getName()));
-        }
         if (messageDto.getName().length() < 3) {
-            new RuntimeException(String.format("Message name should be at least %s characters long", minlength));
+            throw new RuntimeException(String.format("Message name should be at least %s characters long", minlength));
+        }
+        if (repository.findByTypeAndName(messageDto.getType(), messageDto.getName()).isPresent()) {
+            throw new RuntimeException(String.format("Message with type %s and name %s already exists", messageDto.getType().toString(), messageDto.getName()));
         }
 
         Message newM = objectMapper.convertValue(messageDto, Message.class);
