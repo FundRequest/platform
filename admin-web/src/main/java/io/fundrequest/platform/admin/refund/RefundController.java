@@ -2,14 +2,11 @@ package io.fundrequest.platform.admin.refund;
 
 import io.fundrequest.core.request.fund.dto.RefundRequestDto;
 import io.fundrequest.platform.admin.service.ModerationService;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -52,11 +49,5 @@ public class RefundController {
         }
 
         return new ModelAndView(new RedirectView("/refunds", true));
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public void handleBadRequest() {
-        // Intentionally empty
     }
 }

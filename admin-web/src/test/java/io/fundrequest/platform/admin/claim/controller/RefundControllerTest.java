@@ -1,6 +1,7 @@
 package io.fundrequest.platform.admin.claim.controller;
 
 import io.fundrequest.core.request.fund.dto.RefundRequestDto;
+import io.fundrequest.platform.admin.infrastructure.GenericControllerAdvice;
 import io.fundrequest.platform.admin.refund.RefundController;
 import io.fundrequest.platform.admin.service.ModerationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,7 @@ class RefundControllerTest {
         principal = mock(Principal.class);
         refundModerationService = mock(ModerationService.class);
         mockMvc = MockMvcBuilders.standaloneSetup(new RefundController(refundModerationService))
+                                 .setControllerAdvice(new GenericControllerAdvice())
                                  .setViewResolvers(new InternalResourceViewResolver("/templates/", ".html"))
                                  .build();
     }

@@ -13,7 +13,7 @@ public class Initializer {
 
     private final boolean initializeCacheOnStartup;
 
-    public Initializer(@Value("${io.fundrequest.cache.initialize-on-startup:true}") final boolean initializeCacheOnStartup) {
+    public Initializer(@Value("${io.fundrequest.cache.initialize-on-startup:false}") final boolean initializeCacheOnStartup) {
         this.initializeCacheOnStartup = initializeCacheOnStartup;
     }
 
