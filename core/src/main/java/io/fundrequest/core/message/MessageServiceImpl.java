@@ -34,7 +34,7 @@ class MessageServiceImpl implements MessageService {
         return repository.findByType(type, new Sort(Sort.Direction.DESC, "name"))
                 .stream()
                 .parallel()
-                .map(this::createMessageDto)
+                .map(m -> objectMapper.convertValue(m, MessageDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -54,7 +54,7 @@ class MessageServiceImpl implements MessageService {
     @Override
     public MessageDto getMessageByTypeAndName(MessageType type, String name) {
         Message m = repository.findByTypeAndName(type, name).orElseThrow(() -> new RuntimeException("Message not found"));
-        return createMessageDto(m);
+        return objectMapper.convertValue(m, MessageDto.class);
     }
 
     @Transactional
@@ -87,16 +87,5 @@ class MessageServiceImpl implements MessageService {
     @Override
     public void delete(MessageType type, String name) {
         repository.deleteByTypeAndName(type, name);
-    }
-
-    private MessageDto createMessageDto(Message m) {
-        return MessageDto.builder()
-                .id(m.getId())
-                .type(m.getType())
-                .name(m.getName())
-                .title(m.getTitle())
-                .description(m.getDescription())
-                .link(m.getLink())
-                .build();
     }
 }
