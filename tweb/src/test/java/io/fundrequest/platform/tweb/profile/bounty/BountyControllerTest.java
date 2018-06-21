@@ -1,5 +1,6 @@
 package io.fundrequest.platform.tweb.profile.bounty;
 
+import io.fundrequest.common.infrastructure.AbstractControllerTest;
 import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.platform.profile.bounty.domain.BountyType;
 import io.fundrequest.platform.profile.bounty.dto.PaidBountyDto;
@@ -8,7 +9,6 @@ import io.fundrequest.platform.profile.github.GithubBountyService;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
 import io.fundrequest.platform.profile.survey.domain.SurveyService;
-import io.fundrequest.platform.tweb.infrastructure.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -45,8 +45,8 @@ public class BountyControllerTest extends AbstractControllerTest<BountyControlle
         when(bountyService.getPaidBounties(principal)).thenReturn(expectedPaidBounties);
 
         this.mockMvc.perform(get("/profile/rewards").principal(principal))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(model().attribute("paidBounties", expectedPaidBounties))
-                    .andExpect(MockMvcResultMatchers.view().name("pages/profile/rewards"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(model().attribute("paidBounties", expectedPaidBounties))
+                .andExpect(MockMvcResultMatchers.view().name("pages/profile/rewards"));
     }
 }

@@ -2,6 +2,7 @@ package io.fundrequest.platform.tweb.request;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.fundrequest.common.infrastructure.AbstractControllerTest;
 import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.infrastructure.SecurityContextService;
 import io.fundrequest.core.request.RequestService;
@@ -21,7 +22,6 @@ import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.core.token.dto.TokenValueDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
-import io.fundrequest.platform.tweb.infrastructure.AbstractControllerTest;
 import io.fundrequest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundrequest.platform.tweb.request.dto.RequestView;
 import org.junit.Before;
@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RequestControllerTest extends AbstractControllerTest<RequestController> {
 
     private Principal principal;
-	private SecurityContextService securityContextService;
+    private SecurityContextService securityContextService;
     private RequestService requestService;
     private PendingFundService pendingFundService;
     private StatisticsService statisticsService;
@@ -81,15 +81,15 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         objectMapper = spy(new ObjectMapper());
         mappers = mock(Mappers.class);
         return new RequestController(securityContextService,
-									 requestService,
-                                     pendingFundService,
-                                     statisticsService,
-                                     profileService,
-                                     fundService,
-                                     claimService,
-                                     fiatService,
-                                     objectMapper,
-                                     mappers);
+                requestService,
+                pendingFundService,
+                statisticsService,
+                profileService,
+                fundService,
+                claimService,
+                fiatService,
+                objectMapper,
+                mappers);
     }
 
     @Test
@@ -99,26 +99,26 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final StatisticsDto statisticsDto = StatisticsDto.builder().build();
         final Set<String> projects = new HashSet<>();
         final Set<String> technologies = new HashSet<>();
-		boolean isAuthenticated = false;
+        boolean isAuthenticated = false;
 
         when(requestService.findAll()).thenReturn(requestDtos);
         when(mappers.mapList(RequestDto.class, RequestView.class, requestDtos)).thenReturn(requestViews);
         when(statisticsService.getStatistics()).thenReturn(statisticsDto);
         when(requestService.findAllProjects()).thenReturn(projects);
         when(requestService.findAllTechnologies()).thenReturn(technologies);
-		when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
+        when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
         when(objectMapper.writeValueAsString(same(requestViews))).thenReturn("requestViews");
         when(objectMapper.writeValueAsString(same(projects))).thenReturn("projects");
         when(objectMapper.writeValueAsString(same(technologies))).thenReturn("technologies");
 
         this.mockMvc.perform(get("/requests").principal(principal))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("statistics", statisticsDto))
-                    .andExpect(MockMvcResultMatchers.model().attribute("projects", "projects"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("technologies", "technologies"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
-                    .andExpect(MockMvcResultMatchers.view().name("pages/requests/index"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
+                .andExpect(MockMvcResultMatchers.model().attribute("statistics", statisticsDto))
+                .andExpect(MockMvcResultMatchers.model().attribute("projects", "projects"))
+                .andExpect(MockMvcResultMatchers.model().attribute("technologies", "technologies"))
+                .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
+                .andExpect(MockMvcResultMatchers.view().name("pages/requests/index"));
     }
 
     @Test
@@ -143,7 +143,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                 .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
                 .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
                 .andExpect(MockMvcResultMatchers.model().attribute("claims", claims))
-                    .andExpect(MockMvcResultMatchers.model().attribute("githubComments", new Same(commentDtos)))
+                .andExpect(MockMvcResultMatchers.model().attribute("githubComments", new Same(commentDtos)))
                 .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
     }
 
@@ -179,13 +179,13 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final long requestId = 654L;
         final RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
         final TokenValueDto fndFunds = TokenValueDto.builder()
-                                                  .tokenSymbol("FND")
-                                                  .totalAmount(new BigDecimal("1000"))
-                                                  .build();
+                .tokenSymbol("FND")
+                .totalAmount(new BigDecimal("1000"))
+                .build();
         final TokenValueDto otherFunds = TokenValueDto.builder()
-                                                    .tokenSymbol("SDFGG")
-                                                    .totalAmount(new BigDecimal("1100"))
-                                                    .build();
+                .tokenSymbol("SDFGG")
+                .totalAmount(new BigDecimal("1100"))
+                .build();
         request.getFunds().setFndFunds(fndFunds);
         request.getFunds().setOtherFunds(otherFunds);
 
@@ -206,13 +206,13 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final long requestId = 654L;
         final RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
         final TokenValueDto fndFunds = TokenValueDto.builder()
-                                                  .tokenSymbol("FND")
-                                                  .totalAmount(new BigDecimal("1000"))
-                                                  .build();
+                .tokenSymbol("FND")
+                .totalAmount(new BigDecimal("1000"))
+                .build();
         final TokenValueDto otherFunds = TokenValueDto.builder()
-                                                    .tokenSymbol("SDFGG")
-                                                    .totalAmount(new BigDecimal("1100"))
-                                                    .build();
+                .tokenSymbol("SDFGG")
+                .totalAmount(new BigDecimal("1100"))
+                .build();
         request.getFunds().setFndFunds(fndFunds);
         request.getFunds().setOtherFunds(otherFunds);
 
@@ -282,20 +282,20 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final List<RequestDto> requests = new ArrayList<>();
         final List<RequestView> requestViews = new ArrayList<>();
         final List<PendingFundDto> pendingFunds = new ArrayList<>();
-		boolean isAuthenticated = false;
+        boolean isAuthenticated = false;
 
         when(requestService.findRequestsForUser(principal)).thenReturn(requests);
         when(mappers.mapList(RequestDto.class, RequestView.class, requests)).thenReturn(requestViews);
         when(pendingFundService.findByUser(principal)).thenReturn(pendingFunds);
-		when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
+        when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
         when(objectMapper.writeValueAsString(same(requestViews))).thenReturn("requestViews");
         when(objectMapper.writeValueAsString(same(pendingFunds))).thenReturn("pendingFunds");
 
         this.mockMvc.perform(get("/user/requests").principal(principal))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("pendingFunds", "pendingFunds"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
-                    .andExpect(MockMvcResultMatchers.view().name("pages/user/requests"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
+                .andExpect(MockMvcResultMatchers.model().attribute("pendingFunds", "pendingFunds"))
+                .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
+                .andExpect(MockMvcResultMatchers.view().name("pages/user/requests"));
     }
 }

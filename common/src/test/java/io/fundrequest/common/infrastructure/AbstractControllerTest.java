@@ -1,4 +1,4 @@
-package io.fundrequest.platform.tweb.infrastructure;
+package io.fundrequest.common.infrastructure;
 
 import io.fundrequest.common.infrastructure.mav.dto.AlertDto;
 import lombok.Data;
@@ -8,11 +8,10 @@ import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 
 public abstract class AbstractControllerTest<T> {
 
@@ -27,7 +26,7 @@ public abstract class AbstractControllerTest<T> {
     }
 
     protected ResultMatcher redirectAlert(String type, String msg) {
-        return flash().attribute("alerts", new AlertMatcher(type, msg));
+        return MockMvcResultMatchers.flash().attribute("alerts", new AlertMatcher(type, msg));
     }
 
     @Data

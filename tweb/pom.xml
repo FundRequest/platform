@@ -71,6 +71,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.fundrequest</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.parent.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-spring-boot-starter</artifactId>
         </dependency>

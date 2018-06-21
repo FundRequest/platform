@@ -3,7 +3,7 @@ package io.fundrequest.platform.tweb;
 import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.ref.RefSignupEvent;
-import io.fundrequest.platform.tweb.infrastructure.AbstractControllerTest;
+import io.fundrequest.common.infrastructure.AbstractControllerTest;
 import org.junit.Test;
 import org.springframework.context.ApplicationEventPublisher;
 

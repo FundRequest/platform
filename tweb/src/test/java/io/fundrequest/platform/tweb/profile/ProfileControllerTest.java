@@ -1,15 +1,15 @@
 package io.fundrequest.platform.tweb.profile;
 
+import io.fundrequest.common.infrastructure.AbstractControllerTest;
+import io.fundrequest.core.message.MessageService;
 import io.fundrequest.core.message.domain.MessageType;
 import io.fundrequest.core.message.dto.MessageDto;
 import io.fundrequest.platform.profile.github.GithubBountyService;
-import io.fundrequest.core.message.MessageService;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
 import io.fundrequest.platform.profile.ref.ReferralService;
 import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
 import io.fundrequest.platform.profile.stackoverflow.dto.StackOverflowVerificationDto;
-import io.fundrequest.platform.tweb.infrastructure.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
 
