@@ -28,6 +28,8 @@ public class CachingConfig {
                                         buildCache("erc20.tokens.name", 30, DAYS),
                                         buildCache("erc20.tokens.symbol", 30, DAYS),
                                         buildCache("token_price", 15, MINUTES),
+                                        buildCache("cmc_token_price", 15, MINUTES),
+                                        buildCache("cmc_listings", 1, DAYS),
                                         buildCache("funds", 7, DAYS),
                                         buildCache("github_issue", 1, DAYS),
                                         buildCache("github_comments", 1, DAYS),
@@ -37,6 +39,7 @@ public class CachingConfig {
                                         buildCache("github_repo_languages", 1, DAYS),
                                         buildCache("projects", 7, DAYS),
                                         buildCache("technologies", 7, DAYS),
+                                        buildCache("statistics", 7, DAYS),
                                         buildCache("statistics", 7, DAYS),
                                         new CaffeineCache("faqs", Caffeine.newBuilder().build())));
         return manager;
