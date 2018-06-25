@@ -27,7 +27,7 @@ pipeline {
         }
         stage('Reports') {
             steps {
-                sh 'curl -s https://codecov.io/bash | bash
+                sh 'curl -s https://codecov.io/bash | bash'
             }
         }
         stage('Docker Build') {
