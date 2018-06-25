@@ -12,7 +12,8 @@ CREATE TABLE refund
   created_by          VARCHAR(1000),
   last_modified_by    VARCHAR(1000),
   CONSTRAINT refund_request_fk FOREIGN KEY (request_id) REFERENCES request (id),
-  CONSTRAINT refund_blockchain_event_fk FOREIGN KEY (blockchain_event_id) REFERENCES blockchain_event (id),
-  INDEX idx_refund_01 (request_id),
-  INDEX idx_refund_02 (blockchain_event_id)
+  CONSTRAINT refund_blockchain_event_fk FOREIGN KEY (blockchain_event_id) REFERENCES blockchain_event (id)
 );
+
+CREATE INDEX idx_refund_01 ON refund (request_id);
+CREATE INDEX idx_refund_02 ON refund (blockchain_event_id);

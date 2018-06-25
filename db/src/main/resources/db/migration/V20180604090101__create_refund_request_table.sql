@@ -11,8 +11,9 @@ CREATE TABLE refund_request
   last_modified_date      TIMESTAMP,
   created_by              VARCHAR(1000),
   last_modified_by        VARCHAR(1000),
-  CONSTRAINT request_refund_request_fk FOREIGN KEY (request_id) REFERENCES request (id),
-  INDEX idx_refund_request_01 (request_id),
-  INDEX idx_refund_request_02 (status),
-  INDEX idx_refund_request_03 (funder_address)
+  CONSTRAINT request_refund_request_fk FOREIGN KEY (request_id) REFERENCES request (id)
 );
+
+CREATE INDEX idx_refund_request_01 ON refund_request (request_id);
+CREATE INDEX idx_refund_request_02 ON refund_request (status);
+CREATE INDEX idx_refund_request_03 ON refund_request (funder_address);
