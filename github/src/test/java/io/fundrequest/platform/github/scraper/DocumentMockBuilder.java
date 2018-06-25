@@ -55,14 +55,6 @@ public class DocumentMockBuilder {
             return this;
         }
 
-        public DiscussionItemBuilder isPullRequest(boolean isPullRequest, final String number) {
-            isPullRequest(isPullRequest);
-            final Elements pullRequestElements = mock(Elements.class);
-            when(pullRequestElements.text()).thenReturn(number);
-            when(element.select(".discussion-item [id^=ref-pullrequest-] span.issue-num")).thenReturn(pullRequestElements);
-            return this;
-        }
-
         public DiscussionItemBuilder isMerged(boolean isMerged) {
             final Elements mergedElements = mock(Elements.class);
             when(mergedElements.isEmpty()).thenReturn(!isMerged);
@@ -74,6 +66,23 @@ public class DocumentMockBuilder {
             final Elements authorElement = mock(Elements.class);
             when(authorElement.text()).thenReturn(author);
             when(element.select(".discussion-item a.author")).thenReturn(authorElement);
+            return this;
+        }
+
+        public DiscussionItemBuilder withIssueNum(final int issueNum, final boolean isInlinePullRequest) {
+            final Elements pullRequestElements = mock(Elements.class);
+            final Elements pullRequestIssueNumElements = mock(Elements.class);
+
+            when(pullRequestElements.isEmpty()).thenReturn(!isInlinePullRequest);
+            when(element.select(".discussion-item .discussion-item-rollup-ref [id^=ref-pullrequest-]")).thenReturn(pullRequestElements);
+
+            if (isInlinePullRequest) {
+                when(pullRequestIssueNumElements.text()).thenReturn("#" + String.valueOf(issueNum));
+                when(element.select(".discussion-item [id^=ref-pullrequest-] span.issue-num")).thenReturn(pullRequestIssueNumElements);
+            } else {
+                when(pullRequestIssueNumElements.text()).thenReturn("#" + String.valueOf(issueNum));
+                when(element.select(".discussion-item [id^=ref-pullrequest-] ~ .discussion-item-ref-title span.issue-num")).thenReturn(pullRequestIssueNumElements);
+            }
             return this;
         }
 
