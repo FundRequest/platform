@@ -25,6 +25,11 @@ pipeline {
                 }
             }
         }
+        stage('Reports') {
+            steps {
+                sh 'curl -s https://codecov.io/bash | bash
+            }
+        }
         stage('Docker Build') {
           steps {
             sh 'docker build -t fundrequestio/platform:${BRANCH_NAME} tweb'
