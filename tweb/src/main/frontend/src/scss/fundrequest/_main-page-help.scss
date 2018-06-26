@@ -1,0 +1,27 @@
+.help-text {
+  p {
+    margin-bottom: 20px;
+  }
+
+  .fa-ul {
+    margin-left: 1.6em;
+  }
+
+  &__header {
+    color: $orange-500;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  &__list {
+    color: $orange-500;
+
+    li {
+      color: $orange-500;
+      a {
+        text-decoration: underline;
+      }
+    }
+  }
+
+}
