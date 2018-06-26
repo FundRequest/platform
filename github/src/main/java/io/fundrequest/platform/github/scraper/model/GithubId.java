@@ -18,7 +18,7 @@ public class GithubId {
     private final String number;
 
     public static Optional<GithubId> fromString(final String githubIdAsString) {
-        final Pattern pattern = Pattern.compile("^.*?/?(?<owner>.+)/(?<repo>.+)/.+/(?<number>\\d+)$");
+        final Pattern pattern = Pattern.compile("^.*/(?<owner>.+)/(?<repo>.+)/.+/(?<number>\\d+)$");
         final Matcher matcher = pattern.matcher(githubIdAsString);
         if (matcher.matches()) {
             return Optional.of(GithubId.builder()

@@ -97,15 +97,15 @@ public class GithubScraperIntegrationTest {
     }
 
     @Test
-    public void fetch_() {
-        final String owner = "FundRequest";
-        final String repo = "contracts";
-        final String number = "50";
+    public void fetch_githubClosingKeywordsAreFound() {
+        final String owner = "poanetwork";
+        final String repo = "poa-explorer";
+        final String number = "237";
 
         final GithubIssue githubIssue = scraper.fetchGithubIssue(owner, repo, number);
 
-        assertThat(githubIssue.getNumber()).isEqualTo("50");
-        assertThat(githubIssue.getSolver()).isEqualTo("thomasvds");
+        assertThat(githubIssue.getNumber()).isEqualTo("237");
+        assertThat(githubIssue.getSolver()).isEqualTo("katibest");
         assertThat(githubIssue.getStatus()).isEqualTo("Closed");
     }
 }
