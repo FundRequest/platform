@@ -1,6 +1,6 @@
 .help-text {
   p {
-    margin-bottom: 20px;
+    margin-bottom: 2em;
   }
 
   .fa-ul {
@@ -10,7 +10,7 @@
   &__header {
     color: $orange-500;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 2em;
   }
 
   &__list {
@@ -23,5 +23,12 @@
       }
     }
   }
+}
 
+.help-image {
+  width: 87%;
+}
+
+.line-seperator {
+  width: 58%;
 }
