@@ -6,8 +6,8 @@ import io.fundreqest.platform.tweb.infrastructure.mav.AbstractController;
 import io.fundreqest.platform.tweb.request.dto.ERC67FundDto;
 import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.infrastructure.SecurityContextService;
+import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.UserClaimRequest;
@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -85,8 +84,8 @@ public class RequestController extends AbstractController {
     @GetMapping("/requests")
     public ModelAndView requests() {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
-        final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
-        return modelAndView().withObject("requestsPerFaseCount", requestsPerFaseCount)
+        final Map<String, Long> requestsPerPhaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getPhase, Collectors.counting()));
+        return modelAndView().withObject("requestsPerPhaseCount", requestsPerPhaseCount)
                              .withObject("requests", getAsJson(requests))
                              .withObject("statistics", statisticsService.getStatistics())
                              .withObject("projects", getAsJson(requestService.findAllProjects()))
@@ -137,7 +136,7 @@ public class RequestController extends AbstractController {
         final double otherFundsUsdPrice = fiatService.getUsdPrice(request.getFunds().getOtherFunds());
 
         return modelAndView(model)
-                .withObject("requestFase", request.getStatus().getFase())
+                .withObject("requestPhase", request.getStatus().getPhase())
                 .withObject("highestFunds", fndUsdPrice >= otherFundsUsdPrice ? request.getFunds().getFndFunds() : request.getFunds().getOtherFunds())
                 .withView("requests/badge.svg")
                 .build();

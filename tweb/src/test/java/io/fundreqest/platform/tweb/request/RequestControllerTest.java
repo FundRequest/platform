@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
 import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.infrastructure.SecurityContextService;
+import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
@@ -30,8 +30,6 @@ import org.mockito.internal.matchers.Same;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -198,7 +196,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         this.mockMvc.perform(get("/requests/{id}/badge", 654L).principal(principal))
                 .andExpect(MockMvcResultMatchers.header().string(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("requestFase", request.getStatus().getFase()))
+                .andExpect(MockMvcResultMatchers.model().attribute("requestPhase", request.getStatus().getPhase()))
                 .andExpect(MockMvcResultMatchers.model().attribute("highestFunds", otherFunds))
                 .andExpect(MockMvcResultMatchers.view().name("requests/badge.svg"));
     }
@@ -225,7 +223,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         this.mockMvc.perform(get("/requests/{id}/badge", 654L).principal(principal))
                 .andExpect(MockMvcResultMatchers.header().string(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("requestFase", request.getStatus().getFase()))
+                .andExpect(MockMvcResultMatchers.model().attribute("requestPhase", request.getStatus().getPhase()))
                 .andExpect(MockMvcResultMatchers.model().attribute("highestFunds", fndFunds))
                 .andExpect(MockMvcResultMatchers.view().name("requests/badge.svg"));
     }

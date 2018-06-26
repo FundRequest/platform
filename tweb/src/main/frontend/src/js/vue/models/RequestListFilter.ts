@@ -2,7 +2,7 @@ export default class RequestListFilter {
     search: string;
     tech: string[];
     project: string;
-    fase: string;
+    phase: string;
 
     public get isFiltered() {
         return (!!this.search && (this.search.length >= 3 || this.idInSearch))

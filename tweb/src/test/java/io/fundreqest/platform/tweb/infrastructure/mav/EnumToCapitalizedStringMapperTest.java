@@ -1,6 +1,6 @@
 package io.fundreqest.platform.tweb.infrastructure.mav;
 
-import io.fundrequest.core.request.domain.RequestFase;
+import io.fundrequest.core.request.domain.RequestPhase;
 import io.fundrequest.core.request.domain.RequestStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class EnumToCapitalizedStringMapperTest {
     public void map() {
         assertThat(mapper.map(RequestStatus.FUNDED)).isEqualTo("Funded");
         assertThat(mapper.map(RequestStatus.CLAIM_REQUESTED)).isEqualTo("Claim Requested");
-        assertThat(mapper.map(RequestFase.RESOLVED)).isEqualTo("Resolved");
+        assertThat(mapper.map(RequestPhase.RESOLVED)).isEqualTo("Resolved");
     }
 
     @Test
