@@ -2,14 +2,22 @@ package io.fundrequest.platform.github.scraper;
 
 import io.fundrequest.platform.github.GithubGateway;
 import io.fundrequest.platform.github.parser.GithubResult;
+import io.fundrequest.platform.github.scraper.model.GithubId;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
 @Component
 public class GithubSolverResolver {
+
+    private static final List<String> CLOSING_KEYWORDS = Arrays.asList("close", "closes", "closed", "fix", "fixes", "fixed", "resolve", "resolves", "resolved");
 
     private final GithubGateway githubGateway;
 
@@ -17,39 +25,52 @@ public class GithubSolverResolver {
         this.githubGateway = githubGateway;
     }
 
-    public String resolve(final Document document, final String owner, final String repo) {
+    public Optional<String> resolve(final Document document, final GithubId issueGithubId) {
         return document.select(".discussion-item")
                        .stream()
                        .filter(this::isPullRequest)
                        .filter(this::isMerged)
-                       .map(this::resolvePullRequestNumber)
-                       .map(pullRequestNumber -> fetchAuthorFromPullRequest(pullRequestNumber, owner, repo))
+                       .map(this::resolvePullRequestGithubId)
+                       .map(pullRequestGithubId -> fetchAuthorFromPullRequest(pullRequestGithubId, issueGithubId))
+                       .filter(Optional::isPresent)
+                       .map(Optional::get)
                        .filter(StringUtils::isNotEmpty)
-                       .findFirst()
-                       .orElse(null);
+                       .findFirst();
     }
 
-    private String resolvePullRequestNumber(final Element discussionItem) {
-        final String pullRequestNumber;
+    private GithubId resolvePullRequestGithubId(final Element discussionItem) {
         if (isPullRequestInSingleDiscussionItem(discussionItem)) {
-            pullRequestNumber = getPullRequestNumberFromSingleDiscussionItem(discussionItem);
+            return getPullRequestGithubIdFromSingleDiscussionItem(discussionItem);
         } else {
-            pullRequestNumber = getPullRequestNumberFromInlineDiscussionItem(discussionItem);
+            return getPullRequestGithubIdFromInlineDiscussionItem(discussionItem);
         }
-        return pullRequestNumber.replace("#", "");
     }
 
-    private String getPullRequestNumberFromSingleDiscussionItem(final Element discussionItem) {
-        return discussionItem.select(".discussion-item [id^=ref-pullrequest-] ~ .discussion-item-ref-title span.issue-num").text();
+    private GithubId getPullRequestGithubIdFromSingleDiscussionItem(final Element discussionItem) {
+        return GithubId.fromString(discussionItem.select(".discussion-item [id^=ref-pullrequest-] ~ .discussion-item-ref-title a").attr("href"))
+                       .orElseThrow(() -> new RuntimeException("No pullrequest identifier is found"));
     }
 
-    private String getPullRequestNumberFromInlineDiscussionItem(final Element discussionItem) {
-        return discussionItem.select(".discussion-item [id^=ref-pullrequest-] span.issue-num").text();
+    private GithubId getPullRequestGithubIdFromInlineDiscussionItem(final Element discussionItem) {
+        return GithubId.fromString(discussionItem.select(".discussion-item [id^=ref-pullrequest-] a").attr("href"))
+                       .orElseThrow(() -> new RuntimeException("No pullrequest identifier is found"));
     }
 
-    private String fetchAuthorFromPullRequest(final String pullRequestNumber, final String owner, final String repo) {
-        final GithubResult pullRequest = githubGateway.getPullrequest(owner, repo, pullRequestNumber);
-        return pullRequest.getUser().getLogin();
+    private Optional<String> fetchAuthorFromPullRequest(final GithubId pullRequestGithubId, final GithubId issueGithubId) {
+        final GithubResult pullRequest = githubGateway.getPullrequest(pullRequestGithubId.getOwner(), pullRequestGithubId.getRepo(), pullRequestGithubId.getNumber());
+        if (pullRequest != null && pullRequestFixesIssue(pullRequest, issueGithubId)) {
+            return Optional.of(pullRequest.getUser().getLogin());
+        }
+        return Optional.empty();
+    }
+
+    private boolean pullRequestFixesIssue(final GithubResult pullRequest, final GithubId issueGithubId) {
+        final String pullRequestBody = pullRequest.getBody();
+
+        return pullRequestBody != null && CLOSING_KEYWORDS.stream()
+                                                          .anyMatch(keyword -> Pattern.compile("\\b" + keyword.toLowerCase() + "\\b:?\\s*#" + issueGithubId.getNumber())
+                                                                                      .matcher(pullRequestBody.toLowerCase())
+                                                                                      .find());
     }
 
     private boolean isPullRequestInSingleDiscussionItem(final Element discussionItem) {
