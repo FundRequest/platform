@@ -20,7 +20,7 @@
   "scripts": {
     "build": "gulp",
     "webpack": "webpack --config ./webpack.config.base.js",
-	"webpack-watch": "webpack --watch --config ./webpack.config.base.js",
+    "webpack-watch": "webpack --watch --config ./webpack.config.base.js",
     "webpack-prod": "webpack --config ./webpack.config.prod.js",
     "typechain": "typechain --outDir ./src/js/contracts './src/js/abi/*.json'",
     "watch": "gulp watch",
@@ -78,7 +78,6 @@
   ],
   "dependencies": {
     "@types/toastr": "^2.1.35",
-    "axios": "^0.18.0",
     "bignumber.js": "^5.0.0",
     "bootstrap": "^4.0.0",
     "bootstrap-vue": "^2.0.0-rc.10",

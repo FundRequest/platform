@@ -10,7 +10,7 @@
     import {Component, Prop, Vue} from "vue-property-decorator";
     import ProjectCard from "./ProjectCard.vue";
 	import ProjectOverviewDetail from "../models/ProjectOverviewDetail"
-	import axios from 'axios';
+	import Utils from "../../classes/Utils";
 
 	@Component({
 		components: {
@@ -22,25 +22,23 @@
 		private projectDataURL = "https://raw.githubusercontent.com/FundRequest/platform-metadata/master/projects"
 		private projects: Array<ProjectOverviewDetail> = []
 
-		private _loadProjects(projects) {
+		private async _loadProjects(projects) {
 
-			axios.get(this.projectDataURL)
-				.then(response => {
-					let projectData = response.data;
-					for (var proj in projectData) {
-						projects.push({
-							name: projectData[proj]['title'],
-							description: projectData[proj]['small_description'],
-							overviewColor: projectData[proj]['background-color'],
-							projectLink: `https://fundrequest.io/requests?fase=open&projects=${proj}`,
-							logoLocation: `https://github.com/${proj}.png`,
-							activeRequests: 0
-						});
-					}
-				})
-				.catch(e => {
-					console.log(e);
-				})
+			try {
+				let projectData = await Utils.getJSON(this.projectDataURL)
+				for (var proj in projectData) {
+					projects.push({
+						name: projectData[proj]['title'],
+						description: projectData[proj]['small_description'],
+						overviewColor: projectData[proj]['background-color'],
+						projectLink: `https://fundrequest.io/requests?fase=open&projects=${proj}`,
+						logoLocation: `https://github.com/${proj}.png`,
+						activeRequests: 0
+					});
+				}
+			} catch (err) {
+				console.log(err);
+			}
 		}
 
 		mounted() {
