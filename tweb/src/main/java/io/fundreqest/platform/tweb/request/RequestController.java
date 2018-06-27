@@ -7,7 +7,9 @@ import io.fundreqest.platform.tweb.request.dto.ERC67FundDto;
 import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.SecurityContextService;
+import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.platform.PlatformIssueService;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.UserClaimRequest;
@@ -17,6 +19,7 @@ import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
+import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import lombok.extern.slf4j.Slf4j;
@@ -57,16 +60,18 @@ public class RequestController extends AbstractController {
     private final FundService fundService;
     private final ClaimService claimService;
     private final FiatService fiatService;
+    private final PlatformIssueService platformIssueService;
     private final ObjectMapper objectMapper;
     private final Mappers mappers;
 
     public RequestController(final SecurityContextService securityContextService,
-							 final RequestService requestService,
+                             final RequestService requestService,
                              final PendingFundService pendingFundService,
                              final StatisticsService statisticsService,
                              final ProfileService profileService, FundService fundService,
                              final ClaimService claimService,
                              final FiatService fiatService,
+                             final PlatformIssueService platformIssueService,
                              final ObjectMapper objectMapper,
                              final Mappers mappers) {
 		this.securityContextService = securityContextService;
@@ -77,6 +82,7 @@ public class RequestController extends AbstractController {
         this.fundService = fundService;
         this.claimService = claimService;
         this.fiatService = fiatService;
+        this.platformIssueService = platformIssueService;
         this.objectMapper = objectMapper;
         this.mappers = mappers;
     }
@@ -165,12 +171,19 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests/{id}/actions")
-    public ModelAndView detailActions(Principal principal, @PathVariable Long id) {
-        return modelAndView()
-                .withObject("userClaimable", requestService.getUserClaimableResult(principal, id))
-                .withObject("request", requestService.findRequest(id))
-                .withView("pages/requests/detail-actions :: details")
-                .build();
+    public ModelAndView detailActions(final Principal principal, @PathVariable final Long id) {
+        final RequestDto request = requestService.findRequest(id);
+        if (request != null) {
+            final IssueInformationDto issueInformation = request.getIssueInformation();
+            return modelAndView().withObject("userClaimable", requestService.getUserClaimableResult(principal, id))
+                                 .withObject("request", request)
+                                 .withObject("platformIssue", platformIssueService.findBy(issueInformation.getPlatform(), issueInformation.getPlatformId())
+                                                                                  .orElseThrow(ResourceNotFoundException::new))
+                                 .withView("pages/requests/detail-actions :: details")
+                                 .build();
+        } else {
+            throw new ResourceNotFoundException();
+        }
     }
 
     @PostMapping(value = {"/requests/{id}/watch"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
