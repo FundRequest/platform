@@ -19,32 +19,41 @@ public class GithubSolverResolver {
 
     public String resolve(final Document document, final String owner, final String repo) {
         return document.select(".discussion-item")
-                  .stream()
-                  .filter(this::isPullRequest)
-                  .filter(this::isMerged)
-                  .map(discussionItem -> getAuthor(discussionItem, owner, repo))
-                  .filter(StringUtils::isNotEmpty)
-                  .findFirst()
-                  .orElse(null);
+                       .stream()
+                       .filter(this::isPullRequest)
+                       .filter(this::isMerged)
+                       .map(this::resolvePullRequestNumber)
+                       .map(pullRequestNumber -> fetchAuthorFromPullRequest(pullRequestNumber, owner, repo))
+                       .filter(StringUtils::isNotEmpty)
+                       .findFirst()
+                       .orElse(null);
     }
 
-    private String getAuthor(final Element discussionItem, final String owner, final String repo) {
-        final String author = extractAuthorFromDiscussionItem(discussionItem);
-        return authorFound(author) ? author : fetchAuthorFromPullrequest(discussionItem, owner, repo);
+    private String resolvePullRequestNumber(final Element discussionItem) {
+        final String pullRequestNumber;
+        if (isPullRequestInSingleDiscussionItem(discussionItem)) {
+            pullRequestNumber = getPullRequestNumberFromSingleDiscussionItem(discussionItem);
+        } else {
+            pullRequestNumber = getPullRequestNumberFromInlineDiscussionItem(discussionItem);
+        }
+        return pullRequestNumber.replace("#", "");
     }
 
-    private String extractAuthorFromDiscussionItem(final Element discussionItem) {
-        return discussionItem.select(".discussion-item a.author").text();
+    private String getPullRequestNumberFromSingleDiscussionItem(final Element discussionItem) {
+        return discussionItem.select(".discussion-item [id^=ref-pullrequest-] ~ .discussion-item-ref-title span.issue-num").text();
     }
 
-    private String fetchAuthorFromPullrequest(final Element discussionItem, final String owner, final String repo) {
-        final String pullRequestNumber = discussionItem.select(".discussion-item [id^=ref-pullrequest-] span.issue-num").text();
-        final GithubResult pullrequest = githubGateway.getPullrequest(owner, repo, pullRequestNumber.replace("#", ""));
-        return pullrequest.getUser().getLogin();
+    private String getPullRequestNumberFromInlineDiscussionItem(final Element discussionItem) {
+        return discussionItem.select(".discussion-item [id^=ref-pullrequest-] span.issue-num").text();
     }
 
-    private boolean authorFound(final String author) {
-        return StringUtils.isNotEmpty(author);
+    private String fetchAuthorFromPullRequest(final String pullRequestNumber, final String owner, final String repo) {
+        final GithubResult pullRequest = githubGateway.getPullrequest(owner, repo, pullRequestNumber);
+        return pullRequest.getUser().getLogin();
+    }
+
+    private boolean isPullRequestInSingleDiscussionItem(final Element discussionItem) {
+        return discussionItem.select(".discussion-item .discussion-item-rollup-ref [id^=ref-pullrequest-]").isEmpty();
     }
 
     private boolean isPullRequest(final Element discussionItem) {

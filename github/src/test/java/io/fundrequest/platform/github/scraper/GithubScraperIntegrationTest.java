@@ -45,6 +45,20 @@ public class GithubScraperIntegrationTest {
     }
 
     @Test
+    public void fetch_parsesCorrectSolver_whenReferencerInIssueIsNotOwnerPullRequest() {
+        final String owner = "FundRequest";
+        final String repo = "contracts";
+        final String number = "48";
+
+        final GithubIssue githubIssue = scraper.fetchGithubIssue(owner, repo, number);
+
+        assertThat(githubIssue.getNumber()).isEqualTo("48");
+        assertThat(githubIssue.getSolver()).isEqualTo("pauliax");
+        //TODO Uncomment when issue https://github.com/FundRequest/contracts/issues/48 is closed.
+        //        assertThat(githubIssue.getStatus()).isEqualTo("Closed");
+    }
+
+    @Test
     public void fetch_whenNoSolver() {
         final String owner = "FundRequest";
         final String repo = "area51";

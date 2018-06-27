@@ -1,12 +1,16 @@
 package io.fundrequest.platform.tweb.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.fundrequest.common.infrastructure.AbstractControllerTest;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mav.EnumToCapitalizedStringMapper;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.dto.ClaimableResultDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
-import io.fundrequest.common.infrastructure.AbstractControllerTest;
 import io.fundrequest.platform.tweb.request.dto.ClaimView;
+import io.fundrequest.platform.tweb.request.dto.RequestView;
+import io.fundrequest.platform.tweb.request.dto.RequestViewMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -19,13 +23,36 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 class RequestRestControllerTest extends AbstractControllerTest<RequestRestController> {
 
     private ObjectMapper objectMapper;
+    private Mappers mappers;
+    private RequestViewMapper mapper;
+    private EnumToCapitalizedStringMapper enumToCapitalizedStringMapper;
     private RequestService requestService;
 
     @Override
     protected RequestRestController setupController() {
         this.objectMapper = new ObjectMapper();
-        requestService = mock(RequestService.class);
-        return new RequestRestController(requestService);
+        this.mappers = mock(Mappers.class);
+        this.requestService = mock(RequestService.class);
+        this.enumToCapitalizedStringMapper = mock(EnumToCapitalizedStringMapper.class);
+        this.mapper = new RequestViewMapper(enumToCapitalizedStringMapper);
+        return new RequestRestController(requestService, mappers);
+    }
+
+    @Test
+    void requestDetails() throws Exception {
+        final String owner = "fundrequest";
+        final String repo = "platform";
+        final String issueNumber = "320";
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        final RequestView requestView = mapper.map(requestDto);
+
+        final String platformId = owner + "|FR|" + repo + "|FR|" + issueNumber;
+        when(requestService.findRequest(GITHUB, platformId)).thenReturn(requestDto);
+        when(mappers.map(RequestDto.class, RequestView.class, requestDto)).thenReturn(requestView);
+
+        mockMvc.perform(get("/rest/requests/github/{owner}/{repo}/{number}", owner, repo, issueNumber).accept(MediaType.APPLICATION_JSON_UTF8))
+               .andExpect(MockMvcResultMatchers.status().isOk())
+               .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(requestView)));
     }
 
     @Test

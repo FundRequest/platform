@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name = "referral")
@@ -47,4 +48,22 @@ public class Referral extends AbstractEntity {
         this.status = status;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Referral referral = (Referral) o;
+        return Objects.equals(referrer, referral.referrer) &&
+               Objects.equals(referee, referral.referee);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(referrer, referee);
+    }
 }
