@@ -2,6 +2,7 @@ package io.fundrequest.platform.tweb.profile;
 
 import io.fundrequest.common.infrastructure.AbstractControllerTest;
 import io.fundrequest.core.message.MessageService;
+import io.fundrequest.core.message.domain.Message;
 import io.fundrequest.core.message.domain.MessageType;
 import io.fundrequest.core.message.dto.MessageDto;
 import io.fundrequest.platform.profile.github.GithubBountyService;
@@ -52,18 +53,24 @@ public class ProfileControllerTest extends AbstractControllerTest<ProfileControl
 
     @Test
     void showProfile() throws Exception {
+        MessageDto messageDto1 = MessageDto.builder().type(MessageType.REFERRAL_SHARE).name("twitter").title("title1").description("desc1").link("https://areflinktotwitter.com").build();
+        MessageDto messageDto2 = MessageDto.builder().type(MessageType.REFERRAL_SHARE).name("twitter").title("title1").description("desc1").link("https://areflinktotwitter.com").build();
+        MessageDto messageDto3 = MessageDto.builder().type(MessageType.REFERRAL_SHARE).name("twitter").title("title1").description("desc1").link("https://areflinktotwitter.com").build();
+
         when(githubBountyService.getVerification(principal)).thenReturn(GithubVerificationDto.builder().approved(true).build());
         when(stackOverflowBountyService.getVerification(principal)).thenReturn(StackOverflowVerificationDto.builder().approved(true).build());
-        when(messageService.getMessageByKey("REFERRAL_SHARE.socialshare")).thenReturn(MessageDto.builder().type(MessageType.REFERRAL_SHARE).name("socialshare").build());
+        when(messageService.getMessageByKey("REFERRAL_SHARE.twitter")).thenReturn(messageDto1);
+        when(messageService.getMessageByKey("REFERRAL_SHARE.linkedin")).thenReturn(messageDto2);
+        when(messageService.getMessageByKey("REFERRAL_SHARE.facebook")).thenReturn(messageDto3);
 
         mockMvc.perform(get("/profile").principal(principal))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("isVerifiedGithub", true))
                 .andExpect(model().attribute("isVerifiedStackOverflow", true))
                 .andExpect(model().attribute("refLink", "ref"))
-                .andExpect(model().attribute("refShareTwitter", "ref"))
-                .andExpect(model().attribute("refShareLinkedin", "ref"))
-                .andExpect(model().attribute("refShareFacebook", "ref"));
+                .andExpect(model().attribute("refShareTwitter", messageDto1))
+                .andExpect(model().attribute("refShareLinkedin", messageDto2))
+                .andExpect(model().attribute("refShareFacebook", messageDto3));
     }
 
 }
