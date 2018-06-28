@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 public class GithubSolverResolver {
 
     private static final List<String> CLOSING_KEYWORDS = Arrays.asList("close", "closes", "closed", "fix", "fixes", "fixed", "resolve", "resolves", "resolved");
+    private static final String CLOSING_KEYWORD_ISSUE_MATCHER_REGEX = "(?:<span.+class=\"issue-keyword.*\".*>)?\\b%1$s\\b(?:</span>)?:?\\s*<a.+class=\"issue-link js-issue-link\".*>(?:%2$s/%3$s)?#%4$s";
 
     private final GithubGateway githubGateway;
 
@@ -31,9 +32,9 @@ public class GithubSolverResolver {
                        .filter(this::isPullRequest)
                        .filter(this::isMerged)
                        .map(this::resolvePullRequestGithubId)
-                       .map(pullRequestGithubId -> fetchAuthorFromPullRequest(pullRequestGithubId, issueGithubId))
-                       .filter(Optional::isPresent)
-                       .map(Optional::get)
+                       .map(this::fetchPullrequest)
+                       .filter(pullRequest -> pullRequest != null && pullRequestFixesIssue(pullRequest, issueGithubId))
+                       .map(pullRequest -> pullRequest.getUser().getLogin())
                        .filter(StringUtils::isNotEmpty)
                        .findFirst();
     }
@@ -56,21 +57,21 @@ public class GithubSolverResolver {
                        .orElseThrow(() -> new RuntimeException("No pullrequest identifier is found"));
     }
 
-    private Optional<String> fetchAuthorFromPullRequest(final GithubId pullRequestGithubId, final GithubId issueGithubId) {
-        final GithubResult pullRequest = githubGateway.getPullrequest(pullRequestGithubId.getOwner(), pullRequestGithubId.getRepo(), pullRequestGithubId.getNumber());
-        if (pullRequest != null && pullRequestFixesIssue(pullRequest, issueGithubId)) {
-            return Optional.of(pullRequest.getUser().getLogin());
-        }
-        return Optional.empty();
+    private GithubResult fetchPullrequest(GithubId pullRequestGithubId) {
+        return githubGateway.getPullrequest(pullRequestGithubId.getOwner(), pullRequestGithubId.getRepo(), pullRequestGithubId.getNumber());
     }
 
     private boolean pullRequestFixesIssue(final GithubResult pullRequest, final GithubId issueGithubId) {
-        final String pullRequestBody = pullRequest.getBody();
-
+        final String pullRequestBody = pullRequest.getBodyHtml();
         return pullRequestBody != null && CLOSING_KEYWORDS.stream()
-                                                          .anyMatch(keyword -> Pattern.compile("\\b" + keyword.toLowerCase() + "\\b:?\\s*#" + issueGithubId.getNumber())
-                                                                                      .matcher(pullRequestBody.toLowerCase())
-                                                                                      .find());
+                                                          .map(keyword -> String.format(CLOSING_KEYWORD_ISSUE_MATCHER_REGEX,
+                                                                                        keyword.toLowerCase(),
+                                                                                        issueGithubId.getOwner(),
+                                                                                        issueGithubId.getRepo(),
+                                                                                        issueGithubId.getNumber()))
+                                                          .anyMatch(regex -> Pattern.compile(regex)
+                                                                                    .matcher(pullRequestBody.toLowerCase())
+                                                                                    .find());
     }
 
     private boolean isPullRequestInSingleDiscussionItem(final Element discussionItem) {

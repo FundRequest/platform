@@ -108,4 +108,17 @@ public class GithubScraperIntegrationTest {
         assertThat(githubIssue.getSolver()).isEqualTo("katibest");
         assertThat(githubIssue.getStatus()).isEqualTo("Closed");
     }
+
+    @Test
+    public void fetch_issueFixedByPullRequestFromOtherRepo() {
+        final String owner = "brave";
+        final String repo = "brave-browser";
+        final String number = "240";
+
+        final GithubIssue githubIssue = scraper.fetchGithubIssue(owner, repo, number);
+
+        assertThat(githubIssue.getNumber()).isEqualTo("240");
+        assertThat(githubIssue.getSolver()).isEqualTo("cezaraugusto");
+        assertThat(githubIssue.getStatus()).isEqualTo("Closed");
+    }
 }

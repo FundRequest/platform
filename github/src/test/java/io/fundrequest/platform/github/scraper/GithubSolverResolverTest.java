@@ -8,7 +8,7 @@ import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Optional;
 
@@ -50,14 +50,54 @@ class GithubSolverResolverTest {
                                                                                       .withPullrequestReference(pullrequestGithubId, false)
                                                                                       .build())
                                                 .build();
+        final String solvingBodyHtml = buildBodyHtmlFor("Fixes", " ", issueGithubId.getNumber());
 
         when(githubGateway.getPullrequest("xnbf", "afds", "53")).thenReturn(GithubResult.builder()
                                                                                         .user(GithubUser.builder().login("hgfcjgv").build())
-                                                                                        .body("fixes #" + issueGithubId.getNumber())
+                                                                                        .bodyHtml(buildBodyHtmlFor("fixes", " ", issueGithubId.getNumber()))
                                                                                         .build());
         when(githubGateway.getPullrequest(pullrequestGithubId.getOwner(), pullrequestGithubId.getRepo(), pullrequestGithubId.getNumber())).thenReturn(GithubResult.builder()
                                                                                                                                                                   .user(solverUser)
-                                                                                                                                                                  .body("Fixes #" + issueGithubId.getNumber())
+                                                                                                                                                                  .bodyHtml(solvingBodyHtml)
+                                                                                                                                                                  .build());
+
+        final Optional<String> result = parser.resolve(doc, issueGithubId);
+
+        assertThat(result).contains(solver);
+    }
+
+    @Test
+    void parse_pullRequestInOtherRepo() {
+        final String solver = "dfgh";
+        final GithubUser solverUser = GithubUser.builder().login(solver).build();
+        final GithubId issueGithubId = GithubId.builder().owner("tfjgk").repo("hfcjgv").number("435").build();
+        final GithubId pullrequestGithubId = GithubId.builder().owner("gb").repo("awerg").number("765").build();
+        final Document doc = DocumentMockBuilder.documentBuilder()
+                                                .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
+                                                                                      .isPullRequest(false)
+                                                                                      .build())
+                                                .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
+                                                                                      .isPullRequest(true)
+                                                                                      .isMerged(false)
+                                                                                      .withAuthor("hgfcjgv")
+                                                                                      .withPullrequestReference(GithubId.builder().owner("xnbf").repo("afds").number("53").build(), false)
+                                                                                      .build())
+                                                .addDiscussionItem(DocumentMockBuilder.discussionItemBuilder()
+                                                                                      .isPullRequest(true)
+                                                                                      .isMerged(true)
+                                                                                      .withAuthor("gdhfh")
+                                                                                      .withPullrequestReference(pullrequestGithubId, false)
+                                                                                      .build())
+                                                .build();
+        final String solvingBodyHtml = buildBodyHtmlFor("Fixes ", issueGithubId.getOwner(), issueGithubId.getRepo(), issueGithubId.getNumber());
+
+        when(githubGateway.getPullrequest("xnbf", "afds", "53")).thenReturn(GithubResult.builder()
+                                                                                        .user(GithubUser.builder().login("hgfcjgv").build())
+                                                                                        .bodyHtml(buildBodyHtmlFor("fixes ", issueGithubId.getOwner(), issueGithubId.getRepo(), issueGithubId.getNumber()))
+                                                                                        .build());
+        when(githubGateway.getPullrequest(pullrequestGithubId.getOwner(), pullrequestGithubId.getRepo(), pullrequestGithubId.getNumber())).thenReturn(GithubResult.builder()
+                                                                                                                                                                  .user(solverUser)
+                                                                                                                                                                  .bodyHtml(solvingBodyHtml)
                                                                                                                                                                   .build());
 
         final Optional<String> result = parser.resolve(doc, issueGithubId);
@@ -88,13 +128,15 @@ class GithubSolverResolverTest {
                                                                                       .withPullrequestReference(pullrequestGithubId, false)
                                                                                       .build())
                                                 .build();
+        final String solvingBodyHtml = buildBodyHtmlFor("fixes", " ", issueGithubId.getNumber());
+
         when(githubGateway.getPullrequest("xnbf", "afds", "53")).thenReturn(GithubResult.builder()
                                                                                         .user(GithubUser.builder().login("hgfcjgv").build())
-                                                                                        .body("fixes #" + issueGithubId.getNumber())
+                                                                                        .bodyHtml(solvingBodyHtml)
                                                                                         .build());
         when(githubGateway.getPullrequest(pullrequestGithubId.getOwner(), pullrequestGithubId.getRepo(), pullrequestGithubId.getNumber())).thenReturn(GithubResult.builder()
                                                                                                                                                                   .user(solverUser)
-                                                                                                                                                                  .body("fixes #" + issueGithubId.getNumber())
+                                                                                                                                                                  .bodyHtml(solvingBodyHtml)
                                                                                                                                                                   .build());
         final Optional<String> result = parser.resolve(doc, issueGithubId);
 
@@ -167,9 +209,11 @@ class GithubSolverResolverTest {
                                                                                       .withPullrequestReference(pullrequestGithubId, true)
                                                                                       .build())
                                                 .build();
+        final String bodyHtml = buildBodyHtmlFor("fixes", " ", issueGithubId.getNumber());
+
         when(githubGateway.getPullrequest(pullrequestGithubId.getOwner(), pullrequestGithubId.getRepo(), pullrequestGithubId.getNumber())).thenReturn(GithubResult.builder()
                                                                                                                                                                   .user(GithubUser.builder().login("").build())
-                                                                                                                                                                  .body("fixes #" + issueGithubId.getNumber())
+                                                                                                                                                                  .bodyHtml(bodyHtml)
                                                                                                                                                                   .build());
 
         final Optional<String> result = parser.resolve(doc, issueGithubId);
@@ -178,10 +222,10 @@ class GithubSolverResolverTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"close ", "closes ", "closed ", "fix ", "fixes ", "fixed ", "resolve ", "resolves ", "resolved ", "close: ", "closes: ", "closed: ", "fix: ", "fixes: ", "fixed: ", "resolve: ",
-                            "resolves: ", "resolved: ", "close:", "closes:", "closed:", "fix:", "fixes:", "fixed:", "resolve:",
-                            "resolves:", "resolved:", "Close ", "Closes ", "Closed ", "Fix ", "Fixes ", "Fixed ", "Resolve ", "Resolves ", "Resolved", "close:              ", "closes: "})
-    void parse_withClosingKeywords(final String keyword) {
+    @CsvSource(value = {"close,' '", "closes,' '", "closed,' '", "fix,' '", "fixes,' '", "fixed,' '", "resolve,' '", "resolves,' '", "resolved,' '", "close,': '", "closes,': '", "closed,': '", "fix,': '",
+                        "fixes,': '", "fixed,': '", "resolve,': '", "resolves,': '", "resolved,': '", "close,':'", "closes,':'", "closed,':'", "fix,':'", "fixes,':'", "fixed,':'", "resolve,':'", "resolves,':'",
+                        "resolved,':'", "Close,' '", "Closes,' '", "Closed,' '", "Fix,' '", "Fixes,' '", "Fixed,' '", "Resolve,' '", "Resolves,' '", "Resolved,''", "close,':              '", "closes,': '"})
+    void parse_withClosingKeywords(final String keyword, final String separator) {
         final String solver = "dfgh";
         final GithubUser solverUser = GithubUser.builder().login(solver).build();
         final GithubId issueGithubId = GithubId.builder().owner("tfjgk").repo("hfcjgv").number("435").build();
@@ -203,16 +247,15 @@ class GithubSolverResolverTest {
                                                                                       .withPullrequestReference(pullrequestGithubId, false)
                                                                                       .build())
                                                 .build();
+        final String solvingBodyHtml = buildBodyHtmlFor(keyword, separator, issueGithubId.getNumber());
 
         when(githubGateway.getPullrequest("xnbf", "afds", "53")).thenReturn(GithubResult.builder()
                                                                                         .user(GithubUser.builder().login("hgfcjgv").build())
-                                                                                        .body("fixes #" + issueGithubId.getNumber())
+                                                                                        .bodyHtml(buildBodyHtmlFor("fixes", " ", issueGithubId.getNumber()))
                                                                                         .build());
         when(githubGateway.getPullrequest(pullrequestGithubId.getOwner(), pullrequestGithubId.getRepo(), pullrequestGithubId.getNumber())).thenReturn(GithubResult.builder()
                                                                                                                                                                   .user(solverUser)
-                                                                                                                                                                  .body(String.format("%s#%s",
-                                                                                                                                                                                      keyword,
-                                                                                                                                                                                      issueGithubId.getNumber()))
+                                                                                                                                                                  .bodyHtml(solvingBodyHtml)
                                                                                                                                                                   .build());
 
         final Optional<String> result = parser.resolve(doc, issueGithubId);
@@ -246,11 +289,11 @@ class GithubSolverResolverTest {
 
         when(githubGateway.getPullrequest("xnbf", "afds", "53")).thenReturn(GithubResult.builder()
                                                                                         .user(GithubUser.builder().login("hgfcjgv").build())
-                                                                                        .body("fixes #" + issueGithubId.getNumber())
+                                                                                        .bodyHtml(buildBodyHtmlFor("fixes", " ", issueGithubId.getNumber()))
                                                                                         .build());
         when(githubGateway.getPullrequest(pullrequestGithubId.getOwner(), pullrequestGithubId.getRepo(), pullrequestGithubId.getNumber())).thenReturn(GithubResult.builder()
                                                                                                                                                                   .user(solverUser)
-                                                                                                                                                                  .body("")
+                                                                                                                                                                  .bodyHtml("")
                                                                                                                                                                   .build());
 
         final Optional<String> result = parser.resolve(doc, issueGithubId);
@@ -284,15 +327,23 @@ class GithubSolverResolverTest {
 
         when(githubGateway.getPullrequest("xnbf", "afds", "53")).thenReturn(GithubResult.builder()
                                                                                         .user(GithubUser.builder().login("hgfcjgv").build())
-                                                                                        .body("fixes #" + issueGithubId.getNumber())
+                                                                                        .bodyHtml(buildBodyHtmlFor("fixes", " ", issueGithubId.getNumber()))
                                                                                         .build());
         when(githubGateway.getPullrequest(pullrequestGithubId.getOwner(), pullrequestGithubId.getRepo(), pullrequestGithubId.getNumber())).thenReturn(GithubResult.builder()
                                                                                                                                                                   .user(solverUser)
-                                                                                                                                                                  .body("#" + issueGithubId.getNumber())
+                                                                                                                                                                  .bodyHtml("#" + issueGithubId.getNumber())
                                                                                                                                                                   .build());
 
         final Optional<String> result = parser.resolve(doc, issueGithubId);
 
         assertThat(result).isEmpty();
+    }
+
+    private String buildBodyHtmlFor(final String keyword, final String separator, final String number) {
+        return String.format("<span class=\"issue-keyword\">%s</span>%s<a class=\"issue-link js-issue-link\">#%s</a>", keyword, separator, number);
+    }
+
+    private String buildBodyHtmlFor(final String keyword, String owner, String repo, String number) {
+        return String.format("%s<a class=\"issue-link js-issue-link\">%s/%s#%s</a>", keyword, owner, repo, number);
     }
 }
