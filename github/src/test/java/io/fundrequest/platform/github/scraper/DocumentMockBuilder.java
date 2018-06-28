@@ -1,5 +1,6 @@
 package io.fundrequest.platform.github.scraper;
 
+import io.fundrequest.platform.github.scraper.model.GithubId;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -7,6 +8,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +43,7 @@ public class DocumentMockBuilder {
         private final Element element;
 
         private DiscussionItemBuilder() {
-            this.element = mock(Element.class);
+            this.element = mock(Element.class, RETURNS_DEEP_STUBS);
         }
 
         public static DiscussionItemBuilder builder() {
@@ -69,19 +71,17 @@ public class DocumentMockBuilder {
             return this;
         }
 
-        public DiscussionItemBuilder withIssueNum(final int issueNum, final boolean isInlinePullRequest) {
+        public DiscussionItemBuilder withPullrequestReference(final GithubId githubId, final boolean isInlinePullRequest) {
             final Elements pullRequestElements = mock(Elements.class);
-            final Elements pullRequestIssueNumElements = mock(Elements.class);
 
             when(pullRequestElements.isEmpty()).thenReturn(!isInlinePullRequest);
             when(element.select(".discussion-item .discussion-item-rollup-ref [id^=ref-pullrequest-]")).thenReturn(pullRequestElements);
 
+            final String githubIssueId = String.format("/%s/%s/pulls/%s", githubId.getOwner(), githubId.getRepo(), githubId.getNumber());
             if (isInlinePullRequest) {
-                when(pullRequestIssueNumElements.text()).thenReturn("#" + String.valueOf(issueNum));
-                when(element.select(".discussion-item [id^=ref-pullrequest-] span.issue-num")).thenReturn(pullRequestIssueNumElements);
+                when(element.select(".discussion-item [id^=ref-pullrequest-] a").attr("href")).thenReturn(githubIssueId);
             } else {
-                when(pullRequestIssueNumElements.text()).thenReturn("#" + String.valueOf(issueNum));
-                when(element.select(".discussion-item [id^=ref-pullrequest-] ~ .discussion-item-ref-title span.issue-num")).thenReturn(pullRequestIssueNumElements);
+                when(element.select(".discussion-item [id^=ref-pullrequest-] ~ .discussion-item-ref-title a").attr("href")).thenReturn(githubIssueId);
             }
             return this;
         }
