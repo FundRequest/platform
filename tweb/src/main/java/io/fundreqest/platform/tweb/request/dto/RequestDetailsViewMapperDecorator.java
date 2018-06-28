@@ -30,7 +30,7 @@ public abstract class RequestDetailsViewMapperDecorator implements RequestDetail
             view.setIssueNumber(issueInfo.getNumber());
             view.setTitle(issueInfo.getTitle());
             view.setStarred(r.isLoggedInUserIsWatcher());
-            view.setDescription(githubGateway.getIssue(issueInfo.getOwner(), issueInfo.getRepo(), issueInfo.getNumber()).getBody());
+            view.setDescription(githubGateway.getIssue(issueInfo.getOwner(), issueInfo.getRepo(), issueInfo.getNumber()).getBodyHtml());
             view.setPhase(enumToCapitalizedStringMapper.map(r.getStatus().getPhase()));
             view.setStatus(enumToCapitalizedStringMapper.map(r.getStatus()));
         }

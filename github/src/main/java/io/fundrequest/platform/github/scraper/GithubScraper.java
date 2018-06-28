@@ -1,6 +1,7 @@
 package io.fundrequest.platform.github.scraper;
 
 import io.fundrequest.common.infrastructure.JsoupSpringWrapper;
+import io.fundrequest.platform.github.scraper.model.GithubId;
 import io.fundrequest.platform.github.scraper.model.GithubIssue;
 import org.jsoup.nodes.Document;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,7 +34,7 @@ public class GithubScraper {
                           .owner(owner)
                           .repo(repo)
                           .number(number)
-                          .solver(solverResolver.resolve(document, owner, repo))
+                          .solver(solverResolver.resolve(document, GithubId.builder().owner(owner).repo(repo).number(number).build()).orElse(null))
                           .status(statusResolver.resolve(document))
                           .build();
     }
