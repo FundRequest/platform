@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <div class="card mb-5">
+            <div class="card mb-5" th:if="${@environment.getProperty('io.fundrequest.ethereum.network') eq '42'}">
                 <a class="anchor" id="faucet"></a>
                 <h5 class="card-header card-header--label">
                     <span>FundRequest Faucet</span>
