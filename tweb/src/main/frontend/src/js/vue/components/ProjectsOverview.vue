@@ -50,7 +50,7 @@
 <style>
 
 	.contained {
-		margin-top: 20px;
+		margin-top: 1.25rem;
 	}
 
 	.scrolling-wrapper-flexbox {
@@ -59,7 +59,6 @@
 		overflow-x: auto;
 		overflow-y: hidden;
 
-		height: 150px;
 		width: 100%;
 		-webkit-overflow-scrolling: touch;
 	}

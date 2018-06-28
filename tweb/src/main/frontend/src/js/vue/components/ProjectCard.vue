@@ -5,10 +5,10 @@
 		</div>
 		<a v-bind:href="project.projectLink">
 			<div class="project-request-details" :style="{ 'background': project.overviewColor }">
-				<div class="project-request-name"><h3>{{ project.name }}</h3></div>
+				<div class="project-request-name"><b>{{ project.name }}</b></div>
 				<div class="project-request-description"><p>{{ project.description }}</p></div>
-				<hr />
-				<div class="requestCountContainer">
+				<div class="request-count-container">
+					<hr />
 					<div class="requestNumber"><p>#{{ boundedRequests }}</p></div>
 					<div class="requestLabel"><p>active</p><p>requests</p></div>
 				</div>
@@ -21,30 +21,19 @@
     import {Component, Prop, Vue} from "vue-property-decorator";
 	import ProjectOverviewDetail from "../models/ProjectOverviewDetail"
 
+	const defaultProject: ProjectOverviewDetail = Object.assign(new ProjectOverviewDetail(), {
+		name: "FundRequest",
+		description: "Marketplace for Software Development",
+		overviewColor: "#000000",
+		projectLink: "https://fundrequest.io/requests?",
+		logoLocation: "/assets/img/logo-single180.png",
+		activeRequests: 0
+	});
+
     @Component
     export default class ProjectCard extends Vue {
 
-		defaultProject: ProjectOverviewDetail = {
-			name: "FundRequest",
-			description: "Marketplace for Software Development",
-			overviewColor: "#000000",
-			projectLink: "https://fundrequest.io/requests?",
-			logoLocation: "/assets/img/logo-single180.png",
-			activeRequests: 5
-		};
-
-		@Prop({ 
-			default: function() { 
-				return {
-					name: "FundRequest",
-					description: "Marketplace for Software Development",
-					overviewColor: "#000000",
-					projectLink: "https://fundrequest.io/requests?",
-					logoLocation: "/assets/img/logo-single180.png",
-					activeRequests: 5
-				};
-			} 
-		}) project: ProjectOverviewDetail
+		@Prop({ default: {...defaultProject} }) project: ProjectOverviewDetail
 
 		get colorStyle() {
 			return {
@@ -61,16 +50,16 @@
 		}
 
 		private _mergeWithDefault() {
-			this.project.name = this.project.name || this.defaultProject.name;
-			this.project.description = this.project.description || this.defaultProject.description;
-			this.project.overviewColor = this.project.overviewColor || this.defaultProject.overviewColor;
-			this.project.projectLink = this.project.projectLink || this.defaultProject.projectLink;
-			if (!this.project.logoLocation) {
-				this.project.logoLocation = this.defaultProject.logoLocation;
-			} else if (this.project.logoLocation !== this.defaultProject.logoLocation) {
+			console.log(this.project.logoLocation);
+			console.log(defaultProject.logoLocation);
+			//const defaultClone = Object.assign({}, defaultProject);
+			this.project = Object.assign({...defaultProject}, this.project);
+			console.log(this.project.logoLocation);
+			console.log(defaultProject.logoLocation);
+			if (this.project.logoLocation !== defaultProject.logoLocation) {
 				this.project.logoLocation = this.project.logoLocation + '?size=150';
+				console.log(this.project);
 			}
-			this.project.activeRequests = this.project.activeRequests || this.defaultProject.activeRequests;
 		}
 
 		mounted() {
@@ -79,15 +68,15 @@
     }
 </script>
 
-<style>
+<style scoped>
 
 	.project-request-details h3 {
-		margin: 0 0 0 0;
+		margin: 0;
 		color: white;
 	}
 
 	.project-request-details p {
-		margin: 0 0 0 0;
+		margin: 0;
 		color: white;
 	}
 
@@ -97,7 +86,7 @@
 		height: 1px;
 		width: 80%;
 		border: 0;
-		background: #FFFFFF;
+		background: white;
 		align: center;
 		clear: both;
 	}
@@ -116,11 +105,13 @@
 		height: 3rem;
 		clear: left;
 		text-align: left;
-		font-size: 13px;
+		font-size: 0.8125rem;
 		float: left;
 	}
 
-	.requestCountContainer {}
+	.request-count-container {
+		align-self: flex-end;
+	}
 
 	.requestNumber {
 		margin-top: 0.5rem;
@@ -130,7 +121,7 @@
 		padding: 0;
 
 		text-align: left;
-		font-size: 30px;
+		font-size: 1.875rem;
 		float: left;
 	}
 
@@ -139,7 +130,7 @@
 		margin-bottom: 0.3rem;
 		text-align: left;
 		line-height: 0.9rem;
-		font-size: 12px;
+		font-size: 0.75rem;
 		white-space: pre-line;
 		float: left;
 	}
@@ -148,13 +139,15 @@
 		margin-left: 10px;
 		margin-right: 10px;
 		position: relative;
-		height: 150px;
-		width: 150px;
+		min-height: 9.357rem;
+		width: 9.357rem;
 		background: white;
-		border: 1px solid black;
+		border: 2px solid #7c7c7c;
+		overflow: hidden;
 	}
 	
 	.project-icon {
+		padding: 0.625rem;
 		height: 100%;
 		width: 100%;
 	}
@@ -162,11 +155,13 @@
 	.project-icon img {
 		height: inherit;
 		width: auto;
+		max-width: 100%;
+		object-fit: contain;
 	}
 
 	.project-request-details {
 		flex: 0 0 auto; 
-		margin-right: 3px;
+		/* margin-right: 3px;*/
 
 		position: absolute;
 		top: 0;
@@ -175,7 +170,6 @@
 		width: 100%;
 
 		transition: opacity .5s ease;
-		border: 1px solid white;
 		background: grey;
 		opacity: 0;
 	}
