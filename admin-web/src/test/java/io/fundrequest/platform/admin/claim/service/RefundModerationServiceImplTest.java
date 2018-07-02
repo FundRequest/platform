@@ -8,6 +8,7 @@ import io.fundrequest.core.request.fund.dto.RefundRequestDto;
 import io.fundrequest.core.request.fund.infrastructure.RefundRequestRepository;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.RefundCommand;
+import io.fundrequest.core.request.infrastructure.azrael.RefundTransaction;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.admin.refund.RefundModerationServiceImpl;
@@ -67,20 +68,23 @@ class RefundModerationServiceImplTest {
                                                          .requestId(requestId)
                                                          .status(PENDING)
                                                          .build();
+        final RefundCommand refundCommand = RefundCommand.builder()
+                                                         .address(funderAddress)
+                                                         .platform(platform.name())
+                                                         .platformId(platformId)
+                                                         .build();
+        final String transactionHash = "0xghf32kjh";
 
         when(refundRequestRepository.findOne(refundRequestId)).thenReturn(Optional.of(refundRequest));
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
+        when(azraelClient.submitRefund(refundCommand)).thenReturn(RefundTransaction.builder().transactionHash(transactionHash).build());
 
         service.approve(refundRequestId);
 
         assertThat(refundRequest.getTransactionSubmitTime()).isEqualToIgnoringMinutes(LocalDateTime.now());
         assertThat(refundRequest.getStatus()).isEqualTo(APPROVED);
+        assertThat(refundRequest.getTransactionHash()).isEqualTo(transactionHash);
         verify(refundRequestRepository).save(refundRequest);
-        verify(azraelClient).submitRefund(RefundCommand.builder()
-                                                       .address(funderAddress)
-                                                       .platform(platform.name())
-                                                       .platformId(platformId)
-                                                       .build());
     }
 
     @Test

@@ -44,16 +44,12 @@ public class RefundModerationServiceImpl implements ModerationService<RefundRequ
         refundRequest.setStatus(RefundRequestStatus.APPROVED);
         refundRequest.setTransactionSubmitTime(LocalDateTime.now());
         final IssueInformationDto issueInformation = requestService.findRequest(refundRequest.getRequestId()).getIssueInformation();
-        try {
-            final RefundTransaction refundTransaction = azraelClient.submitRefund(RefundCommand.builder()
-                                                                                               .address(refundRequest.getFunderAddress())
-                                                                                               .platform(issueInformation.getPlatform().name())
-                                                                                               .platformId(issueInformation.getPlatformId())
-                                                                                               .build());
-            refundRequest.setTransactionHash(refundTransaction.getTransactionHash());
-        } catch (Exception e) {
-            refundRequest.setStatus(RefundRequestStatus.TRANSACTION_FAILED);
-        }
+        final RefundTransaction refundTransaction = azraelClient.submitRefund(RefundCommand.builder()
+                                                                                           .address(refundRequest.getFunderAddress())
+                                                                                           .platform(issueInformation.getPlatform().name())
+                                                                                           .platformId(issueInformation.getPlatformId())
+                                                                                           .build());
+        refundRequest.setTransactionHash(refundTransaction.getTransactionHash());
         refundRequestRepository.save(refundRequest);
     }
 
