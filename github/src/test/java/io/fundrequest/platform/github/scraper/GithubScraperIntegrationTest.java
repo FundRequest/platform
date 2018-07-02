@@ -54,8 +54,7 @@ public class GithubScraperIntegrationTest {
 
         assertThat(githubIssue.getNumber()).isEqualTo("48");
         assertThat(githubIssue.getSolver()).isEqualTo("pauliax");
-        //TODO Uncomment when issue https://github.com/FundRequest/contracts/issues/48 is closed.
-        //        assertThat(githubIssue.getStatus()).isEqualTo("Closed");
+        assertThat(githubIssue.getStatus()).isEqualTo("Closed");
     }
 
     @Test
@@ -68,6 +67,58 @@ public class GithubScraperIntegrationTest {
 
         assertThat(githubIssue.getNumber()).isEqualTo("2");
         assertThat(githubIssue.getSolver()).isNull();
+        assertThat(githubIssue.getStatus()).isEqualTo("Closed");
+    }
+
+    @Test
+    public void fetch_issueRandomlyReferencedInPullRequestFromSameRepo() {
+        final String owner = "aragon";
+        final String repo = "aragonOS";
+        final String number = "280";
+
+        final GithubIssue githubIssue = scraper.fetchGithubIssue(owner, repo, number);
+
+        assertThat(githubIssue.getNumber()).isEqualTo("280");
+        assertThat(githubIssue.getSolver()).isNull();
+        assertThat(githubIssue.getStatus()).isEqualTo("Open");
+    }
+
+    @Test
+    public void fetch_issueRandomlyReferencedInPullRequestFromOtherRepo() {
+        final String owner = "trufflesuite";
+        final String repo = "truffle";
+        final String number = "501";
+
+        final GithubIssue githubIssue = scraper.fetchGithubIssue(owner, repo, number);
+
+        assertThat(githubIssue.getNumber()).isEqualTo("501");
+        assertThat(githubIssue.getSolver()).isNull();
+        assertThat(githubIssue.getStatus()).isEqualTo("Open");
+    }
+
+    @Test
+    public void fetch_githubClosingKeywordsAreFound() {
+        final String owner = "poanetwork";
+        final String repo = "poa-explorer";
+        final String number = "237";
+
+        final GithubIssue githubIssue = scraper.fetchGithubIssue(owner, repo, number);
+
+        assertThat(githubIssue.getNumber()).isEqualTo("237");
+        assertThat(githubIssue.getSolver()).isEqualTo("katibest");
+        assertThat(githubIssue.getStatus()).isEqualTo("Closed");
+    }
+
+    @Test
+    public void fetch_issueFixedByPullRequestFromOtherRepo() {
+        final String owner = "brave";
+        final String repo = "brave-browser";
+        final String number = "240";
+
+        final GithubIssue githubIssue = scraper.fetchGithubIssue(owner, repo, number);
+
+        assertThat(githubIssue.getNumber()).isEqualTo("240");
+        assertThat(githubIssue.getSolver()).isEqualTo("cezaraugusto");
         assertThat(githubIssue.getStatus()).isEqualTo("Closed");
     }
 }
