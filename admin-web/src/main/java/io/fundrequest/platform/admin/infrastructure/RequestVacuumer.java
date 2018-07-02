@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static io.fundrequest.core.request.claim.domain.ClaimRequestStatus.APPROVED;
-
 @Component
 @ConditionalOnProperty(value = "io.fundrequest.request-vacuumer.enabled", havingValue = "true")
 public class RequestVacuumer {
@@ -34,7 +32,7 @@ public class RequestVacuumer {
 
     @Scheduled(fixedDelay = 300_000L)
     public void cleanClaims() {
-        final List<RequestClaim> claims = requestClaimRepository.findByStatus(APPROVED);
+        final List<RequestClaim> claims = requestClaimRepository.findByStatus(ClaimRequestStatus.APPROVED);
 
         claims.stream()
               .filter(x -> x.getTransactionHash() != null)
