@@ -7,6 +7,7 @@ import io.fundrequest.platform.github.parser.GithubUser;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -62,5 +63,6 @@ interface GithubApiClient {
     @RequestMapping(value = "/repos/{owner}/{repo}/contents/{filePath}", method = GET, headers = "Accept=application/vnd.github.html")
     String getContentsAsHtml(@PathVariable("owner") String owner,
                              @PathVariable("repo") String repo,
+                             @RequestParam("ref") String branch,
                              @PathVariable("filePath") String filePath);
 }

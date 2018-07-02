@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         GITHUB_CREDS = credentials('GITHUB_CRED')
+        CODECOV_TOKEN = credentials('PLATFORM_CODECOV_TOKEN')
     }
     options {
         disableConcurrentBuilds()
@@ -19,10 +20,15 @@ pipeline {
                           execPattern: '**/target/*.exec',
                           classPattern: '**/target/classes',
                           sourcePattern: '**/src/main/java',
-                          exclusionPattern: '**/src/test*'
+                          exclusionPattern: '**/src/test*,**/*Exception*,**/*Config*'
                     )
 
                 }
+            }
+        }
+        stage('Reports') {
+            steps {
+                sh 'curl -s https://codecov.io/bash | bash -s -- -t $CODECOV_TOKEN'
             }
         }
         stage('Docker Build') {
