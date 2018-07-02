@@ -16,16 +16,18 @@ public class FaqItemDtoMapper implements BaseMapper<Faq, FaqItemDto> {
     private final GithubGateway githubGateway;
     private final String owner;
     private final String repo;
+    private final String branch;
     private final JsoupSpringWrapper jsoup;
 
     public FaqItemDtoMapper(final GithubGateway githubGateway,
                             @Value("${io.fundrequest.faq.owner:FundRequest}") final String owner,
                             @Value("${io.fundrequest.faq.repo:FAQ}") final String repo,
+                            @Value("${io.fundrequest.faq.branch:master}") final String branch,
                             final JsoupSpringWrapper jsoup) {
-
         this.githubGateway = githubGateway;
         this.owner = owner;
         this.repo = repo;
+        this.branch = branch;
         this.jsoup = jsoup;
     }
 
@@ -35,7 +37,7 @@ public class FaqItemDtoMapper implements BaseMapper<Faq, FaqItemDto> {
             return null;
         }
         try {
-            final Document document = jsoup.parse(githubGateway.getContentsAsHtml(owner, repo, faq.getFilePath()));
+            final Document document = jsoup.parse(githubGateway.getContentsAsHtml(owner, repo, branch, faq.getFilePath()));
             final Elements markDownBody = document.select(".markdown-body");
             if (!markDownBody.isEmpty()) {
                 final String body = markDownBody.get(0).html();

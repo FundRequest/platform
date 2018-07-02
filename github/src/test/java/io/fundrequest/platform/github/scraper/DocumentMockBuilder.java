@@ -1,5 +1,6 @@
 package io.fundrequest.platform.github.scraper;
 
+import io.fundrequest.platform.github.scraper.model.GithubId;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -7,6 +8,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +43,7 @@ public class DocumentMockBuilder {
         private final Element element;
 
         private DiscussionItemBuilder() {
-            this.element = mock(Element.class);
+            this.element = mock(Element.class, RETURNS_DEEP_STUBS);
         }
 
         public static DiscussionItemBuilder builder() {
@@ -52,14 +54,6 @@ public class DocumentMockBuilder {
             final Elements pullRequestElements = mock(Elements.class);
             when(pullRequestElements.isEmpty()).thenReturn(!isPullRequest);
             when(element.select(".discussion-item [id^=ref-pullrequest-]")).thenReturn(pullRequestElements);
-            return this;
-        }
-
-        public DiscussionItemBuilder isPullRequest(boolean isPullRequest, final String number) {
-            isPullRequest(isPullRequest);
-            final Elements pullRequestElements = mock(Elements.class);
-            when(pullRequestElements.text()).thenReturn(number);
-            when(element.select(".discussion-item [id^=ref-pullrequest-] span.issue-num")).thenReturn(pullRequestElements);
             return this;
         }
 
@@ -74,6 +68,21 @@ public class DocumentMockBuilder {
             final Elements authorElement = mock(Elements.class);
             when(authorElement.text()).thenReturn(author);
             when(element.select(".discussion-item a.author")).thenReturn(authorElement);
+            return this;
+        }
+
+        public DiscussionItemBuilder withPullrequestReference(final GithubId githubId, final boolean isInlinePullRequest) {
+            final Elements pullRequestElements = mock(Elements.class);
+
+            when(pullRequestElements.isEmpty()).thenReturn(!isInlinePullRequest);
+            when(element.select(".discussion-item .discussion-item-rollup-ref [id^=ref-pullrequest-]")).thenReturn(pullRequestElements);
+
+            final String githubIssueId = String.format("/%s/%s/pulls/%s", githubId.getOwner(), githubId.getRepo(), githubId.getNumber());
+            if (isInlinePullRequest) {
+                when(element.select(".discussion-item [id^=ref-pullrequest-] a").attr("href")).thenReturn(githubIssueId);
+            } else {
+                when(element.select(".discussion-item [id^=ref-pullrequest-] ~ .discussion-item-ref-title a").attr("href")).thenReturn(githubIssueId);
+            }
             return this;
         }
 
