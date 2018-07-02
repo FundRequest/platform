@@ -8,6 +8,7 @@ import io.fundrequest.core.request.fund.dto.RefundRequestDto;
 import io.fundrequest.core.request.fund.infrastructure.RefundRequestRepository;
 import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.RefundCommand;
+import io.fundrequest.core.request.infrastructure.azrael.RefundTransaction;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.platform.admin.service.ModerationService;
 import org.springframework.data.domain.Sort;
@@ -42,14 +43,18 @@ public class RefundModerationServiceImpl implements ModerationService<RefundRequ
         final RefundRequest refundRequest = refundRequestRepository.findOne(refundRequestId).orElseThrow(() -> new RuntimeException("Refund request not found"));
         refundRequest.setStatus(RefundRequestStatus.APPROVED);
         refundRequest.setTransactionSubmitTime(LocalDateTime.now());
-        refundRequestRepository.save(refundRequest);
-
         final IssueInformationDto issueInformation = requestService.findRequest(refundRequest.getRequestId()).getIssueInformation();
-        azraelClient.submitRefund(RefundCommand.builder()
-                                               .address(refundRequest.getFunderAddress())
-                                               .platform(issueInformation.getPlatform().name())
-                                               .platformId(issueInformation.getPlatformId())
-                                               .build());
+        try {
+            final RefundTransaction refundTransaction = azraelClient.submitRefund(RefundCommand.builder()
+                                                                                               .address(refundRequest.getFunderAddress())
+                                                                                               .platform(issueInformation.getPlatform().name())
+                                                                                               .platformId(issueInformation.getPlatformId())
+                                                                                               .build());
+            refundRequest.setTransactionHash(refundTransaction.getTransactionHash());
+        } catch (Exception e) {
+            refundRequest.setStatus(RefundRequestStatus.TRANSACTION_FAILED);
+        }
+        refundRequestRepository.save(refundRequest);
     }
 
     @Override

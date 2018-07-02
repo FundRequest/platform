@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.APPROVED;
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.PENDING;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.mockito.Matchers.eq;
@@ -137,7 +138,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(mappers.map(RequestDto.class, RequestDetailsView.class, requestDto)).thenReturn(requestDetailsView);
         when(objectMapper.writeValueAsString(same(requestDetailsView))).thenReturn("requestDetailsView");
         when(fundService.getFundsForRequestGroupedByFunder(requestId)).thenReturn(fundsForRequestDto);
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING)).thenReturn(pendingRefundRequests);
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(pendingRefundRequests);
         when(claimService.getAggregatedClaimsForRequest(requestId)).thenReturn(claims);
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
 

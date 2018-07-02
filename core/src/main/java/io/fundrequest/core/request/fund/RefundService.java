@@ -11,7 +11,7 @@ public interface RefundService {
 
     void requestRefund(RequestRefundCommand requestRefundCommand);
 
-    List<RefundRequestDto> findAllRefundRequestsFor(long requestId, RefundRequestStatus status);
+    List<RefundRequestDto> findAllRefundRequestsFor(long requestId, RefundRequestStatus... statuses);
 
     List<RefundRequestDto> findAllRefundRequestsFor(long requestId, String funderAddress, RefundRequestStatus status);
 

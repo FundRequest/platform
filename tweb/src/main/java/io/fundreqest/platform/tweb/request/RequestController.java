@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.fundrequest.core.request.domain.Platform.GITHUB;
+import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.APPROVED;
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.PENDING;
 import static java.util.stream.Collectors.toList;
 
@@ -128,10 +129,10 @@ public class RequestController extends AbstractController {
                 .withObject("requestJson", getAsJson(request))
                 .withObject("funds", fundService.getFundsForRequestGroupedByFunder(id))
                 .withObject("claims", claimService.getAggregatedClaimsForRequest(id))
-                .withObject("pendingRefundAddresses", refundService.findAllRefundRequestsFor(id, PENDING)
-                                                                  .stream()
-                                                                  .map(refundRequest -> refundRequest.getFunderAddress().toLowerCase())
-                                                                  .collect(toList()))
+                .withObject("pendingRefundAddresses", refundService.findAllRefundRequestsFor(id, PENDING, APPROVED)
+                                                                   .stream()
+                                                                   .map(refundRequest -> refundRequest.getFunderAddress().toLowerCase())
+                                                                   .collect(toList()))
                 .withObject("githubComments", requestService.getComments(id))
                 .withView("pages/requests/detail")
                 .build();

@@ -10,9 +10,11 @@ import java.util.Optional;
 
 public interface RefundRequestRepository extends JpaRepository<RefundRequest, Long> {
 
+    List<RefundRequest> findAllByStatus(RefundRequestStatus status);
+
     List<RefundRequest> findAllByStatusIn(List<RefundRequestStatus> status, Sort sort);
 
-    List<RefundRequest> findAllByRequestIdAndStatus(long requestId, RefundRequestStatus status);
+    List<RefundRequest> findAllByRequestIdAndStatusIn(long requestId, RefundRequestStatus... statuses);
 
     List<RefundRequest> findAllByRequestIdAndFunderAddressAndStatus(long requestId, String funderAddress, RefundRequestStatus status);
 

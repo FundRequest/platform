@@ -10,6 +10,8 @@ import io.fundrequest.core.request.fund.dto.RefundRequestDtoMapper;
 import io.fundrequest.core.request.fund.infrastructure.RefundRepository;
 import io.fundrequest.core.request.fund.infrastructure.RefundRequestRepository;
 import io.fundrequest.core.token.model.TokenValue;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +29,19 @@ public class RefundServiceImpl implements RefundService {
     private final RefundRequestRepository refundRequestRepository;
     private final RefundRepository refundRepository;
     private final RefundRequestDtoMapper refundRequestDtoMapper;
+    private final CacheManager cacheManager;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public RefundServiceImpl(final RefundRequestRepository refundRequestRepository,
                              final RefundRepository refundRepository,
-                             final RefundRequestDtoMapper refundRequestDtoMapper) {
+                             final RefundRequestDtoMapper refundRequestDtoMapper,
+                             final CacheManager cacheManager,
+                             final ApplicationEventPublisher applicationEventPublisher) {
         this.refundRequestRepository = refundRequestRepository;
         this.refundRepository = refundRepository;
         this.refundRequestDtoMapper = refundRequestDtoMapper;
+        this.cacheManager = cacheManager;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -48,8 +56,8 @@ public class RefundServiceImpl implements RefundService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RefundRequestDto> findAllRefundRequestsFor(final long requestId, final RefundRequestStatus status) {
-        return refundRequestDtoMapper.mapToList(refundRequestRepository.findAllByRequestIdAndStatus(requestId, status));
+    public List<RefundRequestDto> findAllRefundRequestsFor(final long requestId, final RefundRequestStatus... statuses) {
+        return refundRequestDtoMapper.mapToList(refundRequestRepository.findAllByRequestIdAndStatusIn(requestId, statuses));
     }
 
     @Override
@@ -61,14 +69,14 @@ public class RefundServiceImpl implements RefundService {
     @Override
     @Transactional
     public void refundProcessed(final RefundProcessedCommand command) {
-        final List<RefundRequest> refundRequests = refundRequestRepository.findAllByRequestIdAndStatus(command.getRequestId(), APPROVED);
+        final List<RefundRequest> refundRequests = refundRequestRepository.findAllByRequestIdAndStatusIn(command.getRequestId(), APPROVED);
         refundRequests.forEach(refundRequest -> {
             refundRequest.setStatus(PROCESSED);
             refundRequest.setTransactionHash(command.getTransactionHash());
         });
         refundRequestRepository.save(refundRequests);
 
-        refundRepository.save(Refund.builder()
+        final Refund refund = Refund.builder()
                                     .requestId(command.getRequestId())
                                     .funderAddress(command.getFunderAddress())
                                     .blockchainEventId(command.getBlockchainEventId())
@@ -77,7 +85,10 @@ public class RefundServiceImpl implements RefundService {
                                                           .amountInWei(new BigDecimal(command.getAmount()))
                                                           .tokenAddress(command.getTokenHash())
                                                           .build())
-                                    .build());
+                                    .build();
+        refundRepository.save(refund);
+        cacheManager.getCache ("funds").evict(command.getRequestId());
+        applicationEventPublisher.publishEvent(new RefundProcessedEvent(refund));
     }
 
     private Optional<String> resolveRequestedBy(final RefundProcessedCommand command, final List<RefundRequest> refundRequests) {

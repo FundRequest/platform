@@ -4,8 +4,10 @@ package io.fundrequest.core.request.fund;
 import io.fundrequest.core.contract.service.FundRequestContractsService;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.FundMother;
+import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
+import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
 import io.fundrequest.core.request.fund.domain.Fund;
@@ -24,6 +26,7 @@ import io.fundrequest.core.request.fund.infrastructure.RefundRepository;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
 import io.fundrequest.core.request.view.FundDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.token.dto.TokenValueDto;
 import io.fundrequest.core.token.dto.TokenValueDtoMother;
 import io.fundrequest.core.token.mapper.TokenValueMapper;
 import io.fundrequest.core.token.model.TokenValue;
@@ -86,7 +89,7 @@ public class FundServiceImplTest {
         mappers = mock(Mappers.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
         cacheManager = mock(CacheManager.class, RETURNS_DEEP_STUBS);
-        fundRequestContractsService = mock(FundRequestContractsService.class);
+        fundRequestContractsService = mock(FundRequestContractsService.class, RETURNS_DEEP_STUBS);
         fiatService = mock(FiatService.class);
         funder = UserProfileMother.davy()::getId;
         tokenValueMapper = mock(TokenValueMapper.class);
@@ -251,6 +254,63 @@ public class FundServiceImplTest {
         assertThat(result.getOtherFunds().getTokenSymbol()).isEqualTo(TokenValueDtoMother.ZRX().build().getTokenSymbol());
         assertThat(result.getOtherFunds().getTokenAddress()).isEqualTo(TokenValueDtoMother.ZRX().build().getTokenAddress());
         assertThat(result.getOtherFunds().getTotalAmount()).isEqualTo(new BigDecimal("15000000000000000000"));
+    }
+
+    @Test
+    public void getTotalFundsForRequest() {
+        final long requestId = 6457L;
+        final Request request = RequestMother.fundRequestArea51().withStatus(RequestStatus.FUNDED).build();
+        final IssueInformation issueInformation = request.getIssueInformation();
+        final String platform = issueInformation.getPlatform().name();
+        final String platformId = issueInformation.getPlatformId();
+        final String tokenAddress1 = "0x64576fg";
+        final String tokenAddress2 = "0x654fh987";
+        final BigDecimal fndAmount = new BigDecimal("324");
+        final BigDecimal zrxAmount = new BigDecimal("762");
+        final TokenValueDto fndTokenValue = TokenValueDtoMother.FND().totalAmount(fndAmount).build();
+        final TokenValueDto zrxTokenValue = TokenValueDtoMother.ZRX().totalAmount(zrxAmount).build();
+
+        when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
+        when(fundRequestContractsService.fundRepository().getFundedTokenCount(platform, platformId)).thenReturn(2L);
+        when(fundRequestContractsService.fundRepository().getFundedToken(platform, platformId, 0L)).thenReturn(Optional.of(tokenAddress1));
+        when(fundRequestContractsService.fundRepository().getFundedToken(platform, platformId, 1L)).thenReturn(Optional.of(tokenAddress2));
+        when(fundRequestContractsService.fundRepository().balance(platform, platformId, tokenAddress1)).thenReturn(fndAmount.toBigInteger());
+        when(fundRequestContractsService.fundRepository().balance(platform, platformId, tokenAddress2)).thenReturn(zrxAmount.toBigInteger());
+
+        when(tokenValueMapper.map(tokenAddress1, fndAmount)).thenReturn(fndTokenValue);
+        when(tokenValueMapper.map(tokenAddress2, zrxAmount)).thenReturn(zrxTokenValue);
+
+        final List<TokenValueDto> result = fundService.getTotalFundsForRequest(requestId);
+
+        assertThat(result).containsExactlyInAnyOrder(fndTokenValue, zrxTokenValue);
+    }
+
+    @Test
+    public void getTotalFundsForRequest_CLAIMED() {
+        final long requestId = 6457L;
+        final Request request = RequestMother.fundRequestArea51().withStatus(RequestStatus.CLAIMED).build();
+        final IssueInformation issueInformation = request.getIssueInformation();
+        final String platform = issueInformation.getPlatform().name();
+        final String platformId = issueInformation.getPlatformId();
+        final String tokenAddress1 = "0x64576fg";
+        final String tokenAddress2 = "0x654fh987";
+        final BigDecimal fndAmount = new BigDecimal("324");
+        final BigDecimal zrxAmount = new BigDecimal("762");
+        final TokenValueDto fndTokenValue = TokenValueDtoMother.FND().totalAmount(fndAmount).build();
+        final TokenValueDto zrxTokenValue = TokenValueDtoMother.ZRX().totalAmount(zrxAmount).build();
+
+        when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
+        when(fundRequestContractsService.claimRepository().getTokenCount(platform, platformId)).thenReturn(2L);
+        when(fundRequestContractsService.claimRepository().getTokenByIndex(platform, platformId, 0L)).thenReturn(Optional.of(tokenAddress1));
+        when(fundRequestContractsService.claimRepository().getTokenByIndex(platform, platformId, 1L)).thenReturn(Optional.of(tokenAddress2));
+        when(fundRequestContractsService.claimRepository().getAmountByToken(platform, platformId, tokenAddress1)).thenReturn(fndAmount.toBigInteger());
+        when(fundRequestContractsService.claimRepository().getAmountByToken(platform, platformId, tokenAddress2)).thenReturn(zrxAmount.toBigInteger());
+        when(tokenValueMapper.map(tokenAddress1, fndAmount)).thenReturn(fndTokenValue);
+        when(tokenValueMapper.map(tokenAddress2, zrxAmount)).thenReturn(zrxTokenValue);
+
+        final List<TokenValueDto> result = fundService.getTotalFundsForRequest(requestId);
+
+        assertThat(result).containsExactlyInAnyOrder(fndTokenValue, zrxTokenValue);
     }
 
     private void verifyEventCreated(Long requestId, FundDto fundDto) {
