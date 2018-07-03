@@ -24,13 +24,13 @@ public class RefundValidator {
                && fund.isRefundable()
                && "FUNDED".equalsIgnoreCase(requestStatus)
                && fund.getFunderAddress().equalsIgnoreCase(userProfile.getEtherAddress())
-               && refundRequestAlreadyExists(requestId, userProfile.getEtherAddress());
+               && !refundRequestAlreadyExists(requestId, userProfile.getEtherAddress());
     }
 
     private boolean refundRequestAlreadyExists(final long requestId, final String userAddress) {
         return refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)
                             .stream()
                             .map(RefundRequestDto::getFunderAddress)
-                            .noneMatch(funderAddress -> funderAddress.equalsIgnoreCase(userAddress));
+                            .anyMatch(userAddress::equalsIgnoreCase);
     }
 }
