@@ -147,11 +147,13 @@
                                                 Refund pending
                                             </span>
 
+                                            <!--th:if="${profile ne null and fund.refundable-->
+                                            <!--and request.status.toUpperCase() eq 'FUNDED'-->
+                                            <!--and profile.etherAddressVerified-->
+                                            <!--and #strings.toLowerCase(fund.funderAddress) eq #strings.toLowerCase(profile.etherAddress)-->
+                                            <!--and not pendingRefundAddresses.contains(#strings.toLowerCase(fund.funderAddress))}">-->
                                             <form th:action="@{'/requests/' + ${request.id} + '/refunds'}" method="post" class="request-details__label-refund-form"
-                                                  th:if="${profile ne null and fund.refundable
-                                                                           and profile.etherAddressVerified
-                                                                           and #strings.toLowerCase(fund.funderAddress) eq #strings.toLowerCase(profile.etherAddress)
-                                                                           and not pendingRefundAddresses.contains(#strings.toLowerCase(fund.funderAddress))}">
+                                                  th:if="${#funds.isRefundable(profile, fund, request.id, request.status)}">
                                                 <input type="hidden" name="funder_address" th:value="${fund.funderAddress}"/>
                                                 <input type="submit" value="Request refund" class="btn btn-sm btn-block btn-primary"/>
                                             </form>
