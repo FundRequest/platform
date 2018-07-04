@@ -5,7 +5,7 @@
 		</div>
 		<a v-bind:href="project.projectLink">
 			<div class="project-request-details" :style="{ 'background': project.overviewColor }">
-				<div class="project-request-name"><b>{{ project.name }}</b></div>
+				<div class="project-request-name"><p><b>{{ project.name }}</b></p></div>
 				<div class="project-request-description"><p>{{ project.description }}</p></div>
 				<div class="request-count-container">
 					<hr />
@@ -93,16 +93,15 @@
 
 	.project-request-name {
 		margin-top: 1rem;
-		margin-left: 10%;
+		margin-left: 1rem;
 		text-align: left;
 		float: left;
 	}
 
 	.project-request-description {
-		margin-left: 10%;
+		margin-left: 1rem;
 		margin-bottom: 0.2rem;
 		line-height: 1rem;
-		height: 3rem;
 		clear: left;
 		text-align: left;
 		font-size: 0.8125rem;
@@ -114,8 +113,8 @@
 	}
 
 	.requestNumber {
-		margin-top: 0.5rem;
-		margin-left: 10%;
+		margin-top: 0.2rem;
+		margin-left: 1rem;
 		margin-right: 0.2rem;
 
 		padding: 0;
@@ -126,7 +125,7 @@
 	}
 
 	 .requestLabel {
-		margin-top: 0.9rem;
+		margin-top: 0.6rem;
 		margin-bottom: 0.3rem;
 		text-align: left;
 		line-height: 0.9rem;
@@ -136,11 +135,10 @@
 	}
 
 	.project-container {
-		margin-left: 10px;
-		margin-right: 10px;
+		margin: 0.625rem 0.625rem 0.625rem 0.625rem;
 		position: relative;
 		min-height: 9.357rem;
-		width: 9.357rem;
+		min-width: 9.357rem;
 		background: white;
 		border: 2px solid #7c7c7c;
 		overflow: hidden;

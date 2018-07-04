@@ -47,7 +47,7 @@
     }
 </script>
 
-<style>
+<style scoped>
 
 	.contained {
 		margin-top: 1.25rem;
