@@ -18,7 +18,7 @@ public class FundsAndRefundsAggregator {
     public List<UserFundsDto> aggregate(final List<FundsByFunderDto> fundsByFunder) {
 
         return fundsByFunder.stream()
-                            .collect(Collectors.groupingBy(funds -> funds.getFunderAddress() + funds.getFunderUserId(),
+                            .collect(Collectors.groupingBy(funds -> funds.getFunderAddress().toLowerCase() + funds.getFunderUserId(),
                                                            Collectors.mapping(mapToUserFundDto(), Collectors.reducing(mergeFundsAndRefunds()))))
                             .values()
                             .stream()

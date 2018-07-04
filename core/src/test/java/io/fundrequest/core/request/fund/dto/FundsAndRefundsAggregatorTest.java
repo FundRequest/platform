@@ -32,7 +32,7 @@ class FundsAndRefundsAggregatorTest {
         final FundsByFunderDto fundsByFunderDto1 = buildFundsByFunderDto(funder1UserId, funder1Address, "10", "20");
         final FundsByFunderDto fundsByFunderDto2 = buildFundsByFunderDto(funder2UserId, funder2Address, null, "-30");
         final FundsByFunderDto fundsByFunderDto3 = buildFundsByFunderDto(funder3UserId, funder3Address, "65", null);
-        final FundsByFunderDto fundsByFunderDto4 = buildFundsByFunderDto(funder1UserId, funder1Address, "-10", "-10");
+        final FundsByFunderDto fundsByFunderDto4 = buildFundsByFunderDto(funder1UserId, funder1Address.toUpperCase(), "-10", "-10");
         final FundsByFunderDto fundsByFunderDto5 = buildFundsByFunderDto(funder2UserId, funder2Address, null, "60");
         final FundsByFunderDto fundsByFunderDto6 = buildFundsByFunderDto(funder3UserId, funder3Address, "-35", null);
 
