@@ -65,10 +65,6 @@ export default class Utils {
 
     public static getJSON(url: string): Promise<any> {
         return $.getJSON(url).promise();
-        //return fetch(url, {credentials: 'same-origin'})
-        //    .then(Utils._handleHttpErrors)
-        //    .then(res => res ? res.json() : null)
-        //    .catch(err => null);
     }
 
     public static postJSON(url: string, body: any): Promise<any> {
@@ -86,15 +82,6 @@ export default class Utils {
             return $.post(url).promise();
         } else {
             return $.post(url, body).promise();
-            //return fetch(url, {
-            //    method: 'POST',
-            //    body: JSON.stringify(body),
-            //    credentials: 'same-origin',
-            //    headers: new Headers({
-            //        'Content-Type': 'application/json'
-            //    })
-            //}).then(res => res ? res.json() : null
-            //).catch(err => null);
         }
     }
 
