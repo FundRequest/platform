@@ -20,12 +20,12 @@ public class FundFundsByFunderAggregator extends AbstractFundsByFunderAggregator
 
     @Override
     protected String getFundedBy(Fund fund) {
-        return fund.getFunderAddress();
+        return fund.getFunderUserId();
     }
 
     @Override
     protected String getFunderAddress(Fund fund) {
-        return fund.getFunderUserId();
+        return fund.getFunderAddress();
     }
 
     @Override

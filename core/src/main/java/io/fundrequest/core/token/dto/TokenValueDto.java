@@ -34,7 +34,7 @@ public class TokenValueDto {
                                 .build();
         }
         if (tokenValue2 == null) {
-            TokenValueDto.builder()
+            return TokenValueDto.builder()
                          .tokenAddress(tokenValue1.getTokenAddress())
                          .tokenSymbol(tokenValue1.getTokenSymbol())
                          .totalAmount(tokenValue1.getTotalAmount())
