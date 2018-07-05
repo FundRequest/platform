@@ -3,6 +3,7 @@ package io.fundrequest.core.request.fund;
 import io.fundrequest.core.contract.service.FundRequestContractsService;
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.fiat.FiatService;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -305,5 +307,24 @@ class FundServiceImpl implements FundService {
                                                       .requestId(command.getRequestId())
                                                       .timestamp(command.getTimestamp())
                                                       .build());
+    }
+
+    @Override
+    public Optional<TokenValueDto> getFundsFor(final Long requestId, final String funderAddress, final String tokenAddress) {
+        return requestRepository.findOne(requestId)
+                                .map(request -> {
+                                    try {
+                                        final IssueInformation issueInformation = request.getIssueInformation();
+                                        final BigInteger amountFunded = fundRequestContractsService.fundRepository()
+                                                                                                   .amountFunded(issueInformation.getPlatform().name(),
+                                                                                                                 issueInformation.getPlatformId(),
+                                                                                                                 funderAddress,
+                                                                                                                 tokenAddress)
+                                                                                                   .send();
+                                        return tokenValueMapper.map(tokenAddress, new BigDecimal(amountFunded));
+                                    } catch (Exception e) {
+                                        return null;
+                                    }
+                                });
     }
 }

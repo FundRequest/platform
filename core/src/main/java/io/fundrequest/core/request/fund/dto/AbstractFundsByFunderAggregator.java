@@ -30,28 +30,11 @@ public abstract class AbstractFundsByFunderAggregator<T> {
     protected abstract Function<T, FundsByFunderDto> mapToFundsByFunderDto();
 
     private BinaryOperator<FundsByFunderDto> sumFunds() {
-        return (fundsByFunder, fundsByFunder2) -> FundsByFunderDto.builder()
-                                                                  .funderUserId(fundsByFunder.getFunderUserId())
-                                                                  .funderAddress(fundsByFunder.getFunderAddress())
-                                                                  .fndValue(sumTokenValue(fundsByFunder.getFndValue(), fundsByFunder2.getFndValue()))
-                                                                  .otherValue(sumTokenValue(fundsByFunder.getOtherValue(), fundsByFunder2.getOtherValue()))
+        return (fundsByFunder1, fundsByFunder2) -> FundsByFunderDto.builder()
+                                                                  .funderUserId(fundsByFunder1.getFunderUserId())
+                                                                  .funderAddress(fundsByFunder1.getFunderAddress())
+                                                                  .fndValue(TokenValueDto.sum(fundsByFunder1.getFndValue(), fundsByFunder2.getFndValue()))
+                                                                  .otherValue(TokenValueDto.sum(fundsByFunder1.getOtherValue(), fundsByFunder2.getOtherValue()))
                                                                   .build();
-    }
-
-    private TokenValueDto sumTokenValue(final TokenValueDto value1, final TokenValueDto value2) {
-        if (value1 == null && value2 == null) {
-            return null;
-        }
-        if (value1 == null) {
-            return value2;
-        }
-        if (value2 == null) {
-            return value1;
-        }
-        return TokenValueDto.builder()
-                            .tokenAddress(value1.getTokenAddress())
-                            .tokenSymbol(value1.getTokenSymbol())
-                            .totalAmount(value1.getTotalAmount().add(value2.getTotalAmount()))
-                            .build();
     }
 }
