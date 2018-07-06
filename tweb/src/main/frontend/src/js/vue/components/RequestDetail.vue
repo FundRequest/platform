@@ -32,7 +32,7 @@
             ListFilter
         }
     })
-    export default class RequestList extends Vue {
+    export default class RequestDetail extends Vue {
         @Prop() filters: ListFilterDto[];
         @Prop() faseFilterDefault: string;
         @Prop({required: true}) request!: any;
@@ -41,6 +41,7 @@
         public faseFilter: string = "all";
 
         public mounted() {
+            this.setFaseFilter(this.faseFilterDefault)
             this._request = Object.assign(new RequestDto, this.request);
             if(this._request.platform.toUpperCase() == 'GITHUB') {
                 this.filters.push(Object.assign(new ListFilterDto(), {

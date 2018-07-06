@@ -83,10 +83,11 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests")
-    public ModelAndView requests() {
+    public ModelAndView requests(@RequestParam Map<String, String> queryParameters) {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
         final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
         return modelAndView().withObject("requestsPerFaseCount", requestsPerFaseCount)
+                             .withObject("faseQuery", getAsJson(queryParameters.get("fase")))
                              .withObject("requests", getAsJson(requests))
                              .withObject("statistics", statisticsService.getStatistics())
                              .withObject("projects", getAsJson(requestService.findAllProjects()))

@@ -78,7 +78,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-	import {EventBus} from "../EventBus";
+	  import {EventBus} from "../EventBus";
     import vSelect from "vue-select";
     import FndSelect from "./form/FndSelect";
     import ListFilter from "./ListFilter";
@@ -100,9 +100,10 @@
     export default class RequestList extends Vue {
         @Prop() filters: ListFilterDto[];
         @Prop() faseFilterDefault: string;
+        @Prop() faseFilterQuery: string;
         @Prop() technologies: string[];
         @Prop() projects: string[];
-		@Prop() isAuthenticated: boolean;
+        @Prop() isAuthenticated: boolean;
         @Prop({required: true}) requests: RequestDto[];
 
         public sorting: Array<{ title: string, value: { value: string, asc: boolean } }> = [{
@@ -138,7 +139,9 @@
 				this.requestList.updateWithRequest(request);
 			});
 
-            this._filterItems(this.listFilter, this.sortBy);
+            let queriedFaseExists = this.filters.some(filter => filter.value == this.faseFilterQuery);
+            this.setFaseFilter(queriedFaseExists ? this.faseFilterQuery : this.faseFilterDefault)
+
             if(this.technologies) {
                 this.technologiesSelect = this.technologies.sort();
             }

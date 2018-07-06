@@ -37,15 +37,16 @@
     </section>
 
     <section class="mb-5">
-		<request-list th:attr="'v-bind:requests'=${requests},
-                'v-bind:projects'=${projects},
-                'v-bind:technologies'=${technologies},
-				'v-bind:is-authenticated'=${isAuthenticated},
-                'v-bind:filters'='[
-                    { value: &quot;open&quot;, count: '+${requestsPerFaseCount['OPEN']}+', title: &quot;Open&quot;, description: &quot;Showing an overview of all open requests.&quot; },
-                    { value: &quot;resolved&quot;, count: '+${requestsPerFaseCount['RESOLVED']}+', title: &quot;Resolved&quot;, description: &quot;Showing an overview of all resolved requests.&quot; },
-                    { value: &quot;closed&quot;, count: '+${requestsPerFaseCount['CLOSED']}+', title: &quot;Closed&quot;, description: &quot;Showing an overview of all closed requests.&quot; },
-                 ]' "
+		    <request-list th:attr="'v-bind:requests'=${requests},
+                               'v-bind:projects'=${projects},
+                               'v-bind:technologies'=${technologies},
+				                       'v-bind:is-authenticated'=${isAuthenticated},
+                               'v-bind:filters'='[
+                               { value: &quot;open&quot;, count: '+${requestsPerFaseCount['OPEN']}+', title: &quot;Open&quot;, description: &quot;Showing an overview of all open requests.&quot; },
+                               { value: &quot;resolved&quot;, count: '+${requestsPerFaseCount['RESOLVED']}+', title: &quot;Resolved&quot;, description: &quot;Showing an overview of all resolved requests.&quot; },
+                               { value: &quot;closed&quot;, count: '+${requestsPerFaseCount['CLOSED']}+', title: &quot;Closed&quot;, description: &quot;Showing an overview of all closed requests.&quot; },
+                               ]',
+                               'v-bind:fase-filter-query'=${faseQuery}"
                       :fase-filter-default="'open'"
         >
             <template slot-scope="{faseFilter}">
