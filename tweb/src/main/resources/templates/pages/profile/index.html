@@ -75,6 +75,25 @@
                 </div>
             </div>
 
+            <div class="card mb-5" th:if="${@environment.getProperty('io.fundrequest.ethereum.network') eq '42'}">
+                <a class="anchor" id="faucet"></a>
+                <h5 class="card-header card-header--label">
+                    <span>FundRequest Faucet</span>
+                    <small class="text-muted">Get your (test) FND here!</small>
+                </h5>
+                <div class="card-body text-center">
+                    <div class="card-text text-center">
+                       <faucet th:attr="'v-bind:name'='&quot;eth-address&quot;','v-bind:address'=${'&quot;'+profile.getEtherAddress()+'&quot;'}"></faucet>
+                        <div class="text-secondary font-weight-bold"
+                             th:classappend="${profile.hadEtherAddress() ? 'd-none' : ''}"
+                             data-edit-empty-message="eth-address">
+                            Please enter your ETH address above, in order to receive to receive test FND.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <section class="mb-2" id="faq" ref="faq">
                 <faq v-bind:location="'/rest/faq/profile'"></faq>
             </section>
