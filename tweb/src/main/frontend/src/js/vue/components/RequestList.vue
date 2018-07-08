@@ -141,7 +141,7 @@
 			      });
 
             let queriedFaseExists = this.filters.some(filter => filter.value == this.faseFilterQuery);
-            this.setFaseFilter(queriedFaseExists ? this.faseFilterQuery : this.faseFilterDefault)
+            this.setFaseFilter(queriedFaseExists ? this.faseFilterQuery : this.faseFilterDefault);
 
             let queriedProjectExists = this.projects.some(project => project.toLowerCase() == this.projectsQuery.toLowerCase());
             if (queriedProjectExists) { this.setProjectFilter(this.projectsQuery); }

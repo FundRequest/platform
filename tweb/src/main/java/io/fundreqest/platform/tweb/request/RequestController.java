@@ -198,6 +198,7 @@ public class RequestController extends AbstractController {
         final List<PendingFundDto> pendingFunds = pendingFundService.findByUser(principal);
         return modelAndView()
                 .withObject("requests", getAsJson(requests))
+                .withObject("projects", getAsJson(requestService.findAllProjects()))
                 .withObject("pendingFunds", getAsJson(pendingFunds))
                 .withObject("isAuthenticated", getAsJson(securityContextService.isUserFullyAuthenticated()))
                 .withObject("faseQuery", getAsJson(queryParameters.get("fase")))
