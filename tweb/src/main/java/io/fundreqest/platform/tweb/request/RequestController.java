@@ -91,6 +91,7 @@ public class RequestController extends AbstractController {
                              .withObject("requests", getAsJson(requests))
                              .withObject("statistics", statisticsService.getStatistics())
                              .withObject("projects", getAsJson(requestService.findAllProjects()))
+                             .withObject("projectsQuery", getAsJson(queryParameters.get("projects")))
                              .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
                              .withObject("isAuthenticated", getAsJson(securityContextService.isUserFullyAuthenticated()))
                              .withView("pages/requests/index")

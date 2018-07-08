@@ -46,7 +46,8 @@
                                { value: &quot;resolved&quot;, count: '+${requestsPerFaseCount['RESOLVED']}+', title: &quot;Resolved&quot;, description: &quot;Showing an overview of all resolved requests.&quot; },
                                { value: &quot;closed&quot;, count: '+${requestsPerFaseCount['CLOSED']}+', title: &quot;Closed&quot;, description: &quot;Showing an overview of all closed requests.&quot; },
                                ]',
-                               'v-bind:fase-filter-query'=${faseQuery}"
+                               'v-bind:fase-filter-query'=${faseQuery},
+                               'v-bind:projects-query'=${projectsQuery}"
                       :fase-filter-default="'open'"
         >
             <template slot-scope="{faseFilter}">

@@ -103,6 +103,7 @@
         @Prop() faseFilterQuery: string;
         @Prop() technologies: string[];
         @Prop() projects: string[];
+        @Prop() projectsQuery: string;
         @Prop() isAuthenticated: boolean;
         @Prop({required: true}) requests: RequestDto[];
 
@@ -135,12 +136,15 @@
             this.sortBy = this.sorting[1].value;
             this.requestList = new RequestListModel(this.requests);
 
-			EventBus.$on("request-update", request => {
-				this.requestList.updateWithRequest(request);
-			});
+			      EventBus.$on("request-update", request => {
+				      this.requestList.updateWithRequest(request);
+			      });
 
             let queriedFaseExists = this.filters.some(filter => filter.value == this.faseFilterQuery);
             this.setFaseFilter(queriedFaseExists ? this.faseFilterQuery : this.faseFilterDefault)
+
+            let queriedProjectExists = this.projects.some(project => project.toLowerCase() == this.projectsQuery.toLowerCase());
+            if (queriedProjectExists) { this.setProjectFilter(this.projectsQuery); }
 
             if(this.technologies) {
                 this.technologiesSelect = this.technologies.sort();
