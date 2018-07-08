@@ -87,13 +87,13 @@ public class RequestController extends AbstractController {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
         final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
         return modelAndView().withObject("requestsPerFaseCount", requestsPerFaseCount)
-                             .withObject("faseQuery", getAsJson(queryParameters.get("fase")))
                              .withObject("requests", getAsJson(requests))
                              .withObject("statistics", statisticsService.getStatistics())
                              .withObject("projects", getAsJson(requestService.findAllProjects()))
-                             .withObject("projectsQuery", getAsJson(queryParameters.get("projects")))
                              .withObject("technologies", getAsJson(requestService.findAllTechnologies()))
                              .withObject("isAuthenticated", getAsJson(securityContextService.isUserFullyAuthenticated()))
+                             .withObject("faseQuery", getAsJson(queryParameters.get("fase")))
+                             .withObject("projectsQuery", getAsJson(queryParameters.get("projects")))
                              .withView("pages/requests/index")
                              .build();
     }
@@ -193,13 +193,15 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/user/requests")
-    public ModelAndView userRequests(Principal principal) {
+    public ModelAndView userRequests(Principal principal, @RequestParam Map<String, String> queryParameters) {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findRequestsForUser(principal));
         final List<PendingFundDto> pendingFunds = pendingFundService.findByUser(principal);
         return modelAndView()
                 .withObject("requests", getAsJson(requests))
                 .withObject("pendingFunds", getAsJson(pendingFunds))
                 .withObject("isAuthenticated", getAsJson(securityContextService.isUserFullyAuthenticated()))
+                .withObject("faseQuery", getAsJson(queryParameters.get("fase")))
+                .withObject("projectsQuery", getAsJson(queryParameters.get("projects")))
                 .withView("pages/user/requests")
                 .build();
     }
