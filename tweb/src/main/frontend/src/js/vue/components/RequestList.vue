@@ -100,9 +100,11 @@
     export default class RequestList extends Vue {
         @Prop() filters: ListFilterDto[];
         @Prop() phaseFilterDefault: string;
+        @Prop() phaseFilterQuery: string;
         @Prop() technologies: string[];
         @Prop() projects: string[];
-		@Prop() isAuthenticated: boolean;
+        @Prop() projectsQuery: string;
+        @Prop() isAuthenticated: boolean;
         @Prop({required: true}) requests: RequestDto[];
 
         public sorting: Array<{ title: string, value: { value: string, asc: boolean } }> = [{
@@ -134,11 +136,16 @@
             this.sortBy = this.sorting[1].value;
             this.requestList = new RequestListModel(this.requests);
 
-			EventBus.$on("request-update", request => {
-				this.requestList.updateWithRequest(request);
-			});
+			      EventBus.$on("request-update", request => {
+				      this.requestList.updateWithRequest(request);
+			      });
 
-            this._filterItems(this.listFilter, this.sortBy);
+            let queriedPhaseExists = this.filters.some(filter => filter.value == this.phaseFilterQuery);
+            this.setPhaseFilter(queriedPhaseExists ? this.phaseFilterQuery : this.phaseFilterDefault);
+
+            let queriedProjectExists = this.projects.some(project => project.toLowerCase() == this.projectsQuery.toLowerCase());
+            if (queriedProjectExists) { this.setProjectFilter(this.projectsQuery); }
+
             if(this.technologies) {
                 this.technologiesSelect = this.technologies.sort();
             }

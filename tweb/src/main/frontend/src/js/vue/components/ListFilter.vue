@@ -15,7 +15,7 @@
                            v-html="filter.title">
                             Filter by
                         </a>
-                        <a v-if="!filter.url" class="nav-link" v-bind:href="`#${filter.value}`"
+                        <a v-if="!filter.url" class="nav-link"
                            v-on:click="updateFilter(filter.value)">
                             <span v-html="filter.title"></span>
                             <span class="badge badge-pill badge--filter" v-if="filter.count > 0">{{filter.count}}</span>
@@ -36,22 +36,12 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
     import ListFilterDto from "../dtos/ListFilterDto";
-    import {EventBus} from "../EventBus";
-    import Utils from "../../classes/Utils";
 
     @Component
     export default class ListFilter extends Vue {
         @Prop() active: string;
         @Prop() default: string;
         @Prop() filters: ListFilterDto[];
-
-        mounted() {
-            EventBus.$on("hashchange", () => {
-                this.updateFilter(Utils.getLocationHashValue());
-            });
-            let hash = Utils.getLocationHashValue();
-            this.updateFilter(hash ? hash : this.default ? this.default : this.active);
-        }
 
         public updateFilter(value) {
             if (value.length > 0) {
