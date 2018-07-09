@@ -26,9 +26,9 @@ export default class RequestsList {
         let regex = new RegExp(filter.search, 'i');
         return requests.filter((request: RequestDto) => {
             let valid;
-            valid = filter.fase == 'all';
-            valid = valid || (filter.fase == 'starred' && request.starred);
-            valid = valid || (filter.fase == request.fase.toLowerCase());
+            valid = filter.phase == 'all';
+            valid = valid || (filter.phase == 'starred' && request.starred);
+            valid = valid || (filter.phase == request.phase.toLowerCase());
             valid = valid && (isProjectAlwaysValid || filter.project.toLowerCase() == request.owner.toLowerCase());
             valid = valid && (isSearchAlwaysValid
                              || (filter.search.length >= 3 && request.title.match(regex))

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.HOURS;
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Configuration
 @EnableCaching
@@ -40,7 +41,8 @@ public class CachingConfig {
                                         buildCache("projects", 7, DAYS),
                                         buildCache("technologies", 7, DAYS),
                                         buildCache("statistics", 7, DAYS),
-                                        new CaffeineCache("faqs", Caffeine.newBuilder().build())));
+                                        new CaffeineCache("faqs", Caffeine.newBuilder().build()),
+                                        buildCache("github_issues", 7, SECONDS)));
         return manager;
     }
 

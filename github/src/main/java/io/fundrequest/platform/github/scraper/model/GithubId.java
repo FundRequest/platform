@@ -29,4 +29,17 @@ public class GithubId {
         }
         return Optional.empty();
     }
+
+    public static Optional<GithubId> fromPlatformId(final String platformId) {
+        final Pattern pattern = Pattern.compile("^(?<owner>.+)\\|FR\\|(?<repo>.+)\\|FR\\|(?<number>\\d+)$");
+        final Matcher matcher = pattern.matcher(platformId);
+        if (matcher.matches()) {
+            return Optional.of(GithubId.builder()
+                                       .owner(matcher.group("owner"))
+                                       .repo(matcher.group("repo"))
+                                       .number(matcher.group("number"))
+                                       .build());
+        }
+        return Optional.empty();
+    }
 }

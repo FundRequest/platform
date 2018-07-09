@@ -31,7 +31,7 @@ public class RequestViewMapper implements BaseMapper<RequestDto, RequestView> {
                           .platform(r.getIssueInformation().getPlatform().name())
                           .title(r.getIssueInformation().getTitle())
                           .status(enumToCapitalizedStringMapper.map(r.getStatus()))
-                          .fase(enumToCapitalizedStringMapper.map(r.getStatus().getFase()))
+                          .phase(enumToCapitalizedStringMapper.map(r.getStatus().getPhase()))
                           .starred(r.isLoggedInUserIsWatcher())
                           .technologies(r.getTechnologies())
                           .funds(r.getFunds())

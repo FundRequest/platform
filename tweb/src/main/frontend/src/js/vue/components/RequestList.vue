@@ -1,13 +1,13 @@
 <template>
     <section class="request-list">
         <list-filter
-                v-bind:active="listFilter.fase"
-                v-bind:default="faseFilterDefault"
+                v-bind:active="listFilter.phase"
+                v-bind:default="phaseFilterDefault"
                 v-bind:filters="filters"
-                v-on:update="setFaseFilter"
+                v-on:update="setPhaseFilter"
         />
 
-        <slot v-bind:faseFilter="listFilter.fase"></slot>
+        <slot v-bind:phaseFilter="listFilter.phase"></slot>
 
         <div class="request-list__options" v-if="!isEmpty">
             <div class="row">
@@ -78,7 +78,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-	import {EventBus} from "../EventBus";
+    import {EventBus} from "../EventBus";
     import vSelect from "vue-select";
     import FndSelect from "./form/FndSelect";
     import ListFilter from "./ListFilter";
@@ -99,7 +99,7 @@
     })
     export default class RequestList extends Vue {
         @Prop() filters: ListFilterDto[];
-        @Prop() faseFilterDefault: string;
+        @Prop() phaseFilterDefault: string;
         @Prop() technologies: string[];
         @Prop() projects: string[];
 		@Prop() isAuthenticated: boolean;
@@ -127,7 +127,7 @@
             search: null,
             tech: [],
             project: null,
-            fase: "all"
+            phase: "all"
         });
 
         mounted() {
@@ -144,9 +144,9 @@
             }
         }
 
-        public setFaseFilter(fase: string) {
+        public setPhaseFilter(phase: string) {
             let filter: RequestListFilter = this.listFilter;
-            filter.fase = fase;
+            filter.phase = phase;
             this.listFilter = filter;
             this._filterItems(filter, this.sortBy);
         }
