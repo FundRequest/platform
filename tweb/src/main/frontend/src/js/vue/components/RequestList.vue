@@ -79,6 +79,7 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
     import {EventBus} from "../EventBus";
+    import Utils from "../../classes/Utils";  
     import vSelect from "vue-select";
     import FndSelect from "./form/FndSelect";
     import ListFilter from "./ListFilter";
@@ -102,7 +103,7 @@
         @Prop() phaseFilterDefault: string;
         @Prop() technologies: string[];
         @Prop() projects: string[];
-		@Prop() isAuthenticated: boolean;
+        @Prop() isAuthenticated: boolean;
         @Prop({required: true}) requests: RequestDto[];
 
         public sorting: Array<{ title: string, value: { value: string, asc: boolean } }> = [{
@@ -145,6 +146,7 @@
         }
 
         public setPhaseFilter(phase: string) {
+            Utils.setQueryParam("phase", phase);
             let filter: RequestListFilter = this.listFilter;
             filter.phase = phase;
             this.listFilter = filter;

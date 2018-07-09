@@ -33,6 +33,19 @@ export default class Utils {
         return window.location.hash ? window.location.hash.split('#')[1] : '';
     }
 
+    public static setQueryParam(key, value) {
+        let url: URL = new URL(location.href);
+        let query: URLSearchParams = url.searchParams;
+        query.set(key, value);
+        url.search = query.toString();
+        history.replaceState(null, null, url.toString());
+    }
+
+    public static getQueryParam(key) {
+        let query: URLSearchParams = new URL(location.href).searchParams;
+        return query.get(key) || "";
+    }
+
     public static getNewWindow(url, widthPopup, heightPopup) {
         let left = (screen.width / 2) - (widthPopup / 2);
         let top = (screen.height / 2) - (heightPopup / 2);
