@@ -46,6 +46,8 @@ public class GithubScraperTest {
 
         final GithubIssue returnedIssue = scraper.fetchGithubIssue(owner, repo, number);
 
+        assertThat(returnedIssue.getOwner()).isEqualTo(owner);
+        assertThat(returnedIssue.getRepo()).isEqualTo(repo);
         assertThat(returnedIssue.getNumber()).isEqualTo(number);
         assertThat(returnedIssue.getSolver()).isEqualTo(expectedSolver);
         assertThat(returnedIssue.getStatus()).isEqualTo(expectedStatus);

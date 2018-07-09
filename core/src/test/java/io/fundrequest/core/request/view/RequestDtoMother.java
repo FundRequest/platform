@@ -19,9 +19,9 @@ public final class RequestDtoMother {
 
     public static RequestDto freeCodeCampNoUserStories() {
         return mapper.map(RequestMother.freeCodeCampNoUserStories()
-                .but()
-                .withId(Math.abs(UUID.randomUUID().getMostSignificantBits()))
-                .build());
+                                       .but()
+                                       .withId(Math.abs(UUID.randomUUID().getMostSignificantBits()))
+                                       .build());
     }
 
     public static RequestDto fundRequestArea51() {
