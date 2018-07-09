@@ -42,16 +42,16 @@
                                'v-bind:technologies'=${technologies},
 				                       'v-bind:is-authenticated'=${isAuthenticated},
                                'v-bind:filters'='[
-                               { value: &quot;open&quot;, count: '+${requestsPerFaseCount['OPEN']}+', title: &quot;Open&quot;, description: &quot;Showing an overview of all open requests.&quot; },
-                               { value: &quot;resolved&quot;, count: '+${requestsPerFaseCount['RESOLVED']}+', title: &quot;Resolved&quot;, description: &quot;Showing an overview of all resolved requests.&quot; },
-                               { value: &quot;closed&quot;, count: '+${requestsPerFaseCount['CLOSED']}+', title: &quot;Closed&quot;, description: &quot;Showing an overview of all closed requests.&quot; },
+                               { value: &quot;open&quot;, count: '+${requestsPerPhaseCount['OPEN']}+', title: &quot;Open&quot;, description: &quot;Showing an overview of all open requests.&quot; },
+                               { value: &quot;resolved&quot;, count: '+${requestsPerPhaseCount['RESOLVED']}+', title: &quot;Resolved&quot;, description: &quot;Showing an overview of all resolved requests.&quot; },
+                               { value: &quot;closed&quot;, count: '+${requestsPerPhaseCount['CLOSED']}+', title: &quot;Closed&quot;, description: &quot;Showing an overview of all closed requests.&quot; },
                                ]',
-                               'v-bind:fase-filter-query'=${faseQuery},
+                               'v-bind:phase-filter-query'=${phaseQuery},
                                'v-bind:projects-query'=${projectsQuery}"
-                      :fase-filter-default="'open'"
+                      :phase-filter-default="'open'"
         >
-            <template slot-scope="{faseFilter}">
-                <div class="card mb-5" v-if="faseFilter === 'open'">
+            <template slot-scope="{phaseFilter}">
+                <div class="card mb-5" v-if="phaseFilter === 'open'">
                     <div class="card-body">
                         <div class="row request-list__statistics">
                             <div class="col-12 col-md-4 request-list__statistic">

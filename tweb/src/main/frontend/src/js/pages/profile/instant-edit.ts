@@ -108,6 +108,13 @@ export class InstantEdit {
             .then(() => {
                 self._hideError(field, name);
                 Alert.success(`${title} saved!`);
+                document.dispatchEvent(new CustomEvent("fnd:input-changed",
+                    {
+                        detail: {
+                            name: name,
+                            value: field.value
+                        }
+                    }));
             })
             .catch(() => {
                 this._showError(field, name, 'Something went wrong.');

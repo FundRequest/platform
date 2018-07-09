@@ -1,13 +1,13 @@
 <template>
     <section class="request-details">
         <list-filter
-                v-bind:active="faseFilter"
-                v-bind:default="faseFilterDefault"
+                v-bind:active="phaseFilter"
+                v-bind:default="phaseFilterDefault"
                 v-bind:filters="filters"
-                v-on:update="setFaseFilter"
+                v-on:update="setPhaseFilter"
         />
 
-        <slot v-bind:faseFilter="faseFilter"></slot>
+        <slot v-bind:phaseFilter="phaseFilter"></slot>
     </section>
 </template>
 
@@ -34,14 +34,14 @@
     })
     export default class RequestDetail extends Vue {
         @Prop() filters: ListFilterDto[];
-        @Prop() faseFilterDefault: string;
+        @Prop() phaseFilterDefault: string;
         @Prop({required: true}) request!: any;
 
         private _request: RequestDto;
-        public faseFilter: string = "all";
+        public phaseFilter: string = "all";
 
         public mounted() {
-            this.setFaseFilter(this.faseFilterDefault)
+            this.setPhaseFilter(this.phaseFilterDefault)
             this._request = Object.assign(new RequestDto, this.request);
             if(this._request.platform.toUpperCase() == 'GITHUB') {
                 this.filters.push(Object.assign(new ListFilterDto(), {
@@ -53,8 +53,8 @@
             }
         }
 
-        public setFaseFilter(faseFilter: string) {
-            this.faseFilter = faseFilter;
+        public setPhaseFilter(phaseFilter: string) {
+            this.phaseFilter = phaseFilter;
         }
 
     }
