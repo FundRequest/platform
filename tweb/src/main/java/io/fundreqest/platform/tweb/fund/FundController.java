@@ -79,10 +79,6 @@ public class FundController extends AbstractController {
     private boolean isValid(final RedirectBuilder redirectBuilder, final Principal principal, final Long requestId, final String funderAddress) {
         boolean errors = false;
         final UserProfile userProfile = profileService.getUserProfile(principal);
-        if (!userProfile.isEtherAddressVerified()) {
-            redirectBuilder.withDangerMessage("You need to validate your ETH address before you can request refunds. You can do this on your <a href='/profile'>profile</a> page.");
-            errors = true;
-        }
         if (!StringUtils.equalsIgnoreCase(funderAddress, userProfile.getEtherAddress())) {
             redirectBuilder.withDangerMessage("Your request for a refund is not allowed because the address used to fund does not match the address on your profile.");
             errors = true;

@@ -103,27 +103,6 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
     }
 
     @Test
-    public void requestRefund_notAddressNotVerified() throws Exception {
-        final long requestId = 38L;
-        final RequestDto request = RequestDtoMother.fundRequestArea51();
-        request.setStatus(RequestStatus.FUNDED);
-        final String funderAddress = "0x24356789";
-
-        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddress(funderAddress).etherAddressVerified(false).build());
-        when(requestService.findRequest(requestId)).thenReturn(request);
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder().funderAddress("0xeab43f").build()));
-
-        mockMvc.perform(post("/requests/{request-id}/refunds", requestId).principal(principal).param("funder_address", funderAddress))
-               .andExpect(status().is3xxRedirection())
-               .andExpect(redirectAlert("danger",
-                                        "You need to validate your ETH address before you can request refunds. You can do this on your <a href='/profile'>profile</a> page."))
-               .andExpect(redirectedUrl("/requests/38#details"));
-
-        verify(refundService).findAllRefundRequestsFor(requestId, PENDING, APPROVED);
-        verifyNoMoreInteractions(refundService);
-    }
-
-    @Test
     public void requestRefund_statusNotFunded() throws Exception {
         final long requestId = 38L;
         final RequestDto request = RequestDtoMother.fundRequestArea51();
