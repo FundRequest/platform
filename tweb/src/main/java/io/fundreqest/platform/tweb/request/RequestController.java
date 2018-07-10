@@ -177,6 +177,7 @@ public class RequestController extends AbstractController {
             final IssueInformationDto issueInformation = request.getIssueInformation();
             return modelAndView().withObject("userClaimable", requestService.getUserClaimableResult(principal, id))
                                  .withObject("request", request)
+                                 .withObject("isAuthenticated", getAsJson(securityContextService.isUserFullyAuthenticated()))
                                  .withObject("platformIssue", platformIssueService.findBy(issueInformation.getPlatform(), issueInformation.getPlatformId())
                                                                                   .orElseThrow(ResourceNotFoundException::new))
                                  .withView("pages/requests/detail-actions :: details")
