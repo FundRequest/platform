@@ -112,7 +112,7 @@ class FundServiceImpl implements FundService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "funds", key = "#requestId")
+    @Cacheable(value = "funds", key = "#requestId", unless = "#result.isEmpty()")
     public List<TokenValueDto> getTotalFundsForRequest(Long requestId) {
 
         final Optional<Request> one = requestRepository.findOne(requestId);

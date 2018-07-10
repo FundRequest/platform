@@ -1,0 +1,17 @@
+.modal-content.swal2-popup {
+    .swal2-title,
+    .swal2-content {
+        font-family: $font-family-base;
+        font-weight: $font-weight-normal;
+    }
+
+    .swal2-title {
+        color: $primary-color;
+        font-size: $font-size-lg;
+    }
+
+    .swal2-content {
+        font-size: $font-size-base;
+        color: $body-color;
+    }
+}

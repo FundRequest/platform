@@ -7,6 +7,8 @@ import io.fundreqest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.infrastructure.SecurityContextService;
 import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.core.platform.PlatformIssueDto;
+import io.fundrequest.core.platform.PlatformIssueService;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
@@ -22,6 +24,7 @@ import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.fund.dto.RefundRequestDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
 import io.fundrequest.core.request.statistics.dto.StatisticsDto;
+import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.core.token.dto.TokenValueDto;
@@ -37,11 +40,12 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.APPROVED;
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.PENDING;
-import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -66,6 +70,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
     private FiatService fiatService;
     private ObjectMapper objectMapper;
     private Mappers mappers;
+    private PlatformIssueService platformIssueService;
 
     @Override
     protected RequestController setupController() {
@@ -80,17 +85,21 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         refundService = mock(RefundService.class);
         claimService = mock(ClaimService.class);
         fiatService = mock(FiatService.class);
+        platformIssueService = mock(PlatformIssueService.class);
         objectMapper = spy(new ObjectMapper());
         mappers = mock(Mappers.class);
-        return new RequestController(securityContextService,requestService,
-                pendingFundService,
-                statisticsService,
-                profileService,
-                fundService,
-                refundService,claimService,
-                fiatService,
-                objectMapper,
-                mappers);
+        return new RequestController(securityContextService,
+									 requestService,
+                                     pendingFundService,
+                                     statisticsService,
+                                     profileService,
+                                     fundService,
+                                     refundService,
+                                     claimService,
+                                     fiatService,
+                                     platformIssueService,
+                                     objectMapper,
+                                     mappers);
     }
 
     @Test
@@ -202,7 +211,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         this.mockMvc.perform(get("/requests/{id}/badge", 654L).principal(principal))
                     .andExpect(MockMvcResultMatchers.header().string(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue()))
                     .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.model().attribute("requestFase", request.getStatus().getFase()))
+                    .andExpect(MockMvcResultMatchers.model().attribute("requestPhase", request.getStatus().getPhase()))
                     .andExpect(MockMvcResultMatchers.model().attribute("highestFunds", otherFunds))
                     .andExpect(MockMvcResultMatchers.view().name("requests/badge.svg"));
     }
@@ -229,23 +238,28 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         this.mockMvc.perform(get("/requests/{id}/badge", 654L).principal(principal))
                     .andExpect(MockMvcResultMatchers.header().string(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue()))
                     .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.model().attribute("requestFase", request.getStatus().getFase()))
+                    .andExpect(MockMvcResultMatchers.model().attribute("requestPhase", request.getStatus().getPhase()))
                     .andExpect(MockMvcResultMatchers.model().attribute("highestFunds", fndFunds))
                     .andExpect(MockMvcResultMatchers.view().name("requests/badge.svg"));
     }
 
     @Test
     public void detailActions() throws Exception {
-        RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
+        final RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
+        final IssueInformationDto issueInformation = request.getIssueInformation();
+        final UserClaimableDto userClaimableDto = mock(UserClaimableDto.class);
+        final PlatformIssueDto platformIssue = mock(PlatformIssueDto.class);
+
         when(requestService.findRequest(1L)).thenReturn(request);
-        UserClaimableDto userClaimableDto = UserClaimableDto.builder().build();
         when(requestService.getUserClaimableResult(principal, 1L)).thenReturn(userClaimableDto);
+        when(platformIssueService.findBy(issueInformation.getPlatform(), issueInformation.getPlatformId())).thenReturn(Optional.of(platformIssue));
 
         this.mockMvc.perform(get("/requests/{id}/actions", 1L).principal(principal))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail-actions :: details"))
-                .andExpect(MockMvcResultMatchers.model().attribute("request", request))
-                .andExpect(MockMvcResultMatchers.model().attribute("userClaimable", userClaimableDto));
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail-actions :: details"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("request", sameInstance(request)))
+                    .andExpect(MockMvcResultMatchers.model().attribute("userClaimable", sameInstance(userClaimableDto)))
+                    .andExpect(MockMvcResultMatchers.model().attribute("platformIssue", sameInstance(platformIssue)));
     }
 
     @Test

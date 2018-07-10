@@ -6,18 +6,18 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum RequestStatus {
-    OPEN(RequestFase.OPEN),
-    FUNDED(RequestFase.OPEN),
-    CLAIMABLE(RequestFase.RESOLVED),
-    CLAIM_REQUESTED(RequestFase.RESOLVED),
-    CLAIM_APPROVED(RequestFase.RESOLVED),
-    CLAIMED(RequestFase.CLOSED),
+    OPEN(RequestPhase.OPEN),
+    FUNDED(RequestPhase.OPEN),
+    CLAIMABLE(RequestPhase.RESOLVED),
+    CLAIM_REQUESTED(RequestPhase.RESOLVED),
+    CLAIM_APPROVED(RequestPhase.RESOLVED),
+    CLAIMED(RequestPhase.CLOSED),
 
-    IN_PROGRESS(RequestFase.OPEN),
-    CLOSED(RequestFase.CLOSED),
-    CANCELLED(RequestFase.CLOSED),
-    RESOLVED(RequestFase.RESOLVED),
-    UNRESOLVED(RequestFase.OPEN);
+    IN_PROGRESS(RequestPhase.OPEN),
+    CLOSED(RequestPhase.CLOSED),
+    CANCELLED(RequestPhase.CLOSED),
+    RESOLVED(RequestPhase.RESOLVED),
+    UNRESOLVED(RequestPhase.OPEN);
 
-    private final RequestFase fase;
+    private final RequestPhase phase;
 }
