@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class FundDto {
     private Long id;
     private String funderAddress;
+    private String funderUserId;
     private TokenValueDto tokenValue;
     private Long requestId;
     private LocalDateTime timestamp;

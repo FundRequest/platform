@@ -76,25 +76,6 @@ class RefundValidatorTest {
         assertThat(result).isFalse();
     }
 
-    @Test
-    void isRefundable_userEtherAddressNotVerified() {
-        final String userEtherAddress = "0xeab4";
-        final UserFundsDto fund = buildUserFundsDto(userEtherAddress, "20", "", "", "");
-        final long requestId = 35L;
-        final String requestStatus = "Funded";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(false).etherAddress(userEtherAddress).build();
-        final TokenValueDto totalFndOnContract = TokenValueDtoMother.FND().totalAmount(TEN).build();
-        final TokenValueDto totalZrxOnContract = TokenValueDtoMother.ZRX().totalAmount(ZERO).build();
-
-        when(fundService.getFundsFor(requestId, userEtherAddress, totalFndOnContract.getTokenAddress())).thenReturn(Optional.of(totalFndOnContract));
-        when(fundService.getFundsFor(requestId, userEtherAddress, totalZrxOnContract.getTokenAddress())).thenReturn(Optional.of(totalZrxOnContract));
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder().funderAddress("0x4facde56").build()));
-
-        final boolean result = refundValidator.isRefundable(userProfile, fund, requestId, requestStatus);
-
-        assertThat(result).isFalse();
-    }
-
     @ParameterizedTest
     @CsvSource( {
                         "20,20,true",

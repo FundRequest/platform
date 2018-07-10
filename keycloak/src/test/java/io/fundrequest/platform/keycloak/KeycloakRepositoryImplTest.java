@@ -22,10 +22,14 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class KeycloakRepositoryImplTest {
+
+    private static final String ETHER_ADDRESS_KEY = "ether_address";
+    private static final String ETHER_ADDRESS_VERIFIED_KEY = "ether_address_verified";
 
     private RealmResource realmResource;
     private KeycloakRepository keycloakRepository;
@@ -56,12 +60,53 @@ public class KeycloakRepositoryImplTest {
                         .build());
     }
 
+    @Test
+    void updateEtherAddress() {
+        final String userId = "agd";
+        final UserResource userResource = mock(UserResource.class);
+        final UserRepresentation userRepresentation = mock(UserRepresentation.class);
+        final Map<String, List<String>> userAttributes = new HashMap<>();
+        userAttributes.put(ETHER_ADDRESS_KEY, Collections.singletonList("0x24ace"));
+        userAttributes.put(ETHER_ADDRESS_VERIFIED_KEY, Collections.singletonList("true"));
+
+        when(realmResource.users().get(userId)).thenReturn(userResource);
+        when(userResource.toRepresentation()).thenReturn(userRepresentation);
+        when(userRepresentation.getAttributes()).thenReturn(userAttributes);
+
+        keycloakRepository.updateEtherAddress(userId, "0x13bdf");
+
+        assertThat(userAttributes.get(ETHER_ADDRESS_KEY)).isEqualTo(Collections.singletonList("0x13bdf"));
+        assertThat(userAttributes.get(ETHER_ADDRESS_VERIFIED_KEY)).isEqualTo(Collections.singletonList("false"));
+        verify(userResource).update(userRepresentation);
+    }
+
+    @Test
+    void updateEtherAddress_doNotUpdateWhenSameAddress() {
+        final String userId = "agd";
+        final UserResource userResource = mock(UserResource.class);
+        final UserRepresentation userRepresentation = mock(UserRepresentation.class);
+        final Map<String, List<String>> userAttributes = new HashMap<>();
+        final String address = "0x24ace";
+        userAttributes.put(ETHER_ADDRESS_KEY, Collections.singletonList(address));
+        userAttributes.put(ETHER_ADDRESS_VERIFIED_KEY, Collections.singletonList("true"));
+
+        when(realmResource.users().get(userId)).thenReturn(userResource);
+        when(userResource.toRepresentation()).thenReturn(userRepresentation);
+        when(userRepresentation.getAttributes()).thenReturn(userAttributes);
+
+        keycloakRepository.updateEtherAddress(userId, address);
+
+        assertThat(userAttributes.get(ETHER_ADDRESS_KEY)).isEqualTo(Collections.singletonList(address));
+        assertThat(userAttributes.get(ETHER_ADDRESS_VERIFIED_KEY)).isEqualTo(Collections.singletonList("true"));
+        verify(userResource, never()).update(userRepresentation);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void updateVerifiedEtherAddress(final String isVerifiedAsString) {
         verifyAttributeUpdate((userId1, value) -> keycloakRepository.updateEtherAddressVerified(userId1, Boolean.valueOf(value)),
                               "634",
-                              "ether_address_verified",
+                              ETHER_ADDRESS_VERIFIED_KEY,
                               isVerifiedAsString);
 
     }
@@ -71,7 +116,7 @@ public class KeycloakRepositoryImplTest {
     public void isVerifiedEtherAddress(final String isVerifiedAsString) {
         final UserRepresentation userRepresentation = mock(UserRepresentation.class);
         final Map<String, List<String>> userAttributes = new HashMap<>();
-        userAttributes.put("ether_address_verified", Collections.singletonList(isVerifiedAsString));
+        userAttributes.put(ETHER_ADDRESS_VERIFIED_KEY, Collections.singletonList(isVerifiedAsString));
 
         when(userRepresentation.getAttributes()).thenReturn(userAttributes);
 

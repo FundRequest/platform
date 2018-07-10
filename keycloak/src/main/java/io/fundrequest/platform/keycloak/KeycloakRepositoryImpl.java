@@ -58,9 +58,21 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         return resource.users().get(userId).toRepresentation();
     }
 
+    public void updateEtherAddress(String userId, String newAddress) {
+        final UserResource userResource = resource.users().get(userId);
+        final UserRepresentation userRepresentation = userResource.toRepresentation();
+        if (userRepresentation.getAttributes() == null) {
+            userRepresentation.setAttributes(new HashMap<>());
+        }
+        if (!isCurrentAddressSameAsNew(newAddress, userRepresentation)) {
+            userRepresentation.getAttributes().put(ETHER_ADDRESS_KEY, Collections.singletonList(newAddress));
+            userRepresentation.getAttributes().put(ETHER_ADDRESS_VERIFIED_KEY, Collections.singletonList(String.valueOf(Boolean.FALSE)));
+            userResource.update(userRepresentation);
+        }
+    }
 
-    public void updateEtherAddress(String userId, String etherAddress) {
-        updateAttribute(resource.users().get(userId), ETHER_ADDRESS_KEY, etherAddress);
+    private boolean isCurrentAddressSameAsNew(String newAddress, UserRepresentation userRepresentation) {
+        return userRepresentation.getAttributes().get(ETHER_ADDRESS_KEY).stream().anyMatch(currentAddress -> currentAddress.equalsIgnoreCase(newAddress));
     }
 
     @Override

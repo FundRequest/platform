@@ -30,7 +30,6 @@ public class RefundValidator {
                                 final long requestId,
                                 final String requestStatus) {
         return userProfile != null
-               && userProfile.isEtherAddressVerified()
                && fund.getFunderAddress().equalsIgnoreCase(userProfile.getEtherAddress())
                && "FUNDED".equalsIgnoreCase(requestStatus)
                && !refundRequestAlreadyExists(requestId, userProfile.getEtherAddress())
