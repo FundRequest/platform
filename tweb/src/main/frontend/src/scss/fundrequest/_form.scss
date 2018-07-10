@@ -78,9 +78,18 @@
     border-color: $gray-200;
     font-weight: $font-weight-normal;
 
-    &::-moz-placeholder,
+    &::placeholder,
     &::-webkit-input-placeholder {
-        color: $gray-400;
+        color: $gray-300;
+    }
+
+    &:-moz-placeholder,
+    &::-moz-placeholder {
+        color: $gray-300;
+    }
+
+    &::-ms-input-placeholder {
+        color: $gray-300;
     }
 
     &.is-loading {
@@ -160,24 +169,4 @@
         box-shadow: none;
         border: 0 none;
     }
-}
-
-.placeholder-gray::-webkit-input-placeholder {
-    color: $gray-300 !important;
-}
-
-.placeholder-gray:-moz-placeholder { /* Firefox 18- */
-    color: $gray-300 !important;
-}
-
-.placeholder-gray::-moz-placeholder {
-  color: $gray-300 !important;
-}
-
-.placeholder-gray:-ms-input-placeholder {
-    color: $gray-300 !important;
-}
-
-.placeholder-gray::placeholder {
-    color: $gray-300 !important;
 }
