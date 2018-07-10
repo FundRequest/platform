@@ -139,6 +139,12 @@
 				this.requestList.updateWithRequest(request);
 			});
 
+            let queriedProject = Utils.getQueryParam("project");
+            let queriedProjectExists = this.projects.some( project => project.toLowerCase() == queriedProject.toLowerCase() );
+            if (queriedProjectExists) {
+               this.setProjectFilter(queriedProject);
+            }
+
             this._filterItems(this.listFilter, this.sortBy);
             if(this.technologies) {
                 this.technologiesSelect = this.technologies.sort();
@@ -170,6 +176,7 @@
 
 
         public setProjectFilter(project: string) {
+            Utils.setQueryParam("project", project);
             let filter: RequestListFilter = this.listFilter;
             filter.project = project;
             this.listFilter = filter;

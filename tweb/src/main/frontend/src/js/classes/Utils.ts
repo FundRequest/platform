@@ -36,7 +36,11 @@ export default class Utils {
     public static setQueryParam(key, value) {
         let url: URL = new URL(location.href);
         let query: URLSearchParams = url.searchParams;
-        query.set(key, value);
+        if (!value) {
+            query.delete(key);
+        } else {
+            query.set(key, value);
+        }
         url.search = query.toString();
         history.replaceState(null, null, url.toString());
     }
