@@ -5,6 +5,8 @@ import com.github.benmanes.caffeine.cache.Ticker;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.cache.interceptor.SimpleKeyGenerator;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,5 +54,10 @@ public class CachingConfig {
                                                .maximumSize(1000000)
                                                .ticker(Ticker.systemTicker())
                                                .build());
+    }
+
+    @Bean
+    public KeyGenerator simpleKeyGenerator() {
+        return new SimpleKeyGenerator();
     }
 }
