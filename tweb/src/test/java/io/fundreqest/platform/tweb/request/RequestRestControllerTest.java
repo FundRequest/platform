@@ -6,7 +6,7 @@ import io.fundreqest.platform.tweb.infrastructure.mav.EnumToCapitalizedStringMap
 import io.fundreqest.platform.tweb.request.dto.ClaimView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundreqest.platform.tweb.request.dto.RequestViewMapper;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.dto.ClaimableResultDto;
 import io.fundrequest.core.request.view.RequestDto;
@@ -19,7 +19,6 @@ import static io.fundrequest.core.request.domain.Platform.GITHUB;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 
 class RequestRestControllerTest extends AbstractControllerTest<RequestRestController> {
 

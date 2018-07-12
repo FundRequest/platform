@@ -2,7 +2,7 @@ package io.fundreqest.platform.tweb.request;
 
 import io.fundreqest.platform.tweb.request.dto.ClaimView;
 import io.fundreqest.platform.tweb.request.dto.RequestView;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.dto.ClaimableResultDto;
 import io.fundrequest.core.request.domain.Platform;

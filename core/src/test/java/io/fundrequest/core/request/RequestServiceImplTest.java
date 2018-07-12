@@ -1,7 +1,7 @@
 package io.fundrequest.core.request;
 
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.PrincipalMother;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;

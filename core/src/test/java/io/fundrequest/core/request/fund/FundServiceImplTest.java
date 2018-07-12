@@ -1,8 +1,8 @@
 package io.fundrequest.core.request.fund;
 
 
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.contract.service.FundRequestContractsService;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.BlockchainEvent;
 import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.Request;
@@ -87,18 +87,18 @@ public class FundServiceImplTest {
         UserProfile user = UserProfileMother.davy();
         funder = user::getId;
         when(profileService.getUserProfile(funder.getName())).thenReturn(user);
-        tokenValueMapper = mock(TokenValueMapper.class);tokenValueDtoMapper = mock(TokenValueDtoMapper.class);fundService = new FundServiceImpl(
-                fundRepository,
-                pendingFundRepository,
-                requestRepository,
-                mappers,
-                eventPublisher,
-                cacheManager,
-
-                fundRequestContractsService,
-                profileService,
-                fiatService,
-                tokenValueMapper,
+        tokenValueMapper = mock(TokenValueMapper.class);
+        tokenValueDtoMapper = mock(TokenValueDtoMapper.class);
+        fundService = new FundServiceImpl(fundRepository,
+                                          pendingFundRepository,
+                                          requestRepository,
+                                          mappers,
+                                          eventPublisher,
+                                          cacheManager,
+                                          fundRequestContractsService,
+                                          profileService,
+                                          fiatService,
+                                          tokenValueMapper,
                                           tokenValueDtoMapper);
     }
 

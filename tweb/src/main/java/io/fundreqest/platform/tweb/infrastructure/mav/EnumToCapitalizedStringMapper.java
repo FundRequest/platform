@@ -1,6 +1,6 @@
 package io.fundreqest.platform.tweb.infrastructure.mav;
 
-import io.fundrequest.core.infrastructure.mapping.BaseMapper;
+import io.fundrequest.common.infrastructure.mapping.BaseMapper;
 import org.apache.commons.lang.WordUtils;
 import org.springframework.stereotype.Component;
 

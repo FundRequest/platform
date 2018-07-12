@@ -1,8 +1,8 @@
 package io.fundrequest.core.request.fund;
 
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.contract.service.FundRequestContractsService;
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.fiat.FiatService;
@@ -60,7 +60,8 @@ class FundServiceImpl implements FundService {
 
     @Autowired
     public FundServiceImpl(final FundRepository fundRepository,
-                           final PendingFundRepository pendingFundRepository,final RequestRepository requestRepository,
+                           final PendingFundRepository pendingFundRepository,
+                           final RequestRepository requestRepository,
                            final Mappers mappers,
                            final ApplicationEventPublisher eventPublisher,
                            final CacheManager cacheManager,

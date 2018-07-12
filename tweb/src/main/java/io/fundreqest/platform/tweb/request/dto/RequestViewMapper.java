@@ -1,7 +1,7 @@
 package io.fundreqest.platform.tweb.request.dto;
 
 import io.fundreqest.platform.tweb.infrastructure.mav.EnumToCapitalizedStringMapper;
-import io.fundrequest.core.infrastructure.mapping.BaseMapper;
+import io.fundrequest.common.infrastructure.mapping.BaseMapper;
 import io.fundrequest.core.request.view.RequestDto;
 import org.springframework.stereotype.Component;
 
