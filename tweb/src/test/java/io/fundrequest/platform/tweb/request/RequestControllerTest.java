@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.common.infrastructure.AbstractControllerTest;
 import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.infrastructure.SecurityContextService;
+import io.fundrequest.core.platform.PlatformIssueDto;
+import io.fundrequest.core.platform.PlatformIssueService;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
@@ -18,6 +20,7 @@ import io.fundrequest.core.request.fund.dto.FundersDto;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
 import io.fundrequest.core.request.statistics.dto.StatisticsDto;
+import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.core.token.dto.TokenValueDto;
@@ -26,7 +29,6 @@ import io.fundrequest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundrequest.platform.tweb.request.dto.RequestView;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.internal.matchers.Same;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -36,8 +38,10 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -61,6 +65,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
     private FiatService fiatService;
     private ObjectMapper objectMapper;
     private Mappers mappers;
+    private PlatformIssueService platformIssueService;
 
     @Before
     public void setUp() throws Exception {
@@ -78,18 +83,19 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         fundService = mock(FundService.class);
         claimService = mock(ClaimService.class);
         fiatService = mock(FiatService.class);
+        platformIssueService = mock(PlatformIssueService.class);
         objectMapper = spy(new ObjectMapper());
         mappers = mock(Mappers.class);
         return new RequestController(securityContextService,
-                requestService,
-                pendingFundService,
-                statisticsService,
-                profileService,
-                fundService,
-                claimService,
-                fiatService,
-                objectMapper,
-                mappers);
+                                     requestService,
+                                     pendingFundService,
+                                     statisticsService,
+                                     profileService,
+                                     fundService,
+                                     claimService,
+                                     fiatService,
+                                     platformIssueService, objectMapper,
+                                     mappers);
     }
 
     @Test
@@ -138,13 +144,13 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
 
         this.mockMvc.perform(get("/requests/{id}", requestId).principal(principal))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
-                .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
-                .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
-                .andExpect(MockMvcResultMatchers.model().attribute("claims", claims))
-                .andExpect(MockMvcResultMatchers.model().attribute("githubComments", new Same(commentDtos)))
-                .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
+                    .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
+                    .andExpect(MockMvcResultMatchers.model().attribute("claims", claims))
+                    .andExpect(MockMvcResultMatchers.model().attribute("githubComments", sameInstance(commentDtos)))
+                    .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
     }
 
     @Test
@@ -166,12 +172,12 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(requestService.getComments(requestId)).thenReturn(commentDtos);
 
         this.mockMvc.perform(get("/requests/github/{owner}/{repo}/{number}", owner, repo, number).principal(principal))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
-                .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
-                .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
-                .andExpect(MockMvcResultMatchers.model().attribute("githubComments", new Same(commentDtos)))
-                .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.model().attribute("request", requestDetailsView))
+                    .andExpect(MockMvcResultMatchers.model().attribute("requestJson", "requestDetailsView"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("fundedBy", fundersDto))
+                    .andExpect(MockMvcResultMatchers.model().attribute("githubComments", sameInstance(commentDtos)))
+                    .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail"));
     }
 
     @Test
@@ -194,11 +200,11 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(fiatService.getUsdPrice(request.getFunds().getOtherFunds())).thenReturn(110D);
 
         this.mockMvc.perform(get("/requests/{id}/badge", 654L).principal(principal))
-                .andExpect(MockMvcResultMatchers.header().string(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("requestFase", request.getStatus().getFase()))
-                .andExpect(MockMvcResultMatchers.model().attribute("highestFunds", otherFunds))
-                .andExpect(MockMvcResultMatchers.view().name("requests/badge.svg"));
+                    .andExpect(MockMvcResultMatchers.header().string(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue()))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.model().attribute("requestPhase", request.getStatus().getPhase()))
+                    .andExpect(MockMvcResultMatchers.model().attribute("highestFunds", otherFunds))
+                    .andExpect(MockMvcResultMatchers.view().name("requests/badge.svg"));
     }
 
     @Test
@@ -221,25 +227,30 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(fiatService.getUsdPrice(request.getFunds().getOtherFunds())).thenReturn(100D);
 
         this.mockMvc.perform(get("/requests/{id}/badge", 654L).principal(principal))
-                .andExpect(MockMvcResultMatchers.header().string(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("requestFase", request.getStatus().getFase()))
-                .andExpect(MockMvcResultMatchers.model().attribute("highestFunds", fndFunds))
-                .andExpect(MockMvcResultMatchers.view().name("requests/badge.svg"));
+                    .andExpect(MockMvcResultMatchers.header().string(HttpHeaders.CACHE_CONTROL, CacheControl.noStore().getHeaderValue()))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.model().attribute("requestPhase", request.getStatus().getPhase()))
+                    .andExpect(MockMvcResultMatchers.model().attribute("highestFunds", fndFunds))
+                    .andExpect(MockMvcResultMatchers.view().name("requests/badge.svg"));
     }
 
     @Test
     public void detailActions() throws Exception {
-        RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
+        final RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
+        final IssueInformationDto issueInformation = request.getIssueInformation();
+        final UserClaimableDto userClaimableDto = mock(UserClaimableDto.class);
+        final PlatformIssueDto platformIssue = mock(PlatformIssueDto.class);
+
         when(requestService.findRequest(1L)).thenReturn(request);
-        UserClaimableDto userClaimableDto = UserClaimableDto.builder().build();
         when(requestService.getUserClaimableResult(principal, 1L)).thenReturn(userClaimableDto);
+        when(platformIssueService.findBy(issueInformation.getPlatform(), issueInformation.getPlatformId())).thenReturn(Optional.of(platformIssue));
 
         this.mockMvc.perform(get("/requests/{id}/actions", 1L).principal(principal))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail-actions :: details"))
-                .andExpect(MockMvcResultMatchers.model().attribute("request", request))
-                .andExpect(MockMvcResultMatchers.model().attribute("userClaimable", userClaimableDto));
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.view().name("pages/requests/detail-actions :: details"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("request", sameInstance(request)))
+                    .andExpect(MockMvcResultMatchers.model().attribute("userClaimable", sameInstance(userClaimableDto)))
+                    .andExpect(MockMvcResultMatchers.model().attribute("platformIssue", sameInstance(platformIssue)));
     }
 
     @Test
@@ -282,20 +293,24 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final List<RequestDto> requests = new ArrayList<>();
         final List<RequestView> requestViews = new ArrayList<>();
         final List<PendingFundDto> pendingFunds = new ArrayList<>();
+        final Set<String> projects = new HashSet<>();
         boolean isAuthenticated = false;
 
         when(requestService.findRequestsForUser(principal)).thenReturn(requests);
         when(mappers.mapList(RequestDto.class, RequestView.class, requests)).thenReturn(requestViews);
         when(pendingFundService.findByUser(principal)).thenReturn(pendingFunds);
+        when(requestService.findAllProjects()).thenReturn(projects);
         when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
+        when(objectMapper.writeValueAsString(same(projects))).thenReturn("projects");
         when(objectMapper.writeValueAsString(same(requestViews))).thenReturn("requestViews");
         when(objectMapper.writeValueAsString(same(pendingFunds))).thenReturn("pendingFunds");
 
         this.mockMvc.perform(get("/user/requests").principal(principal))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
-                .andExpect(MockMvcResultMatchers.model().attribute("pendingFunds", "pendingFunds"))
-                .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
-                .andExpect(MockMvcResultMatchers.view().name("pages/user/requests"));
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("projects", "projects"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("pendingFunds", "pendingFunds"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
+                    .andExpect(MockMvcResultMatchers.view().name("pages/user/requests"));
     }
 }

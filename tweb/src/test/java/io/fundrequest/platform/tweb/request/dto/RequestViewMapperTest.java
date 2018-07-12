@@ -25,11 +25,11 @@ public class RequestViewMapperTest {
     @Test
     public void map() {
         final String status = "szfgdhxf";
-        final String fase = "sgzdxhfc";
+        final String phase = "sgzdxhfc";
         final RequestDto request = RequestDtoMother.fundRequestArea51();
 
         when(enumToCapitalizedStringMapper.map(request.getStatus())).thenReturn(status);
-        when(enumToCapitalizedStringMapper.map(request.getStatus().getFase())).thenReturn(fase);
+        when(enumToCapitalizedStringMapper.map(request.getStatus().getPhase())).thenReturn(phase);
 
         final RequestView result = mapper.map(request);
 
@@ -41,7 +41,7 @@ public class RequestViewMapperTest {
         assertThat(result.getPlatform()).isEqualTo(request.getIssueInformation().getPlatform().name());
         assertThat(result.getTitle()).isEqualTo(request.getIssueInformation().getTitle());
         assertThat(result.getStatus()).isEqualTo(status);
-        assertThat(result.getFase()).isEqualTo(fase);
+        assertThat(result.getPhase()).isEqualTo(phase);
         assertThat(result.getStarred()).isEqualTo(request.isLoggedInUserIsWatcher());
         assertThat(result.getTechnologies()).isEqualTo(request.getTechnologies());
         assertThat(result.getFunds()).isEqualTo(request.getFunds());

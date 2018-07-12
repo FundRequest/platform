@@ -33,6 +33,23 @@ export default class Utils {
         return window.location.hash ? window.location.hash.split('#')[1] : '';
     }
 
+    public static setQueryParam(key, value) {
+        let url: URL = new URL(location.href);
+        let query: URLSearchParams = url.searchParams;
+        if (!value) {
+            query.delete(key);
+        } else {
+            query.set(key, value);
+        }
+        url.search = query.toString();
+        history.replaceState(null, null, url.toString());
+    }
+
+    public static getQueryParam(key) {
+        let query: URLSearchParams = new URL(location.href).searchParams;
+        return query.get(key) || "";
+    }
+
     public static getNewWindow(url, widthPopup, heightPopup) {
         let left = (screen.width / 2) - (widthPopup / 2);
         let top = (screen.height / 2) - (heightPopup / 2);
@@ -65,10 +82,6 @@ export default class Utils {
 
     public static getJSON(url: string): Promise<any> {
         return $.getJSON(url).promise();
-        //return fetch(url, {credentials: 'same-origin'})
-        //    .then(Utils._handleHttpErrors)
-        //    .then(res => res ? res.json() : null)
-        //    .catch(err => null);
     }
 
     public static postJSON(url: string, body: any): Promise<any> {
@@ -86,15 +99,6 @@ export default class Utils {
             return $.post(url).promise();
         } else {
             return $.post(url, body).promise();
-            //return fetch(url, {
-            //    method: 'POST',
-            //    body: JSON.stringify(body),
-            //    credentials: 'same-origin',
-            //    headers: new Headers({
-            //        'Content-Type': 'application/json'
-            //    })
-            //}).then(res => res ? res.json() : null
-            //).catch(err => null);
         }
     }
 

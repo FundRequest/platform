@@ -39,8 +39,9 @@
 
     <section>
         <request-list
-                :fase-filter-default="'open'"
+                :phase-filter-default="'open'"
                 th:attr="'v-bind:requests'=${requests},
+                          'v-bind:projects'=${projects},
 						 'v-bind:is-authenticated'=${isAuthenticated}"
                 :filters="[
                     { value: 'all', title: 'All', description: 'Showing an overview of all your requests, including funds that are pending.' },
@@ -49,10 +50,10 @@
                     { value: 'closed', title: 'Closed', description: 'Showing an overview of all your closed requests.' },
                     { value: 'starred', title: 'Starred', description: 'Showing an overview of all the requests that you have starred.' },
                  ]">
-            <template slot-scope="{faseFilter}">
+            <template slot-scope="{phaseFilter}">
                 <request-list-pending-funds
                      th:attr="'v-bind:funds'=${pendingFunds}"
-                     v-if="(faseFilter==='open' || faseFilter==='all')">
+                     v-if="(phaseFilter==='open' || phaseFilter==='all')">
                 </request-list-pending-funds>
             </template>
         </request-list>

@@ -15,7 +15,7 @@
                            v-html="filter.title">
                             Filter by
                         </a>
-                        <a v-if="!filter.url" class="nav-link" v-bind:href="`#${filter.value}`"
+                        <a v-if="!filter.url" class="nav-link"
                            v-on:click="updateFilter(filter.value)">
                             <span v-html="filter.title"></span>
                             <span class="badge badge-pill badge--filter" v-if="filter.count > 0">{{filter.count}}</span>
@@ -46,11 +46,9 @@
         @Prop() filters: ListFilterDto[];
 
         mounted() {
-            EventBus.$on("hashchange", () => {
-                this.updateFilter(Utils.getLocationHashValue());
-            });
-            let hash = Utils.getLocationHashValue();
-            this.updateFilter(hash ? hash : this.default ? this.default : this.active);
+            let phaseQuery = Utils.getQueryParam("phase").toLowerCase();
+            let queriedPhaseExists = this.filters.some( filter => filter.value == phaseQuery );
+            this.updateFilter(queriedPhaseExists ? phaseQuery : this.default ? this.default : this.active);
         }
 
         public updateFilter(value) {
@@ -58,7 +56,7 @@
                 let lowercaseValue = value;
                 let index = this.filters.findIndex(filter => filter.value.toLowerCase() == lowercaseValue);
 
-                if (index != -1) {
+                if (index != -1) {                    
                     this.$emit("update", value);
                 }
             }

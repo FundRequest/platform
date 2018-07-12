@@ -10,9 +10,9 @@
     </clipPath>
     <g clip-path="url(#a)">
         <path fill="#555" d="M0 0h104v20H0z"/>
-        <path fill="#44cc11" th:if="${requestFase.name() == 'OPEN'}" d="M104 0h124v20H104z"/>
-        <path fill="#49b2e1" th:if="${requestFase.name() == 'RESOLVED'}" d="M104 0h124v20H104z"/>
-        <path fill="#a8a8a8" th:if="${requestFase.name() == 'CLOSED'}" d="M104 0h124v20H104z"/>
+        <path fill="#44cc11" th:if="${requestPhase.name() == 'OPEN'}" d="M104 0h124v20H104z"/>
+        <path fill="#49b2e1" th:if="${requestPhase.name() == 'RESOLVED'}" d="M104 0h124v20H104z"/>
+        <path fill="#a8a8a8" th:if="${requestPhase.name() == 'CLOSED'}" d="M104 0h124v20H104z"/>
         <path fill="url(#b)" d="M0 0h227v20H0z"/>
     </g>
     <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="110">
@@ -34,13 +34,13 @@
         </text>
         <text x="600" y="140" transform="scale(.1)" textLength="790">funding status</text>
         <text x="1655" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="1110">
-            <span th:remove="tag" th:text="${#strings.toLowerCase(requestFase.name())}"></span>
+            <span th:remove="tag" th:text="${#strings.toLowerCase(requestPhase.name())}"></span>
             (<span th:remove="tag" th:if="${highestFunds != null}"
                    th:text="${#numbers.formatDecimal(highestFunds.totalAmount,1,'COMMA',2,'POINT')}"></span>
             <span th:remove="tag" th:text="${highestFunds.tokenSymbol}"></span>)
         </text>
         <text x="1655" y="140" transform="scale(.1)" textLength="1110">
-            <span th:remove="tag" th:text="${#strings.toLowerCase(requestFase.name())}"></span>
+            <span th:remove="tag" th:text="${#strings.toLowerCase(requestPhase.name())}"></span>
             (<span th:remove="tag" th:if="${highestFunds != null}"
                    th:text="${#numbers.formatDecimal(highestFunds.totalAmount,1,'COMMA',2,'POINT')}"></span>
             <span th:remove="tag" th:text="${highestFunds.tokenSymbol}"></span>)

@@ -2,9 +2,11 @@ package io.fundrequest.platform.tweb.request;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundrequest.common.infrastructure.mav.AbstractController;
 import io.fundrequest.common.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mav.AbstractController;
 import io.fundrequest.core.infrastructure.SecurityContextService;
+import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
+import io.fundrequest.core.platform.PlatformIssueService;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.claim.ClaimService;
 import io.fundrequest.core.request.claim.UserClaimRequest;
@@ -14,6 +16,7 @@ import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
+import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.tweb.request.dto.ERC67FundDto;
@@ -57,16 +60,18 @@ public class RequestController extends AbstractController {
     private final FundService fundService;
     private final ClaimService claimService;
     private final FiatService fiatService;
+    private final PlatformIssueService platformIssueService;
     private final ObjectMapper objectMapper;
     private final Mappers mappers;
 
     public RequestController(final SecurityContextService securityContextService,
-							 final RequestService requestService,
+                             final RequestService requestService,
                              final PendingFundService pendingFundService,
                              final StatisticsService statisticsService,
                              final ProfileService profileService, FundService fundService,
                              final ClaimService claimService,
                              final FiatService fiatService,
+                             final PlatformIssueService platformIssueService,
                              final ObjectMapper objectMapper,
                              final Mappers mappers) {
 		this.securityContextService = securityContextService;
@@ -77,6 +82,7 @@ public class RequestController extends AbstractController {
         this.fundService = fundService;
         this.claimService = claimService;
         this.fiatService = fiatService;
+        this.platformIssueService = platformIssueService;
         this.objectMapper = objectMapper;
         this.mappers = mappers;
     }
@@ -84,8 +90,8 @@ public class RequestController extends AbstractController {
     @GetMapping("/requests")
     public ModelAndView requests() {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
-        final Map<String, Long> requestsPerFaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getFase, Collectors.counting()));
-        return modelAndView().withObject("requestsPerFaseCount", requestsPerFaseCount)
+        final Map<String, Long> requestsPerPhaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getPhase, Collectors.counting()));
+        return modelAndView().withObject("requestsPerPhaseCount", requestsPerPhaseCount)
                              .withObject("requests", getAsJson(requests))
                              .withObject("statistics", statisticsService.getStatistics())
                              .withObject("projects", getAsJson(requestService.findAllProjects()))
@@ -136,7 +142,7 @@ public class RequestController extends AbstractController {
         final double otherFundsUsdPrice = fiatService.getUsdPrice(request.getFunds().getOtherFunds());
 
         return modelAndView(model)
-                .withObject("requestFase", request.getStatus().getFase())
+                .withObject("requestPhase", request.getStatus().getPhase())
                 .withObject("highestFunds", fndUsdPrice >= otherFundsUsdPrice ? request.getFunds().getFndFunds() : request.getFunds().getOtherFunds())
                 .withView("requests/badge.svg")
                 .build();
@@ -165,12 +171,20 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests/{id}/actions")
-    public ModelAndView detailActions(Principal principal, @PathVariable Long id) {
-        return modelAndView()
-                .withObject("userClaimable", requestService.getUserClaimableResult(principal, id))
-                .withObject("request", requestService.findRequest(id))
-                .withView("pages/requests/detail-actions :: details")
-                .build();
+    public ModelAndView detailActions(final Principal principal, @PathVariable final Long id) {
+        final RequestDto request = requestService.findRequest(id);
+        if (request != null) {
+            final IssueInformationDto issueInformation = request.getIssueInformation();
+            return modelAndView().withObject("userClaimable", requestService.getUserClaimableResult(principal, id))
+                                 .withObject("request", request)
+                                 .withObject("isAuthenticated", getAsJson(securityContextService.isUserFullyAuthenticated()))
+                                 .withObject("platformIssue", platformIssueService.findBy(issueInformation.getPlatform(), issueInformation.getPlatformId())
+                                                                                  .orElseThrow(ResourceNotFoundException::new))
+                                 .withView("pages/requests/detail-actions :: details")
+                                 .build();
+        } else {
+            throw new ResourceNotFoundException();
+        }
     }
 
     @PostMapping(value = {"/requests/{id}/watch"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -195,6 +209,7 @@ public class RequestController extends AbstractController {
         final List<PendingFundDto> pendingFunds = pendingFundService.findByUser(principal);
         return modelAndView()
                 .withObject("requests", getAsJson(requests))
+                .withObject("projects", getAsJson(requestService.findAllProjects()))
                 .withObject("pendingFunds", getAsJson(pendingFunds))
                 .withObject("isAuthenticated", getAsJson(securityContextService.isUserFullyAuthenticated()))
                 .withView("pages/user/requests")
