@@ -30,6 +30,10 @@
             <artifactId>notification</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.fundrequest</groupId>
+            <artifactId>intercom</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>

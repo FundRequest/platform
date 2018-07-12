@@ -28,6 +28,7 @@
         <module>admin-web</module>
         <module>common</module>
         <module>faq</module>
+        <module>intercom</module>
         <module>notification</module>
         <module>notification-contract</module>
     </modules>
@@ -53,6 +54,7 @@
         <junit-vintage-engine.version>4.12.0</junit-vintage-engine.version>
         <jsoup.version>1.10.2</jsoup.version>
         <telegram.version>3.6</telegram.version>
+        <feign-core.version>9.5.1</feign-core.version>
     </properties>
 
     <dependencies>
@@ -126,6 +128,11 @@
             <dependency>
                 <groupId>io.fundrequest</groupId>
                 <artifactId>notification-contract</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
+                <artifactId>intercom</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -212,6 +219,11 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>${feign-core.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
