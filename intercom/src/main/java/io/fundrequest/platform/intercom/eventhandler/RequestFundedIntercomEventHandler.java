@@ -15,6 +15,7 @@ import io.intercom.api.Event;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneOffset;
@@ -47,6 +48,7 @@ public class RequestFundedIntercomEventHandler {
         this.fundrequestBasepath = fundrequestBasepath;
     }
 
+    @Async
     @EventListener
     public void handle(final RequestFundedNotificationDto notification) {
 
