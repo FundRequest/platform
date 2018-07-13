@@ -29,19 +29,22 @@ public class RequestFundedIntercomEventHandler {
     private final KeycloakRepository keycloakRepository;
     private final IntercomApiClient intercomApiClient;
     private final String etherscanBasePath;
+    private final String fundrequestBasepath;
 
     public RequestFundedIntercomEventHandler(final FundService fundService,
                                              final RequestService requestService,
                                              final BlockchainEventService blockchainEventService,
                                              final KeycloakRepository keycloakRepository,
                                              final IntercomApiClient intercomApiClient,
-                                             @Value("${io.fundrequest.etherscan.basepath}") final String etherscanBasePath) {
+                                             @Value("${io.fundrequest.etherscan.basepath}") final String etherscanBasePath,
+                                             @Value("${io.fundrequest.basepath}") final String fundrequestBasepath) {
         this.fundService = fundService;
         this.requestService = requestService;
         this.blockchainEventService = blockchainEventService;
         this.keycloakRepository = keycloakRepository;
         this.intercomApiClient = intercomApiClient;
         this.etherscanBasePath = etherscanBasePath;
+        this.fundrequestBasepath = fundrequestBasepath;
     }
 
     @EventListener
@@ -60,6 +63,10 @@ public class RequestFundedIntercomEventHandler {
                                        .setEmail(user.getEmail())
                                        .putMetadata("platform", issueInformation.getPlatform().name())
                                        .putMetadata("platform_id", issueInformation.getPlatformId());
+        event.getMetadata().put("issue", RichLink.builder()
+                                                 .value(issueInformation.getTitle())
+                                                 .url(String.format("%s/requests/%s", fundrequestBasepath, request.getId()))
+                                                 .build());
         event.getMetadata().put("transaction_hash", RichLink.builder()
                                                             .value(transactionHash)
                                                             .url(String.format("%s/tx/%s", etherscanBasePath, transactionHash))
