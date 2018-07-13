@@ -109,14 +109,14 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final StatisticsDto statisticsDto = StatisticsDto.builder().build();
         final Set<String> projects = new HashSet<>();
         final Set<String> technologies = new HashSet<>();
-		boolean isAuthenticated = false;
+        boolean isAuthenticated = false;
 
         when(requestService.findAll()).thenReturn(requestDtos);
         when(mappers.mapList(RequestDto.class, RequestView.class, requestDtos)).thenReturn(requestViews);
         when(statisticsService.getStatistics()).thenReturn(statisticsDto);
         when(requestService.findAllProjects()).thenReturn(projects);
         when(requestService.findAllTechnologies()).thenReturn(technologies);
-		when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
+        when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
         when(objectMapper.writeValueAsString(same(requestViews))).thenReturn("requestViews");
         when(objectMapper.writeValueAsString(same(projects))).thenReturn("projects");
         when(objectMapper.writeValueAsString(same(technologies))).thenReturn("technologies");
@@ -302,18 +302,22 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         final List<RequestDto> requests = new ArrayList<>();
         final List<RequestView> requestViews = new ArrayList<>();
         final List<PendingFundDto> pendingFunds = new ArrayList<>();
-		boolean isAuthenticated = false;
+        final Set<String> projects = new HashSet<>();
+        boolean isAuthenticated = false;
 
         when(requestService.findRequestsForUser(principal)).thenReturn(requests);
         when(mappers.mapList(RequestDto.class, RequestView.class, requests)).thenReturn(requestViews);
         when(pendingFundService.findByUser(principal)).thenReturn(pendingFunds);
-		when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
+        when(requestService.findAllProjects()).thenReturn(projects);
+        when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
+        when(objectMapper.writeValueAsString(same(projects))).thenReturn("projects");
         when(objectMapper.writeValueAsString(same(requestViews))).thenReturn("requestViews");
         when(objectMapper.writeValueAsString(same(pendingFunds))).thenReturn("pendingFunds");
 
         this.mockMvc.perform(get("/user/requests").principal(principal))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("projects", "projects"))
                     .andExpect(MockMvcResultMatchers.model().attribute("pendingFunds", "pendingFunds"))
                     .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
                     .andExpect(MockMvcResultMatchers.view().name("pages/user/requests"));
