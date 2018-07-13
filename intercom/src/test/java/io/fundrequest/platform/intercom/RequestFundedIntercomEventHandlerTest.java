@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 class RequestFundedIntercomEventHandlerTest {
@@ -46,6 +47,7 @@ class RequestFundedIntercomEventHandlerTest {
 
     @Test
     void handle() {
+        final LocalDateTime now = LocalDateTime.now();
         final long fundId = 52L;
         final long requestId = 24L;
         final String funderUserId = "sfgd";
@@ -56,7 +58,6 @@ class RequestFundedIntercomEventHandlerTest {
         request.setId(requestId);
         final IssueInformationDto issueInformation = request.getIssueInformation();
         final BlockchainEventDto blockchainEvent = BlockchainEventDto.builder().transactionHash("0x24sfd").build();
-        final LocalDateTime now = LocalDateTime.now();
 
         final RequestFundedNotificationDto notification = RequestFundedNotificationDto.builder()
                                                                                       .fundId(fundId)
@@ -86,5 +87,47 @@ class RequestFundedIntercomEventHandlerTest {
         eventHandler.handle(notification);
 
         verify(intercomApiClient).postEvent(expectedEvent);
+    }
+
+    @Test
+    void handle_noFunderUserId() {
+        final LocalDateTime now = LocalDateTime.now();
+        final long fundId = 52L;
+        final long requestId = 24L;
+        final FundDto fundDto = FundDto.builder().funderUserId(null).build();
+
+        final RequestFundedNotificationDto notification = RequestFundedNotificationDto.builder()
+                                                                                      .fundId(fundId)
+                                                                                      .date(now)
+                                                                                      .requestId(requestId).build();
+
+        when(fundService.findOne(fundId)).thenReturn(fundDto);
+
+        eventHandler.handle(notification);
+
+        verifyZeroInteractions(intercomApiClient);
+    }
+
+    @Test
+    void handle_noEmail() {
+        final LocalDateTime now = LocalDateTime.now();
+        final long fundId = 52L;
+        final long requestId = 24L;
+        final String funderUserId = "sfgd";
+        final UserRepresentation userRepresentation = mock(UserRepresentation.class);
+        final FundDto fundDto = FundDto.builder().funderUserId(funderUserId).build();
+
+        final RequestFundedNotificationDto notification = RequestFundedNotificationDto.builder()
+                                                                                      .fundId(fundId)
+                                                                                      .date(now)
+                                                                                      .requestId(requestId).build();
+
+        when(fundService.findOne(fundId)).thenReturn(fundDto);
+        when(keycloakRepository.getUser(funderUserId)).thenReturn(userRepresentation);
+        when(userRepresentation.getEmail()).thenReturn(null);
+
+        eventHandler.handle(notification);
+
+        verifyZeroInteractions(intercomApiClient);
     }
 }

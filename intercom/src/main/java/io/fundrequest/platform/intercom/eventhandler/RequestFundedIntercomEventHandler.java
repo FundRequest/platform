@@ -2,6 +2,7 @@ package io.fundrequest.platform.intercom.eventhandler;
 
 import io.fundrequest.core.request.BlockchainEventService;
 import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.dto.BlockchainEventDto;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.dto.FundDto;
@@ -18,7 +19,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Optional;
 
 @Component
 public class RequestFundedIntercomEventHandler {
@@ -51,28 +54,50 @@ public class RequestFundedIntercomEventHandler {
     @Async
     @EventListener
     public void handle(final RequestFundedNotificationDto notification) {
-
         final FundDto fund = fundService.findOne(notification.getFundId());
-        final UserRepresentation user = keycloakRepository.getUser(fund.getFunderUserId());
-        final RequestDto request = requestService.findRequest(notification.getRequestId());
-        final IssueInformationDto issueInformation = request.getIssueInformation();
-        final String transactionHash = blockchainEventService.findOne(notification.getBlockchainEventId())
-                                                             .map(BlockchainEventDto::getTransactionHash)
-                                                             .orElse("");
+        resolveUserEmail(fund).ifPresent(userEmail -> {
+            final RequestDto request = requestService.findRequest(notification.getRequestId());
+            final IssueInformationDto issueInformation = request.getIssueInformation();
+            final String transactionHash = blockchainEventService.findOne(notification.getBlockchainEventId())
+                                                                 .map(BlockchainEventDto::getTransactionHash)
+                                                                 .orElse("");
+            intercomApiClient.postEvent(buildEvent(userEmail,
+                                                   notification.getDate(),
+                                                   issueInformation.getPlatform(),
+                                                   issueInformation.getPlatformId(),
+                                                   issueInformation.getTitle(),
+                                                   request.getId(),
+                                                   transactionHash));
+        });
+    }
+
+    private Optional<String> resolveUserEmail(final FundDto fund) {
+        return Optional.ofNullable(fund.getFunderUserId())
+                       .map(userId -> keycloakRepository.getUser(fund.getFunderUserId()))
+                       .map(UserRepresentation::getEmail);
+    }
+
+    private Event buildEvent(final String userEmail,
+                             final LocalDateTime notificationDate,
+                             final Platform platform,
+                             final String platformId,
+                             final String issueTitle,
+                             final Long requestId,
+                             final String transactionHash) {
 
         final Event event = new Event().setEventName(FUNDED_REQUEST)
-                                       .setCreatedAt(notification.getDate().toEpochSecond(ZoneOffset.UTC))
-                                       .setEmail(user.getEmail())
-                                       .putMetadata("platform", issueInformation.getPlatform().name())
-                                       .putMetadata("platform_id", issueInformation.getPlatformId());
+                                       .setCreatedAt(notificationDate.toEpochSecond(ZoneOffset.UTC))
+                                       .setEmail(userEmail)
+                                       .putMetadata("platform", platform.name())
+                                       .putMetadata("platform_id", platformId);
         event.getMetadata().put("issue", RichLink.builder()
-                                                 .value(issueInformation.getTitle())
-                                                 .url(String.format("%s/requests/%s", fundrequestBasepath, request.getId()))
+                                                 .value(issueTitle)
+                                                 .url(String.format("%s/requests/%s", fundrequestBasepath, requestId))
                                                  .build());
         event.getMetadata().put("transaction_hash", RichLink.builder()
                                                             .value(transactionHash)
                                                             .url(String.format("%s/tx/%s", etherscanBasePath, transactionHash))
                                                             .build());
-        intercomApiClient.postEvent(event);
+        return event;
     }
 }
