@@ -49,6 +49,10 @@
     //padding: .1rem 1rem;
     //vertical-align: middle;
 
+    &--open {
+        background-color: $yellow-200;
+    }
+
     &--funded,
     &--unresolve,
     &--unresolved  {

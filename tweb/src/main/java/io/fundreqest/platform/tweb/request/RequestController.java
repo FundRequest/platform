@@ -22,6 +22,7 @@ import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.token.dto.TokenValueDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +51,7 @@ import java.util.stream.Collectors;
 import static io.fundrequest.core.request.domain.Platform.GITHUB;
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.APPROVED;
 import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.PENDING;
+import static java.math.BigDecimal.ZERO;
 import static java.util.stream.Collectors.toList;
 
 @Controller
@@ -96,7 +98,10 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/requests")
     public ModelAndView requests() {
-        final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
+        final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll())
+                                                  .stream()
+                                                  .filter(request -> hasFunds(request.getFunds().getFndFunds()) || hasFunds(request.getFunds().getOtherFunds()))
+                                                  .collect(toList());
         final Map<String, Long> requestsPerPhaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getPhase, Collectors.counting()));
         return modelAndView().withObject("requestsPerPhaseCount", requestsPerPhaseCount)
                              .withObject("requests", getAsJson(requests))
@@ -106,6 +111,10 @@ public class RequestController extends AbstractController {
                              .withObject("isAuthenticated", getAsJson(securityContextService.isUserFullyAuthenticated()))
                              .withView("pages/requests/index")
                              .build();
+    }
+
+    private boolean hasFunds(final TokenValueDto funds) {
+        return funds != null && funds.getTotalAmount().compareTo(ZERO) > 0;
     }
 
     @RequestMapping("/requests/{type}")
