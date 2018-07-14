@@ -59,7 +59,9 @@
 		overflow-x: auto;
 		overflow-y: hidden;
 
-		width: 100%;
+		width: 100vw;
+		left: calc(50% - 50vw);
+		position: relative;
 		-webkit-overflow-scrolling: touch;
 	}
 
