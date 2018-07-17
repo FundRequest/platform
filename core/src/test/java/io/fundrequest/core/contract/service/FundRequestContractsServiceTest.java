@@ -2,6 +2,7 @@ package io.fundrequest.core.contract.service;
 
 import io.fundrequest.core.contract.domain.FundRequestContract;
 import io.fundrequest.core.contract.domain.TokenWhitelistPreconditionContract;
+import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -54,5 +57,20 @@ public class FundRequestContractsServiceTest {
         List<TokenInfoDto> possibleTokens = fundRequestContractsService.getAllPossibleTokens(platform, platformId);
 
         assertThat(possibleTokens.stream().map(TokenInfoDto::getSymbol).collect(Collectors.toList())).containsExactly("FND", "ZRX");
+    }
+
+    @Test
+    public void getAllPossibleTokens_throwsResourceNotFoundException_whenEmpty() {
+        final String platform = "GITHUB";
+        final String platformId = "FundRequest|FR|area51|FR|3";
+
+        when(tokenWhitelistPreconditionContract.token(any(BigInteger.class))).thenReturn(Optional.empty());
+
+        try {
+            fundRequestContractsService.getAllPossibleTokens(platform, platformId);
+            fail("A ResourceNotFoundException should have been thrown");
+        } catch (ResourceNotFoundException e) {
+            assertThat(e).isNotNull();
+        }
     }
 }
