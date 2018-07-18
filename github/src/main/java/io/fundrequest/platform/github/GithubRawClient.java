@@ -17,11 +17,4 @@ public interface GithubRawClient {
                             @PathVariable("repo") String repo,
                             @PathVariable("branch") String branch,
                             @PathVariable("filePath") String filePath);
-
-    /**
-     * @param fullFilePath {owner}/{repo}/{branch}/{filePath} as one String
-     * @return RawContent of the file located at fullFilePath
-     * */
-    @RequestMapping(value = "{fullFilePath}", method = GET)
-    String getContentsAsRaw(@PathVariable("fullFilePath") String fullFilePath);
 }

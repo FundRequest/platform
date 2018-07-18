@@ -22,6 +22,8 @@ public interface RequestService {
 
     List<RequestDto> findAll(Iterable<Long> ids);
 
+    List<RequestDto> findAllFor(List<String> projects, List<String> technologies, Long lastUpdatedSinceDays);
+
     Set<String> findAllTechnologies();
 
     Set<String> findAllProjects();

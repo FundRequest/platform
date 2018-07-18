@@ -1,7 +1,7 @@
 package io.fundrequest.core.request;
 
-import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.common.infrastructure.mapping.Mappers;
+import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
@@ -16,12 +16,18 @@ import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.command.CreateRequestCommand;
-import io.fundrequest.core.request.domain.*;
+import io.fundrequest.core.request.domain.IssueInformation;
+import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.domain.Request;
+import io.fundrequest.core.request.domain.RequestBuilder;
+import io.fundrequest.core.request.domain.RequestStatus;
+import io.fundrequest.core.request.domain.RequestTechnology;
 import io.fundrequest.core.request.erc67.ERC67;
 import io.fundrequest.core.request.erc67.Erc67Generator;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
+import io.fundrequest.core.request.infrastructure.RequestSpecification;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.token.model.TokenValue;
@@ -41,7 +47,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,6 +95,12 @@ class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<RequestDto> findAll() {
         return mappers.mapList(Request.class, RequestDto.class, requestRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RequestDto> findAllFor(final List<String> projects, final List<String> technologies, final Long lastUpdatedSinceDays) {
+        final RequestSpecification specification = new RequestSpecification(projects, technologies, lastUpdatedSinceDays);
+        return mappers.mapList(Request.class, RequestDto.class, requestRepository.findAll(specification));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package io.fundrequest.platform.admin.mails;
+package io.fundrequest.platform.admin.notification;
 
 import io.fundrequest.common.infrastructure.mav.AbstractController;
 import io.fundrequest.core.request.RequestService;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -33,17 +34,19 @@ public class OpenRequestsNotificationsController extends AbstractController {
 
     @GetMapping("/notifications/open-requests/template")
     public ModelAndView showGeneratedTemplate(final Model model,
-                                       @RequestParam final List<String> projects,
-                                       @RequestParam final List<String> technologies,
-                                       @RequestParam(name = "last-updated", required = false) String lastUpdated) {
-        final String template = notificationsTemplateService.generateMailTemplate();
+                                              @RequestParam final List<String> projects,
+                                              @RequestParam final List<String> technologies,
+                                              @RequestParam(name = "last-updated", required = false) String lastUpdatedSinceDays) {
+        final String template = notificationsTemplateService.generateOpenRequestsMailTemplateFor(projects, technologies, Optional.ofNullable(lastUpdatedSinceDays)
+                                                                                                                                 .map(Long::valueOf)
+                                                                                                                                 .orElse(0L));
         return modelAndView(model).withView("notifications/open-requests")
                                   .withObject("projects", requestService.findAllProjects())
                                   .withObject("technologies", requestService.findAllTechnologies())
                                   .withObject("template", template)
                                   .withObject("selectedProjects", projects)
                                   .withObject("selectedTechnologies", technologies)
-                                  .withObject("lastUpdated", lastUpdated)
+                                  .withObject("lastUpdated", lastUpdatedSinceDays)
                                   .build();
     }
 }

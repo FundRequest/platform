@@ -4,13 +4,14 @@ import io.fundrequest.core.infrastructure.repository.JpaRepository;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestStatus;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public interface RequestRepository extends JpaRepository<Request, Long> {
+public interface RequestRepository extends JpaRepository<Request, Long>, JpaSpecificationExecutor<Request> {
     @Query("SELECT r FROM Request r where r.issueInformation.platform = ?1 and r.issueInformation.platformId = ?2")
     Optional<Request> findByPlatformAndPlatformId(Platform platform, String platformId);
 
