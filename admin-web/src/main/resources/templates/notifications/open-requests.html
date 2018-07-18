@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Mail templates</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+        integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
+</head>
+<body>
+<section layout:fragment="content" id="app">
+  <div id="app">
+    <h2>Generate open requests template</h2>
+    <form method="get" th:action="@{/notifications/open-requests/template}">
+      <div class="container">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label for="projects">Select one or more project:</label>
+              <select class="form-control" id="projects" name="projects" multiple="multiple">
+                <option th:each="project : ${projects}"
+                        th:text="${project}"
+                        th:value="${project}"
+                        th:selected="${selectedProjects?.contains(project)}"></option>
+              </select>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="projects">Select one or more technology:</label>
+              <select class="form-control" id="technologies" name="technologies" multiple="multiple">
+                <option th:each="technology : ${technologies}"
+                        th:text="${technology}"
+                        th:value="${technology}"
+                        th:selected="${selectedTechnologies?.contains(technology)}"></option>
+              </select>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="projects">Specify last updated since (optional):</label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="lastUpdated" name="last-updated" min="1" step="1" th:value="${lastUpdated}"/>
+                <div class="input-group-append">
+                  <span class="input-group-text"> day(s) ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <button type="submit" class="btn btn-primary">Generate template</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">&nbsp;</div>
+        </div>
+        <div class="row" th:if="${template}">
+          <div class="col-12">
+            <label for="template">The generated template:</label>
+            <textarea id="template" class="form-control" readonly="readonly" rows="25" th:text="${template}"></textarea>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+</body>
+</html>
