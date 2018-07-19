@@ -10,7 +10,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
         name = "github-raw-client",
         url = "https://raw.githubusercontent.com/"
 )
-interface GithubRawClient {
+public interface GithubRawClient {
 
     @RequestMapping(value = "{owner}/{repo}/{branch}/{filePath}", method = GET)
     String getContentsAsRaw(@PathVariable("owner") String owner,
