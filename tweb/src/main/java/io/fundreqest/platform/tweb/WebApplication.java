@@ -6,6 +6,7 @@ import io.fundrequest.core.FundRequestCore;
 import io.fundrequest.notification.FundRequestNotification;
 import io.fundrequest.platform.faq.FundRequestFAQ;
 import io.fundrequest.platform.github.FundRequestGithub;
+import io.fundrequest.platform.intercom.FundRequestIntercom;
 import io.fundrequest.platform.keycloak.FundRequestKeycloak;
 import io.fundrequest.platform.profile.ProfileApplication;
 import org.springframework.boot.SpringApplication;
@@ -27,7 +28,8 @@ import org.springframework.context.annotation.FilterType;
                 ProfileApplication.class,
                 FundRequestCommon.class,
                 FundRequestFAQ.class,
-                FundRequestNotification.class
+                FundRequestNotification.class,
+                FundRequestIntercom.class
         },
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),

@@ -26,7 +26,7 @@ public class PersistNotificationHandler {
     @EventListener
     @Transactional(propagation = REQUIRES_NEW)
     public void handle(final RequestFundedNotificationDto notification) {
-        notificationRepository.saveAndFlush(requestFundedNotificationMapper.map(notification));
+        notificationRepository.save(requestFundedNotificationMapper.map(notification));
     }
 
     @EventListener

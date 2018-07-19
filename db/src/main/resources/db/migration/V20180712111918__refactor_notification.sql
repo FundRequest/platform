@@ -1,4 +1,3 @@
-#DDL
 ALTER TABLE notification
   MODIFY notification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
@@ -11,7 +10,8 @@ ALTER TABLE notification
 ALTER TABLE notification
   DROP solver;
 
-#DML
+
+
 UPDATE notification n
 SET claim_id = (SELECT c.id
                 FROM claim c
