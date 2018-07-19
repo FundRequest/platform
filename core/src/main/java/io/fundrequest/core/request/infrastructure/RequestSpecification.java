@@ -33,7 +33,7 @@ public class RequestSpecification implements Specification<Request> {
         predicates.add(createProjectPredicate(root, criteriaBuilder));
         predicates.addAll(createTechnologyPredicates(root, criteriaBuilder));
         if (lastUpdatedSinceDays > 0L) {
-            predicates.add(criteriaBuilder.greaterThan(root.get("lastModifiedDate"), LocalDate.now().minusDays(lastUpdatedSinceDays).atStartOfDay()));
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("lastModifiedDate"), LocalDate.now().minusDays(lastUpdatedSinceDays).atStartOfDay()));
         }
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }

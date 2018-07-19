@@ -1,7 +1,7 @@
 package io.fundrequest.core.request;
 
-import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.common.infrastructure.mapping.Mappers;
+import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
@@ -13,11 +13,18 @@ import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.command.CreateRequestCommand;
-import io.fundrequest.core.request.domain.*;
+import io.fundrequest.core.request.domain.IssueInformation;
+import io.fundrequest.core.request.domain.IssueInformationMother;
+import io.fundrequest.core.request.domain.Platform;
+import io.fundrequest.core.request.domain.Request;
+import io.fundrequest.core.request.domain.RequestMother;
+import io.fundrequest.core.request.domain.RequestStatus;
+import io.fundrequest.core.request.domain.RequestType;
 import io.fundrequest.core.request.erc67.Erc67Generator;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
+import io.fundrequest.core.request.infrastructure.RequestSpecification;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.ClaimDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
@@ -35,7 +42,13 @@ import org.springframework.core.env.Environment;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
@@ -43,7 +56,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.refEq;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class RequestServiceImplTest {
 
@@ -90,6 +108,22 @@ public class RequestServiceImplTest {
         List<RequestDto> result = requestService.findAll();
 
         assertThat(result).isEqualTo(expectedRequests);
+    }
+
+    @Test
+    public void findAllFor() {
+        final List<String> projects = new ArrayList<>();
+        final List<String> technologies = new ArrayList<>();
+        final long lastUpdatedSinceDays = 10L;
+        final List<Request> requests = new ArrayList<>();
+        final List<RequestDto> expected = new ArrayList<>();
+
+        when(requestRepository.findAll(refEq(new RequestSpecification(projects, technologies, lastUpdatedSinceDays)))).thenReturn(requests);
+        when(mappers.mapList(eq(Request.class), eq(RequestDto.class), same(requests))).thenReturn(expected);
+
+        final List<RequestDto> result = requestService.findAllFor(projects, technologies, lastUpdatedSinceDays);
+
+        assertThat(result).isSameAs(expected);
     }
 
     @Test
