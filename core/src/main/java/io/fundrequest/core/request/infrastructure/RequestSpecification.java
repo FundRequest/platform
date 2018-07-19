@@ -30,8 +30,12 @@ public class RequestSpecification implements Specification<Request> {
     @Override
     public Predicate toPredicate(final Root<Request> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) {
         final List<Predicate> predicates = new ArrayList<>();
-        predicates.add(createProjectPredicate(root, criteriaBuilder));
-        predicates.addAll(createTechnologyPredicates(root, criteriaBuilder));
+        if (!projects.isEmpty()) {
+            predicates.add(createProjectPredicate(root, criteriaBuilder));
+        }
+        if (!technologies.isEmpty()) {
+            predicates.addAll(createTechnologyPredicates(root, criteriaBuilder));
+        }
         if (lastUpdatedSinceDays > 0L) {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("lastModifiedDate"), LocalDate.now().minusDays(lastUpdatedSinceDays).atStartOfDay()));
         }

@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -113,12 +114,16 @@ public class RequestRepositoryTest extends AbstractRepositoryTest {
         requestRepository.save(Arrays.asList(request1, request2, request3, request4, request5));
         requestRepository.flush();
 
-        assertThat(findAllFor(Arrays.asList(fundRequest, cindercloud), Arrays.asList(java.getTechnology(), html.getTechnology()), 6L)).containsExactlyInAnyOrder(request1, request2);
-        assertThat(findAllFor(Arrays.asList(trustWallet, cindercloud), Arrays.asList(java.getTechnology(), html.getTechnology()), 6L)).containsExactlyInAnyOrder(request3, request2);
+        assertThat(findAllFor(Arrays.asList(fundRequest, cindercloud), Arrays.asList(java.getTechnology(), html.getTechnology()), 0L)).containsExactlyInAnyOrder(request1, request2);
+        assertThat(findAllFor(Arrays.asList(trustWallet, cindercloud), Arrays.asList(java.getTechnology(), html.getTechnology()), 0L)).containsExactlyInAnyOrder(request3, request2);
+        assertThat(findAllFor(new ArrayList<>(), Arrays.asList(java.getTechnology(), html.getTechnology()), 0L)).containsExactlyInAnyOrder(request1, request2, request3);
+        assertThat(findAllFor(Arrays.asList(fundRequest, cindercloud), Arrays.asList(java.getTechnology()), 0L)).containsExactlyInAnyOrder(request1, request2, request5);
         assertThat(findAllFor(Arrays.asList(fundRequest, cindercloud), Arrays.asList(java.getTechnology()), 6L)).containsExactlyInAnyOrder(request1, request2, request5);
         assertThat(findAllFor(Arrays.asList(fundRequest, cindercloud), Arrays.asList(java.getTechnology()), 4L)).containsExactlyInAnyOrder(request1, request2, request5);
         assertThat(findAllFor(Arrays.asList(fundRequest, cindercloud), Arrays.asList(java.getTechnology()), 3L)).containsExactlyInAnyOrder(request2, request5);
-        assertThat(findAllFor(Arrays.asList(fundRequest, cindercloud), Arrays.asList(html.getTechnology()), 4L)).containsExactlyInAnyOrder(request1, request2, request4);
+        assertThat(findAllFor(Arrays.asList(fundRequest, cindercloud), Arrays.asList(html.getTechnology()), 0L)).containsExactlyInAnyOrder(request1, request2, request4);
+        assertThat(findAllFor(Arrays.asList(fundRequest, cindercloud), new ArrayList<>(), 0L)).containsExactlyInAnyOrder(request1, request2, request4, request5);
+        assertThat(findAllFor(new ArrayList<>(), new ArrayList<>(), 0L)).containsExactlyInAnyOrder(request1, request2, request3, request4, request5);
     }
 
     private List<Request> findAllFor(List<String> projects, List<String> technologies, long lastUpdatedSinceDays) {
