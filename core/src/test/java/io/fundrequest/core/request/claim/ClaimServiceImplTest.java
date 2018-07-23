@@ -14,6 +14,7 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
+import io.fundrequest.core.request.view.ClaimDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.Before;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -61,6 +62,31 @@ public class ClaimServiceImplTest {
                                             mappers,
                                             claimDtoAggregator,
                                             applicationEventPublisher);
+    }
+
+    @Test
+    public void findClaim() {
+        final long claimId = 697L;
+        final Claim claim = Claim.builder().build();
+        final ClaimDto expected = ClaimDtoMother.aClaimDto().build();
+
+        when(claimRepository.findOne(claimId)).thenReturn(Optional.of(claim));
+        when(mappers.map(eq(Claim.class), eq(ClaimDto.class), same(claim))).thenReturn(expected);
+
+        final Optional<ClaimDto> result = claimService.findOne(claimId);
+
+        assertThat(result).containsSame(expected);
+    }
+
+    @Test
+    public void findClaim_notFound() {
+        final long claimId = 697L;
+
+        when(claimRepository.findOne(claimId)).thenReturn(Optional.empty());
+
+        final Optional<ClaimDto> result = claimService.findOne(claimId);
+
+        assertThat(result).isEmpty();
     }
 
     @Test
