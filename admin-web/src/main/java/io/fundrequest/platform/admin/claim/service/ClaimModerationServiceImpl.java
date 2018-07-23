@@ -1,7 +1,7 @@
 package io.fundrequest.platform.admin.claim.service;
 
+import io.fundrequest.common.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.common.infrastructure.mapping.Mappers;
-import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
 import io.fundrequest.core.request.claim.dto.RequestClaimDto;

@@ -1,8 +1,8 @@
 package io.fundrequest.core.contract.service;
 
+import io.fundrequest.common.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.contract.domain.FundRequestContract;
 import io.fundrequest.core.contract.domain.TokenWhitelistPreconditionContract;
-import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
 import org.junit.jupiter.api.BeforeEach;
