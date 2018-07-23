@@ -1,68 +1,66 @@
 <template>
-	<div class="col-12 contained">
-		<div class="scrolling-wrapper-flexbox">
-			<project-card v-for="project in projects" :project="project" v-bind:key="project.name"></project-card>
-		</div>
-	</div>
+    <div class="scrolling-wrapper-flexbox">
+        <project-card v-for="project in projects" :project="project" v-bind:key="project.name"></project-card>
+    </div>
 </template>
 
 <script lang="ts">
-    import {Component, Prop, Vue} from "vue-property-decorator";
+    import {Component, Vue} from "vue-property-decorator";
     import ProjectCard from "./ProjectCard.vue";
-	import ProjectOverviewDetail from "../models/ProjectOverviewDetail"
-	import Utils from "../../classes/Utils";
+    import ProjectOverviewDetail from "../models/ProjectOverviewDetail";
+    import Utils from "../../classes/Utils";
+    import {Locations} from '../../classes/Locations';
 
-	@Component({
-		components: {
-			'project-card': ProjectCard
-		}
-	})
+    @Component({
+        components: {
+            "project-card": ProjectCard
+        }
+    })
     export default class ProjectsOverview extends Vue {
 
-		private projectDataURL = "https://raw.githubusercontent.com/FundRequest/platform-metadata/master/projects"
-		private projects: Array<ProjectOverviewDetail> = []
+        private projectDataURL = "https://raw.githubusercontent.com/FundRequest/platform-metadata/master/projects";
+        private projects: Array<ProjectOverviewDetail> = [];
 
-		private async _loadProjects(projects) {
+        private async _loadProjects(projects) {
+            try {
+                let projectData = await Utils.getJSON(this.projectDataURL);
+                for (let project in projectData) {
+                    if (projectData.hasOwnProperty(project)) {
+                        projects.push(Object.assign(new ProjectOverviewDetail(), {
+                            name: projectData[project]["title"],
+                            description: projectData[project]["small_description"],
+                            overviewColor: projectData[project]["background-color"],
+                            projectLink: `${Locations.requests}?fase=open&projects=${project}`,
+                            logoLocation: `https://github.com/${project}.png`,
+                            activeRequests: 0
+                        }));
+                    }
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }
 
-			try {
-				let projectData = await Utils.getJSON(this.projectDataURL)
-				for (var proj in projectData) {
-					projects.push({
-						name: projectData[proj]['title'],
-						description: projectData[proj]['small_description'],
-						overviewColor: projectData[proj]['background-color'],
-						projectLink: `https://fundrequest.io/requests?fase=open&projects=${proj}`,
-						logoLocation: `https://github.com/${proj}.png`,
-						activeRequests: 0
-					});
-				}
-			} catch (err) {
-				console.log(err);
-			}
-		}
-
-		mounted() {
-			this._loadProjects(this.projects);
-		}
+        created() {
+            this._loadProjects(this.projects);
+        }
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+    .scrolling-wrapper-flexbox {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
 
-	.contained {
-		margin-top: 1.25rem;
-	}
+        -webkit-overflow-scrolling: touch;
 
-	.scrolling-wrapper-flexbox {
-		display: flex;
-		flex-wrap: nowrap;
-		overflow-x: auto;
-		overflow-y: hidden;
-
-		width: 100vw;
-		left: calc(50% - 50vw);
-		position: relative;
-		-webkit-overflow-scrolling: touch;
-	}
+        &::after {
+            display: block;
+            content: '';
+            padding: .25rem;
+        }
+    }
 
 </style>

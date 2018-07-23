@@ -45,15 +45,20 @@
         <div class="triangle triangle--bottom triangle--inverse triangle--gray"></div>
     </section>
 
-
-    <section class="section section--main pb-5">
-        <div class="container  px-5">
+    <section class="section section--main mb-5">
+        <div class="container">
             <div class="row">
-                <div class="col-12">
-                    <h2 class="text-secondary mb-0">Request development</h2>
-                    <p>and start harnessing the power of Open Source developers</p>
+                <div class="col-12 mt-5">
+                    <h2 class="text-secondary text-center">Join extraordinary projects</h2>
+                    <p class="text-center">Become part of the collection of extraordinary projects that fully embrace
+                                           open source culture.</p>
                 </div>
             </div>
+        </div>
+        <projects-overview></projects-overview>
+
+
+        <div class="container pt-5 px-5">
             <div class="row">
                 <div class="col-12 col-md-3 col-lg-3 offset-md-2">
                     <img class="help-image" th:src="@{/assets/img/help-image.png}" />
@@ -80,15 +85,6 @@
                     </ul>
                 </div>
             </div>
-			<div class="row">
-				<div class="col-12 mt-5">
-					<h2 class="text-secondary text-center">Join extraordinary projects</h2>
-					<p class="text-center">Become part of the collection of extraordinary projects that fully embrace open source culture.</p>
-				</div>
-			</div>
-			<div class="row">
-				<projects-overview></projects-overview>
-			</div>
         </div>
     </section>
 </th:block>
