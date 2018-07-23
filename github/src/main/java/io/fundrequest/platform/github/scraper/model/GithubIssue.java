@@ -7,8 +7,9 @@ import lombok.Data;
 @Builder
 public class GithubIssue {
 
+    private final String owner;
+    private final String repo;
     private final String number;
     private final String status;
     private final String solver;
-
 }

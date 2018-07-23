@@ -15,7 +15,8 @@ public class GithubResult {
     private String number;
     private String title;
     private String state;
-    @JsonProperty("body_html")
     private String body;
+    @JsonProperty("body_html")
+    private String bodyHtml;
     private GithubUser user;
 }

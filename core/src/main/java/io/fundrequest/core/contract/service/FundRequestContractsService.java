@@ -4,6 +4,7 @@ import io.fundrequest.core.contract.domain.ClaimRepositoryContract;
 import io.fundrequest.core.contract.domain.FundRepositoryContract;
 import io.fundrequest.core.contract.domain.FundRequestContract;
 import io.fundrequest.core.contract.domain.TokenWhitelistPreconditionContract;
+import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.token.TokenInfoService;
 import io.fundrequest.core.token.dto.TokenInfoDto;
 import lombok.extern.slf4j.Slf4j;
@@ -70,10 +71,16 @@ public class FundRequestContractsService {
 
     @Cacheable(value = "possible_tokens", key = "#platform + '-' + #platformId")
     public List<TokenInfoDto> getAllPossibleTokens(final String platform, final String platformId) {
-        return getAllPossibleTokens()
-                .stream()
-                .filter(token -> tokenWhitelistPreconditionContract.isValid(platform, platformId, token.getAddress()))
-                .collect(Collectors.toList());
+        return checkNotEmpty(getAllPossibleTokens().stream()
+                                                   .filter(token -> tokenWhitelistPreconditionContract.isValid(platform, platformId, token.getAddress()))
+                                                   .collect(Collectors.toList()));
+    }
+
+    private List<TokenInfoDto> checkNotEmpty(final List<TokenInfoDto> possibleTokens) {
+        if (possibleTokens.isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+        return possibleTokens;
     }
 
     private Set<TokenInfoDto> getAllPossibleTokens() {

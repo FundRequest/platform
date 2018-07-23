@@ -2,6 +2,7 @@ import Vue from 'vue';
 import * as $ from 'jquery';
 
 import Faq from './components/Faq.vue';
+import Faucet from './components/Faucet.vue';
 import FontSizeFit from './components/FontSizeFit.vue';
 import RequestDetail from './components/RequestDetail.vue';
 import RequestList from './components/RequestList.vue';
@@ -19,6 +20,7 @@ let v = new Vue({
     data: {},
     components: {
         'faq': Faq,
+        'faucet': Faucet,
         'request-detail': RequestDetail,
         'request-list': RequestList,
         'request-list-pending-funds': RequestListPendingFunds,

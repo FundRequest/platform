@@ -20,6 +20,7 @@ class FaqItemDtoMapperTest {
 
     private static final String OWNER = "hjgfkh";
     private static final String REPO = "asd";
+    private static final String BRANCH = "develop";
 
     private FaqItemDtoMapper mapper;
     private GithubGateway githubGateway;
@@ -29,7 +30,7 @@ class FaqItemDtoMapperTest {
     public void setUp() {
         githubGateway = mock(GithubGateway.class);
         jsoup = mock(JsoupSpringWrapper.class);
-        mapper = new FaqItemDtoMapper(githubGateway, OWNER, REPO, jsoup);
+        mapper = new FaqItemDtoMapper(githubGateway, OWNER, REPO, BRANCH, jsoup);
     }
 
     @Test
@@ -42,7 +43,7 @@ class FaqItemDtoMapperTest {
         final Elements markdownElements = mock(Elements.class);
         final Element markdownElement = mock(Element.class);
 
-        when(githubGateway.getContentsAsHtml(OWNER, REPO, filePath)).thenReturn(contentHtml);
+        when(githubGateway.getContentsAsHtml(OWNER, REPO, BRANCH, filePath)).thenReturn(contentHtml);
         when(jsoup.parse(contentHtml)).thenReturn(contentDocument);
         when(contentDocument.select(".markdown-body")).thenReturn(markdownElements);
         when(markdownElements.isEmpty()).thenReturn(false);
@@ -65,7 +66,7 @@ class FaqItemDtoMapperTest {
         final Elements markdownElements = mock(Elements.class);
         final Element markdownElement = mock(Element.class);
 
-        when(githubGateway.getContentsAsHtml(OWNER, REPO, filePath)).thenReturn(contentHtml);
+        when(githubGateway.getContentsAsHtml(OWNER, REPO, BRANCH, filePath)).thenReturn(contentHtml);
         when(jsoup.parse(contentHtml)).thenReturn(contentDocument);
         when(contentDocument.select(".markdown-body")).thenReturn(markdownElements);
         when(markdownElements.isEmpty()).thenReturn(true);
@@ -86,7 +87,7 @@ class FaqItemDtoMapperTest {
         final Elements markdownElements = mock(Elements.class);
         final Element markdownElement = mock(Element.class);
 
-        when(githubGateway.getContentsAsHtml(OWNER, REPO, filePath)).thenReturn(contentHtml);
+        when(githubGateway.getContentsAsHtml(OWNER, REPO, BRANCH, filePath)).thenReturn(contentHtml);
         when(jsoup.parse(contentHtml)).thenReturn(contentDocument);
         when(contentDocument.select(".markdown-body")).thenReturn(markdownElements);
 

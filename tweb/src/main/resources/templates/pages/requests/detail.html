@@ -82,16 +82,14 @@
         </div>
     </section>
 
-    <section class="mb-5">
-        <request-detail th:attr="'v-bind:request'=${requestJson}"
-                        v-bind:fase-filter-default="'info'"
+    <request-detail th:attr="'v-bind:request'=${requestJson}"
+                        v-bind:phase-filter-default="'info'"
                         v-bind:filters="[
                     { value: 'info', title: 'Info', description: 'Detailed description of the request' },
-                    { value: 'comments', title: 'Comments', description: 'Comments posted on the request' },
                     { value: 'details', title: 'Details', description: 'An overview of the funders and funds.' }
                  ]">
-            <template slot-scope="{faseFilter}">
-                <div class="card" v-if="faseFilter === 'info'">
+            <template slot-scope="{phaseFilter}">
+                <div class="card mb-5" v-if="phaseFilter === 'info'">
                     <div class="card-body">
                         <div class="request-details d-flex flex-wrap flex-md-nowrap align-items-start">
                             <div class="request-details__logo">
@@ -108,43 +106,57 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="card comment" v-if="faseFilter === 'comments'" th:each="comment : ${githubComments}">
-                    <div class="card-body">
-                        <div class="request-details d-flex flex-wrap flex-md-nowrap align-items-start">
-                            <div class="request-details__logo">
-                                <div>
-                                    <img th:src="@{${comment.userAvatar}(size=45)}" th:alt-title="${comment.userName}"/>
+                <div class="row mb-5" v-if="phaseFilter === 'info'">
+                <div class="col-12">
+                    <h2 class="section-title">Comments</h2>
+                    <h3 class="section-subtitle">
+                        Comments posted on the request
+                    </h3>
+                </div>
+                <div class="col-12">
+                    <div class="card comment" th:each="comment : ${githubComments}">
+                        <div class="card-body">
+                                <div class="request-details d-flex flex-wrap flex-md-nowrap align-items-start">
+                                    <div class="request-details__logo">
+                                        <div>
+                                            <img th:src="@{${comment.userAvatar}(size=45)}"
+                                                 th:alt-title="${comment.userName}"/>
+                                        </div>
+                                        <div class="request-details__owner mb-3">
+                                            <font-size-fit v-bind:max-size="15" v-bind:key="'username'"
+                                                           th:text="${comment.userName}">FundRequest
+                                            </font-size-fit>
+                                        </div>
+                                        <div class="request-details__last-modified-at">
+                                            <small>Commented</small>
+                                            <font-size-fit v-bind:max-size="15">
+                                                <timeago
+                                                        th:attr="'v-bind:since'='&quot;' + ${comment.createdAt} + '&quot;'"
+                                                        v-bind:auto-update="60"></timeago>
+                                            </font-size-fit>
+                                        </div>
+                                    </div>
+                                    <div class="request-details__markdown" th:utext="${comment.body}"></div>
                                 </div>
-                                <div class="request-details__owner mb-3">
-									<font-size-fit v-bind:max-size="15" v-bind:key="'username'" th:text="${comment.userName}">FundRequest</font-size-fit>
-                                </div>
-                                <div class="request-details__last-modified-at">
-                                    <small>Commented</small>
-                                    <font-size-fit v-bind:max-size="15">
-                                        <timeago th:attr="'v-bind:since'='&quot;' + ${comment.createdAt} + '&quot;'" v-bind:auto-update="60"></timeago>
-                                    </font-size-fit>
-                                </div>
-                            </div>
-                            <div class="request-details__markdown" th:utext="${comment.body}"></div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="card" v-if="faseFilter === 'details'">
-                    <div class="card-header">
-                        Funded by
-                    </div>
-                    <div class="card-body">
-                        <div class="request-funding">
-                            <div class="request-funding__transfers">
-                                <div class="request-funding__transfer" th:each="transfer : ${fundedBy.funders}">
-                                    <div class="request-details__label">
-                                        <span class="request-details__label-text" th:text="${transfer.funder}">Karel Striegel</span>
-                                        <span class="request-details__label-badge badge badge-pill badge-primary"
-                                              th:if="${transfer.loggedInUser}">You</span>
-                                    </div>
-                                    <div class="request-details__fund" th:if="${transfer.fndFunds != null}">
+                <div class="card mb-5" v-if="phaseFilter === 'details'">
+                <div class="card-header">
+                    Funded by
+                </div>
+                <div class="card-body">
+                    <div class="request-funding">
+                        <div class="request-funding__transfers">
+                            <div class="request-funding__transfer" th:each="transfer : ${fundedBy.funders}">
+                                <div class="request-details__label">
+                                    <span class="request-details__label-text" th:text="${transfer.funder}">Karel Striegel</span>
+                                    <span class="request-details__label-badge badge badge-pill badge-primary"
+                                          th:if="${transfer.loggedInUser}">You</span>
+                                </div>
+                                <div class="request-details__fund" th:if="${transfer.fndFunds != null}">
                                         <span class="request-details__fund-amount"
                                               th:text="${#numbers.formatDecimal(transfer.fndFunds.totalAmount,1,'COMMA',2,'POINT')}">100,00</span>
                                         <span class="request-details__fund-currency"
@@ -189,8 +201,7 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="card" th:if="${!claims.claims.isEmpty()}" v-if="faseFilter === 'details'">
+                <div class="card mb-5" th:if="${!claims.claims.isEmpty()}" v-if="phaseFilter === 'details'">
                     <div class="card-header">
                         Claimed by
                     </div>
@@ -263,11 +274,10 @@
                     </div>
                 </div>
             </template>
-        </request-detail>
-    </section>
+    </request-detail>
 
     <section class="mb-2" id="faq" ref="faq">
-        <faq v-bind:location="'/rest/faq/requestsDetail'"></faq>
+        <faq v-bind:location="'/rest/faq/requestDetail'"></faq>
     </section>
 
 </th:block>
