@@ -39,7 +39,7 @@ public class RequestDetailsViewMapperDecoratorTest {
         final IssueInformationDto issueInformation = requestDto.getIssueInformation();
         final String status = "rdfjcgv";
         final GithubResult githubResult = new GithubResult();
-        githubResult.setBody("<html/>");
+        githubResult.setBodyHtml("<html/>");
 
         when(delegate.map(requestDto)).thenReturn(new RequestDetailsView());
         when(githubGateway.getIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber())).thenReturn(githubResult);
@@ -55,7 +55,7 @@ public class RequestDetailsViewMapperDecoratorTest {
         assertThat(result.getTitle()).isEqualTo(issueInformation.getTitle());
         assertThat(result.getStarred()).isEqualTo(requestDto.isLoggedInUserIsWatcher());
         assertThat(result.getStatus()).isEqualTo(status);
-        assertThat(result.getDescription()).isEqualTo(githubResult.getBody());
+        assertThat(result.getDescription()).isEqualTo(githubResult.getBodyHtml());
     }
 
     @Test

@@ -72,7 +72,7 @@ public class GithubGateway {
         return githubRawClient.getContentsAsRaw(owner, repo, branch, filePath);
     }
 
-    public String getContentsAsHtml(final String owner, final String repo, final String filePath) {
-        return githubApiClient.getContentsAsHtml(owner, repo, filePath);
+    public String getContentsAsHtml(final String owner, final String repo, final String branch, final String filePath) {
+        return githubApiClient.getContentsAsHtml(owner, repo, branch, filePath);
     }
 }

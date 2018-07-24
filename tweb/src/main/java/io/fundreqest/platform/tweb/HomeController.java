@@ -67,7 +67,7 @@ public class HomeController extends AbstractController {
     public String getRequestsActiveCount(Principal principal) {
         final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
         final Map<String, Long> requestsActiveCount = requests.stream()
-                                    .filter(request -> !request.getFase().equals("Open"))
+                                    .filter(request -> !request.getPhase().equals("Open"))
                                     .collect(Collectors.groupingBy(RequestView::getOwner, Collectors.counting()));
 
         return getAsJson(requestsActiveCount);

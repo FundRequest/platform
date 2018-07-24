@@ -2,12 +2,14 @@ package io.fundrequest.platform.github.scraper;
 
 
 import io.fundrequest.common.infrastructure.JsoupSpringWrapper;
+import io.fundrequest.platform.github.scraper.model.GithubId;
 import io.fundrequest.platform.github.scraper.model.GithubIssue;
 import org.jsoup.nodes.Document;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -39,11 +41,13 @@ public class GithubScraperTest {
         final Document document = mock(Document.class);
 
         when(jsoup.connect("https://github.com/" + owner + "/" + repo + "/issues/" + number).get()).thenReturn(document);
-        when(solverParser.resolve(document, owner, repo)).thenReturn(expectedSolver);
+        when(solverParser.resolve(document, GithubId.builder().owner(owner).repo(repo).number(number).build())).thenReturn(Optional.of(expectedSolver));
         when(statusParser.resolve(document)).thenReturn(expectedStatus);
 
         final GithubIssue returnedIssue = scraper.fetchGithubIssue(owner, repo, number);
 
+        assertThat(returnedIssue.getOwner()).isEqualTo(owner);
+        assertThat(returnedIssue.getRepo()).isEqualTo(repo);
         assertThat(returnedIssue.getNumber()).isEqualTo(number);
         assertThat(returnedIssue.getSolver()).isEqualTo(expectedSolver);
         assertThat(returnedIssue.getStatus()).isEqualTo(expectedStatus);
