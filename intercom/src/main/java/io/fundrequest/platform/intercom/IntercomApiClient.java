@@ -15,6 +15,6 @@ public interface IntercomApiClient {
     @RequestMapping(value = "/events", method = POST, headers = "Content-Type=application/json")
     void postEvent(Event event);
 
-    @RequestMapping(value = "/messages", method = POST, headers = "Content-Type=application/json")
+    @RequestMapping(value = "/messages", method = POST, headers = {"Content-Type=application/json", "Accept=application/json"})
     void postMessage(AdminMessage message);
 }

@@ -31,7 +31,7 @@ public class ThymeleafSvgConfig implements ApplicationContextAware {
         thymeleafViewResolver.setTemplateEngine(templateEngine);
         thymeleafViewResolver.setOrder(0);
         thymeleafViewResolver.setCharacterEncoding("UTF-8");
-        thymeleafViewResolver.setContentType("image/svgxml");
+        thymeleafViewResolver.setContentType("image/svg+xml");
         thymeleafViewResolver.setViewNames(new String[] {"*.svg"});
         return thymeleafViewResolver;
     }

@@ -4,7 +4,6 @@ import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.notification.dto.RequestClaimedNotificationDto;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
@@ -16,7 +15,6 @@ public class PublishRequestClaimedNotificationHandler {
         this.eventPublisher = eventPublisher;
     }
 
-    @Transactional
     @TransactionalEventListener
     public void onClaimed(final RequestClaimedEvent claimedEvent) {
         eventPublisher.publishEvent(RequestClaimedNotificationDto.builder()

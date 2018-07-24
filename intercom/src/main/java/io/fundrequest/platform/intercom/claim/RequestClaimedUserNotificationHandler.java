@@ -14,8 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
+
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 @Component
 public class RequestClaimedUserNotificationHandler {
@@ -44,13 +47,14 @@ public class RequestClaimedUserNotificationHandler {
         this.adminId = adminId;
     }
 
-    @Async
     @EventListener
+    @Async("taskExecutor")
+    @Transactional(readOnly = true, propagation = REQUIRES_NEW)
     public void handle(final RequestClaimedNotificationDto notification) {
         claimService.findOne(notification.getClaimId())
                     .ifPresent(claim -> {
                         final RequestDto request = requestService.findRequest(notification.getRequestId());
-                        final UserRepresentation user = identityAPIClient.findByIdentityProviderAndFederatedUsername(request.getIssueInformation().getPlatform().name(), claim.getSolver());
+                        final UserRepresentation user = identityAPIClient.findByIdentityProviderAndFederatedUsername(request.getIssueInformation().getPlatform().name().toLowerCase(), claim.getSolver());
 
                         final Context context = new Context();
                         context.setVariable("platformBasepath", platformBasepath);
