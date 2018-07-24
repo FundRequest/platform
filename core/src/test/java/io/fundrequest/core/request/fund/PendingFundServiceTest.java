@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.fund;
 
 import io.fundrequest.core.PrincipalMother;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.command.PendingFundCommand;
 import io.fundrequest.core.request.fund.domain.PendingFund;
@@ -18,9 +18,7 @@ import java.math.BigInteger;
 import java.security.Principal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PendingFundServiceTest {
 
