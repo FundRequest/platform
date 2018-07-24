@@ -50,15 +50,9 @@
 		}
 
 		private _mergeWithDefault() {
-			console.log(this.project.logoLocation);
-			console.log(defaultProject.logoLocation);
-			//const defaultClone = Object.assign({}, defaultProject);
 			this.project = Object.assign({...defaultProject}, this.project);
-			console.log(this.project.logoLocation);
-			console.log(defaultProject.logoLocation);
 			if (this.project.logoLocation !== defaultProject.logoLocation) {
 				this.project.logoLocation = this.project.logoLocation + '?size=150';
-				console.log(this.project);
 			}
 		}
 

@@ -1,7 +1,10 @@
 package io.fundreqest.platform.tweb;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
 import io.fundrequest.core.PrincipalMother;
+import io.fundrequest.core.request.RequestService;
+import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.ref.RefSignupEvent;
 import org.junit.Test;
@@ -20,12 +23,18 @@ public class HomeControllerTest extends AbstractControllerTest<HomeController> {
 
     private ProfileService profileService;
     private ApplicationEventPublisher eventPublisher;
+    private RequestService requestService;
+    private ObjectMapper objectMapper;
+    private Mappers mappers;
 
     @Override
     protected HomeController setupController() {
         profileService = mock(ProfileService.class);
         eventPublisher = mock(ApplicationEventPublisher.class);
-        return new HomeController(profileService, eventPublisher);
+        requestService = mock(RequestService.class);
+        objectMapper = mock(ObjectMapper.class);
+        mappers = mock(Mappers.class);
+        return new HomeController(profileService, eventPublisher, requestService, objectMapper, mappers);
     }
 
     @Test

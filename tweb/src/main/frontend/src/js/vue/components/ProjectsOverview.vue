@@ -25,15 +25,17 @@
 		private async _loadProjects(projects) {
 
 			try {
+				let activeRequestCounts = await Utils.getJSON("/requestsActiveCount");
 				let projectData = await Utils.getJSON(this.projectDataURL)
 				for (var proj in projectData) {
+					let activeRequestCount = activeRequestCounts[proj] || 0;
 					projects.push({
 						name: projectData[proj]['title'],
 						description: projectData[proj]['small_description'],
 						overviewColor: projectData[proj]['background-color'],
 						projectLink: `https://fundrequest.io/requests?fase=open&projects=${proj}`,
 						logoLocation: `https://github.com/${proj}.png`,
-						activeRequests: 0
+						activeRequests: activeRequestCount
 					});
 				}
 			} catch (err) {
