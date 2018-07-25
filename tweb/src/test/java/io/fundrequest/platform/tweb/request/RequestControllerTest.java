@@ -93,7 +93,7 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         objectMapper = spy(new ObjectMapper());
         mappers = mock(Mappers.class);
         return new RequestController(securityContextService,
-									 requestService,
+                                     requestService,
                                      pendingFundService,
                                      statisticsService,
                                      profileService,
@@ -101,7 +101,8 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
                                      refundService,
                                      claimService,
                                      fiatService,
-                                     platformIssueService, objectMapper,
+                                     platformIssueService,
+                                     objectMapper,
                                      mappers);
     }
 
@@ -129,18 +130,18 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(requestService.findAllProjects()).thenReturn(projects);
         when(requestService.findAllTechnologies()).thenReturn(technologies);
         when(securityContextService.isUserFullyAuthenticated()).thenReturn(isAuthenticated);
-        when(objectMapper.writeValueAsString(same(filteredRequestViews))).thenReturn("requestViews");
+        when(objectMapper.writeValueAsString(filteredRequestViews)).thenReturn("requestViews");
         when(objectMapper.writeValueAsString(same(projects))).thenReturn("projects");
         when(objectMapper.writeValueAsString(same(technologies))).thenReturn("technologies");
 
         this.mockMvc.perform(get("/requests").principal(principal))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
-                .andExpect(MockMvcResultMatchers.model().attribute("statistics", statisticsDto))
-                .andExpect(MockMvcResultMatchers.model().attribute("projects", "projects"))
-                .andExpect(MockMvcResultMatchers.model().attribute("technologies", "technologies"))
-                .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
-                .andExpect(MockMvcResultMatchers.view().name("pages/requests/index"));
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.model().attribute("requests", "requestViews"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("statistics", statisticsDto))
+                    .andExpect(MockMvcResultMatchers.model().attribute("projects", "projects"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("technologies", "technologies"))
+                    .andExpect(MockMvcResultMatchers.model().attribute("isAuthenticated", Boolean.toString(isAuthenticated)))
+                    .andExpect(MockMvcResultMatchers.view().name("pages/requests/index"));
     }
 
     private RequestView buildRequestView(final String fndAmount, final String zrxAmount) {
