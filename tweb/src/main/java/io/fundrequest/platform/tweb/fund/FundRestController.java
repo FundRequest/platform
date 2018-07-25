@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest/fund")
+@RequestMapping("/rest")
 public class FundRestController {
 
     private FundRequestContractsService fundRequestContractsService;
@@ -18,7 +18,7 @@ public class FundRestController {
         this.fundRequestContractsService = fundRequestContractsService;
     }
 
-    @RequestMapping("/allowed-tokens")
+    @RequestMapping("/fund/allowed-tokens")
     public List<TokenInfoDto> getAllowedTokens(@RequestParam("platform") final String platform,
                                                @RequestParam("platformId") final String platformId) {
         return fundRequestContractsService.getAllPossibleTokens(platform, platformId);

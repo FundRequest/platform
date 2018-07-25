@@ -5,10 +5,15 @@ import io.fundrequest.db.infrastructure.AbstractEntity;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigInteger;
 
-@Data
+@Data(staticConstructor = "of")
 @Entity(name = "pending_funds")
 public class PendingFund extends AbstractEntity {
 

@@ -28,7 +28,7 @@ public class RequestClaimDtoDecoratorTest {
         decorator = new RequestClaimDtoDecorator() {};
         ReflectionTestUtils.setField(decorator, "delegate", delegate);
         ReflectionTestUtils.setField(decorator, "requestService", requestService);
-        ReflectionTestUtils.setField(decorator, "fundRequestBasePath", "https://fundrequest.io");
+        ReflectionTestUtils.setField(decorator, "platformBasePath", "https://fundrequest.io");
     }
 
     @Test

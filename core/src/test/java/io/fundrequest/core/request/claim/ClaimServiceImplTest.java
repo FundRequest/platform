@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.claim;
 
-import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.common.infrastructure.mapping.Mappers;
+import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
@@ -29,7 +29,9 @@ import java.util.Optional;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ClaimServiceImplTest {
 

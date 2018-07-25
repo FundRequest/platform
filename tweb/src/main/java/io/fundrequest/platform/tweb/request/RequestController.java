@@ -13,11 +13,13 @@ import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.fiat.FiatService;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
+import io.fundrequest.core.request.fund.RefundService;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.PendingFundDto;
 import io.fundrequest.core.request.statistics.StatisticsService;
 import io.fundrequest.core.request.view.IssueInformationDto;
 import io.fundrequest.core.request.view.RequestDto;
+import io.fundrequest.core.token.dto.TokenValueDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.tweb.request.dto.ERC67FundDto;
 import io.fundrequest.platform.tweb.request.dto.RequestDetailsView;
@@ -47,6 +49,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.fundrequest.core.request.domain.Platform.GITHUB;
+import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.APPROVED;
+import static io.fundrequest.core.request.fund.domain.RefundRequestStatus.PENDING;
+import static java.math.BigDecimal.ZERO;
+import static java.util.stream.Collectors.toList;
 
 @Controller
 @Slf4j
@@ -58,6 +64,7 @@ public class RequestController extends AbstractController {
     private final StatisticsService statisticsService;
     private final ProfileService profileService;
     private final FundService fundService;
+    private final RefundService refundService;
     private final ClaimService claimService;
     private final FiatService fiatService;
     private final PlatformIssueService platformIssueService;
@@ -69,6 +76,7 @@ public class RequestController extends AbstractController {
                              final PendingFundService pendingFundService,
                              final StatisticsService statisticsService,
                              final ProfileService profileService, FundService fundService,
+                             final RefundService refundService,
                              final ClaimService claimService,
                              final FiatService fiatService,
                              final PlatformIssueService platformIssueService,
@@ -80,6 +88,7 @@ public class RequestController extends AbstractController {
         this.statisticsService = statisticsService;
         this.profileService = profileService;
         this.fundService = fundService;
+        this.refundService = refundService;
         this.claimService = claimService;
         this.fiatService = fiatService;
         this.platformIssueService = platformIssueService;
@@ -89,7 +98,10 @@ public class RequestController extends AbstractController {
 
     @GetMapping("/requests")
     public ModelAndView requests() {
-        final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll());
+        final List<RequestView> requests = mappers.mapList(RequestDto.class, RequestView.class, requestService.findAll())
+                                                  .stream()
+                                                  .filter(request -> hasFunds(request.getFunds().getFndFunds()) || hasFunds(request.getFunds().getOtherFunds()))
+                                                  .collect(toList());
         final Map<String, Long> requestsPerPhaseCount = requests.stream().collect(Collectors.groupingBy(RequestView::getPhase, Collectors.counting()));
         return modelAndView().withObject("requestsPerPhaseCount", requestsPerPhaseCount)
                              .withObject("requests", getAsJson(requests))
@@ -101,6 +113,10 @@ public class RequestController extends AbstractController {
                              .build();
     }
 
+    private boolean hasFunds(final TokenValueDto funds) {
+        return funds != null && funds.getTotalAmount().compareTo(ZERO) > 0;
+    }
+
     @RequestMapping("/requests/{type}")
     public ModelAndView details(@PathVariable String type, @RequestParam Map<String, String> queryParameters) {
         return modelAndView()
@@ -110,24 +126,28 @@ public class RequestController extends AbstractController {
     }
 
     @GetMapping("/requests/{id}")
-    public ModelAndView details(Principal principal, @PathVariable Long id, Model model) {
+    public ModelAndView details(@PathVariable Long id, Model model) {
         final RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(id));
-        return getDetailsModelAndView(principal, id, model, request);
+        return getDetailsModelAndView(id, model, request);
     }
 
     @GetMapping("/requests/github/{owner}/{repo}/{number}")
-    public ModelAndView details(Principal principal, @PathVariable String owner, @PathVariable String repo, @PathVariable String number, Model model) {
+    public ModelAndView details(@PathVariable String owner, @PathVariable String repo, @PathVariable String number, Model model) {
         final String platformId = owner + "|FR|" + repo + "|FR|" + number;
         final RequestDetailsView request = mappers.map(RequestDto.class, RequestDetailsView.class, requestService.findRequest(GITHUB, platformId));
-        return getDetailsModelAndView(principal, request.getId(), model, request);
+        return getDetailsModelAndView(request.getId(), model, request);
     }
 
-    private ModelAndView getDetailsModelAndView(final Principal principal, final Long id, final Model model, final RequestDetailsView request) {
+    private ModelAndView getDetailsModelAndView(final Long id, final Model model, final RequestDetailsView request) {
         return modelAndView(model)
                 .withObject("request", request)
                 .withObject("requestJson", getAsJson(request))
-                .withObject("fundedBy", fundService.getFundedBy(principal, id))
+                .withObject("funds", fundService.getFundsForRequestGroupedByFunder(id))
                 .withObject("claims", claimService.getAggregatedClaimsForRequest(id))
+                .withObject("pendingRefundAddresses", refundService.findAllRefundRequestsFor(id, PENDING, APPROVED)
+                                                                   .stream()
+                                                                   .map(refundRequest -> refundRequest.getFunderAddress().toLowerCase())
+                                                                   .collect(toList()))
                 .withObject("githubComments", requestService.getComments(id))
                 .withView("pages/requests/detail")
                 .build();
@@ -165,7 +185,7 @@ public class RequestController extends AbstractController {
                         .platformId(request.getIssueInformation().getPlatformId())
                         .build());
         return redirectView(redirectAttributes)
-                .withSuccessMessage("Your claim has been requested and waiting for approval.")
+                .withSuccessMessage("Your claim has been requested and is waiting for approval.")
                 .url("/requests/" + id)
                 .build();
     }
