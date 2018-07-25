@@ -1,6 +1,5 @@
 <template>
-    <a v-bind:href="getRequestDetailUrl(req.id)" class="request-details request-details--list-item"
-       v-if="req != null && (req.funds.fndFunds != null && req.funds.fndFunds.totalAmount > 0) || (req.funds.otherFunds != null && req.funds.otherFunds.totalAmount > 0)">
+    <a v-bind:href="getRequestDetailUrl(req.id)" class="request-details request-details--list-item" v-if="req != null">
         <div class="request-details__logo">
             <div><img v-bind:src="`${req.icon}?size=30`" /></div>
             <div class="request-details__owner">
