@@ -1,6 +1,6 @@
 package io.fundrequest.core.request.fund;
 
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.fund.command.PendingFundCommand;
 import io.fundrequest.core.request.fund.domain.PendingFund;

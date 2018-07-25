@@ -1,6 +1,6 @@
 package io.fundrequest.core.platform;
 
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.platform.github.GithubIssueService;
 import io.fundrequest.platform.github.scraper.model.GithubIssue;

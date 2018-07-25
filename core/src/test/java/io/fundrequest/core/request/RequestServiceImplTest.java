@@ -1,7 +1,7 @@
 package io.fundrequest.core.request;
 
 import io.fundrequest.core.PrincipalMother;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
 import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
@@ -13,13 +13,7 @@ import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.command.CreateRequestCommand;
-import io.fundrequest.core.request.domain.IssueInformation;
-import io.fundrequest.core.request.domain.IssueInformationMother;
-import io.fundrequest.core.request.domain.Platform;
-import io.fundrequest.core.request.domain.Request;
-import io.fundrequest.core.request.domain.RequestMother;
-import io.fundrequest.core.request.domain.RequestStatus;
-import io.fundrequest.core.request.domain.RequestType;
+import io.fundrequest.core.request.domain.*;
 import io.fundrequest.core.request.erc67.Erc67Generator;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
@@ -41,12 +35,7 @@ import org.springframework.core.env.Environment;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
@@ -54,10 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class RequestServiceImplTest {
 

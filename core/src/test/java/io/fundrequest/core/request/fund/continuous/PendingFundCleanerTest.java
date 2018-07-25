@@ -1,7 +1,6 @@
 package io.fundrequest.core.request.fund.continuous;
 
 
-import com.google.common.collect.ImmutableList;
 import io.fundrequest.core.request.fund.PendingFundService;
 import io.fundrequest.core.request.fund.domain.PendingFund;
 import io.fundrequest.core.request.fund.domain.PendingFundMother;
@@ -12,16 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 
 import static com.google.common.collect.ImmutableList.of;
 import static io.fundrequest.core.web3j.AddressUtils.prettify;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PendingFundCleanerTest {
 
