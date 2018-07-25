@@ -16,7 +16,8 @@
 
 
   <!-- Claim Funds button-->
-  <span id="not-claimable" class="d-inline-block" tabindex="0" data-toggle="tooltip" title="You are not the solver of the issue"
+  <span id="not-claimable" class="d-inline-block" tabindex="0" data-toggle="tooltip"
+        th:attrappend="title=${isAuthenticated ? 'You are not the solver of the issue' : 'You need to sign in first'}"
         th:if="${userClaimable.claimable == true and userClaimable.claimableByLoggedInUser == false}">
     <a href="" class="btn btn-success mb-0 disabled">
       Claim Funds

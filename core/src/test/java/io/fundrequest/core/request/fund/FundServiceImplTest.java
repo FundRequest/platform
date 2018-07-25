@@ -1,8 +1,8 @@
 package io.fundrequest.core.request.fund;
 
 
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.contract.service.FundRequestContractsService;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Request;

@@ -1,7 +1,7 @@
 package io.fundrequest.core.request.fund.dto;
 
-import io.fundrequest.core.infrastructure.mapping.BaseMapper;
-import io.fundrequest.core.infrastructure.mapping.DefaultMappingConfig;
+import io.fundrequest.common.infrastructure.mapping.BaseMapper;
+import io.fundrequest.common.infrastructure.mapping.DefaultMappingConfig;
 import io.fundrequest.platform.github.parser.GithubIssueCommentsResult;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;

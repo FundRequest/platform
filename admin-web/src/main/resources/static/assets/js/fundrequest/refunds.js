@@ -1,6 +1,4 @@
 $(document).ready(function () {
-  $('#pending-refunds').DataTable();
-  $('#failed-refunds').DataTable();
 
   $('button.approve').on('click', function () {
     let refundRequestId = $(this).data('id');

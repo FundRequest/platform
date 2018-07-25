@@ -14,10 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>io.fundrequest</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.fundrequest</groupId>
             <artifactId>keycloak</artifactId>
         </dependency>
         <dependency>
@@ -91,12 +87,10 @@
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-jdk8</artifactId>
-            <version>${mapstruct.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
-            <version>${mapstruct.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -59,7 +59,7 @@ public class KeycloakRepositoryImplTest {
                         .username("davyvanroy")
                         .build());
     }
-
+    
     @Test
     void updateEtherAddress() {
         final String userId = "agd";

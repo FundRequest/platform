@@ -78,9 +78,18 @@
     border-color: $gray-200;
     font-weight: $font-weight-normal;
 
-    &::-moz-placeholder,
+    &::placeholder,
     &::-webkit-input-placeholder {
-        color: $gray-400;
+        color: $gray-300;
+    }
+
+    &:-moz-placeholder,
+    &::-moz-placeholder {
+        color: $gray-300;
+    }
+
+    &::-ms-input-placeholder {
+        color: $gray-300;
     }
 
     &.is-loading {
@@ -161,4 +170,3 @@
         border: 0 none;
     }
 }
-

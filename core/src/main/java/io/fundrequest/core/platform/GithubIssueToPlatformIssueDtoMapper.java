@@ -1,6 +1,6 @@
 package io.fundrequest.core.platform;
 
-import io.fundrequest.core.infrastructure.mapping.BaseMapper;
+import io.fundrequest.common.infrastructure.mapping.BaseMapper;
 import io.fundrequest.platform.github.scraper.model.GithubIssue;
 import org.springframework.stereotype.Component;
 
