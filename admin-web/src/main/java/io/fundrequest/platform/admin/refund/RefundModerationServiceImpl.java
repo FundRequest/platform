@@ -1,6 +1,6 @@
 package io.fundrequest.platform.admin.refund;
 
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.fund.domain.RefundRequest;
 import io.fundrequest.core.request.fund.domain.RefundRequestStatus;

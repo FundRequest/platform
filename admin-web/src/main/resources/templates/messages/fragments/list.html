@@ -1,0 +1,32 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div class="table-responsive" th:fragment="tablerows (messages)">
+    <table class="table table-condensed table-striped table-hover" th:style="'font-size: .8rem'">
+        <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Key</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Link</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m : ${messages}">
+            <td>
+                <a class="btn btn-primary" th:href="@{|/messages/${m.getType()}/${m.getName()}/edit|}"><i class="fas fa-edit"></i></a>
+            </td>
+            <td>
+                <form th:action="@{|/messages/${m.getType()}/${m.getName()}/delete|}" th:method="POST"><button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button></form>
+            </td>
+            <td th:text="${m.getType() + '.' + m.getName()}"></td>
+            <td th:text="${m.getTitle()}"></td>
+            <td th:text="${m.getDescription()}"></td>
+            <td th:style="'word-break: break-word;'"><a th:href="${m.getLink()}" target="_blank"><span th:text="${m.getLink()}"></span></a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</html>

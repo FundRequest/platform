@@ -1,6 +1,6 @@
 package io.fundrequest.platform.admin.claim.service;
 
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.fund.domain.RefundRequest;
