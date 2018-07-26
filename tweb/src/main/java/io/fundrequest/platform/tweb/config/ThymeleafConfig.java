@@ -5,24 +5,13 @@ import io.fundrequest.platform.tweb.infrastructure.thymeleaf.FundsExpressionObje
 import io.fundrequest.platform.tweb.infrastructure.thymeleaf.ProfilesExpressionObject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.expression.IExpressionObjectFactory;
-import org.thymeleaf.spring4.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 public class ThymeleafConfig {
-
-    @Bean
-    public SpringTemplateEngine templateEngine(final ITemplateResolver defaultTemplateResolver, final IDialect fundrequestDialect) {
-        final SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
-        springTemplateEngine.setTemplateResolver(defaultTemplateResolver);
-        springTemplateEngine.addDialect(fundrequestDialect);
-        return springTemplateEngine;
-    }
 
     @Bean
     public IExpressionObjectFactory fundrequestExpressionObjectFactory(final ProfilesExpressionObject profilesExpressionObject, final FundsExpressionObject fundsExpressionObject) {

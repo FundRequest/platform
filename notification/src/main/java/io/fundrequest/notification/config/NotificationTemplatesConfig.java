@@ -18,6 +18,7 @@ public class NotificationTemplatesConfig {
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setOrder(Integer.MAX_VALUE);
         templateResolver.setCacheable(false);
+        templateResolver.setCheckExistence(true);
         return templateResolver;
     }
 

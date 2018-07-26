@@ -9,7 +9,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @FeignClient(
         name = "identity-api-client",
-        url = "${io.fundrequest.identity.api.url}"
+        url = "${io.fundrequest.identity.api.url}",
+        configuration = IdentityAPIClientConfiguration.class
 )
 public interface IdentityAPIClient {
 

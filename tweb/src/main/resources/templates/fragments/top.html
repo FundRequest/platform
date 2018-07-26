@@ -1,5 +1,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
+<!--/* Top banner that is always visible and shows an important message */-->
+<div th:fragment="alert-banner" class="alert alert-success alert--top">
+    <div class="container">
+        To follow our development updates, subscribe
+        <a th:href="@{https://blog.fundrequest.io/tagged/dev-update}" class="alert-link" target="_blank"
+           rel="noopener noreferrer">here</a>.
+    </div>
+</div>
+
+
 <!--/* Container for all alerts, like feedback after an async call is finished */-->
 <div th:fragment="alert-container" id="alert-container" class="alert-container" style="position: fixed; margin: 1rem auto;">
     <div th:if="${alerts}" th:each="a : ${alerts}" class="alert" th:classappend="${'alert-' + a.type}" role="alert">
@@ -8,6 +18,12 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
+</div>
+
+
+<!--/* Top loader to show whenever there is an async call running */-->
+<div th:fragment="loader" class="progress primary-color fixed-top d-none" data-page-loader="true">
+    <div class="indeterminate"></div>
 </div>
 
 </html>
