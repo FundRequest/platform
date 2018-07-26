@@ -20,7 +20,7 @@ public class MakeUserAddressVerifiedOnFundedHandler {
         final FundDto fund = event.getFundDto();
         final String funderUserId = fund.getFunderUserId();
 
-        if (fund.getFunderAddress().equalsIgnoreCase(keycloakRepository.getEtherAddress(funderUserId))) {
+        if (funderUserId != null && fund.getFunderAddress().equalsIgnoreCase(keycloakRepository.getEtherAddress(funderUserId))) {
             keycloakRepository.updateEtherAddressVerified(funderUserId, true);
         }
     }
