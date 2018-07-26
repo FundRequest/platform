@@ -55,7 +55,7 @@ public class ClaimModerationServiceImplTest {
         when(requestClaimRepository.findOne(requestClaim.getId())).thenReturn(Optional.of(requestClaim));
         when(azraelClient.submitClaim(sig)).thenReturn(ClaimTransaction.builder().transactionHash("0x1").build());
 
-        claimModerationService.approveClaim(requestClaim.getId());
+        claimModerationService.approve(requestClaim.getId());
 
         assertThat(request.getStatus()).isEqualTo(RequestStatus.CLAIM_APPROVED);
         assertThat(requestClaim.getStatus()).isEqualTo(ClaimRequestStatus.APPROVED);
@@ -71,7 +71,7 @@ public class ClaimModerationServiceImplTest {
         when(requestRepository.findOne(1L)).thenReturn(Optional.of(request));
         when(requestClaimRepository.findOne(requestClaim.getId())).thenReturn(Optional.of(requestClaim));
 
-        claimModerationService.declineClaim(requestClaim.getId());
+        claimModerationService.decline(requestClaim.getId());
 
         assertThat(request.getStatus()).isEqualTo(RequestStatus.FUNDED);
         assertThat(requestClaim.getStatus()).isEqualTo(ClaimRequestStatus.DECLINED);

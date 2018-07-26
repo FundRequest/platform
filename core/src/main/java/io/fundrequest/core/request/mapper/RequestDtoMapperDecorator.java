@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class RequestDtoMapperDecorator implements RequestDtoMapper {
@@ -44,9 +45,9 @@ public abstract class RequestDtoMapperDecorator implements RequestDtoMapper {
 
     private RequestDto map(Request request, List<TokenValueDto> totalFunds) {
         RequestDto result = delegate.map(request);
-        Authentication currentAuth = securityContextService.getLoggedInUser();
-        if (result != null && currentAuth != null) {
-            result.setLoggedInUserIsWatcher(request.getWatchers().contains(currentAuth.getName()));
+        Optional<Authentication> currentAuth = securityContextService.getLoggedInUser();
+        if (result != null && currentAuth.isPresent()) {
+            result.setLoggedInUserIsWatcher(request.getWatchers().contains(currentAuth.get().getName()));
             result.setWatchers(request.getWatchers().stream().map(this::getUser).filter(Objects::nonNull).collect(Collectors.toSet()));
         }
         if (result != null && totalFunds != null) {

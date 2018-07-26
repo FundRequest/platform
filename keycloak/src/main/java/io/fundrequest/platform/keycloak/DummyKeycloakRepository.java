@@ -7,6 +7,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.Date;
@@ -20,6 +21,12 @@ import java.util.stream.Stream;
 class DummyKeycloakRepository implements KeycloakRepository {
 
 
+    private static final String ETHER_ADDRESS_KEY = "ether_address";
+    private static final String ETHER_ADDRESS_VERIFIED_KEY = "ether_address_verified";
+    private static final String VERIFIED_DEVELOPER_KEY = "verified_developer";
+    private static final String TELEGRAM_NAME_KEY = "telegram_name";
+    private static final String HEADLINE_KEY = "headline";
+    private static final String PICTURE_KEY = "picture";
     private final String githubUsername;
     private UserRepresentation userRepresentation;
 
@@ -59,20 +66,25 @@ class DummyKeycloakRepository implements KeycloakRepository {
 
 
     public void updateEtherAddress(String userId, String etherAddress) {
-        updateAttribute("ether_address", etherAddress);
+        updateAttribute(ETHER_ADDRESS_KEY, etherAddress);
+    }
+
+    @Override
+    public void updateEtherAddressVerified(String userId, Boolean isVerified) {
+        updateAttribute(ETHER_ADDRESS_VERIFIED_KEY, String.valueOf(BooleanUtils.isTrue(isVerified)));
     }
 
     public void updateTelegramName(String userId, String telegramName) {
-        updateAttribute("telegram_name", telegramName);
+        updateAttribute(TELEGRAM_NAME_KEY, telegramName);
     }
 
     public void updateHeadline(String userId, String headline) {
-        updateAttribute("headline", headline);
+        updateAttribute(HEADLINE_KEY, headline);
     }
 
     public void updateVerifiedDeveloper(String userId, Boolean isVerified) {
 
-        updateAttribute("verified_developer", "" + BooleanUtils.isTrue(isVerified));
+        updateAttribute(VERIFIED_DEVELOPER_KEY, "" + BooleanUtils.isTrue(isVerified));
     }
 
     private void updateAttribute(String property, String value) {
@@ -83,19 +95,24 @@ class DummyKeycloakRepository implements KeycloakRepository {
     }
 
     public String getEtherAddress(String userId) {
-        return getAttribute("ether_address");
+        return getAttribute(ETHER_ADDRESS_KEY);
     }
 
     public String getEtherAddress(UserRepresentation userRepresentation) {
-        return getAttribute("ether_address");
+        return getAttribute(ETHER_ADDRESS_KEY);
+    }
+
+    @Override
+    public boolean isEtherAddressVerified(UserRepresentation userRepresentation) {
+        return "true".equalsIgnoreCase(getAttribute(ETHER_ADDRESS_VERIFIED_KEY));
     }
 
     public boolean isVerifiedDeveloper(UserRepresentation userRepresentation) {
-        return "true".equalsIgnoreCase(getAttribute("verified_developer"));
+        return "true".equalsIgnoreCase(getAttribute(VERIFIED_DEVELOPER_KEY));
     }
 
     public boolean isVerifiedDeveloper(final String userId) {
-        return "true".equalsIgnoreCase(getAttribute("verified_developer"));
+        return "true".equalsIgnoreCase(getAttribute(VERIFIED_DEVELOPER_KEY));
     }
 
     @Override
@@ -107,7 +124,7 @@ class DummyKeycloakRepository implements KeycloakRepository {
         Map<String, List<String>> attributes = userRepresentation.getAttributes();
         if (attributes != null && attributes.size() > 0) {
             List<String> properties = attributes.get(property);
-            if (properties != null && properties.size() > 0) {
+            if (!CollectionUtils.isEmpty(properties)) {
                 return properties.get(0);
             }
         }
@@ -115,15 +132,15 @@ class DummyKeycloakRepository implements KeycloakRepository {
     }
 
     public String getTelegramName(UserRepresentation userRepresentation) {
-        return getAttribute("telegram_name");
+        return getAttribute(TELEGRAM_NAME_KEY);
     }
 
     public String getPicture(UserRepresentation userRepresentation) {
-        return getAttribute("picture");
+        return getAttribute(PICTURE_KEY);
     }
 
     public String getHeadline(UserRepresentation userRepresentation) {
-        return getAttribute("headline");
+        return getAttribute(HEADLINE_KEY);
     }
 
     public String getAccessToken(@NonNull KeycloakAuthenticationToken token, @NonNull Provider provider) {

@@ -14,10 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>io.fundrequest</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.fundrequest</groupId>
             <artifactId>keycloak</artifactId>
         </dependency>
         <dependency>

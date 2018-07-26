@@ -4,7 +4,7 @@
 
 
   <!--'Add Funds' button-->
-  <span th:if="${request.status.name() == 'FUNDED' and userClaimable.claimable == false}" th:remove="tag">
+  <span th:if="${request.status.phase.name() == 'OPEN' and userClaimable.claimable == false}" th:remove="tag">
 
     <a th:unless="${platformIssue.status.name() eq 'CLOSED'}" class="btn btn-secondary mb-0" th:href="@{/requests/{id}/fund(id=${request.id})}" id="btnAddFunds">Add Funds</a>
 

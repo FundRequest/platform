@@ -25,7 +25,6 @@ import java.util.stream.IntStream;
 @Slf4j
 public class FundRequestContractsService {
 
-
     private TokenWhitelistPreconditionContract tokenWhitelistPreconditionContract;
     private Web3j web3j;
 
@@ -69,7 +68,7 @@ public class FundRequestContractsService {
         }
     }
 
-    @Cacheable(value = "possible_tokens", key = "#platform + '-' + #platformId")
+    @Cacheable(value = "possible_tokens", keyGenerator = "getAllPossibleTokensKeyGenerator")
     public List<TokenInfoDto> getAllPossibleTokens(final String platform, final String platformId) {
         return checkNotEmpty(getAllPossibleTokens().stream()
                                                    .filter(token -> tokenWhitelistPreconditionContract.isValid(platform, platformId, token.getAddress()))

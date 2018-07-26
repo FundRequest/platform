@@ -16,7 +16,7 @@ import org.thymeleaf.context.Context;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {FundRequestNotification.class, FundRequestGithub.class, FundRequestCommon.class})
+@SpringBootTest(classes = {FundRequestNotification.class, FundRequestGithub.class, FundRequestCommon.class}, properties = {"io.fundrequest.platform.base-path=http://test"})
 public class RequestClaimedUserNotificationHandlerTemplateIntegrationTest {
 
     @Autowired

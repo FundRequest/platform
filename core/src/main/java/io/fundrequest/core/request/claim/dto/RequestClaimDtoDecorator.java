@@ -20,8 +20,8 @@ public abstract class RequestClaimDtoDecorator implements RequestClaimDtoMapper 
     @Lazy
     private RequestService requestService;
 
-    @Value("${io.fundrequest.basepath}")
-    private String fundRequestBasePath;
+    @Value("${io.fundrequest.platform.base-path}")
+    private String platformBasePath;
 
     @Override
     public RequestClaimDto map(RequestClaim r) {
@@ -45,7 +45,7 @@ public abstract class RequestClaimDtoDecorator implements RequestClaimDtoMapper 
     }
 
     private String createFundRequestLink(Long id) {
-        return fundRequestBasePath + "/requests/" + id;
+        return platformBasePath + "/requests/" + id;
     }
 
 }

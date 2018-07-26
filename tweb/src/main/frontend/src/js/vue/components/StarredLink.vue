@@ -4,7 +4,7 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-	import {EventBus} from "../EventBus";
+    import {EventBus} from "../EventBus";
     import RequestDto from "../dtos/RequestDto";
     import Utils from "../../classes/Utils";
 
