@@ -11,6 +11,7 @@ import io.fundrequest.platform.intercom.builder.AdminMessageBuilder;
 import io.fundrequest.platform.intercom.builder.UserBuilder;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import org.thymeleaf.context.Context;
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 @Component
+@ConditionalOnProperty(name = "io.fundrequest.notifications.notify-on-claim", havingValue = "true")
 public class RequestClaimedUserNotificationHandler {
 
     private final String platformBasepath;
