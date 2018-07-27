@@ -13,6 +13,7 @@ import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.command.UpdateRequestStatusCommand;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.IssueInformationMother;
 import io.fundrequest.core.request.domain.Platform;
@@ -51,6 +52,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.fundrequest.core.request.domain.RequestStatus.FUNDED;
+import static io.fundrequest.core.request.domain.RequestStatus.OPEN;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -139,14 +142,17 @@ public class RequestServiceImplTest {
                 .platformId("1")
                 .build();
 
-        when(erc67Generator.toByteData(erc67)).thenReturn("0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
+        when(erc67Generator.toByteData(erc67)).thenReturn(
+                "0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
 
         assertThat(requestService.generateERC67(erc67))
                 .isEqualTo(
                         "ethereum:0x0000000000000000000000000000000000000000"
                         + "?value=0"
                         + "&gas=150000"
-                        + "&data=0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
+                        + "&data"
+                        +
+                        "=0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
     }
 
     @Test
@@ -204,14 +210,14 @@ public class RequestServiceImplTest {
         final Principal principal = PrincipalMother.davyvanroy();
         final long requestId = 1L;
         final Request request = RequestMother.fundRequestArea51().build();
-        request.setStatus(RequestStatus.FUNDED);
+        request.setStatus(FUNDED);
         final IssueInformation issueInformation = request.getIssueInformation();
         final ClaimableResultDto claimableResultDto = ClaimableResultDto.builder().claimable(true).claimableByPlatformUserName("davyvanroy").platform(Platform.GITHUB).build();
         final UserClaimableDto expected = UserClaimableDto.builder().claimableByLoggedInUser(true).claimableByPlatformUserName("davyvanroy").claimable(true).build();
         final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
 
         when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
-        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.FUNDED)).thenReturn(claimableResultDto);
+        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), FUNDED)).thenReturn(claimableResultDto);
         when(profileService.getUserProfile(principal)).thenReturn(UserProfileMother.davy());
 
         UserClaimableDto result = requestService.getUserClaimableResult(principal, requestId);
@@ -233,27 +239,28 @@ public class RequestServiceImplTest {
         final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
 
         when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
-        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.CLAIMABLE)).thenReturn(claimableResultDto);
+        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.CLAIMABLE)).thenReturn(
+                claimableResultDto);
         when(profileService.getUserProfile(principal)).thenReturn(UserProfileMother.davy());
 
         UserClaimableDto result = requestService.getUserClaimableResult(principal, requestId);
 
         assertThat(result).isEqualTo(expected);
         verify(requestRepository).save(requestArgumentCaptor.capture());
-        assertThat(requestArgumentCaptor.getValue().getStatus()).isEqualTo(RequestStatus.FUNDED);
+        assertThat(requestArgumentCaptor.getValue().getStatus()).isEqualTo(FUNDED);
     }
 
     @Test
     public void getClaimableResultUpdatesStatus() {
         final long requestId = 1L;
         final Request request = RequestMother.fundRequestArea51().build();
-        request.setStatus(RequestStatus.FUNDED);
+        request.setStatus(FUNDED);
         final IssueInformation issueInformation = request.getIssueInformation();
         final ClaimableResultDto claimableResultDto = ClaimableResultDto.builder().claimable(true).claimableByPlatformUserName("davyvanroy").platform(Platform.GITHUB).build();
         final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
 
         when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
-        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.FUNDED)).thenReturn(claimableResultDto);
+        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), FUNDED)).thenReturn(claimableResultDto);
 
         ClaimableResultDto result = requestService.getClaimableResult(requestId);
 
@@ -272,13 +279,14 @@ public class RequestServiceImplTest {
         final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
 
         when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
-        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.CLAIMABLE)).thenReturn(claimableResultDto);
+        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.CLAIMABLE)).thenReturn(
+                claimableResultDto);
 
         ClaimableResultDto result = requestService.getClaimableResult(requestId);
 
         assertThat(result).isEqualTo(claimableResultDto);
         verify(requestRepository).save(requestArgumentCaptor.capture());
-        assertThat(requestArgumentCaptor.getValue().getStatus()).isEqualTo(RequestStatus.FUNDED);
+        assertThat(requestArgumentCaptor.getValue().getStatus()).isEqualTo(FUNDED);
     }
 
     @Test
@@ -399,6 +407,28 @@ public class RequestServiceImplTest {
         List<CommentDto> comments = requestService.getComments(1L);
 
         assertThat(comments.get(0)).isEqualTo(expected);
+    }
+
+    @Test
+    public void update() {
+        final long requestId = 213L;
+        final Request request = RequestMother.fundRequestArea51().withStatus(OPEN).build();
+
+        when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
+
+        requestService.update(new UpdateRequestStatusCommand(requestId, FUNDED));
+
+        assertThat(request.getStatus()).isEqualTo(FUNDED);
+        verify(requestRepository).save(same(request));
+    }
+
+    @Test
+    public void update_requestNotFound() {
+        final long requestId = 213L;
+
+        when(requestRepository.findOne(requestId)).thenReturn(Optional.empty());
+
+        requestService.update(new UpdateRequestStatusCommand(requestId, FUNDED));
     }
 
     private void verifyClaimEventPublished(final RequestClaimedCommand command, final RequestDto requestDto, final ClaimDto claimDto) {

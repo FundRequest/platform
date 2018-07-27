@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class FundDto {
     private Long id;
-    private String funder;
+    private String funderAddress;
+    private String funderUserId;
     private TokenValueDto tokenValue;
     private Long requestId;
     private LocalDateTime timestamp;

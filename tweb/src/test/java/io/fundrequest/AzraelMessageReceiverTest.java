@@ -9,10 +9,15 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
+import io.fundrequest.core.request.fund.RefundService;
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
+import io.fundrequest.core.request.fund.command.RefundProcessedCommand;
+import io.fundrequest.core.request.fund.dto.RefundRequestDto;
 import io.fundrequest.core.request.fund.messaging.dto.ClaimedEthDto;
 import io.fundrequest.core.request.fund.messaging.dto.FundedEthDto;
+import io.fundrequest.core.request.fund.messaging.dto.RefundedEthDto;
 import io.fundrequest.core.request.infrastructure.BlockchainEventRepository;
+import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.tweb.request.messsaging.AzraelMessageReceiver;
 import org.junit.Before;
@@ -20,6 +25,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -44,6 +50,7 @@ public class AzraelMessageReceiverTest {
     private ObjectMapper objectMapper;
     private RequestService requestService;
     private PendingFundService pendingFundService;
+    private RefundService refundService;
 
     @Before
     public void setUp() throws Exception {
@@ -52,7 +59,8 @@ public class AzraelMessageReceiverTest {
         requestService = mock(RequestService.class);
         pendingFundService = mock(PendingFundService.class);
         objectMapper = new ObjectMapper();
-        messageReceiver = new AzraelMessageReceiver(requestService, objectMapper, blockchainEventRepository, fundService, pendingFundService);
+        refundService = mock(RefundService.class);
+        messageReceiver = new AzraelMessageReceiver(requestService, objectMapper, blockchainEventRepository, fundService, pendingFundService, refundService);
     }
 
     @Test
@@ -145,6 +153,72 @@ public class AzraelMessageReceiverTest {
         when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.of(mock(BlockchainEvent.class)));
 
         messageReceiver.receiveFundedMessage(w.toString());
+
+        verifyZeroInteractions(fundService);
+    }
+
+    @Test
+    public void receiveRefundedMessage() throws IOException {
+        final RequestDto request = RequestDtoMother.fundRequestArea51();
+        final String transactionHash = "afdas";
+        final String logIndex = "sgfdb";
+        final String funderAddress = "0xFDHD756xfc";
+        final RefundedEthDto refundedEthDto = RefundedEthDto.builder()
+                                                            .transactionHash(transactionHash)
+                                                            .logIndex(logIndex)
+                                                            .platform(Platform.STACK_OVERFLOW.name())
+                                                            .platformId("fadfv")
+                                                            .amount("43000000000000000000")
+                                                            .token("0x563457")
+                                                            .owner(funderAddress)
+                                                            .build();
+        final StringWriter w = new StringWriter();
+        objectMapper.writeValue(w, refundedEthDto);
+        final RefundRequestDto refundRequestDto = RefundRequestDto.builder()
+                                                                  .funderAddress(funderAddress)
+                                                                  .build();
+        final BlockchainEvent savedBlochainEvent = new BlockchainEvent(transactionHash, logIndex);
+        savedBlochainEvent.setId(7564L);
+
+        when(blockchainEventRepository.findByTransactionHashAndLogIndex(refundedEthDto.getTransactionHash(), refundedEthDto.getLogIndex())).thenReturn(Optional.empty());
+        when(blockchainEventRepository.saveAndFlush(new BlockchainEvent(transactionHash, logIndex))).thenReturn(savedBlochainEvent);
+        when(requestService.findRequest(Platform.valueOf(refundedEthDto.getPlatform()), refundedEthDto.getPlatformId())).thenReturn(request);
+
+        messageReceiver.receiveRefundedMessage(w.toString());
+
+        verify(blockchainEventRepository).saveAndFlush(new BlockchainEvent(transactionHash, logIndex));
+        verify(refundService).refundProcessed(RefundProcessedCommand.builder()
+                                                                    .requestId(request.getId())
+                                                                    .funderAddress(funderAddress)
+                                                                    .blockchainEventId(savedBlochainEvent.getId())
+                                                                    .transactionHash(transactionHash)
+                                                                    .tokenHash(refundedEthDto.getToken())
+                                                                    .amount(refundedEthDto.getAmount())
+                                                                    .build());
+    }
+
+    @Test
+    public void receiveRefundedMessage_alreadyProcessed() throws IOException {
+        RefundedEthDto dto = RefundedEthDto.builder().transactionHash("afdas").logIndex("sgfdb").platformId("fadfv").build();
+        StringWriter w = new StringWriter();
+        objectMapper.writeValue(w, dto);
+
+        when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.of(mock(BlockchainEvent.class)));
+
+        messageReceiver.receiveRefundedMessage(w.toString());
+
+        verifyZeroInteractions(fundService);
+    }
+
+    @Test
+    public void receiveRefundedMessage_noPlatformId() throws IOException {
+        RefundedEthDto dto = RefundedEthDto.builder().transactionHash("afdas").logIndex("sgfdb").platformId(null).build();
+        StringWriter w = new StringWriter();
+        objectMapper.writeValue(w, dto);
+
+        when(blockchainEventRepository.findByTransactionHashAndLogIndex(dto.getTransactionHash(), dto.getLogIndex())).thenReturn(Optional.empty());
+
+        messageReceiver.receiveRefundedMessage(w.toString());
 
         verifyZeroInteractions(fundService);
     }

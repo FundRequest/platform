@@ -5,7 +5,13 @@ import io.fundrequest.db.infrastructure.AbstractEntity;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Table(name = "fund")
@@ -18,7 +24,7 @@ public class Fund extends AbstractEntity {
     private Long id;
 
     @Column(name = "funder_address")
-    private String funder;
+    private String funderAddress;
 
     @Column(name = "funder_user_id")
     private String funderUserId;
@@ -39,9 +45,9 @@ public class Fund extends AbstractEntity {
     }
 
     @Builder
-    Fund(String funderUserId, String funder, TokenValue tokenValue, Long requestId, LocalDateTime timestamp, Long blockchainEventId) {
+    Fund(String funderUserId, String funderAddress, TokenValue tokenValue, Long requestId, LocalDateTime timestamp, Long blockchainEventId) {
         this.funderUserId = funderUserId;
-        this.funder = funder == null ? null : funder.toLowerCase();
+        this.funderAddress = funderAddress == null ? null : funderAddress.toLowerCase();
         this.tokenValue = tokenValue;
         this.requestId = requestId;
         this.timestamp = timestamp;

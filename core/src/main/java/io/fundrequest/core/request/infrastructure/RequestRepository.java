@@ -18,7 +18,7 @@ public interface RequestRepository extends JpaRepository<Request, Long>, JpaSpec
     @Query("SELECT distinct r FROM Request r where ?1 member of r.watchers")
     List<Request> findRequestsUserIsWatching(String user);
 
-    @Query("SELECT distinct r FROM Request r, Fund f where f.requestId = r.id and (f.funderUserId = ?1 or f.funder = lower(?2))")
+    @Query("SELECT distinct r FROM Request r, Fund f where f.requestId = r.id and (f.funderUserId = ?1 or f.funderAddress = lower(?2))")
     List<Request> findRequestsUserHasFunded(String user, String userAddress);
 
     List<Request> findByStatusIn(List<RequestStatus> status);

@@ -29,38 +29,48 @@ public class AzraelJmsListenerConfig {
     }
 
     @Bean
-    SimpleMessageListenerContainer fundedContainer(ConnectionFactory connectionFactory,
-                                                   MessageListenerAdapter fundedListenerAdapter,
+    SimpleMessageListenerContainer fundedContainer(final ConnectionFactory connectionFactory,
+                                                   final MessageListenerAdapter fundedListenerAdapter,
                                                    @Value("${io.fundrequest.azrael.queue.fund}") final String queueName) {
         return createContainer(connectionFactory, fundedListenerAdapter, queueName);
     }
 
     @Bean
-    SimpleMessageListenerContainer claimedContainer(ConnectionFactory connectionFactory,
-                                                    MessageListenerAdapter claimedListenerAdapter,
+    SimpleMessageListenerContainer claimedContainer(final ConnectionFactory connectionFactory,
+                                                    final MessageListenerAdapter claimedListenerAdapter,
                                                     @Value("${io.fundrequest.azrael.queue.claim}") final String queueName) {
         return createContainer(connectionFactory, claimedListenerAdapter, queueName);
     }
 
-    private SimpleMessageListenerContainer createContainer(ConnectionFactory connectionFactory,
-                                                           MessageListenerAdapter claimedListenerAdapter,
-                                                           @Value("${io.fundrequest.azrael.queue.claim}") String queueName) {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+    @Bean
+    SimpleMessageListenerContainer refundedContainer(final ConnectionFactory connectionFactory,
+                                                     final MessageListenerAdapter refundedListenerAdapter,
+                                                     @Value("${io.fundrequest.azrael.queue.refund}") final String queueName) {
+        return createContainer(connectionFactory, refundedListenerAdapter, queueName);
+    }
+
+    private SimpleMessageListenerContainer createContainer(final ConnectionFactory connectionFactory, final MessageListenerAdapter messageListenerAdapter, final String queueName) {
+        final SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(queueName);
         container.setDefaultRequeueRejected(false);
-        container.setMessageListener(claimedListenerAdapter);
+        container.setMessageListener(messageListenerAdapter);
         return container;
     }
 
     @Bean
-    MessageListenerAdapter fundedListenerAdapter(AzraelMessageReceiver receiver) {
+    MessageListenerAdapter fundedListenerAdapter(final AzraelMessageReceiver receiver) {
         return new MessageListenerAdapter(receiver, "receiveFundedMessage");
     }
 
     @Bean
-    MessageListenerAdapter claimedListenerAdapter(AzraelMessageReceiver receiver) {
+    MessageListenerAdapter claimedListenerAdapter(final AzraelMessageReceiver receiver) {
         return new MessageListenerAdapter(receiver, "receiveClaimedMessage");
+    }
+
+    @Bean
+    MessageListenerAdapter refundedListenerAdapter(final AzraelMessageReceiver receiver) {
+        return new MessageListenerAdapter(receiver, "receiveRefundedMessage");
     }
 
     @Bean
@@ -79,7 +89,7 @@ public class AzraelJmsListenerConfig {
     }
 
     @Bean
-    Binding fundBinding(Queue fundQueue, TopicExchange exchange, @Value("${io.fundrequest.azrael.queue.fund}") final String queueName) {
+    Binding fundBinding(final Queue fundQueue, final TopicExchange exchange, @Value("${io.fundrequest.azrael.queue.fund}") final String queueName) {
         return BindingBuilder.bind(fundQueue).to(exchange).with(queueName);
     }
 
@@ -94,18 +104,33 @@ public class AzraelJmsListenerConfig {
     }
 
     @Bean
-    Binding claimBinding(Queue claimQueue, TopicExchange exchange, @Value("${io.fundrequest.azrael.queue.claim}") final String queueName) {
+    Binding claimBinding(final Queue claimQueue, final TopicExchange exchange, @Value("${io.fundrequest.azrael.queue.claim}") final String queueName) {
         return BindingBuilder.bind(claimQueue).to(exchange).with(queueName);
     }
 
-    private Queue declareQueue(@Value("${io.fundrequest.azrael.queue.claim}") String queueName) {
+    @Bean
+    Queue refundQueue(@Value("${io.fundrequest.azrael.queue.refund}") final String queueName) {
+        return declareQueue(queueName);
+    }
+
+    @Bean
+    Queue refundQueueDlQ(@Value("${io.fundrequest.azrael.queue.refund}") final String queueName) {
+        return declareDLQ(queueName);
+    }
+
+    @Bean
+    Binding refundBinding(final Queue refundQueue, final TopicExchange exchange, @Value("${io.fundrequest.azrael.queue.refund}") final String queueName) {
+        return BindingBuilder.bind(refundQueue).to(exchange).with(queueName);
+    }
+
+    private Queue declareQueue(final String queueName) {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("x-dead-letter-exchange", "");
         arguments.put("x-dead-letter-routing-key", queueName + ".dlq");
         return new Queue(queueName, true, false, false, arguments);
     }
 
-    private Queue declareDLQ(@Value("${io.fundrequest.azrael.queue.fund}") String queueName) {
+    private Queue declareDLQ(final String queueName) {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("x-queue-mode", "lazy");
         Queue queue = new Queue(queueName + ".dlq", true, false, false, arguments);

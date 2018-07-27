@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import java.security.Principal;
 
 @ControllerAdvice
-public class GenericControllerAdvice {
+public class ProfileControllerAdvice {
 
     private ProfileService profileService;
 
-    public GenericControllerAdvice(ProfileService profileService) {
+    public ProfileControllerAdvice(final ProfileService profileService) {
         this.profileService = profileService;
     }
 

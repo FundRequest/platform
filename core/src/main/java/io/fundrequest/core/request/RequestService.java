@@ -7,6 +7,7 @@ import io.fundrequest.core.request.claim.command.RequestClaimedCommand;
 import io.fundrequest.core.request.claim.dto.ClaimableResultDto;
 import io.fundrequest.core.request.claim.dto.UserClaimableDto;
 import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.command.UpdateRequestStatusCommand;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
@@ -53,4 +54,6 @@ public interface RequestService {
     void removeWatcherFromRequest(Principal principal, Long requestId);
 
     String generateERC67(CreateERC67FundRequest createERC67FundRequest);
+
+    void update(UpdateRequestStatusCommand command);
 }
