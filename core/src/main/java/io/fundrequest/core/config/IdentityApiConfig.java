@@ -10,13 +10,14 @@ import io.fundrequest.core.identity.IdentityAPIClient;
 import io.fundrequest.core.identity.IdentityAPIClientMock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.netflix.feign.FeignAutoConfiguration;
 import org.springframework.cloud.netflix.feign.FeignClientsConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import(FeignClientsConfiguration.class)
+@Import( {FeignClientsConfiguration.class, FeignAutoConfiguration.class})
 public class IdentityApiConfig {
 
     @Bean
