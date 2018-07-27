@@ -28,6 +28,7 @@ import io.fundrequest.core.request.erc67.Erc67Generator;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
+import io.fundrequest.core.request.infrastructure.RequestSpecification;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.token.model.TokenValue;
@@ -95,6 +96,12 @@ class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<RequestDto> findAll() {
         return mappers.mapList(Request.class, RequestDto.class, requestRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RequestDto> findAllFor(final List<String> projects, final List<String> technologies, final Long lastUpdatedSinceDays) {
+        final RequestSpecification specification = new RequestSpecification(projects, technologies, lastUpdatedSinceDays);
+        return mappers.mapList(Request.class, RequestDto.class, requestRepository.findAll(specification));
     }
 
     @Override

@@ -25,6 +25,7 @@ import io.fundrequest.core.request.erc67.Erc67Generator;
 import io.fundrequest.core.request.fund.domain.CreateERC67FundRequest;
 import io.fundrequest.core.request.fund.dto.CommentDto;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
+import io.fundrequest.core.request.infrastructure.RequestSpecification;
 import io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser;
 import io.fundrequest.core.request.view.ClaimDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
@@ -42,6 +43,7 @@ import org.springframework.core.env.Environment;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -57,6 +59,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.refEq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
@@ -111,6 +114,22 @@ public class RequestServiceImplTest {
     }
 
     @Test
+    public void findAllFor() {
+        final List<String> projects = new ArrayList<>();
+        final List<String> technologies = new ArrayList<>();
+        final long lastUpdatedSinceDays = 10L;
+        final List<Request> requests = new ArrayList<>();
+        final List<RequestDto> expected = new ArrayList<>();
+
+        when(requestRepository.findAll(refEq(new RequestSpecification(projects, technologies, lastUpdatedSinceDays)))).thenReturn(requests);
+        when(mappers.mapList(eq(Request.class), eq(RequestDto.class), same(requests))).thenReturn(expected);
+
+        final List<RequestDto> result = requestService.findAllFor(projects, technologies, lastUpdatedSinceDays);
+
+        assertThat(result).isSameAs(expected);
+    }
+
+    @Test
     public void generateERC67() {
         when(environment.getProperty("io.fundrequest.payments.erc67.gas", "200000"))
                 .thenReturn("150000");
@@ -123,14 +142,17 @@ public class RequestServiceImplTest {
                 .platformId("1")
                 .build();
 
-        when(erc67Generator.toByteData(erc67)).thenReturn("0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
+        when(erc67Generator.toByteData(erc67)).thenReturn(
+                "0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
 
         assertThat(requestService.generateERC67(erc67))
                 .isEqualTo(
                         "ethereum:0x0000000000000000000000000000000000000000"
                         + "?value=0"
                         + "&gas=150000"
-                        + "&data=0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
+                        + "&data"
+                        +
+                        "=0xcae9ca5100000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000c6769746875627c4141437c310000000000000000000000000000000000000000");
     }
 
     @Test
@@ -217,7 +239,8 @@ public class RequestServiceImplTest {
         final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
 
         when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
-        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.CLAIMABLE)).thenReturn(claimableResultDto);
+        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.CLAIMABLE)).thenReturn(
+                claimableResultDto);
         when(profileService.getUserProfile(principal)).thenReturn(UserProfileMother.davy());
 
         UserClaimableDto result = requestService.getUserClaimableResult(principal, requestId);
@@ -256,7 +279,8 @@ public class RequestServiceImplTest {
         final ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
 
         when(requestRepository.findOne(requestId)).thenReturn(Optional.of(request));
-        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.CLAIMABLE)).thenReturn(claimableResultDto);
+        when(githubClaimResolver.claimableResult(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber(), RequestStatus.CLAIMABLE)).thenReturn(
+                claimableResultDto);
 
         ClaimableResultDto result = requestService.getClaimableResult(requestId);
 

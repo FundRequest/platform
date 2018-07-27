@@ -16,11 +16,11 @@ public class ThymeleafSvgConfigTest {
 
     @Test
     public void svgTemplateResolver() {
-
         final ApplicationContext applicationContext = mock(ApplicationContext.class);
         config.setApplicationContext(applicationContext);
         final SpringResourceTemplateResolver templateResolver = (SpringResourceTemplateResolver) config.svgTemplateResolver();
 
+        assertThat(templateResolver).hasFieldOrPropertyWithValue("applicationContext", applicationContext);
         assertThat(templateResolver.getPrefix()).isEqualTo("classpath:/templates/svg/");
         assertThat(templateResolver.getTemplateMode()).isEqualTo(TemplateMode.XML);
         assertThat(templateResolver.getCharacterEncoding()).isEqualTo("UTF-8");

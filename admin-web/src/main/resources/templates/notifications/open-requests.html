@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Mail templates</title>
+</head>
+<body>
+<section layout:fragment="content">
+  <h2>Generate open requests template</h2>
+  <form method="get" th:action="@{/notifications/open-requests/template}">
+    <div class="container">
+      <div class="row">
+        <div class="col-4">
+          <div class="form-group">
+            <label for="projects">Select one or more project:</label>
+            <select class="form-control" id="projects" name="projects" multiple="multiple">
+              <option th:each="project : ${projects}"
+                      th:text="${project}"
+                      th:value="${project}"
+                      th:selected="${selectedProjects?.contains(project)}"></option>
+            </select>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label for="projects">Select one or more technology:</label>
+            <select class="form-control" id="technologies" name="technologies" multiple="multiple">
+              <option th:each="technology : ${technologies}"
+                      th:text="${technology}"
+                      th:value="${technology}"
+                      th:selected="${selectedTechnologies?.contains(technology)}"></option>
+            </select>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label for="projects">Specify last updated since:</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="lastUpdated" name="last-updated" min="1" step="1" th:value="${lastUpdated}"/>
+              <div class="input-group-append">
+                <span class="input-group-text">day(s) ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4">
+          <button type="submit" class="btn btn-primary">Generate template</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">&nbsp;</div>
+      </div>
+      <div class="row">
+        <div class="col-12">&nbsp;</div>
+      </div>
+      <div class="row justify-content-between mb-2" th:if="${template}">
+        <div class="col-8">
+          <label for="template">The generated template:</label>
+        </div>
+        <div class="col-2">
+          <a href="#" id="copyButton" class="btn btn-secondary btn-block">Copy to clipboard</a>
+        </div>
+      </div>
+      <div class="row" th:if="${template}">
+        <div class="col-12">
+          <textarea id="template" class="form-control" readonly="readonly" rows="25" th:text="${template}"></textarea>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>
+<section layout:fragment="scripts">
+  <script type="application/javascript" th:src="@{/assets/js/fundrequest/copyToClipboard.js}"></script>
+  <script type="application/javascript">
+    document.getElementById("copyButton").addEventListener("click", function () {
+      copyToClipboard(document.getElementById("template"));
+    });
+  </script>
+</section>
+</body>
+</html>

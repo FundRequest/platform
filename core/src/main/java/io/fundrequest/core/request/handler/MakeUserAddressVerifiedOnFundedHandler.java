@@ -6,6 +6,8 @@ import io.fundrequest.platform.keycloak.KeycloakRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class MakeUserAddressVerifiedOnFundedHandler {
 
@@ -18,10 +20,11 @@ public class MakeUserAddressVerifiedOnFundedHandler {
     @EventListener
     public void handle(final RequestFundedEvent event) {
         final FundDto fund = event.getFundDto();
-        final String funderUserId = fund.getFunderUserId();
-
-        if (fund.getFunderAddress().equalsIgnoreCase(keycloakRepository.getEtherAddress(funderUserId))) {
-            keycloakRepository.updateEtherAddressVerified(funderUserId, true);
-        }
+        Optional.ofNullable(fund.getFunderUserId())
+                .ifPresent(funderUserId -> {
+                    if (fund.getFunderAddress().equalsIgnoreCase(keycloakRepository.getEtherAddress(funderUserId))) {
+                        keycloakRepository.updateEtherAddressVerified(funderUserId, true);
+                    }
+                });
     }
 }
