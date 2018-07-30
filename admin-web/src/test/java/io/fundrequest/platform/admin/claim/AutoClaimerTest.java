@@ -7,7 +7,7 @@ import io.fundrequest.core.request.claim.infrastructure.TrustedRepoRepository;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.admin.claim.continuous.AutoClaimer;
-import io.fundrequest.platform.admin.claim.service.ClaimModerationService;
+import io.fundrequest.platform.admin.service.ModerationService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,13 +21,13 @@ public class AutoClaimerTest {
 
     private AutoClaimer autoClaimService;
     private TrustedRepoRepository trustedRepoRepository;
-    private ClaimModerationService claimModerationService;
+    private ModerationService<RequestClaimDto> claimModerationService;
     private RequestService requestService;
 
     @Before
     public void setUp() {
         trustedRepoRepository = mock(TrustedRepoRepository.class);
-        claimModerationService = mock(ClaimModerationService.class);
+        claimModerationService = mock(ModerationService.class);
         requestService = mock(RequestService.class);
         autoClaimService = new AutoClaimer(claimModerationService, trustedRepoRepository, requestService);
     }
@@ -36,11 +36,11 @@ public class AutoClaimerTest {
     public void autoClaim() {
         RequestDto request = RequestDtoMother.freeCodeCampNoUserStories();
         when(trustedRepoRepository.findAll()).thenReturn(Collections.singletonList(TrustedRepo.builder().owner(request.getIssueInformation().getOwner()).build()));
-        when(claimModerationService.listPendingRequestClaims()).thenReturn(Collections.singletonList(RequestClaimDto.builder().id(1L).build()));
+        when(claimModerationService.listPending()).thenReturn(Collections.singletonList(RequestClaimDto.builder().id(1L).build()));
         when(requestService.findRequest(1L)).thenReturn(request);
 
         autoClaimService.autoApproveTrustedRepos();
 
-        verify(claimModerationService).approveClaim(1L);
+        verify(claimModerationService).approve(1L);
     }
 }

@@ -61,7 +61,7 @@
     import ToCrypto from "../filters/formatters/ToCrypto";
     import ToUsd from "../filters/formatters/ToUsd";
     import ToDatetime from '../filters/formatters/ToDatetime';
-	import StarredLink from './StarredLink';
+    import StarredLink from './StarredLink';
 
     Vue.use(VueTimeago, {
         name: "Timeago", // Component name, `Timeago` by default

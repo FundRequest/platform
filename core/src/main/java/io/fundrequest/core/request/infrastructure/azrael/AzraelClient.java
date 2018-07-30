@@ -2,7 +2,6 @@ package io.fundrequest.core.request.infrastructure.azrael;
 
 
 import io.fundrequest.core.transactions.TransactionStatus;
-import io.fundrequest.platform.github.GithubFeignConfiguration;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,4 +23,7 @@ public interface AzraelClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/v1/transactions/{hash}")
     TransactionStatus getTransactionStatus(@PathVariable("hash") String hash);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/rest/refund/submit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    RefundTransaction submitRefund(RefundCommand refundCommand);
 }

@@ -6,7 +6,7 @@
                 <i class="fas fa-user" th:if="${r.getPicture() == null}"></i>
             </div>
             <div class="rewards-list__text">
-                <div th:text="${r.getName()}">Steve Maris</div>
+                <div th:text="${r.getName()}">His Name</div>
                 <small th:text="${#temporals.format(r.getCreatedAt(), 'yyyy-MM-dd HH:mm')}">date</small>
             </div>
         </div>
