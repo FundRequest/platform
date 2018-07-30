@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"
+      xmlns:th="http://www.thymeleaf.org">
+
+<section layout:fragment="content">
+    <h1 class="primary-ic">Messages</h1>
+    <br />
+
+    <h2 th:text="${type}">Type</h2>
+    <tbody th:replace="messages/fragments/list :: tablerows(${messages})"></tbody>
+    <a class="btn btn-primary" th:href="@{|/messages/${type}/add|}">Add <span th:text="${type}">Type</span> message <i class="fa fa-plus"></i></a>
+</section>
+
+
+</html>

@@ -39,14 +39,14 @@ public class GithubCommentFactory {
             + LINE_BREAK
             + COMMENT_FOOTER;
 
-    private final String badgeBasepath;
+    private final String platformBasePath;
 
-    public GithubCommentFactory(@Value("${io.fundrequest.badge.basepath:https://fundrequest.io}") final String badgeBasepath) {
-        this.badgeBasepath = badgeBasepath;
+    public GithubCommentFactory(@Value("${io.fundrequest.platform.base-path}") final String platformBasePath) {
+        this.platformBasePath = platformBasePath;
     }
 
     public String createFundedComment(final Long requestId, final String githubIssueNumber) {
-        return String.format(FUNDED_COMMENT_TEMPLATE, badgeBasepath, requestId, githubIssueNumber);
+        return String.format(FUNDED_COMMENT_TEMPLATE, platformBasePath, requestId, githubIssueNumber);
     }
 
     public String createResolvedComment(final Long requestId, final String solver) {
@@ -58,6 +58,6 @@ public class GithubCommentFactory {
     }
 
     private String create(final String commentTemplate, final Long requestId, final String solver) {
-        return String.format(commentTemplate, badgeBasepath, requestId, solver);
+        return String.format(commentTemplate, platformBasePath, requestId, solver);
     }
 }

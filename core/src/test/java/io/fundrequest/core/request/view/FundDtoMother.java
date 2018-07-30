@@ -24,7 +24,7 @@ public final class FundDtoMother {
                                                .tokenAddress(TokenInfoDtoMother.fnd().getAddress())
                                                .build())
                       .blockchainEventId(3465L)
-                      .funder("0xd24400ae8BfEBb18cA49Be86258a3C749cf46853")
+                      .funderAddress("0xd24400ae8BfEBb18cA49Be86258a3C749cf46853")
                       .requestId(1L)
                       .timestamp(LocalDateTime.of(2017, Month.DECEMBER, 27, 0, 0));
     }

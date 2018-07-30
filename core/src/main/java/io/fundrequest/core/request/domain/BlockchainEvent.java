@@ -1,6 +1,7 @@
 package io.fundrequest.core.request.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,8 @@ import java.util.Objects;
 @Getter
 @Table(name = "blockchain_event")
 public class BlockchainEvent {
+
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -24,6 +24,10 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>io.fundrequest</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
@@ -51,7 +55,10 @@
         </dependency>
         <dependency>
             <groupId>io.fundrequest</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>common</artifactId>
+            <version>${project.parent.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.fundrequest</groupId>
