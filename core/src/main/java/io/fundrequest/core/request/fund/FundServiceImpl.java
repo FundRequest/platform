@@ -231,7 +231,9 @@ class FundServiceImpl implements FundService {
                        .orElse(null);
     }
 
-    private TokenValueDto totalFunds(final List<UserFundsDto> funds, final Function<UserFundsDto, TokenValueDto> getFundsFunction, final Function<UserFundsDto, TokenValueDto> getRefundsFunction) {
+    private TokenValueDto totalFunds(final List<UserFundsDto> funds,
+                                     final Function<UserFundsDto, TokenValueDto> getFundsFunction,
+                                     final Function<UserFundsDto, TokenValueDto> getRefundsFunction) {
         if (funds.isEmpty()) {
             return null;
         }
