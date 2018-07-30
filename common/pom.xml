@@ -31,10 +31,6 @@
             <artifactId>jsoup</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-jdk8</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-core</artifactId>
             <scope>compile</scope>
@@ -52,10 +48,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
