@@ -4,7 +4,7 @@ import io.fundrequest.platform.github.GithubRawClient;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.thymeleaf.templateresource.ITemplateResource;
 
 import java.io.Reader;

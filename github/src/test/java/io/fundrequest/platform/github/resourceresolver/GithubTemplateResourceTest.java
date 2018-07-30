@@ -16,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class GithubTemplateResourceTest {
+
     private GithubTemplateResource resource;
     private String owner = "sbfzsf";
     private String repo = "sgf";
