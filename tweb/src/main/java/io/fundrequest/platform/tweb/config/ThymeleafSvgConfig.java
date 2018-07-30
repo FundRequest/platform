@@ -22,6 +22,8 @@ public class ThymeleafSvgConfig implements ApplicationContextAware {
         svgTemplateResolver.setPrefix("classpath:/templates/svg/");
         svgTemplateResolver.setTemplateMode(TemplateMode.XML);
         svgTemplateResolver.setCharacterEncoding("UTF-8");
+        svgTemplateResolver.setOrder(0);
+        svgTemplateResolver.setCheckExistence(true);
         return svgTemplateResolver;
     }
 
@@ -31,7 +33,7 @@ public class ThymeleafSvgConfig implements ApplicationContextAware {
         thymeleafViewResolver.setTemplateEngine(templateEngine);
         thymeleafViewResolver.setOrder(0);
         thymeleafViewResolver.setCharacterEncoding("UTF-8");
-        thymeleafViewResolver.setContentType("image/svgxml");
+        thymeleafViewResolver.setContentType("image/svg+xml");
         thymeleafViewResolver.setViewNames(new String[] {"*.svg"});
         return thymeleafViewResolver;
     }
