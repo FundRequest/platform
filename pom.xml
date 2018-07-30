@@ -300,6 +300,15 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.1</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*Config.*</exclude>
+                        <exclude>**/*Configuration.*</exclude>
+                        <exclude>**/*Dto.*</exclude>
+                        <exclude>**/*Event.*</exclude>
+                        <exclude>**/*Exception.*</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -312,15 +321,6 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>*Config.java</exclude>
-                                <exclude>*Configuration.java</exclude>
-                                <exclude>*Dto.java</exclude>
-                                <exclude>*Event.java</exclude>
-                                <exclude>*Exception.java</exclude>
-                            </excludes>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
