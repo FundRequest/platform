@@ -2,7 +2,7 @@ package io.fundrequest.core.identity;
 
 import org.keycloak.representations.idm.UserRepresentation;
 
-public class IdentityAPIClientMock implements IdentityAPIClient {
+public class IdentityAPIClientDummy implements IdentityAPIClient {
 
     @Override
     public UserRepresentation findByIdentityProviderAndFederatedUsername(final String identityProvider, final String federatedUsername) {

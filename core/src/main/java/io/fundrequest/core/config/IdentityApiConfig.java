@@ -8,7 +8,7 @@ import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.httpclient.ApacheHttpClient;
 import io.fundrequest.core.identity.IdentityAPIClient;
-import io.fundrequest.core.identity.IdentityAPIClientMock;
+import io.fundrequest.core.identity.IdentityAPIClientDummy;
 import org.apache.http.client.HttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +52,6 @@ public class IdentityApiConfig {
     @Bean
     @ConditionalOnProperty(value = "io.fundrequest.mock.identity-api", havingValue = "true")
     public IdentityAPIClient mockIdentityAPIClient() {
-        return new IdentityAPIClientMock();
+        return new IdentityAPIClientDummy();
     }
 }
