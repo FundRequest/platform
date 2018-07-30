@@ -56,8 +56,8 @@
         <jsoup.version>1.10.2</jsoup.version>
         <telegram.version>3.6</telegram.version>
         <feign-core.version>9.5.1</feign-core.version>
-        <guava.version>23.0</guava.version>
         <commons-io.version>2.6</commons-io.version>
+        <guava.version>23.0</guava.version>
         <thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
         <thymeleaf-extras-springsecurity4.version>3.0.2.RELEASE</thymeleaf-extras-springsecurity4.version>
         <thymeleaf-extras-conditionalcomments.version>3.0.2.RELEASE</thymeleaf-extras-conditionalcomments.version>
@@ -237,11 +237,6 @@
                 <version>${guava.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.github.openfeign</groupId>
-                <artifactId>feign-core</artifactId>
-                <version>${feign-core.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-launcher</artifactId>
                 <version>${junit-platform.version}</version>
@@ -268,7 +263,11 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
-                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>${feign-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>

@@ -1,6 +1,6 @@
 package io.fundrequest.core.request.fiat;
 
-import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
+import io.fundrequest.common.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.request.fiat.coinmarketcap.service.CoinMarketCapService;
 import io.fundrequest.core.request.fiat.cryptocompare.service.CryptoCompareService;
 import io.fundrequest.core.token.dto.TokenValueDto;

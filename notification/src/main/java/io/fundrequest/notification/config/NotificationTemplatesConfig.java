@@ -1,4 +1,4 @@
-package io.fundrequest.platform.admin.config;
+package io.fundrequest.notification.config;
 
 import io.fundrequest.platform.github.GithubRawClient;
 import io.fundrequest.platform.github.resourceresolver.GithubTemplateResolver;
@@ -18,6 +18,7 @@ public class NotificationTemplatesConfig {
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setOrder(Integer.MAX_VALUE);
         templateResolver.setCacheable(false);
+        templateResolver.setCheckExistence(true);
         return templateResolver;
     }
 

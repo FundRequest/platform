@@ -1,7 +1,7 @@
 package io.fundrequest.core.request;
 
+import io.fundrequest.common.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.common.infrastructure.mapping.Mappers;
-import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
