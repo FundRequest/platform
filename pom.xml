@@ -275,6 +275,15 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>*Config.java</exclude>
+                                <exclude>*Configuration.java</exclude>
+                                <exclude>*Dto.java</exclude>
+                                <exclude>*Event.java</exclude>
+                                <exclude>*Exception.java</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
