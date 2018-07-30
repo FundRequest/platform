@@ -23,4 +23,7 @@ public interface AzraelClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/v1/transactions/{hash}")
     TransactionStatus getTransactionStatus(@PathVariable("hash") String hash);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/rest/refund/submit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    RefundTransaction submitRefund(RefundCommand refundCommand);
 }

@@ -1,14 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
-<nav th:fragment="header" class="fnd-header navbar navbar-dark navbar-expand-md bg bg--blue bg--no-rect mb-5">
+<div th:fragment="header" class="mb-5">
+  <nav class="fnd-header navbar navbar-dark navbar-expand-md bg bg--blue bg--no-rect">
     <div class="container">
-        <a class="navbar-brand navbar-brand--fnd" href="/">
-            <img class="d-md-none" th:src="@{/assets/img/logo-single180.png}" alt="Fundrequest logo" />
-            <img class="d-none d-md-block" th:src="@{/assets/img/Fundrequest-title-white.png}"
-                 alt="Fundrequest logo" />
-        </a>
-        <h2 class="text-white m-0">Platform Administration</h2>
+      <a class="navbar-brand navbar-brand--fnd" href="/">
+        <img class="d-md-none" th:src="@{/assets/img/logo-single180.png}" alt="Fundrequest logo"/>
+        <img class="d-none d-md-block" th:src="@{/assets/img/Fundrequest-title-white.png}"
+             alt="Fundrequest logo"/>
+      </a>
+      <h2 class="text-white m-0">Platform Administration</h2>
     </div>
-</nav>
+  </nav>
+  <div class="container mt-3">
+    <span th:remove="tag" th:if="${layout.resultingTitle ne 'Overview page'}"><a href="/">&lt; Back to homepage</a></span>
+  </div>
+</div>
 
 </html>

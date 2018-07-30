@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import static io.fundrequest.core.request.infrastructure.github.parser.GithubPlatformIdParser.PLATFORM_ID_GITHUB_DELIMTER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,5 +42,62 @@ public class GithubPlatformIdParserTest {
         assertThat(result.getTitle()).isEqualTo(githubResult.getTitle());
         assertThat(result.getPlatform()).isEqualTo(Platform.GITHUB);
         assertThat(result.getPlatformId()).isEqualTo(platformId);
+    }
+
+    @Test
+    public void extractOwner() {
+        final String owner = "sgsgsg";
+        final String repo = "utyejy";
+        final String issueNumber = "6453";
+
+        final String result = GithubPlatformIdParser.extractOwner(owner + "|FR|" + repo + "|FR|" + issueNumber);
+
+        assertThat(result).isEqualTo(owner);
+    }
+
+    @Test
+    public void extractOwner_invalidPlatformId() {
+        final String platformId = "sgsgsg|FR|utyejy";
+
+        assertThatIllegalArgumentException().isThrownBy(() -> GithubPlatformIdParser.extractOwner(platformId))
+                                            .withMessage("platformId '" + platformId + "' has an invalid format, <owner> could not be extracted");
+    }
+
+    @Test
+    public void extractRepo() {
+        final String owner = "sgsgsg";
+        final String repo = "utyejy";
+        final String issueNumber = "6453";
+
+        final String result = GithubPlatformIdParser.extractRepo(owner + "|FR|" + repo + "|FR|" + issueNumber);
+
+        assertThat(result).isEqualTo(repo);
+    }
+
+    @Test
+    public void extractRepo_invalidPlatformId() {
+        final String platformId = "sgsgsg|FR|utyejy";
+
+        assertThatIllegalArgumentException().isThrownBy(() -> GithubPlatformIdParser.extractRepo(platformId))
+                                            .withMessage("platformId '" + platformId + "' has an invalid format, <repo> could not be extracted");
+    }
+
+    @Test
+    public void extractIssueNumber() {
+        final String owner = "sgsgsg";
+        final String repo = "utyejy";
+        final String issueNumber = "6453";
+
+        final String result = GithubPlatformIdParser.extractIssueNumber(owner + "|FR|" + repo + "|FR|" + issueNumber);
+
+        assertThat(result).isEqualTo(issueNumber);
+    }
+
+    @Test
+    public void extractIssueNumber_invalidPlatformId() {
+        final String platformId = "sgsgsg|FR|utyejy";
+
+        assertThatIllegalArgumentException().isThrownBy(() -> GithubPlatformIdParser.extractIssueNumber(platformId))
+                                            .withMessage("platformId '" + platformId + "' has an invalid format, <issueNumber> could not be extracted");
     }
 }

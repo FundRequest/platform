@@ -1,6 +1,11 @@
 package io.fundrequest.core.notification;
 
-import io.fundrequest.core.notification.domain.*;
+import io.fundrequest.core.notification.domain.Notification;
+import io.fundrequest.core.notification.domain.NotificationType;
+import io.fundrequest.core.notification.domain.RequestClaimedNotification;
+import io.fundrequest.core.notification.domain.RequestClaimedNotificationMother;
+import io.fundrequest.core.notification.domain.RequestFundedNotification;
+import io.fundrequest.core.notification.domain.RequestFundedNotificationMother;
 import io.fundrequest.core.notification.dto.NotificationDto;
 import io.fundrequest.core.notification.dto.RequestClaimedNotificationDto;
 import io.fundrequest.core.notification.dto.RequestFundedNotificationDto;
@@ -27,7 +32,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class NotificationServiceImplTest {
 

@@ -3,9 +3,9 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <section layout:fragment="content">
-    <h2>Messages</h2>
+    <h1 class="primary-ic">Messages</h1>
 
-    <h3 th:if="${message.getType() != null}" th:text="${message.getType()}"></h3>
+    <h2 th:if="${message.getType() != null}" th:text="${message.getType()}"></h2>
     <form role="form" th:action="@{|/messages/${message.getType() != null ? message.getType() + '/' : ''}add|}" th:method="post"
           th:object="${message}">
         <div class="form-group" th:if="${message.getType() == null}">

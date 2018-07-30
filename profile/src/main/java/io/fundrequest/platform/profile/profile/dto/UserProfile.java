@@ -10,6 +10,7 @@ public class UserProfile {
     private String name;
     private String email;
     private String etherAddress;
+    private boolean etherAddressVerified;
     private String telegramName;
     private String picture;
     private String headline;

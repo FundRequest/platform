@@ -14,6 +14,8 @@ public interface KeycloakRepository {
 
     void updateEtherAddress(String userId, String etherAddress);
 
+    void updateEtherAddressVerified(String userId, Boolean isVerified);
+
     void updateTelegramName(String userId, String telegramName);
 
     void updateHeadline(String userId, String headline);
@@ -23,6 +25,8 @@ public interface KeycloakRepository {
     String getEtherAddress(String userId);
 
     String getEtherAddress(UserRepresentation userRepresentation);
+
+    boolean isEtherAddressVerified(UserRepresentation userRepresentation);
 
     boolean isVerifiedDeveloper(UserRepresentation userRepresentation);
 

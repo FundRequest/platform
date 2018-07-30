@@ -9,10 +9,14 @@ import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.fund.FundService;
 import io.fundrequest.core.request.fund.PendingFundService;
+import io.fundrequest.core.request.fund.RefundService;
 import io.fundrequest.core.request.fund.command.FundsAddedCommand;
+import io.fundrequest.core.request.fund.command.RefundProcessedCommand;
 import io.fundrequest.core.request.fund.messaging.dto.ClaimedEthDto;
 import io.fundrequest.core.request.fund.messaging.dto.FundedEthDto;
+import io.fundrequest.core.request.fund.messaging.dto.RefundedEthDto;
 import io.fundrequest.core.request.infrastructure.BlockchainEventRepository;
+import io.fundrequest.core.request.view.RequestDto;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,24 +33,27 @@ import java.time.ZoneOffset;
 @Component
 public class AzraelMessageReceiver {
 
-    private RequestService requestService;
-    private ObjectMapper objectMapper;
-    private BlockchainEventRepository blockchainEventRepository;
-    private FundService fundService;
+    private final RequestService requestService;
+    private final ObjectMapper objectMapper;
+    private final BlockchainEventRepository blockchainEventRepository;
+    private final FundService fundService;
     private final PendingFundService pendingFundService;
+    private final RefundService refundService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AzraelMessageReceiver.class);
 
     @Autowired
-    public AzraelMessageReceiver(RequestService requestService,
-                                 ObjectMapper objectMapper,
-                                 BlockchainEventRepository blockchainEventRepository,
-                                 FundService fundService, PendingFundService pendingFundService) {
+    public AzraelMessageReceiver(final RequestService requestService,
+                                 final ObjectMapper objectMapper,
+                                 final BlockchainEventRepository blockchainEventRepository,
+                                 final FundService fundService, PendingFundService pendingFundService,
+                                 final RefundService refundService) {
         this.requestService = requestService;
         this.objectMapper = objectMapper;
         this.blockchainEventRepository = blockchainEventRepository;
         this.fundService = fundService;
         this.pendingFundService = pendingFundService;
+        this.refundService = refundService;
     }
 
     @Transactional
@@ -101,6 +108,25 @@ public class AzraelMessageReceiver {
                                                                                             new BigDecimal(incommingMessage.getAmount()),
                                                                                             incommingMessage.getToken()));
             fundService.clearTotalFundsCache(request.getId());
+        }
+    }
+
+    @Transactional
+    public void receiveRefundedMessage(final String message) throws IOException {
+        LOGGER.debug("Recieved new message from Azrael: %s", message);
+        final RefundedEthDto incomingMessage = objectMapper.readValue(message, RefundedEthDto.class);
+        if (!isProcessed(incomingMessage.getTransactionHash(), incomingMessage.getLogIndex()) && StringUtils.isNotBlank(incomingMessage.getPlatformId())) {
+            final BlockchainEvent blockchainEvent = blockchainEventRepository.saveAndFlush(new BlockchainEvent(incomingMessage.getTransactionHash(),
+                                                                                                               incomingMessage.getLogIndex()));
+            final RequestDto request = requestService.findRequest(getPlatform(incomingMessage.getPlatform()), incomingMessage.getPlatformId());
+            refundService.refundProcessed(RefundProcessedCommand.builder()
+                                                                .requestId(request.getId())
+                                                                .amount(incomingMessage.getAmount())
+                                                                .tokenHash(incomingMessage.getToken())
+                                                                .funderAddress(incomingMessage.getOwner())
+                                                                .blockchainEventId(blockchainEvent.getId())
+                                                                .transactionHash(incomingMessage.getTransactionHash())
+                                                                .build());
         }
     }
 

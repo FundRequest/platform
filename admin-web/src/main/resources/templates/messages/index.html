@@ -3,10 +3,10 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <section layout:fragment="content">
-    <h2>Messages</h2>
+    <h1 class="primary-ic">Messages</h1>
     <br />
 
-    <h3>Referral</h3>
+    <h2>Referral</h2>
     <tbody th:replace="messages/fragments/list :: tablerows(${referralMessages})"></tbody>
     <a class="btn btn-primary" th:href="@{|/messages/${referralMessages[0].getType()}/add|}">Add <i class="fa fa-plus"></i></a>
 </section>

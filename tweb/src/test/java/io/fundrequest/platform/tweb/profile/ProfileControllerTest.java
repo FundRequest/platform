@@ -2,7 +2,6 @@ package io.fundrequest.platform.tweb.profile;
 
 import io.fundrequest.common.infrastructure.AbstractControllerTest;
 import io.fundrequest.core.message.MessageService;
-import io.fundrequest.core.message.domain.Message;
 import io.fundrequest.core.message.domain.MessageType;
 import io.fundrequest.core.message.dto.MessageDto;
 import io.fundrequest.platform.profile.github.GithubBountyService;

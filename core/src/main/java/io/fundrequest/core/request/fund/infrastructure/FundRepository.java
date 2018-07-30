@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface FundRepository extends JpaRepository<Fund, Long> {
 
-    List<Fund> findByRequestId(Long requestId);
+    List<Fund> findAllByRequestId(Long requestId);
 
-    List<Fund> findByRequestIdIn(List<Long> requestIds);
+    List<Fund> findAllByRequestIdIn(List<Long> requestIds);
 
     @Query(""
            + "SELECT new io.fundrequest.core.request.fund.infrastructure.TokenAmountDto(f.tokenValue.tokenAddress, SUM(f.tokenValue.amountInWei)) "
