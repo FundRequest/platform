@@ -7,6 +7,7 @@ import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
 import io.fundrequest.core.request.claim.dto.ClaimDto;
 import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
+import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.claim.infrastructure.RequestClaimRepository;
@@ -24,9 +25,11 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static io.fundrequest.core.request.claim.domain.ClaimRequestStatus.PROCESSED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
@@ -133,5 +136,26 @@ public class ClaimServiceImplTest {
         final ClaimsByTransactionAggregate result = claimService.getAggregatedClaimsForRequest(requestId);
 
         assertThat(result).isSameAs(claimsByTransactionAggregate);
+    }
+
+    @Test
+    public void onClaimed() {
+        long requestId = 3124L;
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setId(requestId);
+        final RequestClaim requestClaim1 = RequestClaim.builder().status(ClaimRequestStatus.PENDING).build();
+        final RequestClaim requestClaim2 = RequestClaim.builder().status(ClaimRequestStatus.PENDING).build();
+
+        when(requestClaimRepository.findByRequestId(requestId)).thenReturn(Arrays.asList(requestClaim1, requestClaim2));
+
+        claimService.onClaimed(RequestClaimedEvent.builder()
+                                                  .blockchainEventId(324L)
+                                                  .requestDto(requestDto)
+                                                  .build());
+
+        assertThat(requestClaim1.getStatus()).isEqualTo(PROCESSED);
+        assertThat(requestClaim2.getStatus()).isEqualTo(PROCESSED);
+        verify(requestClaimRepository).save(requestClaim1);
+        verify(requestClaimRepository).save(requestClaim2);
     }
 }
