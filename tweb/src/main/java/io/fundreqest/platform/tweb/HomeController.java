@@ -1,15 +1,15 @@
-package io.fundreqest.platform.tweb;
+package io.fundrequest.platform.tweb;
 
+import io.fundrequest.common.infrastructure.mapping.Mappers;
+import io.fundrequest.platform.tweb.request.dto.RequestView;
 import lombok.extern.slf4j.Slf4j;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundreqest.platform.tweb.infrastructure.mav.AbstractController;
+import io.fundrequest.common.infrastructure.mav.AbstractController;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.ref.RefSignupEvent;
-import io.fundreqest.platform.tweb.request.dto.RequestView;
 import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.view.RequestDto;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.context.ApplicationEventPublisher;
