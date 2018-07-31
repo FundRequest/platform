@@ -1,10 +1,10 @@
-package io.fundreqest.platform.tweb;
+package io.fundrequest.platform.tweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundreqest.platform.tweb.infrastructure.AbstractControllerTest;
+import io.fundrequest.common.infrastructure.AbstractControllerTest;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.PrincipalMother;
 import io.fundrequest.core.request.RequestService;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.ref.RefSignupEvent;
 import org.junit.Test;
