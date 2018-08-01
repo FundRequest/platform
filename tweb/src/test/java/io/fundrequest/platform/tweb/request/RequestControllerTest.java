@@ -301,8 +301,8 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(profileService.getUserProfile(principal.getName()).getEtherAddress()).thenReturn("");
 
         this.mockMvc.perform(post("/requests/{id}/claim", 1L).principal(principal))
-                    .andExpect(redirectAlert("danger", "Please update <a href=\"/profile\">your profile</a> with a correct ether address."))
-                    .andExpect(redirectedUrl("/requests/" + 1L));
+                .andExpect(redirectAlert("danger", "Please update <a href=\"/profile\">your profile</a> with a correct ether address."))
+                .andExpect(redirectedUrl("/requests/" + 1L));
     }
 
     @Test
@@ -314,8 +314,8 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(objectMapper.writeValueAsString(requestView)).thenReturn("{ starred: true }");
 
         this.mockMvc.perform(post("/requests/{id}/watch", 1L).principal(principal))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.content().json("{ starred: true }"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("{ starred: true }"));
     }
 
     @Test

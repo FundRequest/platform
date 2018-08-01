@@ -1,7 +1,6 @@
 package io.fundrequest.platform.admin.claim.service;
 
 import io.fundrequest.common.infrastructure.mapping.Mappers;
-import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
 import io.fundrequest.core.request.claim.dto.RequestClaimDto;
@@ -47,7 +46,7 @@ public class ClaimModerationServiceImpl implements ModerationService<RequestClai
     @Override
     public void approve(Long requestClaimId) {
         RequestClaim requestClaim = requestClaimRepository.findOne(requestClaimId).orElseThrow(() -> new RuntimeException("Request claim not found"));
-        Request request = requestRepository.findOne(requestClaim.getRequestId()).orElseThrow(ResourceNotFoundException::new);
+        Request request = requestRepository.findOne(requestClaim.getRequestId()).get();
         ClaimSignature sig = azraelClient.getSignature(createSignClaimCommand(requestClaim, request));
         try {
             final ClaimTransaction claimTransaction = azraelClient.submitClaim(sig);
@@ -78,7 +77,7 @@ public class ClaimModerationServiceImpl implements ModerationService<RequestClai
     @Override
     public void decline(Long requestClaimId) {
         RequestClaim requestClaim = requestClaimRepository.findOne(requestClaimId).orElseThrow(() -> new RuntimeException("Request claim not found"));
-        Request request = requestRepository.findOne(requestClaim.getRequestId()).orElseThrow(ResourceNotFoundException::new);
+        Request request = requestRepository.findOne(requestClaim.getRequestId()).get();
         request.setStatus(RequestStatus.FUNDED);
         requestClaim.setStatus(ClaimRequestStatus.DECLINED);
         requestRepository.save(request);

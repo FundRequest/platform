@@ -34,7 +34,7 @@ public class Claim extends AbstractEntity {
     @Column(name = "request_id")
     private Long requestId;
 
-    @Column(name = "blockchain_event_id")
+    @Column(name="blockchain_event_id")
     private Long blockchainEventId;
 
     protected Claim() {
