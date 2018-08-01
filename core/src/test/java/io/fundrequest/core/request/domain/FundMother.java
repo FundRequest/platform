@@ -1,6 +1,8 @@
 package io.fundrequest.core.request.domain;
 
 import io.fundrequest.core.request.fund.domain.Fund;
+import io.fundrequest.core.token.dto.TokenInfoDtoMother;
+import io.fundrequest.core.token.model.TokenValue;
 import io.fundrequest.core.token.model.TokenValueMother;
 
 import java.math.BigDecimal;
