@@ -1,5 +1,6 @@
 package io.fundrequest.platform.twitter;
 
+import io.fundrequest.common.infrastructure.IgnoreDuringComponentScan;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.FilterType;
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
                 @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class),
+                @ComponentScan.Filter(IgnoreDuringComponentScan.class)
         })
 public class FundRequestTwitter {
 }

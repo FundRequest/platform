@@ -7,15 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.social.twitter.api.Twitter;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
-
-@Component
 public class TweetRequestFundedHandler {
 
     private final Twitter tweetOnFundTwitterTemplate;
