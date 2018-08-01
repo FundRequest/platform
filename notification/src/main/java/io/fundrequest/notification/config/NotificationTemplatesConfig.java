@@ -12,7 +12,7 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 public class NotificationTemplatesConfig {
 
     @Bean
-    public ITemplateResolver githubTemplateResolver(final GithubRawClient githubRawClient) {
+    public ITemplateResolver githubHtmlTemplateResolver(final GithubRawClient githubRawClient) {
         final GithubTemplateResolver templateResolver = new GithubTemplateResolver("FundRequest", "content-management", "master", githubRawClient);
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -23,9 +23,21 @@ public class NotificationTemplatesConfig {
     }
 
     @Bean
-    public TemplateEngine githubTemplateEngine(final ITemplateResolver githubTemplateResolver) {
+    public ITemplateResolver githubTextTemplateResolver(final GithubRawClient githubRawClient) {
+        final GithubTemplateResolver templateResolver = new GithubTemplateResolver("FundRequest", "content-management", "master", githubRawClient);
+        templateResolver.setSuffix(".txt");
+        templateResolver.setTemplateMode(TemplateMode.TEXT);
+        templateResolver.setOrder(Integer.MAX_VALUE);
+        templateResolver.setCacheable(false);
+        templateResolver.setCheckExistence(true);
+        return templateResolver;
+    }
+
+    @Bean
+    public TemplateEngine githubTemplateEngine(final ITemplateResolver githubHtmlTemplateResolver, final ITemplateResolver githubTextTemplateResolver) {
         final TemplateEngine templateEngine = new TemplateEngine();
-        templateEngine.addTemplateResolver(githubTemplateResolver);
+        templateEngine.addTemplateResolver(githubHtmlTemplateResolver);
+        templateEngine.addTemplateResolver(githubTextTemplateResolver);
         return templateEngine;
     }
 }

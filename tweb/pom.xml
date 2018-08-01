@@ -31,6 +31,10 @@
         </dependency>
         <dependency>
             <groupId>io.fundrequest</groupId>
+            <artifactId>twitter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.fundrequest</groupId>
             <artifactId>intercom</artifactId>
         </dependency>
         <dependency>

@@ -31,6 +31,7 @@
         <module>intercom</module>
         <module>notification</module>
         <module>notification-contract</module>
+        <module>twitter</module>
     </modules>
 
     <properties>
@@ -149,6 +150,11 @@
             <dependency>
                 <groupId>io.fundrequest</groupId>
                 <artifactId>intercom</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
+                <artifactId>twitter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
