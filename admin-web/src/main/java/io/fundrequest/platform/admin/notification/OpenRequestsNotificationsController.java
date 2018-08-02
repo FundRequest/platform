@@ -31,6 +31,7 @@ public class OpenRequestsNotificationsController extends AbstractController {
         return modelAndView(model).withView("notifications/open-requests")
                                   .withObject("projects", requestService.findAllProjects())
                                   .withObject("technologies", requestService.findAllTechnologies())
+                                  .withObject("targetPlatforms", TargetPlatform.values())
                                   .build();
     }
 
@@ -38,16 +39,23 @@ public class OpenRequestsNotificationsController extends AbstractController {
     public ModelAndView showGeneratedTemplate(final Model model,
                                               @RequestParam(required = false) final List<String> projects,
                                               @RequestParam(required = false) final List<String> technologies,
-                                              @RequestParam(name = "last-updated", required = false) String lastUpdatedSinceDays) {
-        final String template = notificationsTemplateService.generateOpenRequestsMailTemplateFor(Optional.ofNullable(projects).orElse(new ArrayList<>()),
-                                                                                                 Optional.ofNullable(technologies).orElse(new ArrayList<>()),
-                                                                                                 Optional.ofNullable(lastUpdatedSinceDays).filter(StringUtils::isNotBlank).map(Long::valueOf).orElse(0L));
+                                              @RequestParam(name = "last-updated", required = false) String lastUpdatedSinceDays,
+                                              @RequestParam(name = "target-platform") TargetPlatform targetPlatform) {
+        final String template = notificationsTemplateService.generateOpenRequestsTemplateFor(targetPlatform,
+                                                                                             Optional.ofNullable(projects).orElse(new ArrayList<>()),
+                                                                                             Optional.ofNullable(technologies).orElse(new ArrayList<>()),
+                                                                                             Optional.ofNullable(lastUpdatedSinceDays)
+                                                                                                     .filter(StringUtils::isNotBlank)
+                                                                                                     .map(Long::valueOf)
+                                                                                                     .orElse(0L));
         return modelAndView(model).withView("notifications/open-requests")
                                   .withObject("projects", requestService.findAllProjects())
                                   .withObject("technologies", requestService.findAllTechnologies())
+                                  .withObject("targetPlatforms", TargetPlatform.values())
                                   .withObject("template", template)
                                   .withObject("selectedProjects", projects)
                                   .withObject("selectedTechnologies", technologies)
+                                  .withObject("selectedTargetPlatform", targetPlatform)
                                   .withObject("lastUpdated", Optional.ofNullable(lastUpdatedSinceDays).orElse(""))
                                   .build();
     }

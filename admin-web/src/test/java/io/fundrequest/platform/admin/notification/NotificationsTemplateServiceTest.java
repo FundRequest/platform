@@ -4,7 +4,8 @@ import io.fundrequest.core.request.RequestService;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
@@ -32,8 +33,9 @@ class NotificationsTemplateServiceTest {
         service = new NotificationsTemplateService(githubTemplateEngine, requestService);
     }
 
-    @Test
-    void generateMailTemplate() {
+    @ParameterizedTest
+    @MethodSource("getTargetPlatforms")
+    void generateMailTemplate(final TargetPlatform targetPlatform) {
         final String template = "ghfjgkhj";
         final List<String> projects = Arrays.asList("sfgsg", "dsgdg");
         final List<String> technologies = Arrays.asList("gsff", "adsgfsg");
@@ -42,12 +44,16 @@ class NotificationsTemplateServiceTest {
         final ArgumentCaptor<Context> contextCaptor = ArgumentCaptor.forClass(Context.class);
 
         when(requestService.findAllFor(projects, technologies, lastUpdatedSinceDays)).thenReturn(requests);
-        when(githubTemplateEngine.process(eq("notification-templates/open-requests"), any(Context.class))).thenReturn(template);
+        when(githubTemplateEngine.process(eq("notification-templates/open-requests" + targetPlatform.getPostfix()), any(Context.class))).thenReturn(template);
 
-        final String result = service.generateOpenRequestsMailTemplateFor(projects, technologies, lastUpdatedSinceDays);
+        final String result = service.generateOpenRequestsTemplateFor(targetPlatform, projects, technologies, lastUpdatedSinceDays);
 
         assertThat(result).isEqualTo(template);
-        verify(githubTemplateEngine).process(eq("notification-templates/open-requests"), contextCaptor.capture());
+        verify(githubTemplateEngine).process(eq("notification-templates/open-requests" + targetPlatform.getPostfix()), contextCaptor.capture());
         assertThat(contextCaptor.getValue().getVariable("requests")).isEqualTo(requests);
+    }
+
+    static TargetPlatform[] getTargetPlatforms() {
+        return TargetPlatform.values();
     }
 }

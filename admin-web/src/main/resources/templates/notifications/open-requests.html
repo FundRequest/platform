@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Mail templates</title>
@@ -46,7 +46,20 @@
       </div>
       <div class="row">
         <div class="col-4">
-          <button type="submit" class="btn btn-primary">Generate template</button>
+          <div class="form-group">
+            <label for="target-platform">Select the target platform:</label>
+            <select class="form-control" id="target-platform" name="target-platform">
+              <option th:each="targetPlatform : ${targetPlatforms}"
+                      th:text="${#strings.capitalize(#strings.toLowerCase(targetPlatform.name()))}"
+                      th:value="${targetPlatform.name()}"
+                      th:selected="${targetPlatform eq selectedTargetPlatform}"></option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4">
+          <button type="submit" class="btn btn-secondary">Generate template</button>
         </div>
       </div>
       <div class="row">
@@ -60,7 +73,7 @@
           <label for="template">The generated template:</label>
         </div>
         <div class="col-2">
-          <a href="#" id="copyButton" class="btn btn-secondary btn-block">Copy to clipboard</a>
+          <a href="#" id="copyButton" class="btn btn-primary btn-block">Copy to clipboard</a>
         </div>
       </div>
       <div class="row" th:if="${template}">
