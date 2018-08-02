@@ -30,7 +30,7 @@ public class RequestClaimedUserNotificationHandlerTemplateIntegrationTest {
         context.setVariable("platformBasepath", "http://fwrgdf");
         context.setVariable("request", request);
 
-        final String messageBody = githubTemplateEngine.process("notification-templates/claimed-claimer-notification.html", context);
+        final String messageBody = githubTemplateEngine.process("notification-templates/claimed-claimer-notification", context);
 
         assertThat(messageBody).isEqualTo("<html>\n"
                                           + "\n"

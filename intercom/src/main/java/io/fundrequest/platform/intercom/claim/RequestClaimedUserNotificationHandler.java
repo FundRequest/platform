@@ -61,7 +61,7 @@ public class RequestClaimedUserNotificationHandler {
                         final Context context = new Context();
                         context.setVariable("platformBasepath", platformBasepath);
                         context.setVariable("request", request);
-                        final String messageBody = githubTemplateEngine.process("notification-templates/claimed-claimer-notification.html", context);
+                        final String messageBody = githubTemplateEngine.process("notification-templates/claimed-claimer-notification", context);
 
                         intercomApiClient.postMessage(AdminMessageBuilder.newInstanceWith()
                                                                          .messageType("email")
