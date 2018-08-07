@@ -23,6 +23,6 @@ public class NotificationsTemplateService {
         final List<RequestDto> requests = requestService.findAllFor(projects, technologies, lastUpdatedSinceDays);
         final Context context = new Context();
         context.setVariable("requests", requests);
-        return githubTemplateEngine.process("notification-templates/open-requests", context);
+        return githubTemplateEngine.process("notification-templates/open-requests_email", context);
     }
 }

@@ -76,7 +76,7 @@ class RequestClaimedUserNotificationHandlerTest {
         when(claimService.findOne(claimId)).thenReturn(Optional.of(ClaimDtoMother.aClaimDto().solver(solver).requestId(requestId).build()));
         when(requestService.findRequest(requestId)).thenReturn(requestDto);
         when(identityAPIClient.findByIdentityProviderAndFederatedUsername(requestDto.getIssueInformation().getPlatform().name().toLowerCase(), solver)).thenReturn(userRepresentation);
-        when(githubTemplateEngine.process(eq("notification-templates/claimed-claimer-notification.html"), refEq(context, "locale"))).thenReturn(body);
+        when(githubTemplateEngine.process(eq("notification-templates/claimed-claimer-notification"), refEq(context, "locale"))).thenReturn(body);
 
         handler.handle(notification);
 
