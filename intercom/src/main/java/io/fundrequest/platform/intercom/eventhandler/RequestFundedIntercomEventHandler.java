@@ -41,7 +41,7 @@ public class RequestFundedIntercomEventHandler {
                                              final KeycloakRepository keycloakRepository,
                                              final IntercomApiClient intercomApiClient,
                                              @Value("${io.fundrequest.etherscan.basepath}") final String etherscanBasePath,
-                                             @Value("${io.fundrequest.basepath}") final String fundrequestBasepath) {
+                                             @Value("${io.fundrequest.platform.base-path}") final String fundrequestBasepath) {
         this.fundService = fundService;
         this.requestService = requestService;
         this.blockchainEventService = blockchainEventService;
