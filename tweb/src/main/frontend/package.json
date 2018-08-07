@@ -22,7 +22,7 @@
     "webpack": "webpack --config ./webpack.config.base.js",
     "webpack-watch": "webpack --watch --config ./webpack.config.base.js",
     "webpack-prod": "webpack --config ./webpack.config.prod.js",
-    "typechain": "typechain --outDir ./src/js/contracts './src/js/abi/*.json'",
+    "typechain": "typechain --outDir ./src/js/contracts ./src/js/abi/*.json",
     "watch": "gulp watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
