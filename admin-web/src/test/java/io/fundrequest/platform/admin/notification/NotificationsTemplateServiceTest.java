@@ -42,12 +42,12 @@ class NotificationsTemplateServiceTest {
         final ArgumentCaptor<Context> contextCaptor = ArgumentCaptor.forClass(Context.class);
 
         when(requestService.findAllFor(projects, technologies, lastUpdatedSinceDays)).thenReturn(requests);
-        when(githubTemplateEngine.process(eq("notification-templates/open-requests"), any(Context.class))).thenReturn(template);
+        when(githubTemplateEngine.process(eq("notification-templates/open-requests_email"), any(Context.class))).thenReturn(template);
 
         final String result = service.generateOpenRequestsMailTemplateFor(projects, technologies, lastUpdatedSinceDays);
 
         assertThat(result).isEqualTo(template);
-        verify(githubTemplateEngine).process(eq("notification-templates/open-requests"), contextCaptor.capture());
+        verify(githubTemplateEngine).process(eq("notification-templates/open-requests_email"), contextCaptor.capture());
         assertThat(contextCaptor.getValue().getVariable("requests")).isEqualTo(requests);
     }
 }
