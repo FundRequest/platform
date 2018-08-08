@@ -57,16 +57,21 @@ FundRequest has several dependencies to run locally:
 - Message broker (RabbitMQ)
 - Azrael (Solution from FundRequest to abstract blockchain related transactions)
 
-For Azrael to work, an ether account must be setup, create the following file `core/.env` with contents:
+#### Azrael
+Azrael needs an ethereum account to execute its transactions (e.g. claim, refund). This account needs to have [Kovan](https://kovan-testnet.github.io/website/) ETH on it to cover the transaction fees. 
+To acquire this, just post your address in this Gitter channel: https://gitter.im/kovan-testnet/faucet
+ 
+To link your account to Azrael, create the following file `core/.env` with contents:
 ```
 AZRAEL_SIGN_ACCOUNT=d243cfdc9801e6720104f0f675e15d31f582d045ccbef9586d2d78d8e6f84ce7
-AZRAEL_EXECUTE_ACCOUNT=3d8606cf3d94df5cd68d08ac02d4aedfee4fdfcd55ca58c8330359f2c5b4fe4d
+AZRAEL_EXECUTE_ACCOUNT=<private_key_of_your_account>
 ```
 
-_Please note this is a dummy account without any funds, with this account you will not be able to claim._
+To be able to use the refund functionality, your execute account needs to be whitelisted in our contract. 
+You can send it to us via Telegram (https://t.me/FundRequestDevs) and we will whitelist it for you.
 
-
-**To start the dependencies, go inside the cloned repository and execute `runDependencies.sh`.**
+#### Running the dependencies
+To start the dependencies, go inside the cloned repository and execute `runDependencies.sh`
 
 ### Configure application properties
 Copy `tweb/src/main/resources/application-credentials.properties.template` to `tweb/src/main/resources/application-credentials.properties` and edit properties
