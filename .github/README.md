@@ -59,7 +59,7 @@ FundRequest has several dependencies to run locally:
 
 For Azrael to work, an ether account must be setup, create the following file `core/.env` with contents:
 ```
-AZRAEL_SIGN_ACCOUNT=3d8606cf3d94df5cd68d08ac02d4aedfee4fdfcd55ca58c8330359f2c5b4fe4d
+AZRAEL_SIGN_ACCOUNT=d243cfdc9801e6720104f0f675e15d31f582d045ccbef9586d2d78d8e6f84ce7
 AZRAEL_EXECUTE_ACCOUNT=3d8606cf3d94df5cd68d08ac02d4aedfee4fdfcd55ca58c8330359f2c5b4fe4d
 ```
 
