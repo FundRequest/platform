@@ -72,7 +72,9 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
     }
 
     private boolean isCurrentAddressSameAsNew(String newAddress, UserRepresentation userRepresentation) {
-        return userRepresentation.getAttributes().get(ETHER_ADDRESS_KEY).stream().anyMatch(currentAddress -> currentAddress.equalsIgnoreCase(newAddress));
+        Map<String, List<String>> attributes = userRepresentation.getAttributes();
+        return attributes != null && attributes.containsKey(ETHER_ADDRESS_KEY)
+               && attributes.get(ETHER_ADDRESS_KEY).stream().anyMatch(currentAddress -> currentAddress.equalsIgnoreCase(newAddress));
     }
 
     @Override

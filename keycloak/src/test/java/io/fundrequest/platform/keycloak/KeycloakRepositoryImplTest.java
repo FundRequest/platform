@@ -162,6 +162,24 @@ public class KeycloakRepositoryImplTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void setNewEtherAddress() {
+        final String userId = "agd";
+        final UserResource userResource = mock(UserResource.class);
+        final UserRepresentation userRepresentation = mock(UserRepresentation.class);
+        final Map<String, List<String>> userAttributes = new HashMap<>();
+
+        when(realmResource.users().get(userId)).thenReturn(userResource);
+        when(userResource.toRepresentation()).thenReturn(userRepresentation);
+        when(userRepresentation.getAttributes()).thenReturn(userAttributes);
+
+        keycloakRepository.updateEtherAddress(userId, "0x13bdf");
+
+        assertThat(userAttributes.get(ETHER_ADDRESS_KEY)).isEqualTo(Collections.singletonList("0x13bdf"));
+        assertThat(userAttributes.get(ETHER_ADDRESS_VERIFIED_KEY)).isEqualTo(Collections.singletonList("false"));
+        verify(userResource).update(userRepresentation);
+    }
+
     private void verifyAttributeUpdate(final BiConsumer<String, String> methodToTest, final String userId, final String key, final String value) {
         final UserResource userResource = mock(UserResource.class);
         final UserRepresentation userRepresentation = mock(UserRepresentation.class);
