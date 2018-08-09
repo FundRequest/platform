@@ -34,7 +34,6 @@ public class GithubCommentFactoryTest {
             + " [![](https://fundrequest.io/assets/img/powered-by-fundrequest-badge.svg)](https://fundrequest.io)"
             + "\r\n"
             + "Thank you @ljn-ytd for your code contribution. [The reward](https://fundrequest.io/requests/5473) linked to this issue has been transferred to your account."
-            + "\r\n"
 //            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
             + "\r\n* Payment details can be tracked on [Etherscan](https://etherscan.io/tx/ZWQ1R12QBPMI7AS6PCCQ)"
             + "\r\n* Looking for more? Feel free to [browse](https://fundrequest.io/requests) through all funded requests.";
