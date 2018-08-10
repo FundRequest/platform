@@ -1,6 +1,7 @@
 package io.fundrequest.platform.admin.claim.service;
 
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
+import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
 import io.fundrequest.core.request.claim.dto.RequestClaimDto;
@@ -12,6 +13,7 @@ import io.fundrequest.core.request.infrastructure.azrael.AzraelClient;
 import io.fundrequest.core.request.infrastructure.azrael.ClaimSignature;
 import io.fundrequest.core.request.infrastructure.azrael.ClaimTransaction;
 import io.fundrequest.core.request.infrastructure.azrael.SignClaimCommand;
+import io.fundrequest.platform.admin.service.ModerationService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +24,8 @@ import java.util.List;
 
 import static io.fundrequest.core.web3j.AddressUtils.prettify;
 
-@Service
-public class ClaimModerationServiceImpl implements ClaimModerationService {
+@Service("claimModerationService")
+public class ClaimModerationServiceImpl implements ModerationService<RequestClaimDto> {
 
     private final Mappers mappers;
     private final RequestClaimRepository requestClaimRepository;
@@ -43,9 +45,9 @@ public class ClaimModerationServiceImpl implements ClaimModerationService {
 
     @Transactional
     @Override
-    public void approveClaim(Long requestClaimId) {
+    public void approve(Long requestClaimId) {
         RequestClaim requestClaim = requestClaimRepository.findOne(requestClaimId).orElseThrow(() -> new RuntimeException("Request claim not found"));
-        Request request = requestRepository.findOne(requestClaim.getRequestId()).get();
+        Request request = requestRepository.findOne(requestClaim.getRequestId()).orElseThrow(ResourceNotFoundException::new);
         ClaimSignature sig = azraelClient.getSignature(createSignClaimCommand(requestClaim, request));
         try {
             final ClaimTransaction claimTransaction = azraelClient.submitClaim(sig);
@@ -62,21 +64,21 @@ public class ClaimModerationServiceImpl implements ClaimModerationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RequestClaimDto> listPendingRequestClaims() {
+    public List<RequestClaimDto> listPending() {
         return getRequestClaims(ClaimRequestStatus.PENDING);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<RequestClaimDto> listFailedRequestClaims() {
+    public List<RequestClaimDto> listFailed() {
         return getRequestClaims(ClaimRequestStatus.TRANSACTION_FAILED);
     }
 
     @Transactional
     @Override
-    public void declineClaim(Long requestClaimId) {
+    public void decline(Long requestClaimId) {
         RequestClaim requestClaim = requestClaimRepository.findOne(requestClaimId).orElseThrow(() -> new RuntimeException("Request claim not found"));
-        Request request = requestRepository.findOne(requestClaim.getRequestId()).get();
+        Request request = requestRepository.findOne(requestClaim.getRequestId()).orElseThrow(ResourceNotFoundException::new);
         request.setStatus(RequestStatus.FUNDED);
         requestClaim.setStatus(ClaimRequestStatus.DECLINED);
         requestRepository.save(request);

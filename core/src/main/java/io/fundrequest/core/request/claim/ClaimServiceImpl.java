@@ -1,6 +1,6 @@
 package io.fundrequest.core.request.claim;
 
-import io.fundrequest.core.infrastructure.mapping.Mappers;
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.claim.domain.Claim;
 import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;

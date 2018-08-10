@@ -36,7 +36,6 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
     import ListFilterDto from "../dtos/ListFilterDto";
-    import {EventBus} from "../EventBus";
     import Utils from "../../classes/Utils";
 
     @Component

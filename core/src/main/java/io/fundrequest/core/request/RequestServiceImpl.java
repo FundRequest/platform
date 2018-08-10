@@ -1,7 +1,7 @@
 package io.fundrequest.core.request;
 
+import io.fundrequest.common.infrastructure.mapping.Mappers;
 import io.fundrequest.core.infrastructure.exception.ResourceNotFoundException;
-import io.fundrequest.core.infrastructure.mapping.Mappers;
 import io.fundrequest.core.request.claim.CanClaimRequest;
 import io.fundrequest.core.request.claim.SignedClaim;
 import io.fundrequest.core.request.claim.UserClaimRequest;
@@ -16,6 +16,7 @@ import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.command.CreateRequestCommand;
+import io.fundrequest.core.request.command.UpdateRequestStatusCommand;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
@@ -269,6 +270,14 @@ class RequestServiceImpl implements RequestService {
                 .withParameter("data", erc67Generator.toByteData(createERC67FundRequest))
                 .build()
                 .visualize();
+    }
+
+    @Override
+    public void update(final UpdateRequestStatusCommand command) {
+        requestRepository.findOne(command.getRequestId()).ifPresent(request -> {
+            request.setStatus(command.getNewStatus());
+            requestRepository.save(request);
+        });
     }
 
     private Request findOne(Long requestId) {

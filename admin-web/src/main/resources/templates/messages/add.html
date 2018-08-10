@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"
+      xmlns:th="http://www.thymeleaf.org">
+
+<section layout:fragment="content">
+    <h1 class="primary-ic">Messages</h1>
+
+    <h2 th:if="${message.getType() != null}" th:text="${message.getType()}"></h2>
+    <form role="form" th:action="@{|/messages/${message.getType() != null ? message.getType() + '/' : ''}add|}" th:method="post"
+          th:object="${message}">
+        <div class="form-group" th:if="${message.getType() == null}">
+            <label for="name">Type</label>
+            <input type="text" class="form-control" id="type" th:field="*{type}" />
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}" />
+        </div>
+        <div class="form-group">
+            <label for="name">Title</label>
+            <input type="text" class="form-control" id="title" th:field="*{title}" />
+        </div>
+        <div class="form-group">
+            <label for="name">Description</label>
+            <textarea class="form-control" id="description" th:field="*{description}"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="name">Link</label>
+            <input type="text" class="form-control" id="link" th:field="*{link}" />
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+</section>
+
+</html>
