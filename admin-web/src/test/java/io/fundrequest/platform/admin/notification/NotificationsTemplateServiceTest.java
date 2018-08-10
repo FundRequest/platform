@@ -14,10 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class NotificationsTemplateServiceTest {
@@ -41,16 +40,15 @@ class NotificationsTemplateServiceTest {
         final List<String> technologies = Arrays.asList("gsff", "adsgfsg");
         final long lastUpdatedSinceDays = 3L;
         final List<RequestDto> requests = Arrays.asList(RequestDtoMother.fundRequestArea51(), RequestDtoMother.freeCodeCampNoUserStories());
-        final ArgumentCaptor<Context> contextCaptor = ArgumentCaptor.forClass(Context.class);
+        final Context context = new Context();
+        context.setVariable("requests", requests);
 
         when(requestService.findAllFor(projects, technologies, lastUpdatedSinceDays)).thenReturn(requests);
-        when(githubTemplateEngine.process(eq("notification-templates/open-requests_email"), any(Context.class))).thenReturn(template);
+        when(githubTemplateEngine.process(eq("notification-templates/open-requests_email"), refEq(context, "locale"))).thenReturn(template);
 
         final String result = service.generateOpenRequestsTemplateFor(targetPlatform, projects, technologies, lastUpdatedSinceDays);
 
         assertThat(result).isEqualTo(template);
-        verify(githubTemplateEngine).process(eq("notification-templates/open-requests_email"), contextCaptor.capture());
-        assertThat(contextCaptor.getValue().getVariable("requests")).isEqualTo(requests);
     }
 
     static TargetPlatform[] getTargetPlatforms() {

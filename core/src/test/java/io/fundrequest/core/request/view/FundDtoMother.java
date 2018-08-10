@@ -2,6 +2,7 @@ package io.fundrequest.core.request.view;
 
 import io.fundrequest.core.request.fund.dto.FundDto;
 import io.fundrequest.core.request.fund.dto.FundDtoMapperImpl;
+import io.fundrequest.core.token.dto.TokenInfoDto;
 import io.fundrequest.core.token.dto.TokenInfoDtoMother;
 import io.fundrequest.core.token.dto.TokenValueDto;
 
@@ -18,10 +19,12 @@ public final class FundDtoMother {
     }
 
     public static FundDto.FundDtoBuilder aFundDto() {
+        final TokenInfoDto fnd = TokenInfoDtoMother.fnd();
         return FundDto.builder()
                       .tokenValue(TokenValueDto.builder()
                                                .totalAmount(new BigDecimal("3.870000000000000000"))
-                                               .tokenAddress(TokenInfoDtoMother.fnd().getAddress())
+                                               .tokenAddress(fnd.getAddress())
+                                               .tokenSymbol(fnd.getSymbol())
                                                .build())
                       .blockchainEventId(3465L)
                       .funderAddress("0xd24400ae8BfEBb18cA49Be86258a3C749cf46853")

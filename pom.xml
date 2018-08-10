@@ -31,6 +31,9 @@
         <module>intercom</module>
         <module>notification</module>
         <module>notification-contract</module>
+        <module>twitter</module>
+        <module>spring-social-gitter</module>
+        <module>gitter</module>
     </modules>
 
     <properties>
@@ -123,6 +126,16 @@
             </dependency>
             <dependency>
                 <groupId>io.fundrequest</groupId>
+                <artifactId>spring-social-gitter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
+                <artifactId>gitter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
                 <artifactId>profile</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -149,6 +162,11 @@
             <dependency>
                 <groupId>io.fundrequest</groupId>
                 <artifactId>intercom</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
+                <artifactId>twitter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
