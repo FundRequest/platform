@@ -34,15 +34,15 @@ public class GithubCommentFactoryTest {
             + " [![](https://fundrequest.io/assets/img/powered-by-fundrequest-badge.svg)](https://fundrequest.io)"
             + "\r\n"
             + "Thank you @ljn-ytd for your code contribution. [The reward](https://fundrequest.io/requests/5473) linked to this issue has been transferred to your account."
-            + "\r\n"
 //            + "\r\n* For better GitHub integration please install the FundRequest [Chome browser plugin](https://chrome.google.com/webstore/search/fundrequest)."
+            + "\r\n* Payment details can be tracked on [Etherscan](https://etherscan.io/tx/ZWQ1R12QBPMI7AS6PCCQ)"
             + "\r\n* Looking for more? Feel free to [browse](https://fundrequest.io/requests) through all funded requests.";
 
     private GithubCommentFactory githubCommentFactory;
 
     @Before
     public void setUp() {
-        githubCommentFactory = new GithubCommentFactory("https://fundrequest.io");
+        githubCommentFactory = new GithubCommentFactory("https://fundrequest.io", "https://etherscan.io");
     }
 
     @Test
@@ -69,8 +69,9 @@ public class GithubCommentFactoryTest {
     public void createClosedComment() {
         final long requestId = 5473;
         final String solver = "ljn-ytd";
+        final String transactionHash = "ZWQ1R12QBPMI7AS6PCCQ";
 
-        final String result = githubCommentFactory.createClosedComment(requestId, solver);
+        final String result = githubCommentFactory.createClosedComment(requestId, solver, transactionHash);
 
         assertThat(result).isEqualTo(EXPECTED_CLOSED_COMMENT);
     }
