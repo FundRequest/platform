@@ -1,5 +1,6 @@
 package io.fundrequest.core.request.claim.handler;
 
+import io.fundrequest.core.request.claim.dto.ClaimDto;
 import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.view.IssueInformationDto;
@@ -46,14 +47,15 @@ public class CreateGithubCommentOnClosedHandler {
         if (addComment) {
             final RequestDto request = event.getRequestDto();
             final IssueInformationDto issueInformation = request.getIssueInformation();
+            final ClaimDto claim = event.getClaimDto();
             if (issueInformation.getPlatform() == Platform.GITHUB) {
-                placeComment(request, issueInformation);
+                placeComment(request, issueInformation, claim);
             }
         }
     }
 
-    private void placeComment(final RequestDto request, final IssueInformationDto issueInformation) {
-        final CreateGithubComment comment = createComment(request.getId(), issueInformation);
+    private void placeComment(final RequestDto request, final IssueInformationDto issueInformation, final ClaimDto claim) {
+        final CreateGithubComment comment = createComment(request.getId(), issueInformation, claim);
         final List<GithubIssueCommentsResult> ourComments = getOurComments(issueInformation);
         if (ourComments.size() < 2) {
             placeNewComment(issueInformation, comment);
@@ -62,12 +64,13 @@ public class CreateGithubCommentOnClosedHandler {
         }
     }
 
-    private CreateGithubComment createComment(final Long requestId, final IssueInformationDto issueInformation) {
+    private CreateGithubComment createComment(final Long requestId, final IssueInformationDto issueInformation, final ClaimDto claim) {
         final String solver = Optional.ofNullable(githubScraper.fetchGithubIssue(issueInformation.getOwner(), issueInformation.getRepo(), issueInformation.getNumber()).getSolver())
                                       .orElseThrow(() -> new RuntimeException("No solver found for request " + requestId));
+        final String transactionHash = claim.getTransactionHash();
 
         final CreateGithubComment comment = new CreateGithubComment();
-        comment.setBody(githubCommentFactory.createClosedComment(requestId, solver));
+        comment.setBody(githubCommentFactory.createClosedComment(requestId, solver, transactionHash));
         return comment;
     }
 

@@ -28,6 +28,9 @@
         <module>admin-web</module>
         <module>common</module>
         <module>faq</module>
+        <module>intercom</module>
+        <module>notification</module>
+        <module>notification-contract</module>
     </modules>
 
     <properties>
@@ -52,6 +55,7 @@
         <junit-vintage-engine.version>4.12.0</junit-vintage-engine.version>
         <jsoup.version>1.10.2</jsoup.version>
         <telegram.version>3.6</telegram.version>
+        <feign-core.version>9.5.1</feign-core.version>
         <guava.version>23.0</guava.version>
     </properties>
 
@@ -79,6 +83,11 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -118,6 +127,21 @@
             <dependency>
                 <groupId>io.fundrequest</groupId>
                 <artifactId>faq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
+                <artifactId>notification</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
+                <artifactId>notification-contract</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
+                <artifactId>intercom</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -201,9 +225,24 @@
                 <version>${jsoup.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-jdk8</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>${feign-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.platform</groupId>
@@ -222,17 +261,6 @@
                 <artifactId>junit-jupiter-params</artifactId>
                 <version>${junit-jupiter.version}</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-jdk8</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>${mapstruct.version}</version>
-                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -263,6 +291,15 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.1</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*Config.*</exclude>
+                        <exclude>**/*Configuration.*</exclude>
+                        <exclude>**/*Dto.*</exclude>
+                        <exclude>**/*Event.*</exclude>
+                        <exclude>**/*Exception.*</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>

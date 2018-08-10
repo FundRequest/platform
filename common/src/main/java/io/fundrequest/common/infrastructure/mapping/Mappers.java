@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -17,23 +18,20 @@ public class Mappers {
 
     private final Map<FromTo, BaseMapper> mappers;
 
-    @Autowired
-    public Mappers(List<BaseMapper> baseMappers) {
-        mappers = baseMappers.stream()
-                             .filter(m -> !m.getClass().getSimpleName().endsWith("_"))
-                             .collect(Collectors.toMap(
-                                     this::getClasses,
-                                     Function.identity()
-                                                      ));
+    public Mappers(@Autowired(required = false) final List<BaseMapper> baseMappers) {
+        mappers = baseMappers != null ? baseMappers.stream()
+                                                   .filter(m -> !m.getClass().getSimpleName().endsWith("_"))
+                                                   .collect(Collectors.toMap(this::getClasses, Function.identity()))
+                                      : new HashMap<>();
     }
 
     private FromTo getClasses(final BaseMapper b) {
-        Class<?>[] classes = ResolvableType.forClass(b.getClass()).as(BaseMapper.class).resolveGenerics();
+        final Class<?>[] classes = ResolvableType.forClass(b.getClass()).as(BaseMapper.class).resolveGenerics();
         return new FromTo(classes[0], classes[1]);
     }
 
     public <IN, OUT> BaseMapper<IN, OUT> getMapper(Class<IN> clazzIn, Class<OUT> clazzOut) {
-        BaseMapper baseMapper = mappers.get(new FromTo(clazzIn, clazzOut));
+        final BaseMapper baseMapper = mappers.get(new FromTo(clazzIn, clazzOut));
         if (baseMapper == null) {
             throw new RuntimeException("Mapper was not found");
         }
@@ -48,8 +46,7 @@ public class Mappers {
         return getMapper(clazzIn, clazzOut).mapToList(in);
     }
 
-    public <IN, OUT> Page<OUT> mapToPage(final Class<IN> clazzIn, Class<OUT> clazzOut,
-                                         final Page<? extends IN> pageIn) {
+    public <IN, OUT> Page<OUT> mapToPage(final Class<IN> clazzIn, Class<OUT> clazzOut, final Page<? extends IN> pageIn) {
         return getMapper(clazzIn, clazzOut).mapToPage(pageIn);
     }
 

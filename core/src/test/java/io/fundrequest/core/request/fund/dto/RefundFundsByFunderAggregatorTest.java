@@ -1,8 +1,6 @@
 package io.fundrequest.core.request.fund.dto;
 
-import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.RefundMother;
-import io.fundrequest.core.request.fund.domain.Fund;
 import io.fundrequest.core.request.fund.domain.Refund;
 import io.fundrequest.core.token.dto.TokenValueDtoMother;
 import io.fundrequest.core.token.mapper.TokenValueDtoMapper;
@@ -15,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
