@@ -5,6 +5,7 @@ import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.notification.FundRequestNotification;
 import io.fundrequest.platform.github.FundRequestGithub;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.thymeleaf.context.Context;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {FundRequestNotification.class, FundRequestGithub.class, FundRequestCommon.class}, properties = {"io.fundrequest.platform.base-path=http://test"})
 public class RequestClaimedUserNotificationHandlerTemplateIntegrationTest {
