@@ -1,5 +1,7 @@
 package io.fundrequest.platform.github.resourceresolver;
 
+import com.netflix.hystrix.exception.HystrixRuntimeException;
+import feign.FeignException;
 import io.fundrequest.platform.github.GithubRawClient;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -57,12 +59,37 @@ public class GithubTemplateResource implements ITemplateResource {
         if (templateContentsCache == null) {
             try {
                 templateContentsCache = githubRawClient.getContentsAsRaw(owner, repo, branch, location);
-            } catch (Exception e) {
-                log.error("Something went wrong while fetching template from GitHub");
+            } catch (HystrixRuntimeException e) {
                 templateContentsCache = "";
+                logHystrixRuntimeException(e);
+            } catch (Exception e) {
+                templateContentsCache = "";
+                logError(e);
             }
         }
         return templateContentsCache;
+    }
+
+    private void logHystrixRuntimeException(HystrixRuntimeException e) {
+        try {
+            throw e.getCause();
+        } catch (FeignException e1) {
+            if (e1.status() == 404) {
+                logWarn();
+            } else {
+                logError(e);
+            }
+        } catch (Throwable throwable) {
+            logError(throwable);
+        }
+    }
+
+    private void logWarn() {
+        log.warn(String.format("Template %s/%s/%s/%s does not exist on GitHub", owner, repo, branch, location));
+    }
+
+    private void logError(Throwable e) {
+        log.error(String.format("Something went wrong while fetching template %s/%s/%s/%s  from GitHub", owner, repo, branch, location), e);
     }
 
     @Override

@@ -44,7 +44,8 @@ public class CachingConfig {
                                         buildCache("technologies", 7, DAYS),
                                         buildCache("statistics", 7, DAYS),
                                         new CaffeineCache("faqs", Caffeine.newBuilder().build()),
-                                        buildCache("github_issues", 7, SECONDS)));
+                                        buildCache("github_issues", 7, SECONDS),
+                                        buildCache("gitter_fund_notification_rooms", 4, HOURS)));
         return manager;
     }
 
