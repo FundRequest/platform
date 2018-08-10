@@ -36,13 +36,16 @@ public class GithubCommentFactory {
     private static final String CLOSED_COMMENT_TEMPLATE =
             COMMENT_HEADER
             + "Thank you @%3$s for your code contribution. [The reward](%1$s/requests/%2$s) linked to this issue has been transferred to your account."
-            + LINE_BREAK
+            + LINE_BREAK + "* Payment details can be tracked on [Etherscan](%4$s/tx/%5$s)"
             + COMMENT_FOOTER;
 
     private final String platformBasePath;
+    private final String etherscanBasePath;
 
-    public GithubCommentFactory(@Value("${io.fundrequest.platform.base-path}") final String platformBasePath) {
+    public GithubCommentFactory(@Value("${io.fundrequest.platform.base-path}") final String platformBasePath,
+                                @Value("${io.fundrequest.etherscan.basepath}") final String etherscanBasePath) {
         this.platformBasePath = platformBasePath;
+        this.etherscanBasePath = etherscanBasePath;
     }
 
     public String createFundedComment(final Long requestId, final String githubIssueNumber) {
@@ -50,14 +53,10 @@ public class GithubCommentFactory {
     }
 
     public String createResolvedComment(final Long requestId, final String solver) {
-        return create(RESOLVED_COMMENT_TEMPLATE, requestId, solver);
+        return String.format(RESOLVED_COMMENT_TEMPLATE, platformBasePath, requestId, solver);
     }
 
-    public String createClosedComment(final Long requestId, final String solver) {
-        return create(CLOSED_COMMENT_TEMPLATE, requestId, solver);
-    }
-
-    private String create(final String commentTemplate, final Long requestId, final String solver) {
-        return String.format(commentTemplate, platformBasePath, requestId, solver);
+    public String createClosedComment(final Long requestId, final String solver, final String transactionHash) {
+        return String.format(CLOSED_COMMENT_TEMPLATE, platformBasePath, requestId, solver, etherscanBasePath, transactionHash);
     }
 }
