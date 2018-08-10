@@ -60,6 +60,7 @@
         margin: 0.625rem;
         min-height: 9.357rem;
         min-width: 9.357rem;
+        max-width: 9.357rem;
         background: white;
         border: 2px solid #7c7c7c;
         display: flex;

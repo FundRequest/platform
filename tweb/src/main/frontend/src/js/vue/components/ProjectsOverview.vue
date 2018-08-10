@@ -1,6 +1,8 @@
 <template>
-    <div class="scrolling-wrapper-flexbox">
-        <project-card v-for="project in projects" :project="project" v-bind:key="project.name"></project-card>
+    <div class="scrolling-wrapper">
+        <div class="scrolling-wrapper-flexbox">
+            <project-card v-for="project in projects" :project="project" v-bind:key="project.name"></project-card>
+        </div>
     </div>
 </template>
 
@@ -9,7 +11,7 @@
     import ProjectCard from "./ProjectCard.vue";
     import ProjectOverviewDetail from "../models/ProjectOverviewDetail";
     import Utils from "../../classes/Utils";
-    import {Locations} from '../../classes/Locations';
+    import {Locations} from "../../classes/Locations";
 
     @Component({
         components: {
@@ -22,38 +24,42 @@
         private projects: Array<ProjectOverviewDetail> = [];
 
         private async _loadProjects(projects) {
+            try {
+                let projectData = await Utils.getJSON(this.projectDataURL);
+                for (let project in projectData) {
+                    if (projectData.hasOwnProperty(project)) {
+                        projects.push(Object.assign(new ProjectOverviewDetail(), {
+                            name: projectData[project]["title"],
+                            description: projectData[project]["small_description"],
+                            overviewColor: projectData[project]["background-color"],
+                            projectLink: `${Locations.requests}?fase=open&projects=${project}`,
+                            logoLocation: `https://github.com/${project}.png`,
+                            activeRequests: 0
+                        }));
+                    }
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }
 
-			try {
-				let activeRequestCounts = await Utils.getJSON("/requestsActiveCount");
-				let projectData = await Utils.getJSON(this.projectDataURL)
-				for (var proj in projectData) {
-					let activeRequestCount = activeRequestCounts[proj] || 0;
-					projects.push({
-						name: projectData[proj]['title'],
-						description: projectData[proj]['small_description'],
-						overviewColor: projectData[proj]['background-color'],
-						projectLink: `https://fundrequest.io/requests?fase=open&projects=${proj}`,
-						logoLocation: `https://github.com/${proj}.png`,
-						activeRequests: activeRequestCount
-					});
-				}
-			} catch (err) {
-				console.log(err);
-			}
-		}
-
-		created() {
-			this._loadProjects(this.projects);
-		}
+        created() {
+            this._loadProjects(this.projects);
+        }
     }
 </script>
 
 <style lang="scss" scoped>
+    .scrolling-wrapper {
+        width: 100%;
+        overflow: scroll;
+    }
+
     .scrolling-wrapper-flexbox {
         display: flex;
         flex-wrap: nowrap;
-        overflow-x: auto;
-        overflow-y: hidden;
+        justify-content: center;
+        min-width: min-content;
 
         -webkit-overflow-scrolling: touch;
 
