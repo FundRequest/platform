@@ -6,7 +6,6 @@ import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.ArgumentCaptor;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -44,7 +43,7 @@ class NotificationsTemplateServiceTest {
         context.setVariable("requests", requests);
 
         when(requestService.findAllFor(projects, technologies, lastUpdatedSinceDays)).thenReturn(requests);
-        when(githubTemplateEngine.process(eq("notification-templates/open-requests_email"), refEq(context, "locale"))).thenReturn(template);
+        when(githubTemplateEngine.process(eq("notification-templates/open-requests" + targetPlatform.getPostfix()), refEq(context, "locale"))).thenReturn(template);
 
         final String result = service.generateOpenRequestsTemplateFor(targetPlatform, projects, technologies, lastUpdatedSinceDays);
 
