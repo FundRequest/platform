@@ -25,11 +25,15 @@
     <dependencies>
         <dependency>
             <groupId>io.fundrequest</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.fundrequest</groupId>
             <artifactId>github</artifactId>
         </dependency>
         <dependency>
             <groupId>io.fundrequest</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>notification</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
