@@ -54,7 +54,7 @@
 <style lang="scss" scoped>
     .scrolling-wrapper {
         width: 100%;
-        overflow: scroll;
+        overflow: auto;
     }
 
     .scrolling-wrapper-flexbox {
