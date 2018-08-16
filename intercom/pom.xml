@@ -43,6 +43,11 @@
             <type>test-jar</type>
         </dependency>
         <dependency>
+            <groupId>io.fundrequest</groupId>
+            <artifactId>notification</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.intercom</groupId>
             <artifactId>intercom-java</artifactId>
             <version>${intercom-java.version}</version>
@@ -75,6 +80,11 @@
                     <artifactId>httpclient</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

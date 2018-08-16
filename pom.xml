@@ -31,6 +31,9 @@
         <module>intercom</module>
         <module>notification</module>
         <module>notification-contract</module>
+        <module>twitter</module>
+        <module>spring-social-gitter</module>
+        <module>gitter</module>
     </modules>
 
     <properties>
@@ -56,7 +59,14 @@
         <jsoup.version>1.10.2</jsoup.version>
         <telegram.version>3.6</telegram.version>
         <feign-core.version>9.5.1</feign-core.version>
+        <commons-io.version>2.6</commons-io.version>
         <guava.version>23.0</guava.version>
+        <thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
+        <thymeleaf-extras-springsecurity4.version>3.0.2.RELEASE</thymeleaf-extras-springsecurity4.version>
+        <thymeleaf-extras-conditionalcomments.version>3.0.2.RELEASE</thymeleaf-extras-conditionalcomments.version>
+        <thymeleaf-layout-dialect.version>2.3.0</thymeleaf-layout-dialect.version>
+        <thymeleaf-extras-data-attribute.version>2.0.1</thymeleaf-extras-data-attribute.version>
+        <thymeleaf-extras-java8time.version>3.0.1.RELEASE</thymeleaf-extras-java8time.version>
     </properties>
 
     <dependencies>
@@ -116,6 +126,16 @@
             </dependency>
             <dependency>
                 <groupId>io.fundrequest</groupId>
+                <artifactId>spring-social-gitter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
+                <artifactId>gitter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
                 <artifactId>profile</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -142,6 +162,11 @@
             <dependency>
                 <groupId>io.fundrequest</groupId>
                 <artifactId>intercom</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest</groupId>
+                <artifactId>twitter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -225,24 +250,9 @@
                 <version>${jsoup.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-jdk8</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.openfeign</groupId>
-                <artifactId>feign-core</artifactId>
-                <version>${feign-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.platform</groupId>
@@ -261,6 +271,26 @@
                 <artifactId>junit-jupiter-params</artifactId>
                 <version>${junit-jupiter.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-jdk8</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>${feign-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

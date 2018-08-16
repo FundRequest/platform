@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @Service
 class ClaimServiceImpl implements ClaimService {
@@ -47,6 +48,12 @@ class ClaimServiceImpl implements ClaimService {
         this.mappers = mappers;
         this.claimDtoAggregator = claimDtoAggregator;
         this.eventPublisher = eventPublisher;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<ClaimDto> findOne(final Long id) {
+        return claimRepository.findOne(id).map(claim -> mappers.map(Claim.class, ClaimDto.class, claim));
     }
 
     @Transactional

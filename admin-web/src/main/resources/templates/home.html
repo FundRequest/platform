@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout"
+      th:with="showBackToOverview=false">
 <head>
     <title>Overview page</title>
 </head>
@@ -10,6 +13,7 @@
         <li><a th:href="@{/claims}">Claims</a></li>
         <li><a th:href="@{/messages}">Messages</a></li>
         <li><a th:href="@{/refunds}">Refunds</a></li>
+        <li><a th:href="@{/notifications/open-requests}">Open requests template</a></li>
     </ul>
 </section>
 </body>
