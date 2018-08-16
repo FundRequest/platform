@@ -36,4 +36,5 @@ public class RequestRestController {
         final RequestDto request = requestService.findRequest(Platform.GITHUB, String.format("%s|FR|%s|FR|%s", repoOwner, repo, issueNumber));
         return mappers.map(RequestDto.class, RequestView.class, request);
     }
+
 }

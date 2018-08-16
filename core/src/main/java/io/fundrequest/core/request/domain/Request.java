@@ -1,6 +1,7 @@
 package io.fundrequest.core.request.domain;
 
 import io.fundrequest.db.infrastructure.AbstractEntity;
+import lombok.ToString;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Table(name = "request")
 @Entity
+@ToString
 public class Request extends AbstractEntity {
 
     @Id

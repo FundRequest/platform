@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 class MakeUserAddressVerifiedOnFundedHandlerTest {
@@ -57,5 +58,19 @@ class MakeUserAddressVerifiedOnFundedHandlerTest {
         handler.handle(event);
 
         verify(keycloakRepository, never()).updateEtherAddressVerified(funderUserId, true);
+    }
+
+    @Test
+    public void handle_noFundUserId() {
+        final String funderAddress = "0xa2346876";
+        final RequestFundedEvent event = RequestFundedEvent.builder()
+                                                           .fundDto(FundDto.builder().funderUserId(null).funderAddress(funderAddress).build())
+                                                           .requestId(23L)
+                                                           .timestamp(LocalDateTime.now())
+                                                           .build();
+
+        handler.handle(event);
+
+        verifyZeroInteractions(keycloakRepository);
     }
 }

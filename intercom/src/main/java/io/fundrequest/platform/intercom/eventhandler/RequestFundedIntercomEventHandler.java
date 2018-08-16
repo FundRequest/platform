@@ -18,10 +18,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
+
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 @Component
 public class RequestFundedIntercomEventHandler {
@@ -51,8 +54,9 @@ public class RequestFundedIntercomEventHandler {
         this.fundrequestBasepath = fundrequestBasepath;
     }
 
-    @Async
     @EventListener
+    @Async("taskExecutor")
+    @Transactional(readOnly = true, propagation = REQUIRES_NEW)
     public void handle(final RequestFundedNotificationDto notification) {
         final FundDto fund = fundService.findOne(notification.getFundId());
         resolveUserEmail(fund).ifPresent(userEmail -> {

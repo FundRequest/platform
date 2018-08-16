@@ -7,6 +7,7 @@ import io.fundrequest.core.request.claim.domain.ClaimRequestStatus;
 import io.fundrequest.core.request.claim.domain.RequestClaim;
 import io.fundrequest.core.request.claim.dto.ClaimDto;
 import io.fundrequest.core.request.claim.dto.ClaimsByTransactionAggregate;
+import io.fundrequest.core.request.claim.event.RequestClaimedEvent;
 import io.fundrequest.core.request.claim.github.GithubClaimResolver;
 import io.fundrequest.core.request.claim.infrastructure.ClaimRepository;
 import io.fundrequest.core.request.claim.infrastructure.RequestClaimRepository;
@@ -14,6 +15,7 @@ import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestStatus;
 import io.fundrequest.core.request.infrastructure.RequestRepository;
+import io.fundrequest.core.request.view.ClaimDtoMother;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.core.request.view.RequestDtoMother;
 import org.junit.Before;
@@ -23,10 +25,12 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static io.fundrequest.core.request.claim.domain.ClaimRequestStatus.PROCESSED;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -61,6 +65,31 @@ public class ClaimServiceImplTest {
                                             mappers,
                                             claimDtoAggregator,
                                             applicationEventPublisher);
+    }
+
+    @Test
+    public void findClaim() {
+        final long claimId = 697L;
+        final Claim claim = Claim.builder().build();
+        final ClaimDto expected = ClaimDtoMother.aClaimDto().build();
+
+        when(claimRepository.findOne(claimId)).thenReturn(Optional.of(claim));
+        when(mappers.map(eq(Claim.class), eq(ClaimDto.class), same(claim))).thenReturn(expected);
+
+        final Optional<ClaimDto> result = claimService.findOne(claimId);
+
+        assertThat(result).containsSame(expected);
+    }
+
+    @Test
+    public void findClaim_notFound() {
+        final long claimId = 697L;
+
+        when(claimRepository.findOne(claimId)).thenReturn(Optional.empty());
+
+        final Optional<ClaimDto> result = claimService.findOne(claimId);
+
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -107,5 +136,26 @@ public class ClaimServiceImplTest {
         final ClaimsByTransactionAggregate result = claimService.getAggregatedClaimsForRequest(requestId);
 
         assertThat(result).isSameAs(claimsByTransactionAggregate);
+    }
+
+    @Test
+    public void onClaimed() {
+        long requestId = 3124L;
+        final RequestDto requestDto = RequestDtoMother.fundRequestArea51();
+        requestDto.setId(requestId);
+        final RequestClaim requestClaim1 = RequestClaim.builder().status(ClaimRequestStatus.PENDING).build();
+        final RequestClaim requestClaim2 = RequestClaim.builder().status(ClaimRequestStatus.PENDING).build();
+
+        when(requestClaimRepository.findByRequestId(requestId)).thenReturn(Arrays.asList(requestClaim1, requestClaim2));
+
+        claimService.onClaimed(RequestClaimedEvent.builder()
+                                                  .blockchainEventId(324L)
+                                                  .requestDto(requestDto)
+                                                  .build());
+
+        assertThat(requestClaim1.getStatus()).isEqualTo(PROCESSED);
+        assertThat(requestClaim2.getStatus()).isEqualTo(PROCESSED);
+        verify(requestClaimRepository).save(requestClaim1);
+        verify(requestClaimRepository).save(requestClaim2);
     }
 }

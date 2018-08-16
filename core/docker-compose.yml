@@ -47,6 +47,5 @@ services:
       - io.fundrequest.sign.account=${AZRAEL_SIGN_ACCOUNT}
       - io.fundrequest.execute.account=${AZRAEL_EXECUTE_ACCOUNT}
       - spring.rabbitmq.cache.channel.checkout-timeout= 30000
-
 networks:
   frnet:

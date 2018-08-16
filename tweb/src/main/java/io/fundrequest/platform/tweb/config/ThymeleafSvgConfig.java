@@ -1,21 +1,29 @@
 package io.fundrequest.platform.tweb.config;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
+import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 @Configuration
-public class ThymeleafSvgConfig {
+public class ThymeleafSvgConfig implements ApplicationContextAware {
+
+    private ApplicationContext applicationContext;
 
     @Bean
     public ITemplateResolver svgTemplateResolver() {
         final SpringResourceTemplateResolver svgTemplateResolver = new SpringResourceTemplateResolver();
+        svgTemplateResolver.setApplicationContext(applicationContext);
         svgTemplateResolver.setPrefix("classpath:/templates/svg/");
-        svgTemplateResolver.setTemplateMode("XML");
+        svgTemplateResolver.setTemplateMode(TemplateMode.XML);
         svgTemplateResolver.setCharacterEncoding("UTF-8");
+        svgTemplateResolver.setOrder(0);
+        svgTemplateResolver.setCheckExistence(true);
         return svgTemplateResolver;
     }
 
@@ -28,5 +36,10 @@ public class ThymeleafSvgConfig {
         thymeleafViewResolver.setContentType("image/svg+xml");
         thymeleafViewResolver.setViewNames(new String[] {"*.svg"});
         return thymeleafViewResolver;
+    }
+
+    @Override
+    public void setApplicationContext(final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 }

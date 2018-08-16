@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layouts/home">
+      layout:decorate="layouts/home">
 <head>
     <title>FundRequest - Home</title>
 </head>
@@ -30,7 +30,8 @@
                         <a class="btn btn-secondary btn-lg btn--flat" th:href="@{/fund/github}">
                             Get started
                         </a>
-                        <a class="btn btn-link btn-lg text-white" th:href="@{https://help.fundrequest.io/how-does-it-work}">
+                        <a class="btn btn-link btn-lg text-white"
+                           th:href="@{https://help.fundrequest.io/how-does-it-work}">
                             How it works...
                         </a>
                     </div>
@@ -44,31 +45,43 @@
         <div class="triangle triangle--bottom triangle--inverse triangle--gray"></div>
     </section>
 
+    <section class="section section--main mb-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <h2 class="text-secondary text-center">Join extraordinary projects</h2>
+                    <p class="text-center">Become part of the collection of extraordinary projects that fully embrace
+                                           open source culture.</p>
+                </div>
+            </div>
+        </div>
+        <projects-overview th:attr="'v-bind:requests'=${openRequests}"></projects-overview>
 
-    <section class="section section--main pb-5">
-        <div class="container my-5 px-5">
+
+        <div class="container pt-5 px-5">
             <div class="row">
                 <div class="col-12 col-md-3 col-lg-3 offset-md-2">
-                    <img class="help-image" th:src="@{/assets/img/help-image.png}"/>
+                    <img class="help-image" th:src="@{/assets/img/help-image.png}" />
                 </div>
                 <div class="col-12 col-md-7 col-lg-7 help-text">
                     <h2 class="help-text__header">
                         Have a question or need some help?
                     </h2>
-                    <p>We are happy to help you with all the support that you need.<br/>
-                        Check out our help section, send us an email or start a live chat
+                    <p>We are happy to help you with all the support that you need.<br />
+                       Check out our help section, send us an email or start a live chat
                     </p>
                     <ul class="fa-ul help-text__list">
                         <li><i class="fa-li far fa-question-circle"></i>
                             <a class="text-secondary"
-                               th:href="@{https://help.fundrequest.io}">Have
-                                a look at our help section.</a></li>
-                        <li><i class="fa-li far fa-envelope"></i> Send an email to
+                               th:href="@{https://help.fundrequest.io}">
+                                Have a look at our help section.</a>
+                        </li>
+                        <li><i class="fa-li far fa-envelope"></i>Send an email to
                             <a class="text-secondary"
                                href="mailto:support@fundrequest.io"
                                target="_top">support@fundrequest.io</a>
                         </li>
-                        <li><i class="fa-li fa fa-comment-alt"></i> Have a chat with us</li>
+                        <li><i class="fa-li fa fa-comment-alt"></i>Have a chat with us</li>
                     </ul>
                 </div>
             </div>

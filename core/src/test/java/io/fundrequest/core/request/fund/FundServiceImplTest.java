@@ -91,6 +91,7 @@ public class FundServiceImplTest {
         cacheManager = mock(CacheManager.class, RETURNS_DEEP_STUBS);
         fundRequestContractsService = mock(FundRequestContractsService.class, RETURNS_DEEP_STUBS);
         fiatService = mock(FiatService.class);
+        when(fundRepository.saveAndFlush(any(Fund.class))).then(returnsFirstArg());
         funder = UserProfileMother.davy()::getId;
         tokenValueMapper = mock(TokenValueMapper.class);
         fundFundsByFunderAggregator = mock(FundFundsByFunderAggregator.class);
