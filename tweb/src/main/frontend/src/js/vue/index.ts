@@ -10,6 +10,7 @@ import RequestListPendingFunds from './components/RequestListPendingFunds.vue';
 import StatisticTile from './components/StatisticTile.vue';
 import WizardComponent from './components/WizardComponent.vue';
 import StarredLink from './components/StarredLink.vue';
+import ProjectsOverview from './components/ProjectsOverview.vue';
 
 import {EventBus} from './EventBus';
 import {DynamicContent} from '../app/DynamicContent';
@@ -26,7 +27,8 @@ let v = new Vue({
         'statistic-tile': StatisticTile,
         'starred-link': StarredLink,
         'wizard-component': WizardComponent,
-        'font-size-fit': FontSizeFit
+        'font-size-fit': FontSizeFit,
+        'projects-overview': ProjectsOverview
     },
     mounted() {
         new DynamicContent();
