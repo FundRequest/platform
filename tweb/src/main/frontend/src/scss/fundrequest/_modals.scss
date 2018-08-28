@@ -110,10 +110,6 @@
         background-position-x: left;
     }
 
-    &--trustwallet {
-        background-position-x: center;
-    }
-
     .modal-tab-option.active > &,
     .modal-tab-option:hover > & {
         background-position-y: bottom;
@@ -248,10 +244,6 @@
 
 .form-heading__logo--metamask {
     background-image: url('../img/metamask.png');
-}
-
-.form-heading__logo--trustwallet {
-    background-image: url('../img/trustwallet.png');
 }
 
 .form-heading__number {
