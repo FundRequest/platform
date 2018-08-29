@@ -3032,10 +3032,6 @@ table.dt-responsive thead .sorting_desc_disabled:after {
   background-position-x: left;
 }
 
-.modal-tab-option__image--trustwallet {
-  background-position-x: center;
-}
-
 .modal-tab-option.active > .modal-tab-option__image,
 .modal-tab-option:hover > .modal-tab-option__image {
   background-position-y: bottom;
@@ -3168,10 +3164,6 @@ table.dt-responsive thead .sorting_desc_disabled:after {
 
 .form-heading__logo--metamask {
   background-image: url("../img/metamask.png");
-}
-
-.form-heading__logo--trustwallet {
-  background-image: url("../img/trustwallet.png");
 }
 
 .form-heading__number {

@@ -14,11 +14,12 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.12.RELEASE</version>
+        <version>1.5.13.RELEASE</version>
         <relativePath/>
     </parent>
 
     <modules>
+        <module>notification-contract</module>
         <module>db</module>
         <module>keycloak</module>
         <module>github</module>
@@ -30,7 +31,6 @@
         <module>faq</module>
         <module>intercom</module>
         <module>notification</module>
-        <module>notification-contract</module>
         <module>twitter</module>
         <module>spring-social-gitter</module>
         <module>gitter</module>

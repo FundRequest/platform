@@ -33,7 +33,6 @@ public class CoinMarketCapService {
                 .stream()
                 .filter(l -> symbol.equalsIgnoreCase(l.getSymbol()))
                 .findFirst();
-
     }
 
 
