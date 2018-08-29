@@ -33,15 +33,13 @@
         public selectedToken: TokenInfo = null;
         public panelsHeight: number = 0;
         public stepTitlesHeight: number = 0;
-        public trustWalletModalActive: boolean = false;
         public approveInfoModalActive: boolean = false;
-        public qrData: string = "";
 
         public currentAllowance: number = 0;
         public currentFundAmount: number = 0;
         public errorMessages: { fundAmount: string } = {fundAmount: ""};
 
-        public paymentMethod: PaymentMethod = PaymentMethods.getInstance().trustWallet;
+        public paymentMethod: PaymentMethod = PaymentMethods.getInstance().dapp;
         public fundAmount: string = "";
         public description: string = "";
 
@@ -142,11 +140,7 @@
 
         private async updateDappPaymentMethod() {
             await this.updateDappDisabledMsg();
-            if (!PaymentMethods.getInstance().dapp.disabledMsg) {
-                this.paymentMethod = PaymentMethods.getInstance().dapp;
-            } else {
-                this.paymentMethod = PaymentMethods.getInstance().trustWallet;
-            }
+            this.paymentMethod = PaymentMethods.getInstance().dapp;
         }
 
         private async updateDappDisabledMsg() {
@@ -186,9 +180,6 @@
                     } catch (err) {
                         Alert.error(`Something went wrong during funding, please try again. <br/> If the problem remains, <a href="https://help.fundrequest.io">please contact the FundRequest team</a>.`);
                     }
-                    break;
-                case PaymentMethods.getInstance().trustWallet:
-                    this.fundUsingTrustWallet();
                     break;
                 default:
                     break;
@@ -244,38 +235,12 @@
             }
         }
 
-        public fundUsingTrustWallet() {
-            this.showTrustWalletModal();
-        }
-
-        public async showTrustWalletModal() {
-            this.qrData = (await Utils.postJSON(`/rest/requests/erc67/fund`, {
-                platform: this.githubIssue.platform,
-                platformId: this.githubIssue.platformId,
-                amount: this.totalAmountValue,
-                tokenAddress: Contracts.getInstance().tokenContractAddress
-            })).erc67Link;
-
-            Utils.modal.open(<HTMLElement>this.$refs.trustWalletModal, () => {
-                this.hideTrustWalletModal();
-            });
-
-            this.trustWalletModalActive = true;
-            this._fadeoutPage();
-        }
-
         public showApproveInfoModal() {
             Utils.modal.open(<HTMLElement>this.$refs.approveInfoModal, () => {
                 this.hideApproveInfoModal();
             });
             this.approveInfoModalActive = true;
             this._fadeoutPage();
-        }
-
-        public hideTrustWalletModal() {
-            Utils.modal.close(<HTMLElement>this.$refs.trustWalletModal);
-            this.trustWalletModalActive = false;
-            this._fadeinPage();
         }
 
         public hideApproveInfoModal() {

@@ -222,19 +222,6 @@
                                                 </label>
                                             </div>
                                             <div class="form-check mb-2">
-                                                <input class="form-check-input" type="radio" name="paymentMethod"
-                                                       :disabled="paymentMethods.trustWallet.disabledMsg != ''"
-                                                       v-model="paymentMethod"
-                                                       id="paymentMethod-trustwallet"
-                                                       v-bind:value="paymentMethods.trustWallet" />
-                                                <label class="form-check-label" for="paymentMethod-trustwallet">
-                                                    Trust Wallet / QR Code (EIP67)
-                                                    <small v-if="paymentMethods.trustWallet.disabledMsg">
-                                                        (<span class="text-warning">{{paymentMethods.trustWallet.disabledMsg}}</span>)
-                                                    </small>
-                                                </label>
-                                            </div>
-                                            <div class="form-check mb-2">
                                                 <input :disabled="paymentMethods.wallet.disabledMsg != ''"
                                                        class="form-check-input" type="radio"
                                                        v-model="paymentMethod"
@@ -325,50 +312,7 @@
 
                                 <button class="btn btn-secondary" v-on:click="fund()">
                                     <span v-if="paymentMethod == paymentMethods.dapp">Start transaction</span>
-                                    <span v-if="paymentMethod == paymentMethods.trustWallet">Get QR code</span>
                                 </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" style="display: none" ref="trustWalletModal" tabindex="-1" role="dialog"
-                     v-cloak="true" v-if="githubIssue != null">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">
-                                    <span class="text-primary">Fund</span>
-                                    <span class="text-muted">
-                                        {{githubIssue.owner}}/{{githubIssue.repo}} #{{githubIssue.number}}
-                                    </span>
-                                </h5>
-                                <button type="button" class="close" v-on:click="hideTrustWalletModal()">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row mb-2">
-                                    <div class="col-12 col-md-6 d-flex align-items-center">
-                                        <ul class="bullet-steps">
-                                            <li class="bullet-steps__item -yellow">Open QR Support Wallet</li>
-                                            <li class="bullet-steps__item -green">Scan QR Code</li>
-                                            <li class="bullet-steps__item -blue">Send transaction</li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <qrcode-vue :value="qrData" :size="200" class="text-center"></qrcode-vue>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 text-center">
-                                        <small>
-                                            Note: Requests funded via QR code scanning will only appear in your
-                                            requests when
-                                            the blockchain transaction is completed
-                                        </small>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
