@@ -13,8 +13,9 @@ import java.util.Arrays;
 @Service
 public class FiatService {
 
-    private CryptoCompareService cryptoCompareService;
+    private static final double DEFAULT_PRICE = 0.0;
 
+    private CryptoCompareService cryptoCompareService;
     private CoinMarketCapService coinMarketCapService;
 
     public FiatService(CryptoCompareService cryptoCompareService, CoinMarketCapService coinMarketCapService) {
@@ -31,11 +32,19 @@ public class FiatService {
     }
 
     private Double getValue(TokenValueDto f) {
-        Double currentPrice = coinMarketCapService.getCurrentPriceInUsd(f.getTokenSymbol())
-                                                  .orElseGet(() -> cryptoCompareService.getCurrentPriceInUsd(f.getTokenSymbol())
-                                                                                       .orElseThrow(ResourceNotFoundException::new));
+        final Double currentPrice = getCurrentPrice(f);
         return calculateResult(f, currentPrice);
 
+    }
+
+    private Double getCurrentPrice(TokenValueDto f) {
+        try {
+            return coinMarketCapService.getCurrentPriceInUsd(f.getTokenSymbol())
+                                       .orElseGet(() -> cryptoCompareService.getCurrentPriceInUsd(f.getTokenSymbol())
+                                                                            .orElseThrow(ResourceNotFoundException::new));
+        } catch (final Exception ex) {
+            return DEFAULT_PRICE;
+        }
     }
 
     private Double calculateResult(TokenValueDto tokenvalue, Double currentPrice) {
