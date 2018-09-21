@@ -21,6 +21,7 @@ import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -66,7 +67,13 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
-                .csrf().disable()
+                .headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)
+                .and().cacheControl()
+                .and().xssProtection().xssProtectionEnabled(true).block(true)
+                .and().contentTypeOptions()
+                .and().frameOptions().sameOrigin()
+                .and()
+                .csrf().and()
                 .authorizeRequests()
                 .antMatchers("/profile", "/profile/**").authenticated()
                 .antMatchers("/user", "/user/**").authenticated()
