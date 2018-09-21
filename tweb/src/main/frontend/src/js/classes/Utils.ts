@@ -85,9 +85,15 @@ export default class Utils {
     }
 
     public static postJSON(url: string, body: any): Promise<any> {
+        const token = $("meta[name='_csrf']").attr("content");
+        const header = $("meta[name='_csrf_header']").attr("content");
+
         return $.ajax({
             type: 'POST',
             url: url,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
             data: JSON.stringify(body),
             contentType: 'application/json',
             dataType: 'json'

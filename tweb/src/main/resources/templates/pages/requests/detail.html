@@ -160,6 +160,10 @@
                                         </span>
                                         <form th:action="@{'/requests/' + ${request.id} + '/refunds'}" method="post" class="request-details__label-refund-form"
                                               th:if="${#authentication.getName() eq fund.funderUserId and #funds.isRefundable(profile, fund, request.id, request.status)}">
+                                            <input
+                                                type="hidden"
+                                                th:name="${_csrf.parameterName}"
+                                                th:value="${_csrf.token}" />
                                             <input type="hidden" name="funder_address" th:value="${fund.funderAddress}"/>
                                             <input type="submit" value="Request refund" class="btn btn-sm btn-block btn-primary"/>
                                         </form>

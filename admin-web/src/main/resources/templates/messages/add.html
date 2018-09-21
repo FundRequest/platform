@@ -8,6 +8,14 @@
     <h2 th:if="${message.getType() != null}" th:text="${message.getType()}"></h2>
     <form role="form" th:action="@{|/messages/${message.getType() != null ? message.getType() + '/' : ''}add|}" th:method="post"
           th:object="${message}">
+        <input
+            type="hidden"
+            th:name="${_csrf.parameterName}"
+            th:value="${_csrf.token}" />
+        <input
+            type="hidden"
+            th:name="${_csrf.parameterName}"
+            th:value="${_csrf.token}" />
         <div class="form-group" th:if="${message.getType() == null}">
             <label for="name">Type</label>
             <input type="text" class="form-control" id="type" th:field="*{type}" />
