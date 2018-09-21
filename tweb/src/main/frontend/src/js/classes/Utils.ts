@@ -101,10 +101,25 @@ export default class Utils {
     }
 
     public static post(url: string, body: any = null): Promise<any> {
+        const token = $("meta[name='_csrf']").attr("content");
+        const header = $("meta[name='_csrf_header']").attr("content");
         if (body == null) {
-            return $.post(url).promise();
+            return $.ajax({
+                type: 'POST',
+                url: url,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+            }).promise();
         } else {
-            return $.post(url, body).promise();
+            return $.ajax({
+                type: 'POST',
+                url: url,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                data: body
+            }).promise();
         }
     }
 
