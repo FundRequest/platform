@@ -14,6 +14,9 @@
         <meta name="ethereum:network" content="" th:content="${@environment.getProperty('io.fundrequest.ethereum.network')}"/>
         <meta name="ethereum:endpointUrl" content="" th:content="${@environment.getProperty('io.fundrequest.ethereum.endpoint.url')}"/>
 
+        <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+        <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
         <!--/* TODO: Include extra css for specific pages
         {% for css in page.extra-css %}<link type="text/css" rel="stylesheet" href="{{ css }}?{{site.time | date: '%s%N'}}">
         {% endfor %}
