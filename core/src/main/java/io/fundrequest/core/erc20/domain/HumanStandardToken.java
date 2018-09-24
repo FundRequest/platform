@@ -1,7 +1,6 @@
 package io.fundrequest.core.erc20.domain;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Function;
@@ -48,8 +47,9 @@ public final class HumanStandardToken extends Contract {
         if ("".equals(result)) {
             Function function = new Function("name", emptyList(), singletonList(new TypeReference<Bytes32>() {}));
             try {
-                result = new String(ArrayUtils.toPrimitive(executeRemoteCallSingleValueReturn(function, Byte[].class).send()));
+                result = new String(executeRemoteCallSingleValueReturn(function, byte[].class).send());
             } catch (Exception e1) {
+                e1.printStackTrace();
                 log.error("Unable to fetch name for erc20", e1);
                 return "Unknown ERC20";
             }
@@ -128,7 +128,7 @@ public final class HumanStandardToken extends Contract {
         if ("".equals(result)) {
             try {
                 Function function = new Function("symbol", emptyList(), singletonList(new TypeReference<Bytes32>() {}));
-                result = new String(ArrayUtils.toPrimitive(executeRemoteCallSingleValueReturn(function, Byte[].class).send()));
+                result = new String(executeRemoteCallSingleValueReturn(function, byte[].class).send());
             } catch (Exception e1) {
                 log.debug("Unable to fetch symbol for erc20", e1);
                 return "ERC20";
