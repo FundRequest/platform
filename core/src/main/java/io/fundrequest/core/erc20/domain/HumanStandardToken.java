@@ -1,10 +1,12 @@
 package io.fundrequest.core.erc20.domain;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Bytes32;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.crypto.Credentials;
@@ -35,21 +37,24 @@ public final class HumanStandardToken extends Contract {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    private RemoteCall<String> nameAsync() {
-        Function function = new Function("name",
-                                         emptyList(),
-                                         singletonList(new TypeReference<Utf8String>() {
-                                         }));
-        return executeRemoteCallSingleValueReturn(function, String.class);
-    }
-
     public String name() {
+        String result = "";
         try {
-            return nameAsync().send();
+            Function function = new Function("name", emptyList(), singletonList(new TypeReference<Utf8String>() {}));
+            result = executeRemoteCallSingleValueReturn(function, String.class).send();
         } catch (Exception e) {
-            log.error("Unable to fetch name for erc20", e);
-            return "Unknown ERC20";
+            //fallback
         }
+        if ("".equals(result)) {
+            Function function = new Function("name", emptyList(), singletonList(new TypeReference<Bytes32>() {}));
+            try {
+                result = new String(ArrayUtils.toPrimitive(executeRemoteCallSingleValueReturn(function, Byte[].class).send()));
+            } catch (Exception e1) {
+                log.error("Unable to fetch name for erc20", e1);
+                return "Unknown ERC20";
+            }
+        }
+        return result;
     }
 
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _value) {
@@ -112,21 +117,24 @@ public final class HumanStandardToken extends Contract {
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    private RemoteCall<String> symbolAsync() {
-        Function function = new Function("symbol",
-                                         emptyList(),
-                                         singletonList(new TypeReference<Utf8String>() {
-                                         }));
-        return executeRemoteCallSingleValueReturn(function, String.class);
-    }
-
     public String symbol() {
+        String result = "";
         try {
-            return symbolAsync().send();
+            Function function = new Function("symbol", emptyList(), singletonList(new TypeReference<Utf8String>() {}));
+            result = executeRemoteCallSingleValueReturn(function, String.class).send();
         } catch (Exception e) {
-            log.debug("Unable to fetch symbol for erc20", e);
-            return "ERC20";
+            //fallback
         }
+        if ("".equals(result)) {
+            try {
+                Function function = new Function("symbol", emptyList(), singletonList(new TypeReference<Bytes32>() {}));
+                result = new String(ArrayUtils.toPrimitive(executeRemoteCallSingleValueReturn(function, Byte[].class).send()));
+            } catch (Exception e1) {
+                log.debug("Unable to fetch symbol for erc20", e1);
+                return "ERC20";
+            }
+        }
+        return result;
     }
 
     public RemoteCall<TransactionReceipt> transfer(String _to, BigInteger _value) {
