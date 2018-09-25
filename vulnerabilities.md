@@ -4,28 +4,31 @@ This page contains more information on found vulnarabilities in the FundRequest 
 
 
 ## Auditors
-* @davyvanroy
-* @Qkyrie
-* *add your name here*
+@davyvanroy
+@Qkyrie
+@akhilcryptos
 
 
 ## Found issues
-*When you find a vulnerability, please create a pull request with more information as demonstrated below.*
+1 : CSRF to update ETH wallet address in victims account 
+2 : Victims account takeover 
 
 ### *vulnerability title*
-*add description of your vulnerability*
+*CSRF to update ETH wallet address in victims account 
+and Victims account takeover *
 
 #### Auditor
-*your name*
+*@akhilcryptos*
 
 #### Overall Risk Severity (see [OWASP Risk Rating](https://www.owasp.org/index.php/OWASP_Risk_Rating_Methodology))
-* Impact: 
-* Likelihood: 
+* Impact: HIGH
+* Likelihood: MEDIUM
 
 #### Proposed solution
-*please supply a small description of the proposed solution*
+for vulnerability 1 : Add CSRF Tokens 
+for vulnerbaility 2 : Refer http://www.skeletonscribe.net/2013/05/practical-http-host-header-attacks.html
 
 #### Verification
-*Please describe that the team already addressed the vulnerability or not*
+The team has fixed the reported vulnerabilites
 
 
