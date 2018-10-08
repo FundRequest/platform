@@ -54,7 +54,7 @@ public final class HumanStandardToken extends Contract {
                 return "Unknown ERC20";
             }
         }
-        return result;
+        return result != null ? result.trim() : null;
     }
 
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _value) {
@@ -134,7 +134,7 @@ public final class HumanStandardToken extends Contract {
                 return "ERC20";
             }
         }
-        return result;
+        return result != null ? result.trim() : null;
     }
 
     public RemoteCall<TransactionReceipt> transfer(String _to, BigInteger _value) {

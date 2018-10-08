@@ -1,31 +1,31 @@
 # Vulnerabilities
 
-This page contains more information on found vulnarabilities in the FundRequest contracts.
+Vulnerabilites in Fundrequest platform
 
 
-## Auditors
-* @davyvanroy
-* @Qkyrie
-* *add your name here*
 
 
-## Found issues
-*When you find a vulnerability, please create a pull request with more information as demonstrated below.*
 
 ### *vulnerability title*
-*add description of your vulnerability*
+
+*Vulnerability 1 : 
+CSRF to update ETH wallet address in victims account 
+*Vulnerability 2 : 
+2 : Victims account takeover using password reset link hijacking via host header posinoing
 
 #### Auditor
-*your name*
+@akhilcryptos
 
 #### Overall Risk Severity (see [OWASP Risk Rating](https://www.owasp.org/index.php/OWASP_Risk_Rating_Methodology))
-* Impact: 
-* Likelihood: 
+* Impact: HIGH
+* Likelihood: HIGH
 
 #### Proposed solution
-*please supply a small description of the proposed solution*
+
+*for vulnerability 1 : Add CSRF Token
+*for vulnerbaility 2 : Refer http://www.skeletonscribe.net/2013/05/practical-http-host-header-attacks.html
 
 #### Verification
-*Please describe that the team already addressed the vulnerability or not*
+*The team has fixed the reported vulnerabilites
 
 
