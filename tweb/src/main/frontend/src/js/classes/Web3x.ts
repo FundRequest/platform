@@ -17,6 +17,9 @@ export class Web3x {
     public static getInstance(): any {
         if (Web3x.instance == null) {
             Web3x.instance = new Web3x();
+            if (Web3x.instance._web3.currentProvider) {
+                Web3x.instance._web3.currentProvider.enable();
+            }
         }
         return Web3x.instance._web3;
     }
