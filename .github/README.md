@@ -3,6 +3,9 @@
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/FundRequest/platform/releases/tag/1.0.0)
 
+[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=UFBKYkJ4Mmd0VGF0S0lWTUV5dGNxNzF3WTY5QllzYXhWa3BiYkZvVFBGYz0tLTA5YXZ6RWxMVHYyVU1NdW82VjFvMkE9PQ==--ac4861d4d39b0637faa275124cb9445dff11fddc)](https://www.browserstack.com/automate/public-build/UFBKYkJ4Mmd0VGF0S0lWTUV5dGNxNzF3WTY5QllzYXhWa3BiYkZvVFBGYz0tLTA5YXZ6RWxMVHYyVU1NdW82VjFvMkE9PQ==--ac4861d4d39b0637faa275124cb9445dff11fddc)
+
+
 [![Maintainability](https://api.codeclimate.com/v1/badges/fcc8df1a9a881cc827ba/maintainability)](https://codeclimate.com/github/FundRequest/platform/maintainability)
 
 To report a bug or request a feature or change please open a [new issue](https://github.com/FundRequest/platform/issues/new)

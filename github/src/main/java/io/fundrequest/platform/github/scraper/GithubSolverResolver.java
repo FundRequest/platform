@@ -65,10 +65,11 @@ public class GithubSolverResolver {
         final String pullRequestBody = pullRequest.getBodyHtml();
         return pullRequestBody != null && CLOSING_KEYWORDS.stream()
                                                           .map(keyword -> String.format(CLOSING_KEYWORD_ISSUE_MATCHER_REGEX,
-                                                                                        keyword.toLowerCase(),
+                                                                                        keyword,
                                                                                         issueGithubId.getOwner(),
                                                                                         issueGithubId.getRepo(),
-                                                                                        issueGithubId.getNumber()))
+                                                                                        issueGithubId.getNumber())
+                                                                                .toLowerCase())
                                                           .anyMatch(regex -> Pattern.compile(regex)
                                                                                     .matcher(pullRequestBody.toLowerCase())
                                                                                     .find());
