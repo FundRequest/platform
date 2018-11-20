@@ -127,7 +127,7 @@
         private async _validateFundAmountBalance(element: HTMLInputElement): Promise<boolean> {
             let valid = true;
             if (this.paymentMethod == PaymentMethods.getInstance().dapp) {
-                let balance = await Contracts.getErc20Balance(Web3x.getAccount(), this.selectedToken);
+                let balance = await Contracts.getErc20Balance(await Web3x.getAccount(), this.selectedToken);
                 let fundAmountInWei = Number(this.fundAmountValue * Math.pow(10, this.selectedToken.decimals));
                 if (fundAmountInWei > balance) {
                     this.errorMessages.fundAmount = `Your ${this.selectedToken.symbol} balance is to low.`;
@@ -144,7 +144,7 @@
         }
 
         private async updateDappDisabledMsg() {
-            let web3 = Web3x.getInstance();
+            let web3 = await Web3x.getInstance();
             if (web3 && web3.eth && web3.eth.defaultAccount) {
                 await new Promise((resolve, reject) => {
                     web3.version.getNetwork((err, res) => {
@@ -197,10 +197,10 @@
 
         private async fundUsingDapp(): Promise<string> {
             Utils.showLoading();
-            let frContractAddress = Contracts.getInstance().frContractAddress;
-            let erc20 = await Contracts.getInstance().getErc20Contract(this.selectedToken.address);
+            let frContractAddress = Contracts.frContractAddress;
+            let erc20 = await Contracts.getErc20Contract(this.selectedToken.address);
             let decimals = this.selectedToken.decimals;
-            this.currentAllowance = (await erc20.allowance(Web3x.getAccount(), frContractAddress)).toNumber();
+            this.currentAllowance = (await erc20.allowance(await Web3x.getAccount(), frContractAddress)).toNumber();
             this.currentFundAmount = Number(this.fundAmountValue * Math.pow(10, decimals));
             Utils.hideLoading();
 
@@ -219,13 +219,13 @@
                     // You will need to allow the FundRequest contract to access this token
                     await erc20.approveTx(frContractAddress, Utils.biggestNumber()).send({}).catch(rej => this._handleTransactionError(rej));
                 }
-                let response = await (await Contracts.getInstance().getFrContract()).fundTx(Web3x.getInstance().fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, this.currentFundAmount)
+                let response = await (await Contracts.getFrContract()).fundTx((await Web3x.getInstance()).fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, this.currentFundAmount)
                     .send({}).catch(rej => this._handleTransactionError(rej)) as string;
                 let pendingFundCommand = new PendingFundCommand();
                 pendingFundCommand.transactionId = response;
                 pendingFundCommand.amount = this.fundAmountValue.toString();
                 pendingFundCommand.description = this.description;
-                pendingFundCommand.fromAddress = Web3x.getAccount();
+                pendingFundCommand.fromAddress = await Web3x.getAccount();
                 pendingFundCommand.tokenAddress = this.selectedToken.address;
                 pendingFundCommand.platform = this.githubIssue.platform;
                 pendingFundCommand.platformId = this.githubIssue.platformId;
