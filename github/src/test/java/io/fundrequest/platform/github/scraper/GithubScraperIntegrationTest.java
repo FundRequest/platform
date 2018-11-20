@@ -121,4 +121,17 @@ public class GithubScraperIntegrationTest {
         assertThat(githubIssue.getSolver()).isEqualTo("cezaraugusto");
         assertThat(githubIssue.getStatus()).isEqualTo("Closed");
     }
+
+    @Test
+    public void fetch_issueFixedByPullRequestFromOtherRepo_caseSensitive() {
+        final String owner = "FundRequest";
+        final String repo = "platform";
+        final String number = "562";
+
+        final GithubIssue githubIssue = scraper.fetchGithubIssue(owner, repo, number);
+
+        assertThat(githubIssue.getNumber()).isEqualTo("562");
+        assertThat(githubIssue.getSolver()).isEqualTo("marc0olo");
+        assertThat(githubIssue.getStatus()).isEqualTo("Closed");
+    }
 }
