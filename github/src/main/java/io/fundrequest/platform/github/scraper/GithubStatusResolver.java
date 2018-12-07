@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 public class GithubStatusResolver {
 
     public String resolve(final Document document) {
-        return document.select("#partial-discussion-header .State").text();
+        return document.select("#partial-discussion-header .gh-header-show-if-sticky .State").text();
     }
 }

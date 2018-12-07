@@ -67,7 +67,6 @@ export class GithubIssue {
 
 export default class Github {
 
-    private static _tokenContractAddress = Contracts.getInstance().tokenContractAddress;
     private _fundRepository: FundRepository;
 
     constructor() {
@@ -76,7 +75,7 @@ export default class Github {
 
     private async _init() {
         await Promise.all([
-            Contracts.getInstance().getFundRepository().then(c => this._fundRepository = c)
+            Contracts.getFundRepository().then(c => this._fundRepository = c)
         ]);
     }
 
