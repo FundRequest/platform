@@ -79,8 +79,8 @@ public class GithubScraperIntegrationTest {
         final GithubIssue githubIssue = scraper.fetchGithubIssue(owner, repo, number);
 
         assertThat(githubIssue.getNumber()).isEqualTo("280");
-        assertThat(githubIssue.getSolver()).isNull();
-        assertThat(githubIssue.getStatus()).isEqualTo("Open");
+        assertThat(githubIssue.getSolver()).isEqualTo("sohkai");
+        assertThat(githubIssue.getStatus()).isEqualTo("Closed");
     }
 
     @Test
