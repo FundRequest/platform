@@ -51,16 +51,16 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         when(requestService.findRequest(1L)).thenReturn(RequestDtoMother.freeCodeCampNoUserStories());
 
         mockMvc.perform(get("/requests/{request-id}/fund", 1L).principal(principal))
-                    .andExpect(status().isOk())
-                    .andExpect(model().attribute("url", "https://github.com/kazuki43zoo/api-stub/issues/42"))
-                    .andExpect(view().name("pages/fund/github"));
+               .andExpect(status().isOk())
+               .andExpect(model().attribute("url", "https://github.com/kazuki43zoo/api-stub/issues/42"))
+               .andExpect(view().name("pages/fund/github"));
     }
 
     @Test
     public void fund() throws Exception {
         mockMvc.perform(get("/fund/{type}", "github").principal(principal))
-                    .andExpect(status().isOk())
-                    .andExpect(view().name("pages/fund/github"));
+               .andExpect(status().isOk())
+               .andExpect(view().name("pages/fund/github"));
     }
 
     @Test
@@ -70,9 +70,11 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         request.setStatus(RequestStatus.FUNDED);
         final String funderAddress = "0x24356789";
 
-        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddress(funderAddress).etherAddressVerified(true).build());
+        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddresses(Collections.singletonList(funderAddress)).build());
         when(requestService.findRequest(requestId)).thenReturn(request);
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder().funderAddress("0xeab43f").build()));
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder()
+                                                                                                                                        .funderAddress("0xeab43f")
+                                                                                                                                        .build()));
 
         mockMvc.perform(post("/requests/{request-id}/refunds", requestId).principal(principal).param("funder_address", funderAddress))
                .andExpect(status().is3xxRedirection())
@@ -89,9 +91,11 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         request.setStatus(RequestStatus.FUNDED);
         final String funderAddress = "0x24356789";
 
-        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddress("0x75636463").etherAddressVerified(true).build());
+        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddresses(Collections.singletonList(funderAddress)).build());
         when(requestService.findRequest(requestId)).thenReturn(request);
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder().funderAddress("0xeab43f").build()));
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder()
+                                                                                                                                        .funderAddress("0xeab43f")
+                                                                                                                                        .build()));
 
         mockMvc.perform(post("/requests/{request-id}/refunds", requestId).principal(principal).param("funder_address", funderAddress))
                .andExpect(status().is3xxRedirection())
@@ -109,9 +113,11 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         request.setStatus(RequestStatus.CLAIM_REQUESTED);
         final String funderAddress = "0x24356789";
 
-        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddress(funderAddress).etherAddressVerified(true).build());
+        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddresses(Collections.singletonList(funderAddress)).build());
         when(requestService.findRequest(requestId)).thenReturn(request);
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder().funderAddress("0xeab43f").build()));
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder()
+                                                                                                                                        .funderAddress("0xeab43f")
+                                                                                                                                        .build()));
 
         mockMvc.perform(post("/requests/{request-id}/refunds", requestId).principal(principal).param("funder_address", funderAddress))
                .andExpect(status().is3xxRedirection())
@@ -130,7 +136,7 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         request.setStatus(RequestStatus.FUNDED);
         final String funderAddress = "0x24356789";
 
-        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddress(funderAddress).etherAddressVerified(true).build());
+        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddresses(Collections.singletonList(funderAddress)).build());
         when(requestService.findRequest(requestId)).thenReturn(request);
         when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Arrays.asList(RefundRequestDto.builder().funderAddress("0xeab43f").build(),
                                                                                                             RefundRequestDto.builder().funderAddress(funderAddress).build()));

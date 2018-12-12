@@ -49,7 +49,7 @@ class RefundValidatorTest {
         final UserFundsDto fund = buildUserFundsDto(userEtherAddress, "5", "", "", "");
         final long requestId = 35L;
         final String requestStatus = "Funded";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(true).etherAddress(userEtherAddress).build();
+        final UserProfile userProfile = UserProfile.builder().etherAddresses(Collections.singletonList(userEtherAddress)).build();
         final TokenValueDto totalFndOnContract = TokenValueDtoMother.FND().totalAmount(TEN).build();
 
         when(fundService.getFundsFor(requestId, userEtherAddress, totalFndOnContract.getTokenAddress())).thenReturn(Optional.of(totalFndOnContract));
@@ -93,7 +93,7 @@ class RefundValidatorTest {
         final UserFundsDto fund = buildUserFundsDto(userEtherAddress, fndFund, zrxFund, "", "");
         final long requestId = 35L;
         final String requestStatus = "Funded";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(true).etherAddress(userEtherAddress).build();
+        final UserProfile userProfile = UserProfile.builder().etherAddresses(Collections.singletonList(userEtherAddress)).build();
 
         if (StringUtils.isNotBlank(fndFund)) {
             when(fundService.getFundsFor(requestId, userEtherAddress, FND_TOKEN_ADDRESS)).thenReturn(Optional.of(TokenValueDtoMother.FND().totalAmount(new BigDecimal(fndFund)).build()));
@@ -114,7 +114,7 @@ class RefundValidatorTest {
         final UserFundsDto fund = buildUserFundsDto(userEtherAddress, "20", "", "", "");
         final long requestId = 35L;
         final String requestStatus = "Claimable";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(true).etherAddress(userEtherAddress).build();
+        final UserProfile userProfile = UserProfile.builder().etherAddresses(Collections.singletonList(userEtherAddress)).build();
         final TokenValueDto totalFndOnContract = TokenValueDtoMother.FND().totalAmount(TEN).build();
         final TokenValueDto totalZrxOnContract = TokenValueDtoMother.ZRX().totalAmount(ZERO).build();
 
@@ -133,7 +133,7 @@ class RefundValidatorTest {
         final UserFundsDto fund = buildUserFundsDto("0x4657efa", "20", "", "", "");
         final long requestId = 35L;
         final String requestStatus = "Funded";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(true).etherAddress(userEtherAddress).build();
+        final UserProfile userProfile = UserProfile.builder().etherAddresses(Collections.singletonList(userEtherAddress)).build();
         final TokenValueDto totalFndOnContract = TokenValueDtoMother.FND().totalAmount(TEN).build();
         final TokenValueDto totalZrxOnContract = TokenValueDtoMother.ZRX().totalAmount(ZERO).build();
 
@@ -152,7 +152,7 @@ class RefundValidatorTest {
         final UserFundsDto fund = buildUserFundsDto(userEtherAddress, "20", "", "", "");
         final long requestId = 35L;
         final String requestStatus = "Funded";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(true).etherAddress(userEtherAddress).build();
+        final UserProfile userProfile = UserProfile.builder().etherAddresses(Collections.singletonList(userEtherAddress)).build();
         final TokenValueDto totalFndOnContract = TokenValueDtoMother.FND().totalAmount(TEN).build();
         final TokenValueDto totalZrxOnContract = TokenValueDtoMother.ZRX().totalAmount(ZERO).build();
 

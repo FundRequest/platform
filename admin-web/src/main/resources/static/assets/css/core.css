@@ -5081,13 +5081,13 @@ table.dataTable.dtr-inline.collapsed > tbody tr.parent > td:first-child:before {
 }
 
 .fnd-profile__fields label {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 300;
   color: #9b9b9b;
 }
 
 .fnd-profile__fields .md-form input {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 300;
 }
 

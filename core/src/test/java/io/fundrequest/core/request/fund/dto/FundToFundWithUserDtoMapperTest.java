@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,12 +48,12 @@ class FundToFundWithUserDtoMapperTest {
                               .timestamp(LocalDateTime.now()).blockchainEventId(238L)
                               .build();
         final TokenValueDto tokenValueDto = TokenValueDto.builder().tokenSymbol("SOT").build();
-        final UserProfile fundUserProfile = UserProfile.builder().id(funderUserId).etherAddress(funderAddress).name(funderUserName).build();
-        final UserProfile loggedInUserProfile = UserProfile.builder().id(funderUserId).etherAddress(funderAddress).name(funderUserName).build();
+        final UserProfile fundUserProfile = UserProfile.builder().id(funderUserId).etherAddresses(Collections.singletonList(funderAddress)).name(funderUserName).build();
+        final UserProfile loggedInUserProfile = UserProfile.builder().id(funderUserId).etherAddresses(Collections.singletonList(funderAddress)).name(funderUserName).build();
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(funderUserId)).thenReturn(fundUserProfile);
+        when(profileService.getUserProfile(() -> funderUserId)).thenReturn(fundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(fund);
@@ -80,12 +81,12 @@ class FundToFundWithUserDtoMapperTest {
                               .timestamp(LocalDateTime.now()).blockchainEventId(238L)
                               .build();
         final TokenValueDto tokenValueDto = TokenValueDto.builder().tokenSymbol("FND").build();
-        final UserProfile fundUserProfile = UserProfile.builder().id(funderUserId).etherAddress(funderAddress).name(funderUserName).build();
-        final UserProfile loggedInUserProfile = UserProfile.builder().id(funderUserId).etherAddress(funderAddress).name(funderUserName).build();
+        final UserProfile fundUserProfile = UserProfile.builder().id(funderUserId).etherAddresses(Collections.singletonList(funderAddress)).name(funderUserName).build();
+        final UserProfile loggedInUserProfile = UserProfile.builder().id(funderUserId).etherAddresses(Collections.singletonList(funderAddress)).name(funderUserName).build();
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(funderUserId)).thenReturn(fundUserProfile);
+        when(profileService.getUserProfile(() -> funderUserId)).thenReturn(fundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(fund);
@@ -113,12 +114,12 @@ class FundToFundWithUserDtoMapperTest {
                               .timestamp(LocalDateTime.now()).blockchainEventId(238L)
                               .build();
         final TokenValueDto tokenValueDto = TokenValueDto.builder().tokenSymbol("SOT").build();
-        final UserProfile fundUserProfile = UserProfile.builder().id(funderUserId).etherAddress(funderAddress).name(funderUserName).build();
-        final UserProfile loggedInUserProfile = UserProfile.builder().id("fgh").etherAddress("0xrdtdr").name(funderUserName).build();
+        final UserProfile fundUserProfile = UserProfile.builder().id(funderUserId).etherAddresses(Collections.singletonList(funderAddress)).name(funderUserName).build();
+        final UserProfile loggedInUserProfile = UserProfile.builder().id("fgh").etherAddresses(Collections.singletonList("0xrdtdr")).name(funderUserName).build();
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(funderUserId)).thenReturn(fundUserProfile);
+        when(profileService.getUserProfile(() -> funderUserId)).thenReturn(fundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(fund);
@@ -146,12 +147,12 @@ class FundToFundWithUserDtoMapperTest {
                               .timestamp(LocalDateTime.now()).blockchainEventId(238L)
                               .build();
         final TokenValueDto tokenValueDto = TokenValueDto.builder().tokenSymbol("SOT").build();
-        final UserProfile fundUserProfile = UserProfile.builder().id(funderUserId).etherAddress(funderAddress).name(funderUserName).build();
-        final UserProfile loggedInUserProfile = UserProfile.builder().id(funderUserId).etherAddress("0xrdtdr").name(funderUserName).build();
+        final UserProfile fundUserProfile = UserProfile.builder().id(funderUserId).etherAddresses(Collections.singletonList(funderAddress)).name(funderUserName).build();
+        final UserProfile loggedInUserProfile = UserProfile.builder().id(funderUserId).etherAddresses(Collections.singletonList("0xrdtdr")).name(funderUserName).build();
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(funderUserId)).thenReturn(fundUserProfile);
+        when(profileService.getUserProfile(() -> funderUserId)).thenReturn(fundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(fund);
@@ -176,7 +177,7 @@ class FundToFundWithUserDtoMapperTest {
                               .timestamp(LocalDateTime.now()).blockchainEventId(238L)
                               .build();
         final TokenValueDto tokenValueDto = TokenValueDto.builder().tokenSymbol("SOT").build();
-        final UserProfile loggedInUserProfile = UserProfile.builder().id("efsgfbg").etherAddress("0xrdtdr").name("sfas").build();
+        final UserProfile loggedInUserProfile = UserProfile.builder().id("efsgfbg").etherAddresses(Collections.singletonList("0xrdtdr")).name("sfas").build();
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);

@@ -25,7 +25,6 @@ import io.fundrequest.platform.tweb.request.dto.ERC67FundDto;
 import io.fundrequest.platform.tweb.request.dto.RequestDetailsView;
 import io.fundrequest.platform.tweb.request.dto.RequestView;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -58,7 +57,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class RequestController extends AbstractController {
 
-	private final SecurityContextService securityContextService;
+    private final SecurityContextService securityContextService;
     private final RequestService requestService;
     private final PendingFundService pendingFundService;
     private final StatisticsService statisticsService;
@@ -82,7 +81,7 @@ public class RequestController extends AbstractController {
                              final PlatformIssueService platformIssueService,
                              final ObjectMapper objectMapper,
                              final Mappers mappers) {
-		this.securityContextService = securityContextService;
+        this.securityContextService = securityContextService;
         this.requestService = requestService;
         this.pendingFundService = pendingFundService;
         this.statisticsService = statisticsService;
@@ -169,9 +168,8 @@ public class RequestController extends AbstractController {
     }
 
     @PostMapping("/requests/{id}/claim")
-    public ModelAndView claimRequest(Principal principal, @PathVariable Long id, RedirectAttributes redirectAttributes) {
-        String etherAddress = profileService.getUserProfile(principal.getName()).getEtherAddress();
-        if (StringUtils.isBlank(etherAddress)) {
+    public ModelAndView claimRequest(Principal principal, @PathVariable Long id, @RequestBody @Valid UserClaimRequest userClaimRequest, RedirectAttributes redirectAttributes) {
+        if (profileService.getUserProfile(principal).userOwnsAddress(userClaimRequest.getAddress())) {
             return redirectView(redirectAttributes)
                     .withDangerMessage("Please update <a href=\"/profile\">your profile</a> with a correct ether address.")
                     .url("/requests/" + id)
@@ -179,11 +177,7 @@ public class RequestController extends AbstractController {
         }
         RequestDto request = requestService.findRequest(id);
         claimService.claim(principal,
-                UserClaimRequest.builder()
-                        .address(etherAddress)
-                        .platform(request.getIssueInformation().getPlatform())
-                        .platformId(request.getIssueInformation().getPlatformId())
-                        .build());
+                           userClaimRequest);
         return redirectView(redirectAttributes)
                 .withSuccessMessage("Your claim has been requested and is waiting for approval.")
                 .url("/requests/" + id)

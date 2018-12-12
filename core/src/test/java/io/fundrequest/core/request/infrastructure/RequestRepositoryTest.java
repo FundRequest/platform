@@ -1,11 +1,14 @@
 package io.fundrequest.core.request.infrastructure;
 
 import io.fundrequest.core.infrastructure.AbstractRepositoryTest;
+import io.fundrequest.core.request.domain.FundMother;
 import io.fundrequest.core.request.domain.IssueInformation;
 import io.fundrequest.core.request.domain.Platform;
 import io.fundrequest.core.request.domain.Request;
 import io.fundrequest.core.request.domain.RequestMother;
 import io.fundrequest.core.request.domain.RequestTechnology;
+import io.fundrequest.core.request.fund.domain.Fund;
+import io.fundrequest.core.request.fund.infrastructure.FundRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +29,9 @@ public class RequestRepositoryTest extends AbstractRepositoryTest {
 
     @Autowired
     private RequestRepository requestRepository;
+
+    @Autowired
+    private FundRepository fundRepository;
 
     @Test
     public void findAll() throws Exception {
@@ -81,6 +88,20 @@ public class RequestRepositoryTest extends AbstractRepositoryTest {
 
         assertThat(allTechnologies)
                 .containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @Test
+    public void findRequestsUserHasFunded() throws Exception {
+        Request request = RequestMother
+                .freeCodeCampNoUserStories()
+                .build();
+        request = requestRepository.saveAndFlush(request);
+        Fund fund = FundMother.fndFundFunderKnown().requestId(request.getId()).build();
+        fundRepository.saveAndFlush(fund);
+
+        List<Request> requests = requestRepository.findRequestsUserHasFunded("wrong", Collections.singletonList(fund.getFunderAddress()));
+
+        assertThat(requests).containsExactly(request);
     }
 
     @Test

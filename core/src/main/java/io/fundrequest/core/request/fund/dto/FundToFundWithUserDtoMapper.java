@@ -30,7 +30,7 @@ public class FundToFundWithUserDtoMapper implements BaseMapper<Fund, FundWithUse
     public FundWithUserDto map(final Fund fund) {
         final TokenValueDto tokenValueDto = tokenValueDtoMapper.map(fund.getTokenValue());
         final String funderNameOrAddress = StringUtils.isNotBlank(fund.getFunderUserId())
-                                           ? profileService.getUserProfile(fund.getFunderUserId()).getName()
+                                           ? profileService.getUserProfile(fund::getFunderUserId).getName()
                                            : fund.getFunderAddress();
         final boolean isFundedByLoggedInUser = isFundedByLoggedInUser(fund.getFunderUserId(), fund.getFunderAddress());
         return tokenValueDto == null ? null : FundWithUserDto.builder()
@@ -47,7 +47,7 @@ public class FundToFundWithUserDtoMapper implements BaseMapper<Fund, FundWithUse
     private boolean isFundedByLoggedInUser(final String funderUserId, final String funderAddress) {
         return securityContextService.getLoggedInUserProfile()
                                      .filter(loggedInUserProfile -> loggedInUserProfile.getId().equals(funderUserId))
-                                     .filter(loggedInUserProfile -> funderAddress.equalsIgnoreCase(loggedInUserProfile.getEtherAddress()))
+                                     .filter(loggedInUserProfile -> loggedInUserProfile.userOwnsAddress(funderAddress))
                                      .isPresent();
     }
 

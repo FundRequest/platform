@@ -29,7 +29,7 @@ class ProfilesExpressionObjectTest {
     public void findByUserId() {
         final String userId = "hgj";
         final UserProfile expected = mock(UserProfile.class);
-        when(profileService.getUserProfile(userId)).thenReturn(expected);
+        when(profileService.getUserProfile(() -> userId)).thenReturn(expected);
 
         final Optional<UserProfile> result = profiles.findByUserId(userId);
 
@@ -39,7 +39,7 @@ class ProfilesExpressionObjectTest {
     @Test
     public void findByUserId_profileNull() {
         final String userId = "hgj";
-        when(profileService.getUserProfile(userId)).thenReturn(null);
+        when(profileService.getUserProfile(() -> userId)).thenReturn(null);
 
         final Optional<UserProfile> result = profiles.findByUserId(userId);
 

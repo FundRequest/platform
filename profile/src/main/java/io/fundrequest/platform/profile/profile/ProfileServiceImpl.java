@@ -3,6 +3,9 @@ package io.fundrequest.platform.profile.profile;
 import io.fundrequest.platform.keycloak.KeycloakRepository;
 import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.keycloak.UserIdentity;
+import io.fundrequest.platform.profile.arkane.ArkaneRepository;
+import io.fundrequest.platform.profile.arkane.Wallet;
+import io.fundrequest.platform.profile.arkane.WalletsResult;
 import io.fundrequest.platform.profile.developer.verification.event.DeveloperVerified;
 import io.fundrequest.platform.profile.profile.dto.UserLinkedProviderEvent;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
@@ -29,6 +32,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,15 +46,17 @@ public class ProfileServiceImpl implements ProfileService {
     private final String keycloakUrl;
     private String intercomHmacKey;
     private final ApplicationEventPublisher eventPublisher;
+    private ArkaneRepository arkaneRepository;
 
     public ProfileServiceImpl(final KeycloakRepository keycloakRepository,
                               final @Value("${keycloak.auth-server-url}") String keycloakUrl,
                               final @Value("${io.fundrequest.intercom.secret}") String intercomHmacKey,
-                              final ApplicationEventPublisher eventPublisher) {
+                              final ApplicationEventPublisher eventPublisher, ArkaneRepository arkaneRepository) {
         this.keycloakRepository = keycloakRepository;
         this.keycloakUrl = keycloakUrl;
         this.intercomHmacKey = intercomHmacKey;
         this.eventPublisher = eventPublisher;
+        this.arkaneRepository = arkaneRepository;
     }
 
     @Override
@@ -59,33 +66,47 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @Cacheable(value = "user_profile", key = "#userId")
-    public UserProfile getUserProfile(String userId) {
-        final Map<Provider, UserProfileProvider> providers = keycloakRepository.getUserIdentities(userId)
+    @CacheEvict(value = "user_profile", key = "#principal.name")
+    public void walletsManaged(Principal principal) {
+    }
+
+    @Override
+    @Cacheable(value = "user_profile", key = "#principal.name")
+    public UserProfile getUserProfile(Principal principal) {
+        final Map<Provider, UserProfileProvider> providers = keycloakRepository.getUserIdentities(principal.getName())
                                                                                .collect(Collectors.toMap(UserIdentity::getProvider,
                                                                                                          x -> UserProfileProvider.builder()
                                                                                                                                  .userId(x.getUserId())
                                                                                                                                  .username(x.getUsername())
                                                                                                                                  .build()));
-        final UserRepresentation user = keycloakRepository.getUser(userId);
+        final UserRepresentation user = keycloakRepository.getUser(principal.getName());
+        List<Wallet> wallets = getWallets(principal, providers);
         return UserProfile.builder()
                           .id(user.getId())
                           .name(user.getFirstName() + " " + user.getLastName())
                           .createdAt(user.getCreatedTimestamp())
                           .email(user.getEmail())
                           .picture(getPicture(user))
+                          .wallets(wallets)
+                          .etherAddresses(wallets.stream().map(Wallet::getAddress).collect(Collectors.toList()))
                           .verifiedDeveloper(keycloakRepository.isVerifiedDeveloper(user))
-                          .etherAddress(keycloakRepository.getEtherAddress(user))
-                          .etherAddressVerified(keycloakRepository.isEtherAddressVerified(user))
                           .telegramName(keycloakRepository.getTelegramName(user))
                           .headline(keycloakRepository.getHeadline(user))
                           .github(providers.get(Provider.GITHUB))
+                          .arkane(providers.get(Provider.ARKANE))
                           .linkedin(providers.get(Provider.LINKEDIN))
                           .twitter(providers.get(Provider.TWITTER))
                           .google(providers.get(Provider.GOOGLE))
                           .stackoverflow(providers.get(Provider.STACKOVERFLOW))
                           .emailSignedVerification(getEmailSignedVerification(user.getEmail()))
                           .build();
+    }
+
+    private List<Wallet> getWallets(Principal principal, Map<Provider, UserProfileProvider> providers) {
+        if (providers.containsKey(Provider.ARKANE)) {
+            return getWallets(principal);
+        }
+        return Collections.emptyList();
     }
 
     private String getEmailSignedVerification(String email) {
@@ -99,12 +120,6 @@ public class ProfileServiceImpl implements ProfileService {
             log.error("Error creating hmac verified email", e);
             return null;
         }
-    }
-
-    @Override
-    @Cacheable(value = "user_profile", key = "#principal.name")
-    public UserProfile getUserProfile(Principal principal) {
-        return getUserProfile(principal.getName());
     }
 
     @EventListener
@@ -125,6 +140,29 @@ public class ProfileServiceImpl implements ProfileService {
     @CacheEvict(value = "user_profile", key = "#principal.name")
     public void updateEtherAddress(Principal principal, String etherAddress) {
         keycloakRepository.updateEtherAddress(principal.getName(), etherAddress);
+    }
+
+    public List<Wallet> getWallets(Principal principal) {
+        try {
+            if (principal.getClass().isAssignableFrom(KeycloakAuthenticationToken.class)) {
+                WalletsResult wallets = arkaneRepository.getWallets(getArkaneAuthorizationHeader(principal));
+                return wallets.getResult();
+            }
+        } catch (Exception e) {
+            log.error("Error getting arkane wallets", e);
+        }
+        return Collections.emptyList();
+    }
+
+    private String getArkaneAuthorizationHeader(Principal principal) {
+        String accessToken = getArkaneAccessToken((KeycloakAuthenticationToken) principal);
+        return "Bearer " + accessToken;
+    }
+
+    @Override
+    public String getArkaneAccessToken(KeycloakAuthenticationToken principal) {
+        KeycloakAuthenticationToken authToken = principal;
+        return keycloakRepository.getAccessToken(authToken, Provider.ARKANE);
     }
 
     @Override

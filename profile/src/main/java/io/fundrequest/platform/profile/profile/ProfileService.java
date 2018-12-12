@@ -2,6 +2,7 @@ package io.fundrequest.platform.profile.profile;
 
 import io.fundrequest.platform.keycloak.Provider;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -9,11 +10,13 @@ import java.security.Principal;
 public interface ProfileService {
     void userProviderIdentityLinked(Principal principal, Provider provider);
 
-    UserProfile getUserProfile(String userId);
+    void walletsManaged(Principal principal);
 
     UserProfile getUserProfile(Principal principal);
 
     void updateEtherAddress(Principal principal, String etherAddress);
+
+    String getArkaneAccessToken(KeycloakAuthenticationToken principal);
 
     void updateTelegramName(Principal principal, String telegramName);
 

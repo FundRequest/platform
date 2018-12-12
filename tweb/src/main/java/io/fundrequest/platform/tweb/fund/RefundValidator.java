@@ -30,17 +30,17 @@ public class RefundValidator {
                                 final long requestId,
                                 final String requestStatus) {
         return userProfile != null
-               && fund.getFunderAddress().equalsIgnoreCase(userProfile.getEtherAddress())
+               && userProfile.userOwnsAddress(fund.getFunderAddress())
                && "FUNDED".equalsIgnoreCase(requestStatus)
-               && !refundRequestAlreadyExists(requestId, userProfile.getEtherAddress())
+               && !refundRequestAlreadyExists(requestId)
                && hasPositiveBalance(requestId, fund);
     }
 
-    private boolean refundRequestAlreadyExists(final long requestId, final String userAddress) {
+    private boolean refundRequestAlreadyExists(final long requestId) {
         return refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)
                             .stream()
-                            .map(RefundRequestDto::getFunderAddress)
-                            .anyMatch(userAddress::equalsIgnoreCase);
+                            .map(RefundRequestDto::getRequestId)
+                            .anyMatch(r -> r.equals(requestId));
     }
 
     private boolean hasPositiveBalance(long requestId, final UserFundsDto fund) {

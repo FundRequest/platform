@@ -38,7 +38,7 @@
                 <div class="card-footer card-footer--light text-center">
                     <div class="font-weight-bold">Rewards will be transferred each Monday.</div>
                     <div class="text-secondary font-weight-bold"
-                         th:classappend="${profile.hadEtherAddress() ? 'd-none' : ''}"
+                         th:classappend="${profile.hasEtherAddress() ? 'd-none' : ''}"
                          th:if="${bounty.getTotalRewards() > 0}"
                          data-edit-empty-message="eth-address">
                         Please enter your ETH address above, in order to receive your rewards.

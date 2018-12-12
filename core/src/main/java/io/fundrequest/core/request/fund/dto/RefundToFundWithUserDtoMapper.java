@@ -30,7 +30,7 @@ public class RefundToFundWithUserDtoMapper implements BaseMapper<Refund, FundWit
     public FundWithUserDto map(final Refund refund) {
         final TokenValueDto tokenValueDto = negate(tokenValueDtoMapper.map(refund.getTokenValue()));
         final String funderNameOrAddress = StringUtils.isNotBlank(refund.getRequestedBy())
-                                           ? profileService.getUserProfile(refund.getRequestedBy()).getName()
+                                           ? profileService.getUserProfile(refund::getRequestedBy).getName()
                                            : refund.getFunderAddress();
         final boolean isFundedByLoggedInUser = isFundedByLoggedInUser(refund.getRequestedBy(), refund.getFunderAddress());
         return tokenValueDto == null ? null : FundWithUserDto.builder()
@@ -55,7 +55,7 @@ public class RefundToFundWithUserDtoMapper implements BaseMapper<Refund, FundWit
     private boolean isFundedByLoggedInUser(final String funderUserId, final String funderAddress) {
         return securityContextService.getLoggedInUserProfile()
                                      .filter(loggedInUserProfile -> loggedInUserProfile.getId().equals(funderUserId))
-                                     .filter(loggedInUserProfile -> funderAddress.equalsIgnoreCase(loggedInUserProfile.getEtherAddress()))
+                                     .filter(loggedInUserProfile -> loggedInUserProfile.userOwnsAddress(funderAddress))
                                      .isPresent();
     }
 

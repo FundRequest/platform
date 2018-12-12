@@ -22,10 +22,6 @@ public interface KeycloakRepository {
 
     void updateVerifiedDeveloper(String userId, Boolean isVerified);
 
-    String getEtherAddress(String userId);
-
-    String getEtherAddress(UserRepresentation userRepresentation);
-
     boolean isEtherAddressVerified(UserRepresentation userRepresentation);
 
     boolean isVerifiedDeveloper(UserRepresentation userRepresentation);

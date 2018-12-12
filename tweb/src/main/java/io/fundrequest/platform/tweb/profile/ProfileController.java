@@ -9,6 +9,7 @@ import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
 import io.fundrequest.platform.profile.ref.ReferralService;
 import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
 import io.fundrequest.platform.profile.stackoverflow.dto.StackOverflowVerificationDto;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.Principal;
 
@@ -93,6 +95,15 @@ public class ProfileController {
     public ModelAndView updateAddress(Principal principal, @RequestParam("etheraddress") String etherAddress) {
         profileService.updateEtherAddress(principal, etherAddress);
         return redirectToProfile();
+    }
+
+    @GetMapping("/profile/managewallets")
+    public ModelAndView manageWallets(Principal principal, HttpServletRequest request) throws UnsupportedEncodingException {
+        String bearerToken = URLEncoder.encode(profileService.getArkaneAccessToken((KeycloakAuthenticationToken) principal), "UTF-8");
+        String redirectUri = URLEncoder.encode(request.getHeader("referer"), "UTF-8");
+        String url = "https://connect-staging.arkane.network/wallets/manage?redirectUri=" + redirectUri + "&data=eyJjaGFpbiI6ICJldGhlcmV1bSJ9&bearerToken=" + bearerToken;
+        profileService.walletsManaged(principal);
+        return new ModelAndView(new RedirectView(url));
     }
 
     @PostMapping("/profile/headline")
