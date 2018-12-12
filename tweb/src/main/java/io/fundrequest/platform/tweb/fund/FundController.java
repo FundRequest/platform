@@ -10,6 +10,7 @@ import io.fundrequest.core.request.fund.dto.RefundRequestDto;
 import io.fundrequest.core.request.view.RequestDto;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,18 +42,20 @@ public class FundController extends AbstractController {
     }
 
     @RequestMapping("/fund/{type}")
-    public ModelAndView details(@PathVariable String type, @RequestParam(name = "url", required = false) String url) {
+    public ModelAndView details(Principal principal, @PathVariable String type, @RequestParam(name = "url", required = false) String url) {
         return modelAndView()
                 .withObject("url", url)
+                .withObject("arkanetoken", profileService.getArkaneAccessToken((KeycloakAuthenticationToken) principal))
                 .withView("pages/fund/" + type)
                 .build();
     }
 
     @RequestMapping("/requests/{request-id}/fund")
-    public ModelAndView fundRequestById(@PathVariable("request-id") Long requestId) {
+    public ModelAndView fundRequestById(Principal principal, @PathVariable("request-id") Long requestId) {
         final RequestDto request = requestService.findRequest(requestId);
         return modelAndView()
                 .withObject("url", request.getIssueInformation().getUrl())
+                .withObject("arkanetoken", profileService.getArkaneAccessToken((KeycloakAuthenticationToken) principal))
                 .withView("pages/fund/" + request.getIssueInformation().getPlatform().name().toLowerCase())
                 .build();
     }

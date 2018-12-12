@@ -22,14 +22,8 @@ export class Web3x {
             }
 
             Web3x.instance = new Web3x(provider);
-            if (Web3x.instance._web3.currentProvider) {
-                await Web3x.instance._web3.currentProvider.enable();
-            }
         }
         return Web3x.instance._web3;
     }
 
-    public static async getAccount(): Promise<any> {
-        return (await Web3x.getInstance()).eth.defaultAccount;
-    }
 }

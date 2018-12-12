@@ -152,8 +152,8 @@
                         <div class="request-funding__transfers">
                             <div th:each="fund : ${funds.userFunds}" th:remove="tag">
                                 <div class="request-funding__transfer">
-                                    <div class="request-details__label">findByUserId
-                                            <span class="request-details__label-text" th:text="${#profiles.(fund.funderUserId).map(#profiles.getName()).orElse(fund.funderAddress)}">Karel Striegel</span>
+                                    <div class="request-details__label">
+                                        <span class="request-details__label-text" th:text="${#profiles.findByUserId(fund.funderUserId).map(#profiles.getName()).orElse(fund.funderAddress)}">Karel Striegel</span>
                                         <span class="request-details__label-badge badge badge-pill badge-primary" th:if="${#authentication.getName() eq fund.funderUserId}">You</span>
                                         <span class="request-details__label-badge badge badge-pill badge-primary" th:if="${pendingRefundAddresses.contains(#strings.toLowerCase(fund.funderAddress))}">
                                             Refund pending

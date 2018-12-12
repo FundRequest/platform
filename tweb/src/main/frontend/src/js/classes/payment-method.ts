@@ -13,11 +13,7 @@ export class PaymentMethod {
 export class PaymentMethods {
     public static instance: PaymentMethods;
 
-    public dapp: PaymentMethod = new PaymentMethod('dapp', 'MetaMask / Mist / DApp browser', '');
-
-    public wallet: PaymentMethod = new PaymentMethod('wallet', 'Internal Wallet', '(Coming soon)');
-    public creditCard: PaymentMethod = new PaymentMethod('credit-card', 'Credit card', '(Coming soon)');
-    public paypal: PaymentMethod = new PaymentMethod('paypal', 'PayPal', '(Coming soon)');
+    public arkane: PaymentMethod = new PaymentMethod('arkane', 'Arkane', '');
 
     public static getInstance() {
         if (!PaymentMethods.instance) {
