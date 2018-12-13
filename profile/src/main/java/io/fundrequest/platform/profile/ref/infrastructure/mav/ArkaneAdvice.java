@@ -44,7 +44,8 @@ public class ArkaneAdvice extends HandlerInterceptorAdapter {
                 String accessToken = profileService.getArkaneAccessToken((KeycloakAuthenticationToken) authentication);
                 if (accessTokenIsExpired(accessToken)) {
                     if (!response.isCommitted()) {
-                        response.sendRedirect("/profile/link/arkane");
+                        String url = request.getRequestURL().toString();
+                        response.sendRedirect("/profile/link/arkane?redirectUrl=" + url);
                         return false;
                     }
                 }

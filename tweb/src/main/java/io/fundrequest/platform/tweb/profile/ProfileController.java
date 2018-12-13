@@ -9,6 +9,7 @@ import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
 import io.fundrequest.platform.profile.ref.ReferralService;
 import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
 import io.fundrequest.platform.profile.stackoverflow.dto.StackOverflowVerificationDto;
+import org.apache.commons.lang3.StringUtils;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
@@ -86,8 +87,11 @@ public class ProfileController {
     }
 
     @GetMapping("/profile/link/{provider}")
-    public ModelAndView linkProfile(@PathVariable String provider, HttpServletRequest request, Principal principal) {
-        String link = profileService.createSignupLink(request, principal, Provider.fromString(provider.replaceAll("[^A-Za-z]", "")));
+    public ModelAndView linkProfile(@PathVariable String provider,
+                                    HttpServletRequest request,
+                                    Principal principal,
+                                    @RequestParam(value = "redirectUrl", required = false) String redirectUrl) {
+        String link = profileService.createSignupLink(request, principal, Provider.fromString(provider.replaceAll("[^A-Za-z]", "")), redirectUrl);
         return new ModelAndView(new RedirectView(link, false));
     }
 
@@ -117,8 +121,13 @@ public class ProfileController {
     }
 
     @GetMapping("/profile/link/{provider}/redirect")
-    public ModelAndView redirectToHereAfterProfileLink(Principal principal, @PathVariable("provider") String provider) {
+    public ModelAndView redirectToHereAfterProfileLink(Principal principal,
+                                                       @PathVariable("provider") String provider,
+                                                       @RequestParam(value = "redirectUrl", required = false) String redirectUrl) {
         profileService.userProviderIdentityLinked(principal, Provider.fromString(provider));
+        if (StringUtils.isNotBlank(redirectUrl)) {
+            return new ModelAndView(new RedirectView(redirectUrl));
+        }
         return redirectToProfile();
     }
 

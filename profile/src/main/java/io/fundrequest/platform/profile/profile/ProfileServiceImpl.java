@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -184,7 +186,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public String createSignupLink(HttpServletRequest request, Principal principal, Provider providerEnum) {
+    public String createSignupLink(HttpServletRequest request, Principal principal, Provider providerEnum, String redirectUrl) {
         String provider = providerEnum.name().toLowerCase();
         AccessToken token = ((KeycloakAuthenticationToken) principal).getAccount().getKeycloakSecurityContext().getToken();
         String clientId = token.getIssuedFor();
@@ -204,10 +206,10 @@ public class ProfileServiceImpl implements ProfileService {
                                  .queryParam("nonce", nonce)
                                  .queryParam("hash", hash)
                                  .queryParam("client_id", clientId)
-                                 .queryParam("redirect_uri", getRedirectUrl(request, provider)).build("fundrequest", provider).toString();
+                                 .queryParam("redirect_uri", getRedirectUrl(request, provider, redirectUrl)).build("fundrequest", provider).toString();
     }
 
-    private String getRedirectUrl(HttpServletRequest req, String provider) {
+    private String getRedirectUrl(HttpServletRequest req, String provider, String redirectUrl) {
         String scheme = req.getScheme();
         String serverName = req.getServerName();
         int serverPort = req.getServerPort();
@@ -222,6 +224,12 @@ public class ProfileServiceImpl implements ProfileService {
             url += "/";
         }
         url += "profile/link/" + provider + "/redirect";
+        if (StringUtils.isNotBlank(redirectUrl)) {
+            try {
+                url += "?redirectUrl=" + URLEncoder.encode(redirectUrl, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+            }
+        }
         return url;
     }
 }

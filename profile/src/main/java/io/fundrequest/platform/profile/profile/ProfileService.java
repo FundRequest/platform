@@ -22,7 +22,7 @@ public interface ProfileService {
 
     void updateHeadline(Principal principal, String headline);
 
-    String createSignupLink(HttpServletRequest request, Principal principal, Provider provider);
+    String createSignupLink(HttpServletRequest request, Principal principal, Provider provider, String redirectUrl);
 
     void logout(Principal principal);
 }
