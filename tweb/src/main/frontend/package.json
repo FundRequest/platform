@@ -77,7 +77,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@arkane-network/arkane-connect": "^1.0.0-develop.13",
+    "@arkane-network/arkane-connect": "^1.0.0-develop.18",
     "@types/toastr": "^2.1.35",
     "bignumber.js": "^5.0.0",
     "bootstrap": "^4.0.0",
@@ -103,6 +103,6 @@
     "vue-router": "^3.0.1",
     "vue-select": "^2.4.0",
     "vue-timeago": "^4.0.1",
-    "web3": "^0.20.6"
+    "web3": "0.20.7"
   }
 }

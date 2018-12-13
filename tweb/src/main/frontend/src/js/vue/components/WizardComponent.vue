@@ -1,6 +1,6 @@
 <script lang="ts">
     import {Component, Prop, Vue} from "vue-property-decorator";
-    import {ArkaneConnect, SignMethod, Wallet} from "@arkane-network/arkane-connect"
+    import {ArkaneConnect, EthereumTransactionRequest, Signer, SignMethod, Wallet} from "@arkane-network/arkane-connect"
     import QrcodeVue from "qrcode.vue";
     import {VMoney} from "v-money";
 
@@ -12,6 +12,8 @@
     import Utils from "../../classes/Utils";
     import Alert from "../../classes/Alert";
     import Faq from "./Faq";
+    import BigNumber from "bignumber.js";
+    import {PendingFundCommand} from "../models/PendingFundCommand";
 
     @Component({
         components: {
@@ -72,7 +74,6 @@
                 signUsing: SignMethod.POPUP,
             });
             this.connect.init(() => this.arkanetoken).then(x => {
-                console.log(x);
                 this.connect.api.getWallets().then(x => this.wallets = x).catch(x => console.log(x));
             });
 
@@ -177,20 +178,6 @@
         }
 
         private async fund() {
-            let web3: any = await Web3x.getInstance();
-
-            let encoded = web3.eth.abi.encodeFunctionCall({
-                name: 'myMethod',
-                type: 'function',
-                inputs: [{
-                    type: 'uint256',
-                    name: 'myNumber'
-                }, {
-                    type: 'string',
-                    name: 'myString'
-                }]
-            }, ['2345675643', 'Hello!%']);
-            console.log(encoded);
             switch (this.paymentMethod) {
                 case PaymentMethods.getInstance().arkane:
                     try {
@@ -221,51 +208,86 @@
             return Number(this.fundAmount.replace(/,/g, ""));
         }
 
-        private _handleTransactionError(err): void {
+        private async fundUsingArkane(): Promise<string> {
+            Utils.showLoading();
+            let frContractAddress = Contracts.frContractAddress;
+            let erc20 = await Contracts.getErc20Contract(this.selectedToken.address);
+            let decimals = this.selectedToken.decimals;
+            this.currentAllowance = (await erc20.allowance(this.selectedWallet.address, frContractAddress)).toNumber();
+            this.currentFundAmount = Number(this.fundAmountValue * Math.pow(10, decimals));
             Utils.hideLoading();
-            throw new Error(err);
+
+            if (!this.approveInfoModalActive && this.currentAllowance < this.currentFundAmount) {
+                this.showApproveInfoModal();
+                return "";
+            }
+            else {
+                Utils.showLoading();
+                if (this.currentAllowance > 0 && this.currentAllowance < this.currentFundAmount) {
+                    // setting to 0
+                    await this.approveErc20(erc20.address, this.selectedWallet, frContractAddress, new BigNumber("0"));
+                    this.currentAllowance = 0;
+                }
+                if (this.currentAllowance === 0) {
+                    // You will need to allow the FundRequest contract to access this token
+                    await this.approveErc20(erc20.address, this.selectedWallet, frContractAddress, Utils.biggestNumber());
+                }
+                try {
+                    let response = <any>(await this.fundInContract(frContractAddress, this.selectedWallet, "GITHUB", this.githubIssue.platformId, this.selectedToken.address, new BigNumber("" + this.currentFundAmount)));
+                    let pendingFundCommand = new PendingFundCommand();
+                    pendingFundCommand.transactionId = response.result.transactionHash;
+                    pendingFundCommand.amount = this.fundAmountValue.toString();
+                    pendingFundCommand.description = this.description;
+                    pendingFundCommand.fromAddress = await this.selectedWallet.address;
+                    pendingFundCommand.tokenAddress = this.selectedToken.address;
+                    pendingFundCommand.platform = this.githubIssue.platform;
+                    pendingFundCommand.platformId = this.githubIssue.platformId;
+                    await Utils.postJSON(`/rest/pending-fund`, pendingFundCommand);
+                    return pendingFundCommand.transactionId;
+                } catch (e) {
+                    if (!e.status || e.status !== 'ABORTED') {
+                        throw e;
+                    }
+                    return Promise.resolve("");
+                }
+                finally {
+                    Utils.hideLoading();
+                }
+            }
         }
 
-        private async fundUsingArkane(): Promise<string> {
-            // Utils.showLoading();
-            // let frContractAddress = Contracts.frContractAddress;
-            // let erc20 = await Contracts.getErc20Contract(this.selectedToken.address);
-            // let decimals = this.selectedToken.decimals;
-            // this.currentAllowance = (await erc20.allowance(this.selectedWallet.address, frContractAddress)).toNumber();
-            // this.currentFundAmount = Number(this.fundAmountValue * Math.pow(10, decimals));
-            // Utils.hideLoading();
-            //
-            // if (!this.approveInfoModalActive && this.currentAllowance < this.currentFundAmount) {
-            //     this.showApproveInfoModal();
-            //     return "";
-            // }
-            // else {
-            //     Utils.showLoading();
-            //     if (this.currentAllowance > 0 && this.currentAllowance < this.currentFundAmount) {
-            //         // setting to 0
-            //         await erc20.approveTx(frContractAddress, 0).send({}).catch(rej => this._handleTransactionError(rej));
-            //         this.currentAllowance = 0;
-            //     }
-            //     if (this.currentAllowance === 0) {
-            //         // You will need to allow the FundRequest contract to access this token
-            //         await erc20.approveTx(frContractAddress, Utils.biggestNumber()).send({}).catch(rej => this._handleTransactionError(rej));
-            //     }
-            //     let response = await (await Contracts.getFrContract()).fundTx((await Web3x.getInstance()).fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, this.currentFundAmount)
-            //         .send({}).catch(rej => this._handleTransactionError(rej)) as string;
-            //     let pendingFundCommand = new PendingFundCommand();
-            //     pendingFundCommand.transactionId = response;
-            //     pendingFundCommand.amount = this.fundAmountValue.toString();
-            //     pendingFundCommand.description = this.description;
-            //     pendingFundCommand.fromAddress = await this.selectedWallet.address;
-            //     pendingFundCommand.tokenAddress = this.selectedToken.address;
-            //     pendingFundCommand.platform = this.githubIssue.platform;
-            //     pendingFundCommand.platformId = this.githubIssue.platformId;
-            //     await Utils.postJSON(`/rest/pending-fund`, pendingFundCommand);
-            //     Utils.hideLoading();
-            //     return pendingFundCommand.transactionId;
-            // }
-            // Utils.hideLoading();
-            return "";
+        private async approveErc20(tokenContractAddress: string, wallet: Wallet, spender: string, amount: BigNumber) {
+            const signer: Signer = this.connect.createSigner();
+            try {
+                let req = new EthereumTransactionRequest();
+                req.to = tokenContractAddress;
+                req.type = 'ETH_TRANSACTION';
+                req.walletId = wallet.id;
+                req.value = 0;
+                req.data = Contracts.encodeErc20ApproveFunction(spender, amount);
+                await signer.executeNativeTransaction(req);
+            } finally {
+                if (this.connect.isPopupSigner(signer)) {
+                    signer.closePopup();
+                }
+            }
+        }
+
+        private async fundInContract(frContractAddress: string, wallet: Wallet, platform: string, platformId: string, token: string, amount: BigNumber) {
+            const signer: Signer = this.connect.createSigner();
+            try {
+                let req = new EthereumTransactionRequest();
+                req.to = frContractAddress;
+                req.type = 'ETH_TRANSACTION';
+                req.walletId = wallet.id;
+                req.value = 0;
+                req.data = Contracts.encodeFundFunction(platform, platformId, token, amount);
+                return await signer.executeNativeTransaction(req);
+            } finally {
+                if (this.connect.isPopupSigner(signer)) {
+                    signer.closePopup();
+                }
+            }
         }
 
         public showApproveInfoModal() {
