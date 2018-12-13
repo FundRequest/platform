@@ -28,7 +28,20 @@
     <input
         type="hidden"
         th:name="${_csrf.parameterName}"
-        th:value="${_csrf.token}" />
+        th:value="${_csrf.token}"/>
+    <input
+        type="hidden"
+        th:name="platform"
+        th:value="${platformIssue.platform}"/>
+    <input
+        type="hidden"
+        th:name="platformId"
+        th:value="${platformIssue.platformId}"/>
+
+    <select th:name="address">
+      <option th:each="w : ${profile.getWallets()}" th:value="${w.address}" th:text="${w.description}"></option>
+    </select>
+
     <button type="submit" class="btn btn-success mb-0">Claim Funds</button>
   </form>
 

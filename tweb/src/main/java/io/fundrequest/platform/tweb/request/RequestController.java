@@ -168,8 +168,8 @@ public class RequestController extends AbstractController {
     }
 
     @PostMapping("/requests/{id}/claim")
-    public ModelAndView claimRequest(Principal principal, @PathVariable Long id, @RequestBody @Valid UserClaimRequest userClaimRequest, RedirectAttributes redirectAttributes) {
-        if (profileService.getUserProfile(principal).userOwnsAddress(userClaimRequest.getAddress())) {
+    public ModelAndView claimRequest(Principal principal, @PathVariable Long id, @Valid UserClaimRequest userClaimRequest, RedirectAttributes redirectAttributes) {
+        if (!profileService.getUserProfile(principal).userOwnsAddress(userClaimRequest.getAddress())) {
             return redirectView(redirectAttributes)
                     .withDangerMessage("Please update <a href=\"/profile\">your profile</a> with a correct ether address.")
                     .url("/requests/" + id)
