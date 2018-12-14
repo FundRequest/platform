@@ -291,17 +291,26 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         UserClaimableDto userClaimableDto = UserClaimableDto.builder().build();
         when(requestService.getUserClaimableResult(principal, 1L)).thenReturn(userClaimableDto);
         when(profileService.getUserProfile(principal).getEtherAddresses()).thenReturn(Collections.singletonList("0x0000000"));
+        when(profileService.getUserProfile(principal).userOwnsAddress("0x0000000")).thenReturn(true);
 
-        this.mockMvc.perform(post("/requests/{id}/claim", 1L).principal(principal))
+        this.mockMvc.perform(post("/requests/{id}/claim", 1L)
+                                     .param("address", "0x0000000")
+                                     .param("platform", request.getIssueInformation().getPlatform().name())
+                                     .param("platformId", request.getIssueInformation().getPlatformId())
+                                     .principal(principal))
                     .andExpect(redirectAlert("success", "Your claim has been requested and is waiting for approval."))
                     .andExpect(redirectedUrl("/requests/" + 1L));
     }
 
     @Test
     public void claimRequestShowsErrorMsg() throws Exception {
-        when(profileService.getUserProfile(principal).getEtherAddresses()).thenReturn(Collections.emptyList());
+        when(profileService.getUserProfile(principal).userOwnsAddress("0x0000000")).thenReturn(false);
 
-        this.mockMvc.perform(post("/requests/{id}/claim", 1L).principal(principal))
+        this.mockMvc.perform(post("/requests/{id}/claim", 1L)
+                                     .param("address", "0x0000000")
+                                     .param("platform", "GITHUB")
+                                     .param("platformId", "id")
+                                     .principal(principal))
                     .andExpect(redirectAlert("danger", "Please update <a href=\"/profile\">your profile</a> with a correct ether address."))
                     .andExpect(redirectedUrl("/requests/" + 1L));
     }
