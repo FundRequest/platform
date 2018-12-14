@@ -32,7 +32,7 @@
         </div>
     </section>
 
-    <div is="wizard-component" inline-template="false" th:attr="'v-bind:arkanetoken'='&quot;' + ${arkanetoken} + '&quot;'">
+    <div is="wizard-component" inline-template="false" th:attr="'v-bind:arkanetoken'='&quot;' + ${arkanetoken} + '&quot;','v-bind:arkane-environment'='&quot;' + ${@environment.getProperty('network.arkane.environment')} + '&quot;'">
         <div class="wizard">
             <section class="position-relative mb-5">
                 <div class="wizard__content">
@@ -144,21 +144,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="card">
-                                        <div class="card-header">
-                                            Describe why you would like to add funding to this GitHub Issue.
-                                        </div>
-                                        <div class="card-body">
-                                        <textarea
-                                                title="Describe why you would like to add funding to this GitHub Issue."
-                                                placeholder="ex.: This issue is blocking me from integrating this product with an other piece of open source software."
-                                                class="form-control"></textarea>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="wizard__footer">
-                                <button class="btn btn-secondary" v-on:click="gotoStep(2)">
+                                <span class="text-danger" th:if="${arkanetoken eq null}">FundRequest uses Arkane as payment provider, to continue please <a class="text-danger btn-link focus" href="/profile/link/arkane">connect an Arkane account</a></span>
+                                <span class="text-danger" th:if="${arkanetoken != null && profile.getWallets().isEmpty()}">FundRequest uses Arkane as payment provider, to continue please <a class="text-danger btn-link focus" href="/profile/managewallets">link an Arkane wallet</a></span>
+                                <button class="btn btn-secondary" v-on:click="gotoStep(2)" th:disabled="${arkanetoken eq null && profile.getWallets().isEmpty()}">
                                     Continue to payment details
                                 </button>
                             </div>

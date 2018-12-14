@@ -46,6 +46,7 @@ public class ProfileControllerTest extends AbstractControllerTest<ProfileControl
                 messageService,
                 referralService,
                 githubBountyService,
+                "staging",
                 stackOverflowBountyService
         );
     }

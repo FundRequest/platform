@@ -82,7 +82,9 @@ public class ProfileServiceImpl implements ProfileService {
                                                                                                                                  .username(x.getUsername())
                                                                                                                                  .build()));
         final UserRepresentation user = keycloakRepository.getUser(principal.getName());
-        List<Wallet> wallets = getWallets(principal, providers);
+        List<Wallet> wallets = providers.containsKey(Provider.ARKANE)
+                               ? getWallets(principal, providers, getArkaneAccessTokenWithoutCheck((KeycloakAuthenticationToken) principal))
+                               : Collections.emptyList();
         return UserProfile.builder()
                           .id(user.getId())
                           .name(user.getFirstName() + " " + user.getLastName())
@@ -104,9 +106,9 @@ public class ProfileServiceImpl implements ProfileService {
                           .build();
     }
 
-    private List<Wallet> getWallets(Principal principal, Map<Provider, UserProfileProvider> providers) {
+    private List<Wallet> getWallets(Principal principal, Map<Provider, UserProfileProvider> providers, String accessToken) {
         if (providers.containsKey(Provider.ARKANE)) {
-            return getWallets(principal);
+            return getWallets(principal, getArkaneAuthorizationHeader(accessToken));
         }
         return Collections.emptyList();
     }
@@ -144,10 +146,10 @@ public class ProfileServiceImpl implements ProfileService {
         keycloakRepository.updateEtherAddress(principal.getName(), etherAddress);
     }
 
-    public List<Wallet> getWallets(Principal principal) {
+    private List<Wallet> getWallets(Principal principal, String authorization) {
         try {
             if (principal.getClass().isAssignableFrom(KeycloakAuthenticationToken.class)) {
-                WalletsResult wallets = arkaneRepository.getWallets(getArkaneAuthorizationHeader(principal));
+                WalletsResult wallets = arkaneRepository.getWallets(authorization);
                 return wallets.getResult();
             }
         } catch (Exception e) {
@@ -156,13 +158,19 @@ public class ProfileServiceImpl implements ProfileService {
         return Collections.emptyList();
     }
 
-    private String getArkaneAuthorizationHeader(Principal principal) {
-        String accessToken = getArkaneAccessToken((KeycloakAuthenticationToken) principal);
+    private String getArkaneAuthorizationHeader(String accessToken) {
         return "Bearer " + accessToken;
     }
 
     @Override
     public String getArkaneAccessToken(KeycloakAuthenticationToken principal) {
+        if (getUserProfile(principal).getArkane() == null) {
+            return null;
+        }
+        return keycloakRepository.getAccessToken(principal, Provider.ARKANE);
+    }
+
+    private String getArkaneAccessTokenWithoutCheck(KeycloakAuthenticationToken principal) {
         KeycloakAuthenticationToken authToken = principal;
         return keycloakRepository.getAccessToken(authToken, Provider.ARKANE);
     }

@@ -49,6 +49,7 @@
         private connect: ArkaneConnect;
 
         @Prop() public arkanetoken: string;
+        @Prop() public arkaneEnvironment: string;
 
         public moneyConfig = {
             decimal: ".",
@@ -69,14 +70,17 @@
             this._network = metaNetwork ? metaNetwork.getAttribute("content") : "";
             this.updateDappPaymentMethod();
             this.gotoStep(1);
-            this.connect = new ArkaneConnect('Arkane', {
-                environment: 'staging',
-                signUsing: SignMethod.POPUP,
-            });
-            this.connect.init(() => this.arkanetoken).then(x => {
-                this.connect.api.getWallets().then(x => this.wallets = x).catch(x => console.log(x));
-            });
-
+            if (this.arkanetoken) {
+                this.connect = new ArkaneConnect('Arkane', {
+                    environment: this.arkaneEnvironment,
+                    signUsing: SignMethod.POPUP,
+                    bearerTokenProvider: () => this.arkanetoken
+                });
+                this.connect.api.getWallets().then(x => {
+                    this.wallets = x;
+                    this.selectedWallet = this.wallets[0];
+                }).catch(x => console.log(x));
+            }
         }
 
         public getClassesPanel(step: number) {

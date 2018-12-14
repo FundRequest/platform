@@ -77,7 +77,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@arkane-network/arkane-connect": "^1.0.0-develop.18",
+    "@arkane-network/arkane-connect": "^1.0.0",
     "@types/toastr": "^2.1.35",
     "bignumber.js": "^5.0.0",
     "bootstrap": "^4.0.0",
