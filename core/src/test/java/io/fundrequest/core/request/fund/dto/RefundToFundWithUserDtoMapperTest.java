@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -54,7 +55,7 @@ class RefundToFundWithUserDtoMapperTest {
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(() -> refunderUserId)).thenReturn(refundUserProfile);
+        when(profileService.getUserProfile(any())).thenReturn(refundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(refund);
@@ -89,7 +90,7 @@ class RefundToFundWithUserDtoMapperTest {
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(() -> refunderUserId)).thenReturn(refundUserProfile);
+        when(profileService.getUserProfile(any())).thenReturn(refundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(refund);
@@ -124,7 +125,7 @@ class RefundToFundWithUserDtoMapperTest {
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(() -> refunderUserId)).thenReturn(refundUserProfile);
+        when(profileService.getUserProfile(any())).thenReturn(refundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(refund);
@@ -159,7 +160,7 @@ class RefundToFundWithUserDtoMapperTest {
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(() -> refunderUserId)).thenReturn(refundUserProfile);
+        when(profileService.getUserProfile(any())).thenReturn(refundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(refund);
