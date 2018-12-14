@@ -11,6 +11,7 @@ import io.fundrequest.core.request.view.RequestDtoMother;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import org.junit.Test;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 
 import java.security.Principal;
 import java.util.Arrays;
@@ -38,8 +39,7 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
 
     @Override
     protected FundController setupController() {
-        principal = mock(Principal.class);
-        when(principal.getName()).thenReturn("davyvanroy@fundrequest.io");
+        principal = mock(KeycloakAuthenticationToken.class);
         requestService = mock(RequestService.class);
         refundService = mock(RefundService.class);
         profileService = mock(ProfileService.class);
@@ -91,7 +91,7 @@ public class FundControllerTest extends AbstractControllerTest<FundController> {
         request.setStatus(RequestStatus.FUNDED);
         final String funderAddress = "0x24356789";
 
-        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddresses(Collections.singletonList(funderAddress)).build());
+        when(profileService.getUserProfile(principal)).thenReturn(UserProfile.builder().etherAddresses(Collections.emptyList()).build());
         when(requestService.findRequest(requestId)).thenReturn(request);
         when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder()
                                                                                                                                         .funderAddress("0xeab43f")
