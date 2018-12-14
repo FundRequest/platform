@@ -23,7 +23,7 @@ public class GithubStatusResolverTest {
         final Document document = mock(Document.class, RETURNS_DEEP_STUBS);
         final String expectedStatus = "Open";
 
-        when(document.select("#partial-discussion-header .gh-header-show-if-sticky .State").text()).thenReturn(expectedStatus);
+        when(document.select("#partial-discussion-header .State").first().text()).thenReturn(expectedStatus);
 
         final String returnedStatus = parser.resolve(document);
 
@@ -35,7 +35,7 @@ public class GithubStatusResolverTest {
         final Document document = mock(Document.class, RETURNS_DEEP_STUBS);
         final String expectedStatus = "Closed";
 
-        when(document.select("#partial-discussion-header .gh-header-show-if-sticky .State").text()).thenReturn(expectedStatus);
+        when(document.select("#partial-discussion-header .State").first().text()).thenReturn(expectedStatus);
 
         final String returnedStatus = parser.resolve(document);
 
