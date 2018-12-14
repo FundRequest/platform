@@ -6,7 +6,8 @@ import Utils from './Utils';
 import {TokenInfo} from './token-info';
 import {MiniMeToken} from '../contracts/MiniMeToken';
 import BigNumber from "bignumber.js";
-import {ERC20} from "../contracts/ERC20";
+import FundRequestContractDef from "./FundRequestContractDef";
+import ERC20ContractDef from "./ERC20ContractDef";
 
 export class Contracts {
 
@@ -100,14 +101,14 @@ export class Contracts {
 
 
     public static encodeErc20ApproveFunction(address: string, amount: BigNumber) {
-        return Web3x.getInstance().eth.contract(ERC20.abi).at("").approve.getData(
+        return Web3x.getInstance().eth.contract(ERC20ContractDef.abi).at("").approve.getData(
             address, amount
         );
     }
 
     public static encodeFundFunction(platform: string, platformId: string, token: string, amount: BigNumber) {
         let web3 = Web3x.getInstance();
-        return web3.eth.contract(FundRequestContract.abi).at("").fund.getData(
+        return web3.eth.contract(FundRequestContractDef.abi).at("").fund.getData(
             web3.fromAscii("GITHUB"),
             platformId,
             token,
