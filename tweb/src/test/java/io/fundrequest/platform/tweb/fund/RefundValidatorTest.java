@@ -53,7 +53,7 @@ class RefundValidatorTest {
         final TokenValueDto totalFndOnContract = TokenValueDtoMother.FND().totalAmount(TEN).build();
 
         when(fundService.getFundsFor(requestId, userEtherAddress, totalFndOnContract.getTokenAddress())).thenReturn(Optional.of(totalFndOnContract));
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder().funderAddress("0x4facde56").build()));
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.emptyList());
 
         final boolean result = refundValidator.isRefundable(userProfile, fund, requestId, requestStatus);
 
@@ -101,7 +101,7 @@ class RefundValidatorTest {
         if (StringUtils.isNotBlank(zrxFund)) {
             when(fundService.getFundsFor(requestId, userEtherAddress, ZRX_TOKEN_ADDRESS)).thenReturn(Optional.of(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal(zrxFund)).build()));
         }
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder().funderAddress("0x4facde56").build()));
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.emptyList());
 
         final boolean result = refundValidator.isRefundable(userProfile, fund, requestId, requestStatus);
 
@@ -158,8 +158,8 @@ class RefundValidatorTest {
 
         when(fundService.getFundsFor(requestId, userEtherAddress, totalFndOnContract.getTokenAddress())).thenReturn(Optional.of(totalFndOnContract));
         when(fundService.getFundsFor(requestId, userEtherAddress, totalZrxOnContract.getTokenAddress())).thenReturn(Optional.of(totalZrxOnContract));
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Arrays.asList(RefundRequestDto.builder().funderAddress("0x4facde56").build(),
-                                                                                                            RefundRequestDto.builder().funderAddress(userEtherAddress).build()));
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Arrays.asList(RefundRequestDto.builder().requestId(requestId).funderAddress("0x4facde56").build(),
+                                                                                                            RefundRequestDto.builder().requestId(requestId).funderAddress(userEtherAddress).build()));
 
         final boolean result = refundValidator.isRefundable(userProfile, fund, requestId, requestStatus);
 
