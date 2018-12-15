@@ -12,9 +12,11 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,12 +50,12 @@ class RefundToFundWithUserDtoMapperTest {
                               .creationDate(LocalDateTime.now()).blockchainEventId(238L)
                               .build();
         final TokenValueDto tokenValueDto = TokenValueDto.builder().tokenSymbol("SOT").totalAmount(new BigDecimal("40")).build();
-        final UserProfile refundUserProfile = UserProfile.builder().id(refunderUserId).etherAddress(refunderAddress).name(refunderUserName).build();
-        final UserProfile loggedInUserProfile = UserProfile.builder().id(refunderUserId).etherAddress(refunderAddress).name(refunderUserName).build();
+        final UserProfile refundUserProfile = UserProfile.builder().id(refunderUserId).etherAddresses(Collections.singletonList(refunderAddress)).name(refunderUserName).build();
+        final UserProfile loggedInUserProfile = UserProfile.builder().id(refunderUserId).etherAddresses(Collections.singletonList(refunderAddress)).name(refunderUserName).build();
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(refunderUserId)).thenReturn(refundUserProfile);
+        when(profileService.getUserProfile(any())).thenReturn(refundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(refund);
@@ -83,12 +85,12 @@ class RefundToFundWithUserDtoMapperTest {
                               .creationDate(LocalDateTime.now()).blockchainEventId(238L)
                               .build();
         final TokenValueDto tokenValueDto = TokenValueDto.builder().tokenSymbol("FND").totalAmount(new BigDecimal("445")).build();
-        final UserProfile refundUserProfile = UserProfile.builder().id(refunderUserId).etherAddress(refunderAddress).name(refunderUserName).build();
-        final UserProfile loggedInUserProfile = UserProfile.builder().id(refunderUserId).etherAddress(refunderAddress).name(refunderUserName).build();
+        final UserProfile refundUserProfile = UserProfile.builder().id(refunderUserId).etherAddresses(Collections.singletonList(refunderAddress)).name(refunderUserName).build();
+        final UserProfile loggedInUserProfile = UserProfile.builder().id(refunderUserId).etherAddresses(Collections.singletonList(refunderAddress)).name(refunderUserName).build();
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(refunderUserId)).thenReturn(refundUserProfile);
+        when(profileService.getUserProfile(any())).thenReturn(refundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(refund);
@@ -118,12 +120,12 @@ class RefundToFundWithUserDtoMapperTest {
                               .creationDate(LocalDateTime.now()).blockchainEventId(238L)
                               .build();
         final TokenValueDto tokenValueDto = TokenValueDto.builder().tokenSymbol("SOT").totalAmount(new BigDecimal("23")).build();
-        final UserProfile refundUserProfile = UserProfile.builder().id(refunderUserId).etherAddress(refunderAddress).name(refunderUserName).build();
-        final UserProfile loggedInUserProfile = UserProfile.builder().id("fgh").etherAddress("0xrdtdr").name(refunderUserName).build();
+        final UserProfile refundUserProfile = UserProfile.builder().id(refunderUserId).etherAddresses(Collections.singletonList(refunderAddress)).name(refunderUserName).build();
+        final UserProfile loggedInUserProfile = UserProfile.builder().id("fgh").etherAddresses(Collections.singletonList("0xrdtdr")).name(refunderUserName).build();
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(refunderUserId)).thenReturn(refundUserProfile);
+        when(profileService.getUserProfile(any())).thenReturn(refundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(refund);
@@ -153,12 +155,12 @@ class RefundToFundWithUserDtoMapperTest {
                               .creationDate(LocalDateTime.now()).blockchainEventId(238L)
                               .build();
         final TokenValueDto tokenValueDto = TokenValueDto.builder().tokenSymbol("SOT").totalAmount(new BigDecimal("23")).build();
-        final UserProfile refundUserProfile = UserProfile.builder().id(refunderUserId).etherAddress(refunderAddress).name(refunderUserName).build();
-        final UserProfile loggedInUserProfile = UserProfile.builder().id(refunderUserId).etherAddress("0xrdtdr").name(refunderUserName).build();
+        final UserProfile refundUserProfile = UserProfile.builder().id(refunderUserId).etherAddresses(Collections.singletonList(refunderAddress)).name(refunderUserName).build();
+        final UserProfile loggedInUserProfile = UserProfile.builder().id(refunderUserId).etherAddresses(Collections.singletonList("0xrdtdr")).name(refunderUserName).build();
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);
-        when(profileService.getUserProfile(refunderUserId)).thenReturn(refundUserProfile);
+        when(profileService.getUserProfile(any())).thenReturn(refundUserProfile);
         when(securityContextService.getLoggedInUserProfile()).thenReturn(Optional.of(loggedInUserProfile));
 
         final FundWithUserDto result = mapper.map(refund);
@@ -185,7 +187,7 @@ class RefundToFundWithUserDtoMapperTest {
                                     .creationDate(LocalDateTime.now()).blockchainEventId(238L)
                                     .build();
         final TokenValueDto tokenValueDto = TokenValueDto.builder().tokenSymbol("SOT").totalAmount(new BigDecimal("23")).build();
-        final UserProfile loggedInUserProfile = UserProfile.builder().id("efsgfbg").etherAddress("0xrdtdr").name("sfas").build();
+        final UserProfile loggedInUserProfile = UserProfile.builder().id("efsgfbg").etherAddresses(Collections.singletonList("0xrdtdr")).name("sfas").build();
 
 
         when(tokenValueDtoMapper.map(tokenValue)).thenReturn(tokenValueDto);

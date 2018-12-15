@@ -77,6 +77,7 @@
     "LICENSE"
   ],
   "dependencies": {
+    "@arkane-network/arkane-connect": "^1.0.0",
     "@types/toastr": "^2.1.35",
     "bignumber.js": "^5.0.0",
     "bootstrap": "^4.0.0",
@@ -92,6 +93,7 @@
     "requirejs": "^2.3.5",
     "sweetalert2": "^7.19.3",
     "toastr": "^2.1.4",
+    "tslib": "^1.9.3",
     "uuid": "^3.2.1",
     "v-money": "github:nholden/v-money",
     "vue": "^2.5.2",
@@ -101,6 +103,6 @@
     "vue-router": "^3.0.1",
     "vue-select": "^2.4.0",
     "vue-timeago": "^4.0.1",
-    "web3": "^0.20.6"
+    "web3": "0.20.7"
   }
 }

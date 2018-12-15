@@ -32,7 +32,7 @@
         </div>
     </section>
 
-    <div is="wizard-component" inline-template="true">
+    <div is="wizard-component" inline-template="false" th:attr="'v-bind:arkanetoken'='&quot;' + ${arkanetoken} + '&quot;','v-bind:arkane-environment'='&quot;' + ${@environment.getProperty('network.arkane.environment')} + '&quot;'">
         <div class="wizard">
             <section class="position-relative mb-5">
                 <div class="wizard__content">
@@ -144,21 +144,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="card">
-                                        <div class="card-header">
-                                            Describe why you would like to add funding to this GitHub Issue.
-                                        </div>
-                                        <div class="card-body">
-                                        <textarea
-                                                title="Describe why you would like to add funding to this GitHub Issue."
-                                                placeholder="ex.: This issue is blocking me from integrating this product with an other piece of open source software."
-                                                class="form-control"></textarea>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="wizard__footer">
-                                <button class="btn btn-secondary" v-on:click="gotoStep(2)">
+                                <span class="text-danger" th:if="${arkanetoken eq null}">FundRequest uses Arkane as payment provider, to continue please <a class="text-danger btn-link focus" href="/profile/link/arkane">connect an Arkane account</a></span>
+                                <span class="text-danger" th:if="${arkanetoken != null && profile.getWallets().isEmpty()}">FundRequest uses Arkane as payment provider, to continue please <a class="text-danger btn-link focus" href="/profile/managewallets">link an Arkane wallet</a></span>
+                                <button class="btn btn-secondary" v-on:click="gotoStep(2)" th:disabled="${arkanetoken eq null && profile.getWallets().isEmpty()}">
                                     Continue to payment details
                                 </button>
                             </div>
@@ -168,6 +159,30 @@
                              v-bind:class="getClassesPanel(2)">
                             <div class="row mb-3">
                                 <div class="col-12">
+                                    <div class="card mb-3">
+                                        <div class="card-header">
+                                            Which wallet do you want to use to fund the request?
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12 col-md-12 col-lg-12">
+                                                    <div class="input-group">
+                                                            <select title="token" class="form-control" size="auto"
+                                                                    v-model="selectedWallet">
+                                                              <option v-for="wallet in wallets"
+                                                                      v-bind:value="wallet">
+                                                                {{ wallet.description }} ({{getReadableAddress(wallet.address)}})
+                                                              </option>
+                                                            </select>
+                                                        </span>
+                                                            <div class="invalid-feedback" v-if="errorMessages != null">
+                                                                {{ errorMessages.fundAmount }}
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="card mb-3">
                                         <div class="card-header">
                                             For how much would you like to fund the request?
@@ -199,57 +214,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="card">
-                                        <div class="card-header">
-                                            Select your preferred payment method.
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="form-check mb-2">
-                                                <input class="form-check-input" type="radio" name="paymentMethod"
-                                                       v-model="paymentMethod"
-                                                       :disabled="paymentMethods.dapp.disabledMsg != ''"
-                                                       id="paymentMethod-dapp" v-bind:value="paymentMethods.dapp" />
-                                                <label class="form-check-label" for="paymentMethod-dapp">
-                                                    MetaMask / Mist / DApp Browser
-                                                    <small v-if="paymentMethods.dapp.disabledMsg">
-                                                        (<span
-                                                            class="text-warning">{{paymentMethods.dapp.disabledMsg}}</span>)
-                                                    </small>
-                                                </label>
-                                            </div>
-                                            <div class="form-check mb-2">
-                                                <input :disabled="paymentMethods.wallet.disabledMsg != ''"
-                                                       class="form-check-input" type="radio"
-                                                       v-model="paymentMethod"
-                                                       name="paymentMethod" id="paymentMethod-wallet"
-                                                       v-bind:value="paymentMethods.wallet" />
-                                                <label class="form-check-label" for="paymentMethod-wallet">
-                                                    Internal Wallet {{ paymentMethods.wallet.disabledMsg }}
-                                                </label>
-                                            </div>
-                                            <div class="form-check mb-2">
-                                                <input :disabled="paymentMethods.creditCard.disabledMsg != ''"
-                                                       class="form-check-input" type="radio"
-                                                       v-model="paymentMethod"
-                                                       name="paymentMethod" id="paymentMethod-creditcard"
-                                                       v-bind:value="paymentMethods.creditCard" />
-                                                <label class="form-check-label" for="paymentMethod-creditcard">
-                                                    Credit card {{ paymentMethods.creditCard.disabledMsg }}
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input :disabled="paymentMethods.paypal.disabledMsg != ''"
-                                                       class="form-check-input" type="radio"
-                                                       v-model="paymentMethod"
-                                                       name="paymentMethod" id="paymentMethod-paypal"
-                                                       v-bind:value="paymentMethods.paypal" />
-                                                <label class="form-check-label" for="paymentMethod-paypal">
-                                                    PayPal {{ paymentMethods.paypal.disabledMsg }}
-                                                </label>
                                             </div>
                                         </div>
                                     </div>
@@ -311,7 +275,7 @@
                                 </button>
 
                                 <button class="btn btn-secondary" v-on:click="fund()">
-                                    <span v-if="paymentMethod == paymentMethods.dapp">Start transaction</span>
+                                    <span v-if="paymentMethod == paymentMethods.arkane">Start transaction</span>
                                 </button>
                             </div>
                         </div>

@@ -29,16 +29,15 @@
                             <dt><label class="mb-0">E-mail</label></dt>
                             <dd th:text="${profile.getEmail()}">my@email.com</dd>
                         </dl>
-                        <div class="md-form">
-                            <label for="eth-address" class="w-100">ETH Address</label>
-
-                            <input id="eth-address"
-                                   data-edit="eth-address"
-                                   data-edit-validation="ethereum"
-                                   class="form-control form-control--instant-edit"
-                                   th:value="${profile.getEtherAddress()}" type="text" />
-
-                            <div class="text-danger" data-edit-messages="eth-address"></div>
+                        <div class="mb-1">
+                            <dt><label class="mb-0">Wallets</label> <small><a th:if="${profile.arkane != null}" href="/profile/managewallets">Manage</a></small></dt>
+                            <dd th:each="w : ${profile.getWallets()}"><span th:text="${w.description}"></span> <small th:text="${'(' + w.address+ ')'}"></small></dd>
+                        </div>
+                        <div class="mb-1" th:if="${profile.arkane != null && profile.getWallets().isEmpty()}">
+                            no wallets found
+                        </div>
+                        <div class="mb-1" th:if="${profile.arkane == null}">
+                            To gain access to your wallets, please <a href="/profile/link/arkane">link your account to Arkane</a>
                         </div>
                     </div>
                 </div>

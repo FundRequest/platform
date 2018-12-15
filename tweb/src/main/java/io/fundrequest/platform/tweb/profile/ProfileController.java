@@ -9,6 +9,9 @@ import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
 import io.fundrequest.platform.profile.ref.ReferralService;
 import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
 import io.fundrequest.platform.profile.stackoverflow.dto.StackOverflowVerificationDto;
+import org.apache.commons.lang3.StringUtils;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.Principal;
 
@@ -30,6 +34,7 @@ public class ProfileController {
     private ReferralService referralService;
     private GithubBountyService githubBountyService;
     private StackOverflowBountyService stackOverflowBountyService;
+    private String arkaneEnvironment;
 
 
     public ProfileController(final ApplicationEventPublisher eventPublisher,
@@ -37,12 +42,14 @@ public class ProfileController {
                              final MessageService messageService,
                              final ReferralService referralService,
                              final GithubBountyService githubBountyService,
+                             final @Value("${network.arkane.environment}") String arkaneEnvironment,
                              final StackOverflowBountyService stackOverflowBountyService) {
         this.eventPublisher = eventPublisher;
         this.profileService = profileService;
         this.messageService = messageService;
         this.referralService = referralService;
         this.githubBountyService = githubBountyService;
+        this.arkaneEnvironment = arkaneEnvironment;
         this.stackOverflowBountyService = stackOverflowBountyService;
     }
 
@@ -84,15 +91,36 @@ public class ProfileController {
     }
 
     @GetMapping("/profile/link/{provider}")
-    public ModelAndView linkProfile(@PathVariable String provider, HttpServletRequest request, Principal principal) {
-        String link = profileService.createSignupLink(request, principal, Provider.fromString(provider.replaceAll("[^A-Za-z]", "")));
+    public ModelAndView linkProfile(@PathVariable String provider,
+                                    HttpServletRequest request,
+                                    Principal principal,
+                                    @RequestParam(value = "redirectUrl", required = false) String redirectUrl) {
+        if (StringUtils.isBlank(redirectUrl)) {
+            redirectUrl = request.getRequestURL().toString();
+        }
+        String link = profileService.createSignupLink(request, principal, Provider.fromString(provider.replaceAll("[^A-Za-z]", "")), redirectUrl);
         return new ModelAndView(new RedirectView(link, false));
     }
 
-    @PostMapping("/profile/etheraddress")
-    public ModelAndView updateAddress(Principal principal, @RequestParam("etheraddress") String etherAddress) {
-        profileService.updateEtherAddress(principal, etherAddress);
-        return redirectToProfile();
+    @GetMapping("/profile/managewallets")
+    public ModelAndView manageWallets(Principal principal, HttpServletRequest request) throws UnsupportedEncodingException {
+        String bearerToken = URLEncoder.encode(profileService.getArkaneAccessToken((KeycloakAuthenticationToken) principal), "UTF-8");
+        String redirectUri = request.getHeader("referer");
+        if (redirectUri == null) {
+            redirectUri = "/profile";
+        }
+        redirectUri = URLEncoder.encode(redirectUri, "UTF-8");
+        String url = getConnectEndpoint(bearerToken, redirectUri);
+        profileService.walletsManaged(principal);
+        return new ModelAndView(new RedirectView(url));
+    }
+
+    private String getConnectEndpoint(String bearerToken, String redirectUri) {
+        String endpoint = "https://connect-staging.arkane.network";
+        if (StringUtils.isNotBlank(arkaneEnvironment)) {
+            endpoint = "https://connect-" + arkaneEnvironment + ".arkane.network";
+        }
+        return endpoint + "/wallets/manage?redirectUri=" + redirectUri + "&data=eyJjaGFpbiI6ICJldGhlcmV1bSJ9&bearerToken=" + bearerToken;
     }
 
     @PostMapping("/profile/headline")
@@ -106,8 +134,13 @@ public class ProfileController {
     }
 
     @GetMapping("/profile/link/{provider}/redirect")
-    public ModelAndView redirectToHereAfterProfileLink(Principal principal, @PathVariable("provider") String provider) {
+    public ModelAndView redirectToHereAfterProfileLink(Principal principal,
+                                                       @PathVariable("provider") String provider,
+                                                       @RequestParam(value = "redirectUrl", required = false) String redirectUrl) {
         profileService.userProviderIdentityLinked(principal, Provider.fromString(provider));
+        if (StringUtils.isNotBlank(redirectUrl)) {
+            return new ModelAndView(new RedirectView(redirectUrl));
+        }
         return redirectToProfile();
     }
 

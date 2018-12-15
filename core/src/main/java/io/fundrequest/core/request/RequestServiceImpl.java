@@ -174,9 +174,9 @@ class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<RequestDto> findRequestsForUser(Principal principal) {
         Set<Request> result = new HashSet<>();
-        String etherAddress = profileService.getUserProfile(principal).getEtherAddress();
+        List<String> etherAddresses= profileService.getUserProfile(principal).getEtherAddresses();
         result.addAll(requestRepository.findRequestsUserIsWatching(principal.getName()));
-        result.addAll(requestRepository.findRequestsUserHasFunded(principal.getName(), etherAddress));
+        result.addAll(requestRepository.findRequestsUserHasFunded(principal.getName(), etherAddresses.stream().map(String::toLowerCase).collect(Collectors.toList())));
         return mappers.mapList(Request.class, RequestDto.class, result);
     }
 

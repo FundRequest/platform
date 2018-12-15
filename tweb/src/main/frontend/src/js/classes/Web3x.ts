@@ -10,26 +10,14 @@ export class Web3x {
         }
     }
 
-    public  static async getInstance(): Promise<any> {
+    public static getInstance(): any {
         if (Web3x.instance == null) {
             let provider;
-            if (typeof (<any>window).web3 !== 'undefined') {
-                provider = (<any>window).web3.currentProvider;
-            } else {
-                const endpointUrl = document.head.querySelector("[name=\"ethereum:endpointUrl\"]");
-                provider = new (<any>window).Web3.providers.HttpProvider(endpointUrl);
-                // TODO: make app readonly, no transactions are possible
-            }
-
+            const endpointUrl:any = document.head.querySelector("[name=\"ethereum:endpointUrl\"]");
+            provider = new (<any>window).Web3.providers.HttpProvider(endpointUrl.content);
             Web3x.instance = new Web3x(provider);
-            if (Web3x.instance._web3.currentProvider) {
-                await Web3x.instance._web3.currentProvider.enable();
-            }
         }
         return Web3x.instance._web3;
     }
 
-    public static async getAccount(): Promise<any> {
-        return (await Web3x.getInstance()).eth.defaultAccount;
-    }
 }

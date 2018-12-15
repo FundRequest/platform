@@ -5,6 +5,9 @@ import {FundRepository} from '../contracts/FundRepository';
 import Utils from './Utils';
 import {TokenInfo} from './token-info';
 import {MiniMeToken} from '../contracts/MiniMeToken';
+import BigNumber from "bignumber.js";
+import FundRequestContractDef from "./FundRequestContractDef";
+import ERC20ContractDef from "./ERC20ContractDef";
 
 export class Contracts {
 
@@ -19,7 +22,8 @@ export class Contracts {
     private _fundRepository: Promise<FundRepository> = null;
     private _web3: any = null;
 
-    private constructor() {}
+    private constructor() {
+    }
 
     private async initialize() {
         this._web3 = await Web3x.getInstance();
@@ -93,5 +97,22 @@ export class Contracts {
             await Contracts.instance.initialize();
         }
         return Contracts.instance;
+    }
+
+
+    public static encodeErc20ApproveFunction(address: string, amount: BigNumber) {
+        return Web3x.getInstance().eth.contract(ERC20ContractDef.abi).at("").approve.getData(
+            address, amount
+        );
+    }
+
+    public static encodeFundFunction(platform: string, platformId: string, token: string, amount: BigNumber) {
+        let web3 = Web3x.getInstance();
+        return web3.eth.contract(FundRequestContractDef.abi).at("").fund.getData(
+            web3.fromAscii("GITHUB"),
+            platformId,
+            token,
+            amount
+        );
     }
 }
