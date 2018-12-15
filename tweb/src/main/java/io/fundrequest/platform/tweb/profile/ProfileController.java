@@ -102,16 +102,14 @@ public class ProfileController {
         return new ModelAndView(new RedirectView(link, false));
     }
 
-    @PostMapping("/profile/etheraddress")
-    public ModelAndView updateAddress(Principal principal, @RequestParam("etheraddress") String etherAddress) {
-        profileService.updateEtherAddress(principal, etherAddress);
-        return redirectToProfile();
-    }
-
     @GetMapping("/profile/managewallets")
     public ModelAndView manageWallets(Principal principal, HttpServletRequest request) throws UnsupportedEncodingException {
         String bearerToken = URLEncoder.encode(profileService.getArkaneAccessToken((KeycloakAuthenticationToken) principal), "UTF-8");
-        String redirectUri = URLEncoder.encode(request.getHeader("referer"), "UTF-8");
+        String redirectUri = request.getHeader("referer");
+        if (redirectUri == null) {
+            redirectUri = "/profile";
+        }
+        redirectUri = URLEncoder.encode(redirectUri, "UTF-8");
         String url = getConnectEndpoint(bearerToken, redirectUri);
         profileService.walletsManaged(principal);
         return new ModelAndView(new RedirectView(url));
