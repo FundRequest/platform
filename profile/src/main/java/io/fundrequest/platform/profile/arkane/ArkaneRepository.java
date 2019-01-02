@@ -8,7 +8,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @FeignClient(
         name = "arkane-client",
-        url = "https://api-staging.arkane.network/api"
+        url = "${network.arkane.api.endpoint}"
 )
 public interface ArkaneRepository {
     @RequestMapping(value = "/wallets", method = GET)

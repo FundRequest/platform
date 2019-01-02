@@ -63,6 +63,7 @@ public class ProfileController {
         mav.addObject("refShareTwitter", processRefLinkMessage(messageService.getMessageByKey("REFERRAL_SHARE.twitter"), getRefLink(principal, "twitter")));
         mav.addObject("refShareLinkedin", processRefLinkMessage(messageService.getMessageByKey("REFERRAL_SHARE.linkedin"), getRefLink(principal, "linkedin")));
         mav.addObject("refShareFacebook", processRefLinkMessage(messageService.getMessageByKey("REFERRAL_SHARE.facebook"), getRefLink(principal, "facebook")));
+        mav.addObject("arkaneWalletEndpoint", getArkaneWalletEndpoint());
 
         return mav;
     }
@@ -116,11 +117,19 @@ public class ProfileController {
     }
 
     private String getConnectEndpoint(String bearerToken, String redirectUri) {
-        String endpoint = "https://connect-staging.arkane.network";
+        String endpoint = "https://connect.arkane.network";
         if (StringUtils.isNotBlank(arkaneEnvironment)) {
             endpoint = "https://connect-" + arkaneEnvironment + ".arkane.network";
         }
         return endpoint + "/wallets/manage?redirectUri=" + redirectUri + "&data=eyJjaGFpbiI6ICJldGhlcmV1bSJ9&bearerToken=" + bearerToken;
+    }
+
+    private String getArkaneWalletEndpoint() {
+        String endpoint = "https://app.arkane.network/chains/ethereum/wallets/";
+        if (StringUtils.isNotBlank(arkaneEnvironment)) {
+            endpoint = "https://" + arkaneEnvironment + ".arkane.network/chains/ethereum/wallets/";
+        }
+        return endpoint;
     }
 
     @PostMapping("/profile/headline")

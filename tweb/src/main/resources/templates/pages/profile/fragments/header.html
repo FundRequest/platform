@@ -31,7 +31,7 @@
                         </dl>
                         <div class="mb-1">
                             <dt><label class="mb-0">Wallets</label> <small><a th:if="${profile.arkane != null}" href="/profile/managewallets">Manage</a></small></dt>
-                            <dd th:each="w : ${profile.getWallets()}"><span th:text="${w.description}"></span> <small th:text="${'(' + w.address+ ')'}"></small></dd>
+                            <dd th:each="w : ${profile.getWallets()}"><a target="_blank" th:href="${arkaneWalletEndpoint + w.id}" th:text="${w.description}"></a> <small th:text="${'(' + w.address+ ')'}"></small></dd>
                         </div>
                         <div class="mb-1" th:if="${profile.arkane != null && profile.getWallets().isEmpty()}">
                             no wallets found
