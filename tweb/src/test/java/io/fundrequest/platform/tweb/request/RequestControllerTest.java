@@ -41,6 +41,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -289,18 +290,27 @@ public class RequestControllerTest extends AbstractControllerTest<RequestControl
         when(requestService.findRequest(1L)).thenReturn(request);
         UserClaimableDto userClaimableDto = UserClaimableDto.builder().build();
         when(requestService.getUserClaimableResult(principal, 1L)).thenReturn(userClaimableDto);
-        when(profileService.getUserProfile(principal.getName()).getEtherAddress()).thenReturn("0x0000000");
+        when(profileService.getUserProfile(principal).getEtherAddresses()).thenReturn(Collections.singletonList("0x0000000"));
+        when(profileService.getUserProfile(principal).userOwnsAddress("0x0000000")).thenReturn(true);
 
-        this.mockMvc.perform(post("/requests/{id}/claim", 1L).principal(principal))
+        this.mockMvc.perform(post("/requests/{id}/claim", 1L)
+                                     .param("address", "0x0000000")
+                                     .param("platform", request.getIssueInformation().getPlatform().name())
+                                     .param("platformId", request.getIssueInformation().getPlatformId())
+                                     .principal(principal))
                     .andExpect(redirectAlert("success", "Your claim has been requested and is waiting for approval."))
                     .andExpect(redirectedUrl("/requests/" + 1L));
     }
 
     @Test
     public void claimRequestShowsErrorMsg() throws Exception {
-        when(profileService.getUserProfile(principal.getName()).getEtherAddress()).thenReturn("");
+        when(profileService.getUserProfile(principal).userOwnsAddress("0x0000000")).thenReturn(false);
 
-        this.mockMvc.perform(post("/requests/{id}/claim", 1L).principal(principal))
+        this.mockMvc.perform(post("/requests/{id}/claim", 1L)
+                                     .param("address", "0x0000000")
+                                     .param("platform", "GITHUB")
+                                     .param("platformId", "id")
+                                     .principal(principal))
                     .andExpect(redirectAlert("danger", "Please update <a href=\"/profile\">your profile</a> with a correct ether address."))
                     .andExpect(redirectedUrl("/requests/" + 1L));
     }

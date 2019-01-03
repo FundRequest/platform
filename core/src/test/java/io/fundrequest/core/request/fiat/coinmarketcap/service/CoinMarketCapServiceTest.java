@@ -9,11 +9,11 @@ import io.fundrequest.core.request.fiat.coinmarketcap.dto.ticker.CmcTickerQuotes
 import io.fundrequest.core.request.fiat.coinmarketcap.dto.ticker.CmcTickerResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +32,8 @@ class CoinMarketCapServiceTest {
         client = mock(CoinMarketCapClient.class);
         cacheManager = mock(CacheManager.class, RETURNS_DEEP_STUBS);
         service = new CoinMarketCapService(client, cacheManager);
-        when(cacheManager.getCache("cmc_listings").get("all", List.class)).thenReturn(null);
+        when(cacheManager.getCache("cmc_listings")).thenReturn(mock(Cache.class));
+
     }
 
     @Test

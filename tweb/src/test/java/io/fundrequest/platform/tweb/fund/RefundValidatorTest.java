@@ -49,11 +49,11 @@ class RefundValidatorTest {
         final UserFundsDto fund = buildUserFundsDto(userEtherAddress, "5", "", "", "");
         final long requestId = 35L;
         final String requestStatus = "Funded";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(true).etherAddress(userEtherAddress).build();
+        final UserProfile userProfile = UserProfile.builder().etherAddresses(Collections.singletonList(userEtherAddress)).build();
         final TokenValueDto totalFndOnContract = TokenValueDtoMother.FND().totalAmount(TEN).build();
 
         when(fundService.getFundsFor(requestId, userEtherAddress, totalFndOnContract.getTokenAddress())).thenReturn(Optional.of(totalFndOnContract));
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder().funderAddress("0x4facde56").build()));
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.emptyList());
 
         final boolean result = refundValidator.isRefundable(userProfile, fund, requestId, requestStatus);
 
@@ -93,7 +93,7 @@ class RefundValidatorTest {
         final UserFundsDto fund = buildUserFundsDto(userEtherAddress, fndFund, zrxFund, "", "");
         final long requestId = 35L;
         final String requestStatus = "Funded";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(true).etherAddress(userEtherAddress).build();
+        final UserProfile userProfile = UserProfile.builder().etherAddresses(Collections.singletonList(userEtherAddress)).build();
 
         if (StringUtils.isNotBlank(fndFund)) {
             when(fundService.getFundsFor(requestId, userEtherAddress, FND_TOKEN_ADDRESS)).thenReturn(Optional.of(TokenValueDtoMother.FND().totalAmount(new BigDecimal(fndFund)).build()));
@@ -101,7 +101,7 @@ class RefundValidatorTest {
         if (StringUtils.isNotBlank(zrxFund)) {
             when(fundService.getFundsFor(requestId, userEtherAddress, ZRX_TOKEN_ADDRESS)).thenReturn(Optional.of(TokenValueDtoMother.ZRX().totalAmount(new BigDecimal(zrxFund)).build()));
         }
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.singletonList(RefundRequestDto.builder().funderAddress("0x4facde56").build()));
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Collections.emptyList());
 
         final boolean result = refundValidator.isRefundable(userProfile, fund, requestId, requestStatus);
 
@@ -114,7 +114,7 @@ class RefundValidatorTest {
         final UserFundsDto fund = buildUserFundsDto(userEtherAddress, "20", "", "", "");
         final long requestId = 35L;
         final String requestStatus = "Claimable";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(true).etherAddress(userEtherAddress).build();
+        final UserProfile userProfile = UserProfile.builder().etherAddresses(Collections.singletonList(userEtherAddress)).build();
         final TokenValueDto totalFndOnContract = TokenValueDtoMother.FND().totalAmount(TEN).build();
         final TokenValueDto totalZrxOnContract = TokenValueDtoMother.ZRX().totalAmount(ZERO).build();
 
@@ -133,7 +133,7 @@ class RefundValidatorTest {
         final UserFundsDto fund = buildUserFundsDto("0x4657efa", "20", "", "", "");
         final long requestId = 35L;
         final String requestStatus = "Funded";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(true).etherAddress(userEtherAddress).build();
+        final UserProfile userProfile = UserProfile.builder().etherAddresses(Collections.singletonList(userEtherAddress)).build();
         final TokenValueDto totalFndOnContract = TokenValueDtoMother.FND().totalAmount(TEN).build();
         final TokenValueDto totalZrxOnContract = TokenValueDtoMother.ZRX().totalAmount(ZERO).build();
 
@@ -152,14 +152,14 @@ class RefundValidatorTest {
         final UserFundsDto fund = buildUserFundsDto(userEtherAddress, "20", "", "", "");
         final long requestId = 35L;
         final String requestStatus = "Funded";
-        final UserProfile userProfile = UserProfile.builder().etherAddressVerified(true).etherAddress(userEtherAddress).build();
+        final UserProfile userProfile = UserProfile.builder().etherAddresses(Collections.singletonList(userEtherAddress)).build();
         final TokenValueDto totalFndOnContract = TokenValueDtoMother.FND().totalAmount(TEN).build();
         final TokenValueDto totalZrxOnContract = TokenValueDtoMother.ZRX().totalAmount(ZERO).build();
 
         when(fundService.getFundsFor(requestId, userEtherAddress, totalFndOnContract.getTokenAddress())).thenReturn(Optional.of(totalFndOnContract));
         when(fundService.getFundsFor(requestId, userEtherAddress, totalZrxOnContract.getTokenAddress())).thenReturn(Optional.of(totalZrxOnContract));
-        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Arrays.asList(RefundRequestDto.builder().funderAddress("0x4facde56").build(),
-                                                                                                            RefundRequestDto.builder().funderAddress(userEtherAddress).build()));
+        when(refundService.findAllRefundRequestsFor(requestId, PENDING, APPROVED)).thenReturn(Arrays.asList(RefundRequestDto.builder().requestId(requestId).funderAddress("0x4facde56").build(),
+                                                                                                            RefundRequestDto.builder().requestId(requestId).funderAddress(userEtherAddress).build()));
 
         final boolean result = refundValidator.isRefundable(userProfile, fund, requestId, requestStatus);
 

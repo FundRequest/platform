@@ -10,7 +10,8 @@ public enum Provider {
     GOOGLE,
     LINKEDIN,
     TWITTER,
-    STACKOVERFLOW;
+    STACKOVERFLOW,
+    ARKANE;
 
     private static final Map<String, Provider> platformMap;
 

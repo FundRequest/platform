@@ -17,7 +17,7 @@ public class ProfilesExpressionObject {
     }
 
     public Optional<UserProfile> findByUserId(final String userId) {
-        return userId == null ? Optional.empty() : Optional.ofNullable(profileService.getUserProfile(userId));
+        return userId == null ? Optional.empty() : Optional.ofNullable(profileService.getUserProfile(() -> userId));
     }
 
     public Function<UserProfile, String> getName() {

@@ -94,14 +94,6 @@ class DummyKeycloakRepository implements KeycloakRepository {
         userRepresentation.getAttributes().put(property, Collections.singletonList(value));
     }
 
-    public String getEtherAddress(String userId) {
-        return getAttribute(ETHER_ADDRESS_KEY);
-    }
-
-    public String getEtherAddress(UserRepresentation userRepresentation) {
-        return getAttribute(ETHER_ADDRESS_KEY);
-    }
-
     @Override
     public boolean isEtherAddressVerified(UserRepresentation userRepresentation) {
         return "true".equalsIgnoreCase(getAttribute(ETHER_ADDRESS_VERIFIED_KEY));

@@ -188,11 +188,11 @@ public class RequestServiceImplTest {
         List<Request> requests = singletonList(RequestMother.freeCodeCampNoUserStories().build());
         when(requestRepository.findRequestsUserIsWatching(user.getName())).thenReturn(requests);
 
-        String address = "0x0";
-        when(profileService.getUserProfile(user).getEtherAddress()).thenReturn(address);
+        List<String> addresses = Collections.singletonList("0x0");
+        when(profileService.getUserProfile(user).getEtherAddresses()).thenReturn(addresses);
 
         List<Request> fundedRequests = singletonList(RequestMother.fundRequestArea51().build());
-        when(requestRepository.findRequestsUserHasFunded(user.getName(), address)).thenReturn(fundedRequests);
+        when(requestRepository.findRequestsUserHasFunded(user.getName(), addresses)).thenReturn(fundedRequests);
         HashSet<Request> userRequets = new HashSet<>();
         userRequets.addAll(requests);
         userRequets.addAll(fundedRequests);

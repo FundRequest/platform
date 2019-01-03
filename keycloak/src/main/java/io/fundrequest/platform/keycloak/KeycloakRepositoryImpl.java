@@ -2,7 +2,7 @@ package io.fundrequest.platform.keycloak;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.fundrequest.platform.keycloak.dto.LinkedInTokenResult;
+import io.fundrequest.platform.keycloak.dto.AccessTokenResult;
 import lombok.NonNull;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpResponse;
@@ -103,14 +103,6 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         userResource.update(userRepresentation);
     }
 
-    public String getEtherAddress(String userId) {
-        return getAttribute(getUser(userId), ETHER_ADDRESS_KEY);
-    }
-
-    public String getEtherAddress(UserRepresentation userRepresentation) {
-        return getAttribute(userRepresentation, ETHER_ADDRESS_KEY);
-    }
-
     @Override
     public boolean isEtherAddressVerified(final UserRepresentation userRepresentation) {
         return "true".equalsIgnoreCase(getAttribute(userRepresentation, ETHER_ADDRESS_VERIFIED_KEY));
@@ -168,7 +160,11 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
 
     private String getProviderAccessToken(Provider provider, HttpResponse response) throws IOException {
         if (provider == Provider.LINKEDIN) {
-            return objectMapper.readValue(EntityUtils.toString(response.getEntity()), LinkedInTokenResult.class).getAccessToken();
+            return objectMapper.readValue(EntityUtils.toString(response.getEntity()), AccessTokenResult.class).getAccessToken();
+        }
+
+        if (provider == Provider.ARKANE) {
+            return objectMapper.readValue(EntityUtils.toString(response.getEntity()), AccessTokenResult.class).getAccessToken();
         }
         throw new RuntimeException("not supported");
 

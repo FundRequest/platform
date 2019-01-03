@@ -82,9 +82,9 @@
                 </h5>
                 <div class="card-body text-center">
                     <div class="card-text text-center">
-                       <faucet th:attr="'v-bind:name'='&quot;eth-address&quot;','v-bind:address'=${'&quot;'+profile.getEtherAddress()+'&quot;'}"></faucet>
+                       <faucet th:attr="'v-bind:name'='&quot;eth-address&quot;','v-bind:address'=${'&quot;'+profile.getEtherAddresses()+'&quot;'}"></faucet>
                         <div class="text-secondary font-weight-bold"
-                             th:classappend="${profile.hadEtherAddress() ? 'd-none' : ''}"
+                             th:classappend="${profile.hasEtherAddress() ? 'd-none' : ''}"
                              data-edit-empty-message="eth-address">
                             Please enter your ETH address above, in order to receive to receive test FND.
                         </div>

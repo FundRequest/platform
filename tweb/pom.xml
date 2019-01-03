@@ -161,7 +161,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run webpack-prod</arguments>
+                            <arguments>run webpack</arguments>
                         </configuration>
                     </execution>
                 </executions>

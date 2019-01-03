@@ -1,5 +1,6 @@
 <script lang="ts">
-    import {Component, Vue} from "vue-property-decorator";
+    import {Component, Prop, Vue} from "vue-property-decorator";
+    import {ArkaneConnect, EthereumTransactionRequest, Signer, SignMethod, Wallet} from "@arkane-network/arkane-connect"
     import QrcodeVue from "qrcode.vue";
     import {VMoney} from "v-money";
 
@@ -9,9 +10,10 @@
     import {PaymentMethod, PaymentMethods} from "../../classes/payment-method";
     import {Web3x} from "../../classes/Web3x";
     import Utils from "../../classes/Utils";
-    import {PendingFundCommand} from "../models/PendingFundCommand";
     import Alert from "../../classes/Alert";
     import Faq from "./Faq";
+    import BigNumber from "bignumber.js";
+    import {PendingFundCommand} from "../models/PendingFundCommand";
 
     @Component({
         components: {
@@ -31,6 +33,8 @@
         public githubIssue: GithubIssue = null;
         public supportedTokens: TokenInfo[] = [];
         public selectedToken: TokenInfo = null;
+        public wallets: Wallet[] = [];
+        public selectedWallet: Wallet = null;
         public panelsHeight: number = 0;
         public stepTitlesHeight: number = 0;
         public approveInfoModalActive: boolean = false;
@@ -39,9 +43,13 @@
         public currentFundAmount: number = 0;
         public errorMessages: { fundAmount: string } = {fundAmount: ""};
 
-        public paymentMethod: PaymentMethod = PaymentMethods.getInstance().dapp;
+        public paymentMethod: PaymentMethod = PaymentMethods.getInstance().arkane;
         public fundAmount: string = "";
         public description: string = "";
+        private connect: ArkaneConnect;
+
+        @Prop() public arkanetoken: string;
+        @Prop() public arkaneEnvironment: string;
 
         public moneyConfig = {
             decimal: ".",
@@ -62,6 +70,17 @@
             this._network = metaNetwork ? metaNetwork.getAttribute("content") : "";
             this.updateDappPaymentMethod();
             this.gotoStep(1);
+            if (this.arkanetoken) {
+                this.connect = new ArkaneConnect('Arkane', {
+                    environment: this.arkaneEnvironment,
+                    signUsing: SignMethod.POPUP,
+                    bearerTokenProvider: () => this.arkanetoken
+                });
+                this.connect.api.getWallets().then(x => {
+                    this.wallets = x;
+                    this.selectedWallet = this.wallets[0];
+                }).catch(x => console.log(x));
+            }
         }
 
         public getClassesPanel(step: number) {
@@ -86,6 +105,10 @@
             }
         }
 
+        public getReadableAddress(address: string): string {
+            return address.substring(0, 7) + "..." + address.substring(address.length - 5, address.length);
+        }
+
         public async gotoStep(step: number, onlyCompleted: boolean = false) {
             this._loading = true;
             let valid = true;
@@ -100,7 +123,7 @@
                 if (valid && step == 3) {
                     let element = formElements.find((el: HTMLInputElement) => el.name == "fundAmount") as HTMLInputElement;
                     if (this.fundAmountValue > 0) {
-                        if (this.paymentMethod == PaymentMethods.getInstance().dapp) {
+                        if (this.paymentMethod == PaymentMethods.getInstance().arkane) {
                             valid = await this._validateFundAmountBalance(element);
                         }
                     } else {
@@ -126,10 +149,9 @@
 
         private async _validateFundAmountBalance(element: HTMLInputElement): Promise<boolean> {
             let valid = true;
-            if (this.paymentMethod == PaymentMethods.getInstance().dapp) {
-                let balance = await Contracts.getErc20Balance(await Web3x.getAccount(), this.selectedToken);
-                let fundAmountInWei = Number(this.fundAmountValue * Math.pow(10, this.selectedToken.decimals));
-                if (fundAmountInWei > balance) {
+            if (this.paymentMethod == PaymentMethods.getInstance().arkane) {
+                let balance = await this.connect.api.getTokenBalance(this.selectedWallet.id, this.selectedToken.address);
+                if (this.fundAmountValue > balance.balance) {
                     this.errorMessages.fundAmount = `Your ${this.selectedToken.symbol} balance is to low.`;
                     Utils.setElementInvalid(element);
                     valid = false;
@@ -140,7 +162,7 @@
 
         private async updateDappPaymentMethod() {
             await this.updateDappDisabledMsg();
-            this.paymentMethod = PaymentMethods.getInstance().dapp;
+            this.paymentMethod = PaymentMethods.getInstance().arkane;
         }
 
         private async updateDappDisabledMsg() {
@@ -149,21 +171,21 @@
                 await new Promise((resolve, reject) => {
                     web3.version.getNetwork((err, res) => {
                         if (!err && res != this._network) {
-                            PaymentMethods.getInstance().dapp.disabledMsg = "Not connected to main network.";
+                            PaymentMethods.getInstance().arkane.disabledMsg = "Not connected to main network.";
                         }
                         resolve("not connected");
                     });
                 });
             } else {
-                PaymentMethods.getInstance().dapp.disabledMsg = "DApp not available, no accounts available.";
+                PaymentMethods.getInstance().arkane.disabledMsg = "DApp not available, no accounts available.";
             }
         }
 
         private async fund() {
             switch (this.paymentMethod) {
-                case PaymentMethods.getInstance().dapp:
+                case PaymentMethods.getInstance().arkane:
                     try {
-                        let result = await this.fundUsingDapp();
+                        let result = await this.fundUsingArkane();
                         if (result.length > 0) {
                             if (Utils.openedByBrowserplugin) {
                                 document.dispatchEvent(new CustomEvent("browserplugin.to.extension.fnd.FUND_SUCCESS", {
@@ -190,17 +212,12 @@
             return Number(this.fundAmount.replace(/,/g, ""));
         }
 
-        private _handleTransactionError(err): void {
-            Utils.hideLoading();
-            throw new Error(err);
-        }
-
-        private async fundUsingDapp(): Promise<string> {
+        private async fundUsingArkane(): Promise<string> {
             Utils.showLoading();
             let frContractAddress = Contracts.frContractAddress;
             let erc20 = await Contracts.getErc20Contract(this.selectedToken.address);
             let decimals = this.selectedToken.decimals;
-            this.currentAllowance = (await erc20.allowance(await Web3x.getAccount(), frContractAddress)).toNumber();
+            this.currentAllowance = (await erc20.allowance(this.selectedWallet.address, frContractAddress)).toNumber();
             this.currentFundAmount = Number(this.fundAmountValue * Math.pow(10, decimals));
             Utils.hideLoading();
 
@@ -212,26 +229,68 @@
                 Utils.showLoading();
                 if (this.currentAllowance > 0 && this.currentAllowance < this.currentFundAmount) {
                     // setting to 0
-                    await erc20.approveTx(frContractAddress, 0).send({}).catch(rej => this._handleTransactionError(rej));
+                    await this.approveErc20(erc20.address, this.selectedWallet, frContractAddress, new BigNumber("0"));
                     this.currentAllowance = 0;
                 }
                 if (this.currentAllowance === 0) {
                     // You will need to allow the FundRequest contract to access this token
-                    await erc20.approveTx(frContractAddress, Utils.biggestNumber()).send({}).catch(rej => this._handleTransactionError(rej));
+                    await this.approveErc20(erc20.address, this.selectedWallet, frContractAddress, Utils.biggestNumber());
                 }
-                let response = await (await Contracts.getFrContract()).fundTx((await Web3x.getInstance()).fromAscii("GITHUB"), this.githubIssue.platformId, this.selectedToken.address, this.currentFundAmount)
-                    .send({}).catch(rej => this._handleTransactionError(rej)) as string;
-                let pendingFundCommand = new PendingFundCommand();
-                pendingFundCommand.transactionId = response;
-                pendingFundCommand.amount = this.fundAmountValue.toString();
-                pendingFundCommand.description = this.description;
-                pendingFundCommand.fromAddress = await Web3x.getAccount();
-                pendingFundCommand.tokenAddress = this.selectedToken.address;
-                pendingFundCommand.platform = this.githubIssue.platform;
-                pendingFundCommand.platformId = this.githubIssue.platformId;
-                await Utils.postJSON(`/rest/pending-fund`, pendingFundCommand);
-                Utils.hideLoading();
-                return pendingFundCommand.transactionId;
+                try {
+                    let response = <any>(await this.fundInContract(frContractAddress, this.selectedWallet, "GITHUB", this.githubIssue.platformId, this.selectedToken.address, new BigNumber("" + this.currentFundAmount)));
+                    let pendingFundCommand = new PendingFundCommand();
+                    pendingFundCommand.transactionId = response.result.transactionHash;
+                    pendingFundCommand.amount = this.fundAmountValue.toString();
+                    pendingFundCommand.description = this.description;
+                    pendingFundCommand.fromAddress = await this.selectedWallet.address;
+                    pendingFundCommand.tokenAddress = this.selectedToken.address;
+                    pendingFundCommand.platform = this.githubIssue.platform;
+                    pendingFundCommand.platformId = this.githubIssue.platformId;
+                    await Utils.postJSON(`/rest/pending-fund`, pendingFundCommand);
+                    return pendingFundCommand.transactionId;
+                } catch (e) {
+                    if (!e.status || e.status !== 'ABORTED') {
+                        throw e;
+                    }
+                    return Promise.resolve("");
+                }
+                finally {
+                    Utils.hideLoading();
+                }
+            }
+        }
+
+        private async approveErc20(tokenContractAddress: string, wallet: Wallet, spender: string, amount: BigNumber) {
+            const signer: Signer = this.connect.createSigner();
+            try {
+                let req = new EthereumTransactionRequest();
+                req.to = tokenContractAddress;
+                req.type = 'ETH_TRANSACTION';
+                req.walletId = wallet.id;
+                req.value = 0;
+                req.data = Contracts.encodeErc20ApproveFunction(spender, amount);
+                await signer.executeNativeTransaction(req);
+            } finally {
+                if (this.connect.isPopupSigner(signer)) {
+                    signer.closePopup();
+                }
+            }
+        }
+
+        private async fundInContract(frContractAddress: string, wallet: Wallet, platform: string, platformId: string, token: string, amount: BigNumber) {
+            const signer: Signer = this.connect.createSigner();
+            try {
+                let req = new EthereumTransactionRequest();
+                req.to = frContractAddress;
+                req.type = 'ETH_TRANSACTION';
+                req.walletId = wallet.id;
+                req.value = 0;
+                req.data = Contracts.encodeFundFunction(platform, platformId, token, amount);
+                return await signer.executeNativeTransaction(req);
+            } finally {
+                if (this.connect.isPopupSigner(signer)) {
+                    signer.closePopup();
+                }
             }
         }
 
