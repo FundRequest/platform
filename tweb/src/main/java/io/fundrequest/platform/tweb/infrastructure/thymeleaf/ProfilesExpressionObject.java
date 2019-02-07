@@ -2,6 +2,7 @@ package io.fundrequest.platform.tweb.infrastructure.thymeleaf;
 
 import io.fundrequest.platform.profile.profile.ProfileService;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -17,7 +18,7 @@ public class ProfilesExpressionObject {
     }
 
     public Optional<UserProfile> findByUserId(final String userId) {
-        return userId == null ? Optional.empty() : Optional.ofNullable(profileService.getUserProfile(() -> userId));
+        return StringUtils.isBlank(userId) ? Optional.empty() : Optional.ofNullable(profileService.getUserProfile(() -> userId));
     }
 
     public Function<UserProfile, String> getName() {
