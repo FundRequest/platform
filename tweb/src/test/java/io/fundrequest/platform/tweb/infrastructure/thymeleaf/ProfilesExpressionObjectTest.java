@@ -31,7 +31,7 @@ class ProfilesExpressionObjectTest {
     public void findByUserId() {
         final UserProfile expected = mock(UserProfile.class);
         Principal principal = PrincipalMother.davyvanroy();
-        when(profileService.getUserProfile(principal)).thenReturn(expected);
+        when(profileService.getNonLoggedInUserProfile(principal.getName())).thenReturn(expected);
 
         final Optional<UserProfile> result = profiles.findByUserId(principal.getName());
 
