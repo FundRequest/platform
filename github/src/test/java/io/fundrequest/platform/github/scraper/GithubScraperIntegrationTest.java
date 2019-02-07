@@ -93,7 +93,7 @@ public class GithubScraperIntegrationTest {
 
         assertThat(githubIssue.getNumber()).isEqualTo("501");
         assertThat(githubIssue.getSolver()).isNull();
-        assertThat(githubIssue.getStatus()).isEqualTo("Open");
+        assertThat(githubIssue.getStatus()).isEqualTo("Closed");
     }
 
     @Test

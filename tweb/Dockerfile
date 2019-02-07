@@ -1,4 +1,4 @@
-FROM frolvlad/alpine-oraclejdk8:slim
+FROM fundrequestio/alpine-jdk8-slim
 
 VOLUME /tmp
 ADD target/tweb-0.0.1-SNAPSHOT.jar fundrequest.jar
