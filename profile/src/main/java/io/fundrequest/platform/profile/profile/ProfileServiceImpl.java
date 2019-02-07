@@ -34,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -62,14 +63,43 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @CacheEvict(value = "user_profile", key = "#principal.name", beforeInvocation = true)
+    @CacheEvict(value = {"user_profile", "other_user_profile"}, key = "#principal.name", beforeInvocation = true)
     public void userProviderIdentityLinked(Principal principal, Provider provider) {
         eventPublisher.publishEvent(UserLinkedProviderEvent.builder().principal(principal).provider(provider).build());
     }
 
     @Override
-    @CacheEvict(value = "user_profile", key = "#principal.name")
+    @CacheEvict(value = {"user_profile", "other_user_profile"}, key = "#principal.name")
     public void walletsManaged(Principal principal) {
+    }
+
+    @Override
+    @Cacheable(value = "other_user_profile", key = "#userId")
+    public UserProfile getNonLoggedInUserProfile(String userId) {
+        final Map<Provider, UserProfileProvider> providers = keycloakRepository.getUserIdentities(userId)
+                                                                               .collect(Collectors.toMap(UserIdentity::getProvider,
+                                                                                                         x -> UserProfileProvider.builder()
+                                                                                                                                 .userId(x.getUserId())
+                                                                                                                                 .username(x.getUsername())
+                                                                                                                                 .build()));
+        final UserRepresentation user = keycloakRepository.getUser(userId);
+        return UserProfile.builder()
+                          .id(user.getId())
+                          .name(user.getFirstName() + " " + user.getLastName())
+                          .createdAt(user.getCreatedTimestamp())
+                          .email(user.getEmail())
+                          .picture(getPicture(user))
+                          .verifiedDeveloper(keycloakRepository.isVerifiedDeveloper(user))
+                          .telegramName(keycloakRepository.getTelegramName(user))
+                          .headline(keycloakRepository.getHeadline(user))
+                          .github(providers.get(Provider.GITHUB))
+                          .arkane(providers.get(Provider.ARKANE))
+                          .linkedin(providers.get(Provider.LINKEDIN))
+                          .twitter(providers.get(Provider.TWITTER))
+                          .google(providers.get(Provider.GOOGLE))
+                          .stackoverflow(providers.get(Provider.STACKOVERFLOW))
+                          .emailSignedVerification(getEmailSignedVerification(user.getEmail()))
+                          .build();
     }
 
     @Override
@@ -82,9 +112,12 @@ public class ProfileServiceImpl implements ProfileService {
                                                                                                                                  .username(x.getUsername())
                                                                                                                                  .build()));
         final UserRepresentation user = keycloakRepository.getUser(principal.getName());
-        List<Wallet> wallets = providers.containsKey(Provider.ARKANE)
-                               ? getWallets(principal, providers, getArkaneAccessTokenWithoutCheck((KeycloakAuthenticationToken) principal))
-                               : Collections.emptyList();
+        List<Wallet> wallets = new ArrayList<>();
+        if (principal.getClass().isAssignableFrom(KeycloakAuthenticationToken.class)) {
+            wallets = providers.containsKey(Provider.ARKANE)
+                      ? getWallets(principal, providers, getArkaneAccessTokenWithoutCheck((KeycloakAuthenticationToken) principal))
+                      : Collections.emptyList();
+        }
         return UserProfile.builder()
                           .id(user.getId())
                           .name(user.getFirstName() + " " + user.getLastName())
@@ -127,7 +160,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @EventListener
-    @CacheEvict(value = "user_profile", key = "#event.userId")
+    @CacheEvict(value = {"user_profile", "other_user_profile"}, key = "#event.userId")
     public void onDeveloperVerified(DeveloperVerified event) {
         keycloakRepository.updateVerifiedDeveloper(event.getUserId(), true);
     }
@@ -141,7 +174,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @CacheEvict(value = "user_profile", key = "#principal.name")
+    @CacheEvict(value = {"user_profile", "other_user_profile"}, key = "#principal.name")
     public void updateEtherAddress(Principal principal, String etherAddress) {
         keycloakRepository.updateEtherAddress(principal.getName(), etherAddress);
     }
@@ -176,19 +209,19 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @CacheEvict(value = "user_profile", key = "#principal.name")
+    @CacheEvict(value = {"user_profile", "other_user_profile"}, key = "#principal.name")
     public void updateTelegramName(Principal principal, String telegramName) {
         keycloakRepository.updateTelegramName(principal.getName(), telegramName);
     }
 
     @Override
-    @CacheEvict(value = "user_profile", key = "#principal.name")
+    @CacheEvict(value = {"user_profile", "other_user_profile"}, key = "#principal.name")
     public void updateHeadline(Principal principal, String headline) {
         keycloakRepository.updateHeadline(principal.getName(), headline);
     }
 
     @Override
-    @CacheEvict(value = "user_profile", key = "#principal.name")
+    @CacheEvict(value = {"user_profile", "other_user_profile"}, key = "#principal.name")
     public void logout(Principal principal) {
         log.info("User " + principal.getName() + " has logged out");
     }

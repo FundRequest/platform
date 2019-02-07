@@ -12,6 +12,8 @@ public interface ProfileService {
 
     void walletsManaged(Principal principal);
 
+    UserProfile getNonLoggedInUserProfile(String userId);
+
     UserProfile getUserProfile(Principal principal);
 
     void updateEtherAddress(Principal principal, String etherAddress);

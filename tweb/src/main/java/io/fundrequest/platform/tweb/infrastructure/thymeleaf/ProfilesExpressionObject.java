@@ -23,7 +23,7 @@ public class ProfilesExpressionObject {
 
     public Optional<UserProfile> findByUserId(final String userId) {
         try {
-            return StringUtils.isBlank(userId) ? Optional.empty() : Optional.ofNullable(profileService.getUserProfile(() -> userId));
+            return StringUtils.isBlank(userId) ? Optional.empty() : Optional.ofNullable(profileService.getNonLoggedInUserProfile(userId));
         } catch (Exception e) {
             LOGGER.error("Error getting profile for: \"" + userId + "\"", e);
             return Optional.empty();
