@@ -148,12 +148,13 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
 
     private String getProfileAccessToken(@NonNull KeycloakAuthenticationToken token, @NonNull Provider provider) {
         HttpClient httpclient = HttpClientBuilder.create().build();  // the http-client, that will send the request
-        HttpGet httpGet = new HttpGet(keycloakUrl + "/realms/fundrequest/broker/" + provider.name().toLowerCase() + "/token");   // the http GET request
+        String uri = keycloakUrl + "/realms/fundrequest/broker/" + provider.name().toLowerCase() + "/token";
+        HttpGet httpGet = new HttpGet(uri);   // the http GET request
         httpGet.addHeader("Authorization", "Bearer " + token.getAccount().getKeycloakSecurityContext().getTokenString());
         try {
             HttpResponse response = httpclient.execute(httpGet);
             if (response.getStatusLine().getStatusCode() != 200) {
-                String msg = "An error occurred when contacting IDP: "
+                String msg = "An error occurred when contacting IDP (\"" + uri + "\"): "
                              + response.getStatusLine().getStatusCode()
                              + " - "
                              + response.getStatusLine().getReasonPhrase() + "\n";
