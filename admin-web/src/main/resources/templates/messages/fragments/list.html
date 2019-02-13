@@ -19,10 +19,6 @@
       </td>
       <td>
         <form th:action="@{|/messages/${m.getType()}/${m.getName()}/delete|}" th:method="POST">
-          <input
-              type="hidden"
-              th:name="${_csrf.parameterName}"
-              th:value="${_csrf.token}" />
           <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
         </form>
       </td>
