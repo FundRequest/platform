@@ -3,6 +3,7 @@ package io.fundrequest.platform.profile.ref.infrastructure.mav;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.platform.profile.profile.ProfileService;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.JsonWebToken;
 import org.springframework.security.core.Authentication;
@@ -64,6 +65,9 @@ public class ArkaneAdvice extends HandlerInterceptorAdapter {
     }
 
     private boolean accessTokenIsExpired(String jwtToken) {
+        if (StringUtils.isBlank(jwtToken)) {
+            return false;
+        }
         String[] split_string = jwtToken.split("\\.");
         String base64EncodedBody = split_string[1];
         Base64 base64Url = new Base64(true);

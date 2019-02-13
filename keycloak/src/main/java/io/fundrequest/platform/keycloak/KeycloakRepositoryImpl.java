@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.platform.keycloak.dto.AccessTokenResult;
 import lombok.NonNull;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -21,6 +22,8 @@ import org.springframework.util.CollectionUtils;
 
 import javax.ws.rs.NotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -150,7 +153,19 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         try {
             HttpResponse response = httpclient.execute(httpGet);
             if (response.getStatusLine().getStatusCode() != 200) {
-                throw new RuntimeException("An error occurred when contacting IDP");
+                String msg = "An error occurred when contacting IDP: "
+                             + response.getStatusLine().getStatusCode()
+                             + " - "
+                             + response.getStatusLine().getReasonPhrase() + "\n";
+                try {
+                    InputStream content = response.getEntity().getContent();
+                    if (content != null) {
+                        msg += IOUtils.toString(content, StandardCharsets.UTF_8);
+                    }
+                } catch (Exception e) {
+
+                }
+                throw new RuntimeException(msg);
             }
             return getProviderAccessToken(provider, response);
         } catch (IOException e) {
