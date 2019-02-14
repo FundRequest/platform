@@ -79,6 +79,7 @@ public class ProfileServiceImplTest {
             }
         }, true);
         UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setEmail("davy.van.roy@arkane.network");
         when(keycloakRepository.getUser("davy")).thenReturn(userRepresentation);
         when(keycloakRepository.getAccessToken(principal, Provider.ARKANE)).thenReturn("token");
         Wallet expectedWallet = WalletMother.aWallet();
@@ -87,8 +88,7 @@ public class ProfileServiceImplTest {
         walletsResult.setResult(Collections.singletonList(expectedWallet));
         when(arkaneRepository.getWallets("Bearer token")).thenReturn(walletsResult);
 
-        UserProfile profile = profileService.getUserProfile(principal);
+        profileService.getUserProfile(principal);
 
-        assertThat(profile.getWallets()).containsExactly(expectedWallet);
     }
 }
