@@ -24,6 +24,7 @@ public class ArkaneAdvice extends HandlerInterceptorAdapter {
     private ProfileService profileService;
     private static final Set<String> IGNORED_URLS = Stream.of(
             "/profile/link/arkane",
+            "/profile/link/arkane/redirect",
             "/logout",
             "/login"
                                                              ).collect(Collectors.toSet());
@@ -64,7 +65,7 @@ public class ArkaneAdvice extends HandlerInterceptorAdapter {
                && request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest");
     }
 
-    private boolean accessTokenIsExpired(String jwtToken) {
+    public static boolean accessTokenIsExpired(String jwtToken) {
         if (StringUtils.isBlank(jwtToken)) {
             return false;
         }

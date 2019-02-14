@@ -10,6 +10,7 @@ import io.fundrequest.platform.profile.developer.verification.event.DeveloperVer
 import io.fundrequest.platform.profile.profile.dto.UserLinkedProviderEvent;
 import io.fundrequest.platform.profile.profile.dto.UserProfile;
 import io.fundrequest.platform.profile.profile.dto.UserProfileProvider;
+import io.fundrequest.platform.profile.ref.infrastructure.mav.ArkaneAdvice;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
@@ -182,8 +183,10 @@ public class ProfileServiceImpl implements ProfileService {
     private List<Wallet> getWallets(Principal principal, String authorization) {
         try {
             if (principal.getClass().isAssignableFrom(KeycloakAuthenticationToken.class)) {
-                WalletsResult wallets = arkaneRepository.getWallets(authorization);
-                return wallets.getResult();
+                if (!ArkaneAdvice.accessTokenIsExpired(authorization.replace("Bearer ", ""))) {
+                    WalletsResult wallets = arkaneRepository.getWallets(authorization);
+                    return wallets.getResult();
+                }
             }
         } catch (Exception e) {
             log.error("Error getting arkane wallets", e);
@@ -243,7 +246,7 @@ public class ProfileServiceImpl implements ProfileService {
         String hash = Base64Url.encode(check);
         request.getSession().setAttribute("hash", hash);
         return KeycloakUriBuilder.fromUri(keycloakUrl)
-                                 .path("/realms/{realm}/broker/{provider}/link")
+                                 .path("/realms/{realm}/broker/arkane/link")
                                  .queryParam("nonce", nonce)
                                  .queryParam("hash", hash)
                                  .queryParam("client_id", clientId)
