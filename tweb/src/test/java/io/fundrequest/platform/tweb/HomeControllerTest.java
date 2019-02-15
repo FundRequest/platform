@@ -17,7 +17,6 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 public class HomeControllerTest extends AbstractControllerTest<HomeController> {
 
@@ -40,8 +39,8 @@ public class HomeControllerTest extends AbstractControllerTest<HomeController> {
     @Test
     public void home() throws Exception {
         mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"));
+                .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrl("/requests"));
     }
 
     @Test
