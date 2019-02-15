@@ -65,9 +65,8 @@ public class HomeController extends AbstractController {
             eventPublisher.publishEvent(RefSignupEvent.builder().principal(principal).ref(ref).build());
             return redirectView(redirectAttributes).url("/").build();
         }
-        return modelAndView()
-                .withObject("openRequests", getAsJson(requests))
-                .withView("index")
+        return redirectView(redirectAttributes)
+                .url("/requests")
                 .build();
     }
 
