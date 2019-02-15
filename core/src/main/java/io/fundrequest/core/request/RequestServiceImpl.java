@@ -44,6 +44,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
@@ -174,9 +175,12 @@ class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<RequestDto> findRequestsForUser(Principal principal) {
         Set<Request> result = new HashSet<>();
-        List<String> etherAddresses= profileService.getUserProfile(principal).getEtherAddresses();
+        List<String> etherAddresses = profileService.getUserProfile(principal).getEtherAddresses();
         result.addAll(requestRepository.findRequestsUserIsWatching(principal.getName()));
-        result.addAll(requestRepository.findRequestsUserHasFunded(principal.getName(), etherAddresses.stream().map(String::toLowerCase).collect(Collectors.toList())));
+        List<String> userAddresses = etherAddresses.stream().map(String::toLowerCase).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(userAddresses)) {
+            result.addAll(requestRepository.findRequestsUserHasFunded(principal.getName(), userAddresses));
+        }
         return mappers.mapList(Request.class, RequestDto.class, result);
     }
 
