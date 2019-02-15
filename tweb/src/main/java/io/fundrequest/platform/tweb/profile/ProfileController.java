@@ -148,7 +148,7 @@ public class ProfileController {
                                                        @RequestParam(value = "redirectUrl", required = false) String redirectUrl) {
         profileService.userProviderIdentityLinked(principal, Provider.fromString(provider));
 
-        if (StringUtils.isNotBlank(redirectUrl) && !redirectUrl.toLowerCase().contains("/profile/link/" + provider)) {
+        if (StringUtils.isNotBlank(redirectUrl) && !redirectUrl.toLowerCase().contains("/profile/link/")) {
             return new ModelAndView(new RedirectView(redirectUrl));
         }
         return redirectToProfile();
