@@ -32,8 +32,7 @@ class ReferralServiceImplTest {
         referralService = new ReferralServiceImpl(
                 referralRepository,
                 keycloakRepository,
-                bountyService,
-                "googlekey"
+                bountyService
         );
     }
 
