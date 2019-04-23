@@ -85,7 +85,7 @@ public class GithubSolverResolver {
     }
 
     private boolean isMerged(final Element discussionItem) {
-        Elements select = discussionItem.select(".discussion-item span[title=State: merged]");
+        Elements select = discussionItem.select(".discussion-item span[title=Status: merged]");
         return !select.isEmpty();
     }
 }

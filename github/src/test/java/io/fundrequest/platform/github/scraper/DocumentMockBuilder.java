@@ -60,7 +60,7 @@ public class DocumentMockBuilder {
         public DiscussionItemBuilder isMerged(boolean isMerged) {
             final Elements mergedElements = mock(Elements.class);
             when(mergedElements.isEmpty()).thenReturn(!isMerged);
-            when(element.select(".discussion-item span[title=State: merged]")).thenReturn(mergedElements);
+            when(element.select(".discussion-item span[title=Status: merged]")).thenReturn(mergedElements);
             return this;
         }
 
