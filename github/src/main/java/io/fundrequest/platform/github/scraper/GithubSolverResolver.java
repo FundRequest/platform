@@ -27,7 +27,7 @@ public class GithubSolverResolver {
     }
 
     public Optional<String> resolve(final Document document, final GithubId issueGithubId) {
-        return document.select(".discussion-item")
+        return document.select(".TimelineItem")
                        .stream()
                        .filter(this::isPullRequest)
                        .filter(this::isMerged)
@@ -40,21 +40,8 @@ public class GithubSolverResolver {
     }
 
     private GithubId resolvePullRequestGithubId(final Element discussionItem) {
-        if (isPullRequestInSingleDiscussionItem(discussionItem)) {
-            return getPullRequestGithubIdFromSingleDiscussionItem(discussionItem);
-        } else {
-            return getPullRequestGithubIdFromInlineDiscussionItem(discussionItem);
-        }
-    }
-
-    private GithubId getPullRequestGithubIdFromSingleDiscussionItem(final Element discussionItem) {
-        return GithubId.fromString(discussionItem.select(".discussion-item [id^=ref-pullrequest-] ~ .discussion-item-ref-title a").attr("href"))
-                       .orElseThrow(() -> new RuntimeException("No pullrequest identifier is found"));
-    }
-
-    private GithubId getPullRequestGithubIdFromInlineDiscussionItem(final Element discussionItem) {
-        return GithubId.fromString(discussionItem.select(".discussion-item [id^=ref-pullrequest-] a").attr("href"))
-                       .orElseThrow(() -> new RuntimeException("No pullrequest identifier is found"));
+        return GithubId.fromString(discussionItem.select(".TimelineItem-body [id^=ref-pullrequest-] a").attr("href"))
+                .orElseThrow(() -> new RuntimeException("No pullrequest identifier is found"));
     }
 
     private GithubResult fetchPullrequest(GithubId pullRequestGithubId) {
@@ -80,12 +67,12 @@ public class GithubSolverResolver {
     }
 
     private boolean isPullRequest(final Element discussionItem) {
-        Elements select = discussionItem.select(".discussion-item [id^=ref-pullrequest-]");
+        Elements select = discussionItem.select(".TimelineItem-body [id^=ref-pullrequest-]");
         return !select.isEmpty();
     }
 
     private boolean isMerged(final Element discussionItem) {
-        Elements select = discussionItem.select(".discussion-item span[title=Status: merged]");
+        Elements select = discussionItem.select(".TimelineItem-body span[title=Status: merged]");
         return !select.isEmpty();
     }
 }
