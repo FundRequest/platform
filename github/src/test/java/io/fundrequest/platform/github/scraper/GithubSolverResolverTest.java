@@ -6,6 +6,7 @@ import io.fundrequest.platform.github.parser.GithubUser;
 import io.fundrequest.platform.github.scraper.model.GithubId;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -16,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@Disabled
 class GithubSolverResolverTest {
 
     private GithubSolverResolver parser;
