@@ -15,7 +15,7 @@ public class CryptoCompareClientImpl implements CryptoCompareClient {
     private final RestTemplate restTemplate;
     private static final String endpoint = "https://min-api.cryptocompare.com";
 
-    public CryptoCompareClientImpl(@Value("${cryptocompare.apikey") String apiKey) {
+    public CryptoCompareClientImpl(@Value("${cryptocompare.apikey}") String apiKey) {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         restTemplate = new RestTemplateBuilder()
