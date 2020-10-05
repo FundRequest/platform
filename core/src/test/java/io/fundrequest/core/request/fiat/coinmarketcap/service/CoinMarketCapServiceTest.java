@@ -3,6 +3,8 @@ package io.fundrequest.core.request.fiat.coinmarketcap.service;
 import io.fundrequest.core.request.fiat.coinmarketcap.client.CoinMarketCapClient;
 import io.fundrequest.core.request.fiat.coinmarketcap.dto.listing.CmcListing;
 import io.fundrequest.core.request.fiat.coinmarketcap.dto.listing.CmcListingsResult;
+import io.fundrequest.core.request.fiat.coinmarketcap.dto.listing.CmcQuote;
+import io.fundrequest.core.request.fiat.coinmarketcap.dto.listing.CmcQuotePrice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.cache.Cache;
@@ -35,7 +37,15 @@ class CoinMarketCapServiceTest {
     @Test
     void getPrice() {
         CmcListingsResult listingResult = new CmcListingsResult();
-        listingResult.setListings(Collections.singletonList(CmcListing.builder().id(2751L).symbol("FND").build()));
+        CmcListing listing = CmcListing.builder().id(2751L)
+                                       .symbol("FND")
+                                       .quote(CmcQuote.builder()
+                                                      .usd(CmcQuotePrice.builder()
+                                                                        .price(1.1)
+                                                                        .build())
+                                                      .build())
+                                       .build();
+        listingResult.setListings(Collections.singletonList(listing));
         when(client.getListings()).thenReturn(listingResult);
 
         Optional<Double> result = service.getCurrentPriceInUsd("FND");
