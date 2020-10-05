@@ -47,7 +47,7 @@
         <assertj.version>3.9.1</assertj.version>
         <mapstruct.version>1.2.0.Final</mapstruct.version>
         <web3j.version>3.3.1</web3j.version>
-        <keycloak.version>11.0.2.Final</keycloak.version>
+        <keycloak.version>11.0.2</keycloak.version>
         <keycloak-client.version>3.1.4.Final</keycloak-client.version>
         <commons-lang3.version>3.6</commons-lang3.version>
         <commons-text.version>1.4</commons-text.version>
