@@ -18,4 +18,8 @@ public class CmcListing {
     @JsonProperty("symbol")
     private String symbol;
 
+    @JsonProperty("quote")
+    private CmcQuote quote;
+
+
 }

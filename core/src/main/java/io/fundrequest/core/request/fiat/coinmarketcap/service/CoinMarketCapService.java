@@ -23,9 +23,8 @@ public class CoinMarketCapService {
     @Cacheable(value = "cmc_token_price", key = "#symbol")
     public Optional<Double> getCurrentPriceInUsd(final String symbol) {
         return getListing(symbol)
-                .map(CmcListing::getId)
-                .map(id -> client.getTickerById(id))
-                .map(t -> t.getData().getQuotes().getUsd().getPrice());
+                .filter(l -> l.getQuote() != null && l.getQuote().getUsd() != null && l.getQuote().getUsd().getPrice() != null)
+                .map(l -> l.getQuote().getUsd().getPrice());
     }
 
     private Optional<CmcListing> getListing(String symbol) {

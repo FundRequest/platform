@@ -1,4 +1,4 @@
-package io.fundrequest.core.request.fiat.coinmarketcap.dto.ticker;
+package io.fundrequest.core.request.fiat.coinmarketcap.dto.listing;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CmcTickerQuote {
+public class CmcQuotePrice {
     private Double price;
 
 

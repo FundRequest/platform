@@ -3,10 +3,6 @@ package io.fundrequest.core.request.fiat.coinmarketcap.service;
 import io.fundrequest.core.request.fiat.coinmarketcap.client.CoinMarketCapClient;
 import io.fundrequest.core.request.fiat.coinmarketcap.dto.listing.CmcListing;
 import io.fundrequest.core.request.fiat.coinmarketcap.dto.listing.CmcListingsResult;
-import io.fundrequest.core.request.fiat.coinmarketcap.dto.ticker.CmcTickerData;
-import io.fundrequest.core.request.fiat.coinmarketcap.dto.ticker.CmcTickerQuote;
-import io.fundrequest.core.request.fiat.coinmarketcap.dto.ticker.CmcTickerQuotes;
-import io.fundrequest.core.request.fiat.coinmarketcap.dto.ticker.CmcTickerResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.cache.Cache;
@@ -41,21 +37,6 @@ class CoinMarketCapServiceTest {
         CmcListingsResult listingResult = new CmcListingsResult();
         listingResult.setListings(Collections.singletonList(CmcListing.builder().id(2751L).symbol("FND").build()));
         when(client.getListings()).thenReturn(listingResult);
-        when(client.getTickerById(2751L)).thenReturn(CmcTickerResult.builder()
-                                                                    .data(
-                                                                            CmcTickerData.builder()
-                                                                                         .id(2751L)
-                                                                                         .symbol("FND")
-                                                                                         .quotes(
-                                                                                                 CmcTickerQuotes.builder()
-                                                                                                                .usd(
-                                                                                                                        CmcTickerQuote.builder()
-                                                                                                                                      .price(1.1)
-                                                                                                                                      .build())
-                                                                                                                .build())
-                                                                                         .build())
-                                                                    .build()
-                                                    );
 
         Optional<Double> result = service.getCurrentPriceInUsd("FND");
 
