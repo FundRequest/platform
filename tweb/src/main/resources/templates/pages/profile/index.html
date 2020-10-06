@@ -10,56 +10,13 @@
 <div layout:fragment="content">
     <th:block th:replace="pages/profile/fragments/header :: header"></th:block>
     <div class="row justify-content-center">
+
         <div class="col-12">
-            <div class="card mb-5">
-                <a class="anchor" id="referral-link"></a>
-                <h5 class="card-header card-header--label">
-                    <span>Personal referral link</span>
-                    <small class="text-muted">Rewards 5 FND for each verified developer</small>
-                </h5>
-                <div class="card-body">
-                    <div class="card-text mb-3">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <button class="btn btn-default mb-0" data-clipboard-target="#referral-link-field">
-                                    <i class="fa fa-clipboard"></i>
-                                </button>
-                            </div>
-                            <input class="form-control form-control--not-editable" id="referral-link-field"
-                                   title="personal referral link"
-                                   value="https://xyz.testReferralLink-Copy" th:value="${refLink}" readonly="readonly"/>
-                        </div>
-                    </div>
-
-                    <div class="card-text text-center">
-                        <a class="btn btn-outline-linkedin icon-left mb-2 mb-md-0" data-open-link-in-popup="true"
-                           th:href="${refShareLinkedin.link}"
-                           rel="noopener noreferrer" target="_blank">
-                            <i class="fab fa-linkedin"></i>
-                            <span>Share on LinkedIn</span>
-                        </a>
-                        <a class="btn btn-outline-twitter icon-left mb-2 mb-md-0" data-open-link-in-popup="true"
-                           th:href="${refShareTwitter.link}"
-                           rel="noopener noreferrer" target="_blank">
-                            <i class="fab fa-twitter"></i>
-                            <span>Share on Twitter</span>
-                        </a>
-                        <a class="btn btn-outline-facebook icon-left mb-0" data-open-link-in-popup="true"
-                           th:href="${refShareFacebook.link}"
-                           rel="noopener noreferrer" target="_blank">
-                            <i class="fab fa-facebook"></i>
-                            <span>Share on facebook</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
             <div class="card mb-5">
                 <a class="anchor" id="verify-developer"></a>
                 <h5 class="card-header card-header--label">
                     <span th:if="${profile.isVerifiedDeveloper()}">You're verified as a developer!</span>
                     <span th:unless="${profile.isVerifiedDeveloper()}">Verify yourself as a developer ...</span>
-                    <small class="text-muted">Rewards up to 25 FND</small>
                 </h5>
                 <div class="card-body text-center">
                     <div class="row">

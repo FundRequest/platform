@@ -18,7 +18,7 @@
         <div class="container">
             <div class="row">
                 <div class="fnd-footer__left col-12 mb-1 col-lg-6">
-                    © 2018 FundRequest OÜ - 0.1 <!--/* TODO: Add dynamic version nummer of app */-->
+                    © <span th:text="${#dates.year(#dates.createNow())}">2020</span> FundRequest OÜ - 1.0
                 </div>
                 <div class="fnd-footer__right mb-1 col-lg-6">
                     <a class="btn btn-link btn--social-link pl-0" href="https://github.com/fundrequest/"

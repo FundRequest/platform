@@ -227,6 +227,8 @@ public class ProfileServiceImpl implements ProfileService {
     @CacheEvict(value = {"user_profile", "other_user_profile"}, key = "#principal.name")
     public void logout(Principal principal) {
         log.info("User " + principal.getName() + " has logged out");
+
+
     }
 
     @Override
@@ -246,7 +248,7 @@ public class ProfileServiceImpl implements ProfileService {
         String hash = Base64Url.encode(check);
         request.getSession().setAttribute("hash", hash);
         return KeycloakUriBuilder.fromUri(keycloakUrl)
-                                 .path("/realms/{realm}/broker/arkane/link")
+                                 .path("/realms/{realm}/broker/" + provider + "/link")
                                  .queryParam("nonce", nonce)
                                  .queryParam("hash", hash)
                                  .queryParam("client_id", clientId)

@@ -1,4 +1,4 @@
-package io.fundrequest.core.request.fiat.coinmarketcap.dto.ticker;
+package io.fundrequest.core.request.fiat.coinmarketcap.dto.listing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CmcTickerResult {
-    @JsonProperty("data")
-    private CmcTickerData data;
+public class CmcQuote {
+    @JsonProperty("USD")
+    private CmcQuotePrice usd;
 
 
 }
