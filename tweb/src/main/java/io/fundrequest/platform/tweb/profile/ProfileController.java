@@ -127,8 +127,8 @@ public class ProfileController {
             endpoint = "https://connect-" + arkaneEnvironment + ".arkane.network";
         }
         String walletsFromChain = chain.toLowerCase();
-        Base64.getEncoder().encodeToString(("{\"chain\": \"" + walletsFromChain + "\"}").getBytes(StandardCharsets.UTF_8));
-        return endpoint + "/wallets/manage?redirectUri=" + redirectUri + "&data=eyJjaGFpbiI6ICJldGhlcmV1bSJ9&bearerToken=" + bearerToken;
+        String data = Base64.getEncoder().encodeToString(("{\"chain\": \"" + walletsFromChain + "\"}").getBytes(StandardCharsets.UTF_8));
+        return endpoint + "/wallets/manage?redirectUri=" + redirectUri + "&data=" + data + "&bearerToken=" + bearerToken;
     }
 
     private String getArkaneWalletEndpoint() {
