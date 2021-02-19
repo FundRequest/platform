@@ -55,6 +55,7 @@ public class ProfileControllerTest extends AbstractControllerTest<ProfileControl
                                      referralService,
                                      githubBountyService,
                                      "staging",
+                                     "ethereum",
                                      stackOverflowBountyService
         );
     }

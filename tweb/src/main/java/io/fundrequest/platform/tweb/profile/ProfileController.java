@@ -24,7 +24,9 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
+import java.util.Base64;
 
 @Controller
 public class ProfileController {
@@ -33,6 +35,7 @@ public class ProfileController {
     private MessageService messageService;
     private ReferralService referralService;
     private GithubBountyService githubBountyService;
+    private String chain;
     private StackOverflowBountyService stackOverflowBountyService;
     private String arkaneEnvironment;
 
@@ -43,6 +46,7 @@ public class ProfileController {
                              final ReferralService referralService,
                              final GithubBountyService githubBountyService,
                              final @Value("${network.arkane.environment}") String arkaneEnvironment,
+                             final @Value("${io.fundrequest.chain:ethereum}") String chain,
                              final StackOverflowBountyService stackOverflowBountyService) {
         this.eventPublisher = eventPublisher;
         this.profileService = profileService;
@@ -50,6 +54,7 @@ public class ProfileController {
         this.referralService = referralService;
         this.githubBountyService = githubBountyService;
         this.arkaneEnvironment = arkaneEnvironment;
+        this.chain = chain;
         this.stackOverflowBountyService = stackOverflowBountyService;
     }
 
@@ -121,6 +126,8 @@ public class ProfileController {
         if (StringUtils.isNotBlank(arkaneEnvironment)) {
             endpoint = "https://connect-" + arkaneEnvironment + ".arkane.network";
         }
+        String walletsFromChain = chain.toLowerCase();
+        Base64.getEncoder().encodeToString(("{\"chain\": \"" + walletsFromChain + "\"}").getBytes(StandardCharsets.UTF_8));
         return endpoint + "/wallets/manage?redirectUri=" + redirectUri + "&data=eyJjaGFpbiI6ICJldGhlcmV1bSJ9&bearerToken=" + bearerToken;
     }
 
