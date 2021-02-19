@@ -32,7 +32,7 @@
         </div>
     </section>
 
-    <div is="wizard-component" inline-template="false" th:attr="'v-bind:arkanetoken'='&quot;' + ${arkanetoken} + '&quot;','v-bind:arkane-environment'='&quot;' + ${@environment.getProperty('network.arkane.environment')} + '&quot;','v-bind:arkane-chain'='&quot;' + ${@environment.getProperty('network.arkane.chain')} + '&quot;'">
+    <div is="wizard-component" inline-template="false" th:attr="'v-bind:arkanetoken'='&quot;' + ${arkanetoken} + '&quot;','v-bind:arkane-environment'='&quot;' + ${@environment.getProperty('network.arkane.environment')} + '&quot;','v-bind:arkane-chain'='&quot;' + ${@environment.getProperty('io.fundrequest.chain')} + '&quot;'">
         <div class="wizard">
             <section class="position-relative mb-5">
                 <div class="wizard__content">
