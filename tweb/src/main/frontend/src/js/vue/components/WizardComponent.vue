@@ -266,7 +266,7 @@
             try {
                 let req = new EthereumTransactionRequest();
                 req.to = tokenContractAddress;
-                req.type = 'ETH_TRANSACTION';
+                req.type = 'BSC_TRANSACTION';
                 req.walletId = wallet.id;
                 req.value = 0;
                 req.data = Contracts.encodeErc20ApproveFunction(spender, amount);
@@ -283,7 +283,7 @@
             try {
                 let req = new EthereumTransactionRequest();
                 req.to = frContractAddress;
-                req.type = 'ETH_TRANSACTION';
+                req.type = 'BSC_TRANSACTION';
                 req.walletId = wallet.id;
                 req.value = 0;
                 req.data = Contracts.encodeFundFunction(platform, platformId, token, amount);
