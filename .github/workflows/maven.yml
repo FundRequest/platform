@@ -34,6 +34,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: tweb
-          file: ./Dockerfile
+          file: ./tweb/Dockerfile
           push: true
           tags: fundrequestio/platform:master
