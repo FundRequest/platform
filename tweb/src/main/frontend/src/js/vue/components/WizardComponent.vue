@@ -50,6 +50,7 @@
 
         @Prop() public arkanetoken: string;
         @Prop() public arkaneEnvironment: string;
+        @Prop() public chain: string;
 
         public moneyConfig = {
             decimal: ".",
@@ -265,7 +266,7 @@
             try {
                 let req = new EthereumTransactionRequest();
                 req.to = tokenContractAddress;
-                req.type = 'ETH_TRANSACTION';
+                req.type = this.chain.toLowerCase() === 'bsc' ? 'BSC_TRANSACTION' : 'ETH_TRANSACTION';
                 req.walletId = wallet.id;
                 req.value = 0;
                 req.data = Contracts.encodeErc20ApproveFunction(spender, amount);
@@ -282,7 +283,7 @@
             try {
                 let req = new EthereumTransactionRequest();
                 req.to = frContractAddress;
-                req.type = 'ETH_TRANSACTION';
+                req.type = this.chain.toLowerCase() === 'bsc' ? 'BSC_TRANSACTION' : 'ETH_TRANSACTION';
                 req.walletId = wallet.id;
                 req.value = 0;
                 req.data = Contracts.encodeFundFunction(platform, platformId, token, amount);
