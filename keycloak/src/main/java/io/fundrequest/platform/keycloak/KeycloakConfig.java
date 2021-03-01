@@ -15,10 +15,6 @@ public class KeycloakConfig {
     private String serverUrl;
     @Value("${io.fundrequest.keycloak-custom.realm}")
     private String realm;
-    @Value("${io.fundrequest.keycloak-custom.username}")
-    private String username;
-    @Value("${io.fundrequest.keycloak-custom.password}")
-    private String password;
     @Value("${io.fundrequest.keycloak-custom.client-id}")
     private String clientId;
     @Value("${io.fundrequest.keycloak-custom.client-secret}")
@@ -29,8 +25,6 @@ public class KeycloakConfig {
         final Keycloak keycloak = Keycloak.getInstance(
                 serverUrl,
                 realm,
-                username,
-                password,
                 clientId,
                 clientSecret);
         return keycloak.realm(realm);
