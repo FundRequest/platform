@@ -42,10 +42,14 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
     private final ObjectMapper objectMapper;
     private RealmResource resource;
     private String keycloakUrl;
+    private String keycloakRealm;
 
-    public KeycloakRepositoryImpl(RealmResource resource, @Value("${keycloak.auth-server-url}") String keycloakUrl) {
+    public KeycloakRepositoryImpl(RealmResource resource,
+                                  @Value("${keycloak.auth-server-url}") String keycloakUrl,
+                                  @Value("{keycloak.realm}") String keycloakRealm) {
         this.resource = resource;
         this.keycloakUrl = keycloakUrl;
+        this.keycloakRealm = keycloakRealm;
         objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
@@ -61,7 +65,8 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         return resource.users().get(userId).toRepresentation();
     }
 
-    public void updateEtherAddress(String userId, String newAddress) {
+    public void updateEtherAddress(String userId,
+                                   String newAddress) {
         final UserResource userResource = resource.users().get(userId);
         final UserRepresentation userRepresentation = userResource.toRepresentation();
         if (userRepresentation.getAttributes() == null) {
@@ -74,30 +79,37 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         }
     }
 
-    private boolean isCurrentAddressSameAsNew(String newAddress, UserRepresentation userRepresentation) {
+    private boolean isCurrentAddressSameAsNew(String newAddress,
+                                              UserRepresentation userRepresentation) {
         Map<String, List<String>> attributes = userRepresentation.getAttributes();
         return attributes != null && attributes.containsKey(ETHER_ADDRESS_KEY)
                && attributes.get(ETHER_ADDRESS_KEY).stream().anyMatch(currentAddress -> currentAddress.equalsIgnoreCase(newAddress));
     }
 
     @Override
-    public void updateEtherAddressVerified(final String userId, final Boolean isVerified) {
+    public void updateEtherAddressVerified(final String userId,
+                                           final Boolean isVerified) {
         updateAttribute(resource.users().get(userId), ETHER_ADDRESS_VERIFIED_KEY, String.valueOf(BooleanUtils.isTrue(isVerified)));
     }
 
-    public void updateTelegramName(String userId, String telegramName) {
+    public void updateTelegramName(String userId,
+                                   String telegramName) {
         updateAttribute(resource.users().get(userId), TELEGRAM_NAME_KEY, telegramName);
     }
 
-    public void updateHeadline(String userId, String headline) {
+    public void updateHeadline(String userId,
+                               String headline) {
         updateAttribute(resource.users().get(userId), HEADLINE_KEY, headline);
     }
 
-    public void updateVerifiedDeveloper(String userId, Boolean isVerified) {
+    public void updateVerifiedDeveloper(String userId,
+                                        Boolean isVerified) {
         updateAttribute(resource.users().get(userId), VERIFIED_DEVELOPER_KEY, "" + BooleanUtils.isTrue(isVerified));
     }
 
-    private void updateAttribute(UserResource userResource, String property, String value) {
+    private void updateAttribute(UserResource userResource,
+                                 String property,
+                                 String value) {
         UserRepresentation userRepresentation = userResource.toRepresentation();
         if (userRepresentation.getAttributes() == null) {
             userRepresentation.setAttributes(new HashMap<>());
@@ -119,7 +131,8 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         return isVerifiedDeveloper(getUser(userId));
     }
 
-    public String getAttribute(UserRepresentation userRepresentation, String property) {
+    public String getAttribute(UserRepresentation userRepresentation,
+                               String property) {
         Map<String, List<String>> attributes = userRepresentation.getAttributes();
         if (attributes != null && attributes.size() > 0) {
             List<String> properties = attributes.get(property);
@@ -142,13 +155,15 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         return getAttribute(userRepresentation, HEADLINE_KEY);
     }
 
-    public String getAccessToken(@NonNull KeycloakAuthenticationToken token, @NonNull Provider provider) {
+    public String getAccessToken(@NonNull KeycloakAuthenticationToken token,
+                                 @NonNull Provider provider) {
         return getProfileAccessToken(token, provider);
     }
 
-    private String getProfileAccessToken(@NonNull KeycloakAuthenticationToken token, @NonNull Provider provider) {
+    private String getProfileAccessToken(@NonNull KeycloakAuthenticationToken token,
+                                         @NonNull Provider provider) {
         HttpClient httpclient = HttpClientBuilder.create().build();  // the http-client, that will send the request
-        String uri = keycloakUrl + "/realms/fundrequest/broker/" + provider.name().toLowerCase() + "/token";
+        String uri = keycloakUrl + "/realms/" + keycloakRealm + "/broker/" + provider.name().toLowerCase() + "/token";
         HttpGet httpGet = new HttpGet(uri);   // the http GET request
         httpGet.addHeader("Authorization", "Bearer " + token.getAccount().getKeycloakSecurityContext().getTokenString());
         try {
@@ -174,7 +189,8 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         }
     }
 
-    private String getProviderAccessToken(Provider provider, HttpResponse response) throws IOException {
+    private String getProviderAccessToken(Provider provider,
+                                          HttpResponse response) throws IOException {
         if (provider == Provider.LINKEDIN) {
             return objectMapper.readValue(EntityUtils.toString(response.getEntity()), AccessTokenResult.class).getAccessToken();
         }

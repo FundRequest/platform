@@ -37,7 +37,7 @@ public class KeycloakRepositoryImplTest {
     @BeforeEach
     public void setUp() {
         realmResource = mock(RealmResource.class, RETURNS_DEEP_STUBS);
-        keycloakRepository = new KeycloakRepositoryImpl(realmResource, "url");
+        keycloakRepository = new KeycloakRepositoryImpl(realmResource, "url", "fundrequest");
     }
 
     @Test
