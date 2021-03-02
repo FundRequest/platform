@@ -46,7 +46,7 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
 
     public KeycloakRepositoryImpl(RealmResource resource,
                                   @Value("${keycloak.auth-server-url}") String keycloakUrl,
-                                  @Value("{keycloak.realm}") String keycloakRealm) {
+                                  @Value("${keycloak.realm}") String keycloakRealm) {
         this.resource = resource;
         this.keycloakUrl = keycloakUrl;
         this.keycloakRealm = keycloakRealm;
