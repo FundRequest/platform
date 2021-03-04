@@ -36,7 +36,7 @@ public class ProfileServiceImplTest {
     public void setUp() throws Exception {
         keycloakRepository = mock(KeycloakRepository.class);
         arkaneRepository = mock(ArkaneRepository.class);
-        profileService = new ProfileServiceImpl(keycloakRepository, "url", "secret", mock(ApplicationEventPublisher.class), arkaneRepository);
+        profileService = new ProfileServiceImpl(keycloakRepository, "url", "fundrequest", "secret", mock(ApplicationEventPublisher.class), arkaneRepository);
     }
 
     @Test

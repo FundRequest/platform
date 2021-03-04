@@ -48,16 +48,19 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final KeycloakRepository keycloakRepository;
     private final String keycloakUrl;
+    private String realm;
     private String intercomHmacKey;
     private final ApplicationEventPublisher eventPublisher;
     private ArkaneRepository arkaneRepository;
 
     public ProfileServiceImpl(final KeycloakRepository keycloakRepository,
                               final @Value("${keycloak.auth-server-url}") String keycloakUrl,
+                              final @Value("${keycloak.realm}") String realm,
                               final @Value("${io.fundrequest.intercom.secret}") String intercomHmacKey,
                               final ApplicationEventPublisher eventPublisher, ArkaneRepository arkaneRepository) {
         this.keycloakRepository = keycloakRepository;
         this.keycloakUrl = keycloakUrl;
+        this.realm = realm;
         this.intercomHmacKey = intercomHmacKey;
         this.eventPublisher = eventPublisher;
         this.arkaneRepository = arkaneRepository;
@@ -252,7 +255,7 @@ public class ProfileServiceImpl implements ProfileService {
                                  .queryParam("nonce", nonce)
                                  .queryParam("hash", hash)
                                  .queryParam("client_id", clientId)
-                                 .queryParam("redirect_uri", getRedirectUrl(request, provider, redirectUrl)).build("fundrequest", provider).toString();
+                                 .queryParam("redirect_uri", getRedirectUrl(request, provider, redirectUrl)).build(realm, provider).toString();
     }
 
     private String getRedirectUrl(HttpServletRequest req, String provider, String redirectUrl) {
