@@ -64,7 +64,7 @@ public class ArkaneAdvice extends HandlerInterceptorAdapter {
     }
 
     private boolean isIgnoredUrl(HttpServletRequest request) {
-        return IGNORED_URLS.stream().anyMatch(i -> request.getRequestURL().toString().toLowerCase().endsWith(i));
+        return IGNORED_URLS.stream().anyMatch(i -> request.getRequestURL().toString().toLowerCase().contains(i));
     }
 
     private boolean isAjaxRequest(HttpServletRequest request) {
