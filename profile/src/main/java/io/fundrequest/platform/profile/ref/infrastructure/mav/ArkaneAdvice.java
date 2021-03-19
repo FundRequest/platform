@@ -24,14 +24,12 @@ public class ArkaneAdvice extends HandlerInterceptorAdapter {
     private ProfileService profileService;
     private static final Set<String> IGNORED_URLS = Stream.of(
             "/profile/link/arkane",
-            "/profile/link/Arkane",
-            "/profile/link/SafeID",
-            "/profile/link/SafeID-Test",
-            "/profile/link/SafeID",
+            "/profile/link/safeid",
+            "/profile/link/safeid-test",
+            "/profile/link/safeid",
             "/profile/link/arkane/redirect",
-            "/profile/link/Arkane/redirect",
-            "/profile/link/SafeID/redirect",
-            "/profile/link/SafeID-Test/redirect",
+            "/profile/link/safeid/redirect",
+            "/profile/link/safeid-test/redirect",
             "/logout",
             "/login"
                                                              ).collect(Collectors.toSet());
