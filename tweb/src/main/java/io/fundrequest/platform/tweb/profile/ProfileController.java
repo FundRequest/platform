@@ -9,6 +9,7 @@ import io.fundrequest.platform.profile.profile.dto.GithubVerificationDto;
 import io.fundrequest.platform.profile.ref.ReferralService;
 import io.fundrequest.platform.profile.stackoverflow.StackOverflowBountyService;
 import io.fundrequest.platform.profile.stackoverflow.dto.StackOverflowVerificationDto;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ import java.security.Principal;
 import java.util.Base64;
 
 @Controller
+@Slf4j
 public class ProfileController {
     private ApplicationEventPublisher eventPublisher;
     private ProfileService profileService;
@@ -105,6 +107,7 @@ public class ProfileController {
             redirectUrl = request.getRequestURL().toString();
         }
         String link = profileService.createSignupLink(request, principal, Provider.fromString(provider.replaceAll("[^A-Za-z]", "")), redirectUrl);
+        log.info("Redirecting to: {}", link);
         return new ModelAndView(new RedirectView(link, false));
     }
 
