@@ -51,6 +51,7 @@ public class ArkaneAdvice extends HandlerInterceptorAdapter {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication.getClass().isAssignableFrom(KeycloakAuthenticationToken.class) && profileService.getUserProfile(authentication).getArkane() != null) {
                 String accessToken = profileService.getArkaneAccessToken((KeycloakAuthenticationToken) authentication);
+                log.info("Redirecting from {}", request.getRequestURL());
                 if (accessTokenIsExpired(accessToken)) {
                     if (!response.isCommitted()) {
                         log.info("Redirecting from {}", request.getRequestURL());

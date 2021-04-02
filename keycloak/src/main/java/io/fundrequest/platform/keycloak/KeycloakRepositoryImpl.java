@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.platform.keycloak.dto.AccessTokenResult;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpResponse;
@@ -32,6 +33,7 @@ import java.util.stream.Stream;
 
 @Component
 @Profile("!local")
+@Slf4j
 class KeycloakRepositoryImpl implements KeycloakRepository {
 
     private static final String ETHER_ADDRESS_KEY = "ether_address";
@@ -166,8 +168,10 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         String uri = keycloakUrl + "/realms/" + keycloakRealm + "/broker/" + provider.name().toLowerCase() + "/token";
         HttpGet httpGet = new HttpGet(uri);   // the http GET request
         httpGet.addHeader("Authorization", "Bearer " + token.getAccount().getKeycloakSecurityContext().getTokenString());
+        log.info("Getting arkane access token");
         try {
             HttpResponse response = httpclient.execute(httpGet);
+
             if (response.getStatusLine().getStatusCode() != 200) {
                 String msg = "An error occurred when contacting IDP (\"" + uri + "\"): "
                              + response.getStatusLine().getStatusCode()
@@ -179,7 +183,7 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
                         msg += IOUtils.toString(content, StandardCharsets.UTF_8);
                     }
                 } catch (Exception e) {
-
+                    log.error("Error getting contents", e);
                 }
                 throw new RuntimeException(msg);
             }
@@ -196,7 +200,9 @@ class KeycloakRepositoryImpl implements KeycloakRepository {
         }
 
         if (provider == Provider.ARKANE) {
-            return objectMapper.readValue(EntityUtils.toString(response.getEntity()), AccessTokenResult.class).getAccessToken();
+            AccessTokenResult accessTokenResult = objectMapper.readValue(EntityUtils.toString(response.getEntity()), AccessTokenResult.class);
+            log.info("Access token: {}", accessTokenResult.getAccessToken() );
+            return accessTokenResult.getAccessToken();
         }
         throw new RuntimeException("not supported");
 
