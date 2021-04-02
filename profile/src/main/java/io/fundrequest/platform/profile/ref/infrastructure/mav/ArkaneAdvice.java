@@ -2,6 +2,7 @@ package io.fundrequest.platform.profile.ref.infrastructure.mav;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fundrequest.platform.profile.profile.ProfileService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
+@Slf4j
 public class ArkaneAdvice extends HandlerInterceptorAdapter {
 
     private ProfileService profileService;
@@ -51,6 +53,7 @@ public class ArkaneAdvice extends HandlerInterceptorAdapter {
                 String accessToken = profileService.getArkaneAccessToken((KeycloakAuthenticationToken) authentication);
                 if (accessTokenIsExpired(accessToken)) {
                     if (!response.isCommitted()) {
+                        log.info("Redirecting from {}", request.getRequestURL());
                         String url = request.getRequestURL().toString();
                         response.sendRedirect("/profile/link/arkane?redirectUrl=" + url);
                         return false;
