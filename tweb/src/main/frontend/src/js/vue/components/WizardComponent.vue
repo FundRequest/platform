@@ -152,7 +152,7 @@
             let valid = true;
             if (this.paymentMethod == PaymentMethods.getInstance().arkane) {
                 let balance = await this.connect.api.getTokenBalance(this.selectedWallet.id, this.selectedToken.address);
-                if (this.fundAmountValue > balance.balance) {
+                if (!balance || this.fundAmountValue > balance.balance) {
                     this.errorMessages.fundAmount = `Your ${this.selectedToken.symbol} balance is to low.`;
                     Utils.setElementInvalid(element);
                     valid = false;
