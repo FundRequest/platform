@@ -59,7 +59,7 @@
         <jsoup.version>1.10.2</jsoup.version>
         <telegram.version>3.6</telegram.version>
         <feign-core.version>9.5.1</feign-core.version>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <guava.version>23.0</guava.version>
         <thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
         <thymeleaf-extras-springsecurity4.version>3.0.2.RELEASE</thymeleaf-extras-springsecurity4.version>
